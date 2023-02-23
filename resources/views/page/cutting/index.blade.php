@@ -45,14 +45,14 @@
                                     <td>{{ $dataCutting->size }}</td>
                                     <td>
                                         <div class="d-flex">
-                                            <a href="javascript:void(0);" class="btn btn-primary btn-sm me-1"
-                                                onclick="modalCutting(false, {{ $dataCutting->id }})"><i
-                                                    class="bx bx-edit-alt"></i></a>
+                                            <a href="javascript:void(0);" class="btn btn-primary btn-sm"
+                                                onclick="modalCutting(false, {{ $dataCutting->id }})">Edit</a>
                                             <form action="/cutting/{{ $dataCutting->id }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm"><i
-                                                        class="bx bx-trash"></i></button>
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    Delete
+                                                </button>
                                             </form>
                                         </div>
                                     </td>
@@ -115,6 +115,7 @@
                         <div class="col-md-12">
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary waves-effect waves-light mt-2">Submit</button>
+                                <button type="button" class="btn btn-secondary waves-effect waves-light mt-2" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
