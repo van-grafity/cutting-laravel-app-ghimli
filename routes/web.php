@@ -14,5 +14,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('front-page');
+    return view('welcome');
+});
+
+Auth::routes();
+
+Route::get('datatable/{url}', [App\Http\Controllers\datatableController::class, 'index']);
+Route::middleware(['auth'])->group(function () {
+    Route::resource('home', App\Http\Controllers\HomeController::class);
+    Route::resource('cutting', App\Http\Controllers\CuttingController::class);
 });
