@@ -66,7 +66,6 @@
     </div>
 @endsection
 
-@section('last-body')
 <div class="modal" tabindex="-1" role="dialog" id="modalCutting">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -124,4 +123,5 @@
         </div>
     </div>
 </div>
+@section('last-body')
 @endsection
