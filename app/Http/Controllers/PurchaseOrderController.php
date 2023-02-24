@@ -36,7 +36,15 @@ class PurchaseOrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $data = PurchaseOrder::create($request->all());
+            return response()->json($data);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -78,7 +86,16 @@ class PurchaseOrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $data = PurchaseOrder::findOrFail($id);
+            $data->update($request->all());
+            return response()->json($data);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -89,6 +106,15 @@ class PurchaseOrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $data = PurchaseOrder::findOrFail($id);
+            $data->delete();
+            return redirect('/purchaseorder')->with('status', 'Data Purchase Order Berhasil Dihapus!');
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 }
