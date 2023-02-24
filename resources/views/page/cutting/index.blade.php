@@ -17,7 +17,7 @@
                         </div>
                         <a href="javascript:void(0);" class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"
                             onclick="modalCutting(true)"><i class="bx bx-plus font-size-16 align-middle me-2"></i>
-                            Add Cutting
+                            Create
                         </a>
                     </div>
                     <table class="table align-middle table-nowrap table-hover table-datatable w-100">
@@ -64,64 +64,62 @@
             </div>
         </div>
     </div>
-@endsection
 
-<div class="modal" tabindex="-1" role="dialog" id="modalCutting">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="{{ url('/cutting') }}" method="POST" class="custom-validation" enctype="multipart/form-data">
-                    @csrf
-                    @method('POST')
-                    <div class="row">
-                        <div class="col-md-6">
-                        <label for="foatgbi">Job Number</label>
-                            <input type="text" class="form-control" id="job_number" placeholder="Enter Job Number" required
-                                name="job_number">
-                        </div>
-                        <div class="col-md-6">
-                        <label for="foatgbi">Style Number</label>
-                            <input type="text" class="form-control" id="style_number" placeholder="Enter Style Number" required
-                                name="style_number">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="foatgbi">Table Number</label>
-                            <input type="text" class="form-control" id="table_number" placeholder="Enter Table Number" required
-                                name="table_number">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="foatgbi">Next Bundling</label>
-                            <input type="text" class="form-control" id="next_bundling" placeholder="Enter Next Bundling" required
-                                name="next_bundling">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="foatgbi">Color</label>
-                            <input type="text" class="form-control" id="color" placeholder="Enter Color" required name="color">
-                            
-                        </div>
-                        <div class="col-md-6">
-                            <label for="foatgbi">Size</label>
-                            <input type="text" class="form-control" id="size" placeholder="Enter Size" required name="size">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary waves-effect waves-light mt-2">Submit</button>
-                                <button type="button" class="btn btn-secondary waves-effect waves-light mt-2" data-dismiss="modal">Close</button>
+    <div class="modal" tabindex="-1" role="dialog" id="modalCutting">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url('/cutting') }}" method="POST" class="custom-validation" enctype="multipart/form-data">
+                        @csrf
+                        @method('POST')
+                        <div class="row">
+                            <div class="col-md-6">
+                            <label for="foatgbi">Job Number</label>
+                                <input type="text" class="form-control" id="job_number" placeholder="Enter Job Number" required
+                                    name="job_number">
+                            </div>
+                            <div class="col-md-6">
+                            <label for="foatgbi">Style Number</label>
+                                <input type="text" class="form-control" id="style_number" placeholder="Enter Style Number" required
+                                    name="style_number">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="foatgbi">Table Number</label>
+                                <input type="text" class="form-control" id="table_number" placeholder="Enter Table Number" required
+                                    name="table_number">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="foatgbi">Next Bundling</label>
+                                <input type="text" class="form-control" id="next_bundling" placeholder="Enter Next Bundling" required
+                                    name="next_bundling">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="foatgbi">Color</label>
+                                <input type="text" class="form-control" id="color" placeholder="Enter Color" required name="color">
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <label for="foatgbi">Size</label>
+                                <input type="text" class="form-control" id="size" placeholder="Enter Size" required name="size">
                             </div>
                         </div>
-                    </div>
-                </form>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-primary waves-effect waves-light mt-2">Submit</button>
+                                    <button type="button" class="btn btn-secondary waves-effect waves-light mt-2" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-@section('last-body')
 @endsection

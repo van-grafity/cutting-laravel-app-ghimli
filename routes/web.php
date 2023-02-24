@@ -23,4 +23,6 @@ Route::get('datatable/{url}', [App\Http\Controllers\datatableController::class, 
 Route::middleware(['auth'])->group(function () {
     Route::resource('home', App\Http\Controllers\HomeController::class);
     Route::resource('cutting', App\Http\Controllers\CuttingController::class);
+    Route::resource('clothroll', App\Http\Controllers\ClothRollController::class);
+    Route::resource('purchaseorder', App\Http\Controllers\PurchaseOrderController::class);
 });

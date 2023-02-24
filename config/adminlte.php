@@ -321,6 +321,16 @@ return [
             'url'  => '/cutting',
             'icon' => 'fas fa-fw fa-lock',
         ],
+        [
+            'text' => 'Cloth Roll',
+            'url'  => '/clothroll',
+            'icon' => 'fas fa-fw fa-lock',
+        ],
+        [
+            'text' => 'Purchase Order',
+            'url'  => '/purchaseorder',
+            'icon' => 'fas fa-fw fa-plus-square',
+        ],
     ],
 
     /*
