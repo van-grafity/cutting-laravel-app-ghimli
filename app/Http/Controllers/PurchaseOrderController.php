@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\PurchaseOrder;
 
 class PurchaseOrderController extends Controller
 {
@@ -13,7 +14,8 @@ class PurchaseOrderController extends Controller
      */
     public function index()
     {
-        return view('page.purchaseorder.index');
+        $data = PurchaseOrder::all();
+        return view('page.purchaseorder.index', compact('data'));
     }
 
     /**
@@ -45,7 +47,15 @@ class PurchaseOrderController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $data = PurchaseOrder::findOrFail($id);
+            return response()->json($data);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
