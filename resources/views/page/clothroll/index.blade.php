@@ -36,6 +36,27 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($data as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item->po_id }}</td>
+                                    <td>{{ $item->fabric_type }}</td>
+                                    <td>{{ $item->color }}</td>
+                                    <td>{{ $item->roll_no }}</td>
+                                    <td>{{ $item->width }}</td>
+                                    <td>{{ $item->length }}</td>
+                                    <td>{{ $item->weight }}</td>
+                                    <td>{{ $item->batch_no }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                        <a href="javascript:void(0);" class="btn btn-primary btn-sm"
+                                                onclick="modalClothRoll(false, {{ $item->id }})">Edit</a>
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm"
+                                                onclick="modalClothRoll(false, {{ $item->id }})">Delete</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

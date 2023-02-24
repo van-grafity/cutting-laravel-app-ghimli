@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ClothRoll;
 
 class ClothRollController extends Controller
 {
@@ -13,7 +14,8 @@ class ClothRollController extends Controller
      */
     public function index()
     {
-        return view('page.clothroll.index');
+        $data = ClothRoll::all();
+        return view('page.clothroll.index', compact('data'));
     }
 
     /**
