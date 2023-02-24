@@ -36,7 +36,28 @@ class ClothRollController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'po_id' => 'required',
+            'fabric_type' => 'required',
+            'color' => 'required',
+            'roll_no' => 'required',
+            'width' => 'required',
+            'length' => 'required',
+            'weight' => 'required',
+            'batch_no' => 'required',
+        ]);
+
+        $data = new ClothRoll;
+        $data->po_id = $request->po_id;
+        $data->fabric_type = $request->fabric_type;
+        $data->color = $request->color;
+        $data->roll_no = $request->roll_no;
+        $data->width = $request->width;
+        $data->length = $request->length;
+        $data->weight = $request->weight;
+        $data->batch_no = $request->batch_no;
+        $data->save();
+        return redirect('/clothroll')->with('status', 'Data Cloth Roll Berhasil Ditambahkan!');
     }
 
     /**
@@ -47,7 +68,15 @@ class ClothRollController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $data = ClothRoll::where('id', $id)->first();
+            return response()->json($data, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -70,7 +99,28 @@ class ClothRollController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'po_id' => 'required',
+            'fabric_type' => 'required',
+            'color' => 'required',
+            'roll_no' => 'required',
+            'width' => 'required',
+            'length' => 'required',
+            'weight' => 'required',
+            'batch_no' => 'required',
+        ]);
+
+        $data = ClothRoll::find($id);
+        $data->po_id = $request->po_id;
+        $data->fabric_type = $request->fabric_type;
+        $data->color = $request->color;
+        $data->roll_no = $request->roll_no;
+        $data->width = $request->width;
+        $data->length = $request->length;
+        $data->weight = $request->weight;
+        $data->batch_no = $request->batch_no;
+        $data->save();
+        return redirect('/clothroll')->with('status', 'Data Cloth Roll Berhasil Diubah!');
     }
 
     /**
@@ -81,6 +131,8 @@ class ClothRollController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $data = ClothRoll::find($id);
+        $data->delete();
+        return redirect('/clothroll')->with('status', 'Data Cloth Roll Berhasil Dihapus!');
     }
 }
