@@ -128,8 +128,8 @@
 <script type="text/javascript">
 
     const app_url = {!! json_encode(url('/')) !!}
+    
     function modalCutting(add, id = null, url) {
-        console.log(app_url);
         var modal = $('#modalCutting'),
             form = modal.find('form');
         if (add) {
