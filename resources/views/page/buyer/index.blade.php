@@ -21,21 +21,26 @@
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col">No. </th>
-                                <th scope="col">Buyer's Name</th>
-                                <th scope="col">Address</th>
-                                <th scope="col">Code</th>
-                                <th scope="col">Action</th>
+                                <th scope="col" class="text-left">No. </th>
+                                <th scope="col" class="text-left">Buyer's Name</th>
+                                <th scope="col" class="text-left">Address</th>
+                                <th scope="col" class="text-left">Code</th>
+                                <th scope="col" class="text-left">Action</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($buyers as $buyer)
                             <tr>
-                                <td>1</td>
-                                <td>Aeropostale</td>
-                                <td>Cempaka Putih no. 25</td>
-                                <td>AERO-02</td>
-                                <td>EDIT - DELETE</td>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $buyer->name }}</td>
+                                <td>{{ $buyer->address }}</td>
+                                <td>{{ $buyer->code }}</td>
+                                <td>
+                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-edit-buyer" data-id="{{ $buyer->id }}" data-url="{{ route('buyer.show', $buyer->id) }}">Edit</a>
+                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-buyer" data-id="{{ $buyer->id }}" data-url="{{ route('buyer.destroy', $buyer->id) }}">Delete</a>
+                                </td>
                             </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -55,7 +60,8 @@
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <!-- <form action="{{ url('/buyer') }}" method="POST" class="custom-validation" enctype="multipart/form-data"> -->
+            <form action="{{ route('buyer.store') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="buyer_form">
+                @csrf
                 <div class="modal-body">
                     <div class="card-body">
                         <div class="form-group">
@@ -77,7 +83,7 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary" id="btn_submit">Add Buyer</button>
                 </div>
-            <!-- </form> -->
+            </form>
         </div>
     </div>
 </div>
@@ -85,53 +91,85 @@
 
 @push('js')
 <script type="text/javascript">
-    $('#btn_modal_create').click((e) => {
-        $('#modal_form').modal('show')
-    })
-    
+$(document).ready(function(){
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
 
-    $("#btn_submit").click(function(e){
-    
-        e.preventDefault();
-        let url ="{{ route('buyer.store') }}";
-        let form_data = {
-            'name': $('#buyer_name').val(),
-            'address': $('#buyer_address').val(),
-            'code': $('#buyer_code').val()
-        }
-        console.log(url);
-        console.log(form_data);
-        
-        // $.ajax({
-        //    type:'POST',
-        //    url:url,
-        //    data:form_data,
-        //    success:function(data){
-        //         if($.isEmptyObject(data.error)){
-        //             alert(data.success);
-        //             location.reload();
-        //         } else {
-        //             console.log("lah error");
-        //             printErrorMsg(data.error);
-        //         }
-        //    }
-        // }).catch((err)=>{
-        //     console.log(err);
-        // });
-    });
+    $('#btn_modal_create').click((e) => {
+        $('#modal_formLabel').text("Add Buyer")
+        $('#btn_submit').text("Add Buyer")
+        $('#buyer_form').find("input[type=text], textarea").val("");
+        $('#buyer_form').find('input[name="_method"]').remove();
+        $('#modal_form').modal('show')
+    })
 
-    function printErrorMsg (msg) {
-        $(".print-error-msg").find("ul").html('');
-        $(".print-error-msg").css('display','block');
-        $.each( msg, function( key, value ) {
-            $(".print-error-msg").find("ul").append('<li>'+value+'</li>');
+    $(".btn-delete-buyer").on('click', function(e) {
+        if(!confirm('apakah ingin menghapus data?')){
+            return false;
+        }
+        let delete_url = $(this).attr('data-url');
+        if (delete_url){
+            delete_buyer_ajax(delete_url);
+        } else {
+            alert("not found!");
+        }
+    })
+
+    $(".btn-edit-buyer").on('click', function(e) {
+        let get_data_url = $(this).attr('data-url');
+        if (get_data_url){
+            get_data_buyer_ajax(get_data_url);
+        } else {
+            alert("not found!");
+        }
+    })
+
+})
+</script>
+
+<script type="text/javascript">
+    function delete_buyer_ajax(delete_url) {
+        $.ajax({
+            type:'DELETE',
+            url:delete_url,
+            success:function(res){
+                console.log(res);
+                if($.isEmptyObject(res.error)){
+                    alert(res.status);
+                    location.reload();
+                } else {
+                    console.log("lah error");
+                }
+            }
+        }).catch((err)=>{
+            console.log(err);
         });
     }
 
+    function get_data_buyer_ajax(get_data_url) {
+        $.ajax({
+            type:'GET',
+            url:get_data_url,
+            success:function(res){
+                form = $('#buyer_form')
+                form.append('<input type="hidden" name="_method" value="PUT">');
+                $('#modal_formLabel').text("Edit Buyer");
+                $('#btn_submit').text("Save");
+                $('#modal_form').modal('show')
+
+                form.attr('action', get_data_url);
+                form.find('input[name="name"]').val(res.name);
+                form.find('input[name="address"]').val(res.address);
+                form.find('input[name="code"]').val(res.code);
+            }
+        }).catch((err)=>{
+            console.log(err);
+        });
+    }
+
+    
 </script>
 @endpush

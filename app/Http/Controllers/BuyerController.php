@@ -3,38 +3,74 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Buyer;
 
 class BuyerController extends Controller
 {
     
     public function index()
     {
-        return view('page.buyer.index');
+        $buyers = Buyer::all();
+        return view('page.buyer.index', compact('buyers'));
+    }
+
+    public function show($id){
+        $data = Buyer::find($id);
+        try {
+            $data = Buyer::find($id);
+            return response()->json($data, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     public function store(Request $request)
     {
-        dd($request);
-        // $request->validate([
-        //     'name' => 'required',
-        //     'style_number' => 'required',
-        //     'table_number' => 'required',
-        //     'next_bundling' => 'required',
-        //     'color' => 'required',
-        //     'size' => 'required',
-        // ]);
+        $request->validate([
+            'name' => 'required',
+            'address' => 'required',
+            'code' => 'required',
+        ]);
 
-        // $cutting = new Cutting;
-        // $cutting->job_number = $request->job_number;
-        // $cutting->style_number = $request->style_number;
-        // $cutting->table_number = $request->table_number;
-        // $cutting->next_bundling = $request->next_bundling;
-        // $cutting->color = $request->color;
-        // $cutting->size = $request->size;
-        // $cutting->save();
+        $check_duplicate_code = Buyer::where('code', $request->code)->first();
+        if($check_duplicate_code){
+            return back()->withInput();
+        }
+        $buyer = Buyer::firstOrCreate([
+            'name' => $request->name,
+            'address' => $request->address,
+            'code' => $request->code,
+        ]);
+        $buyer->save();
 
-        // return redirect('/cutting')->with('status', 'Data Cutting Berhasil Ditambahkan!');
-        return redirect('/buyer');
+        return redirect('/buyer')->with('status', 'Data Buyer Berhasil Ditambahkan!');
+    }
 
+    public function destroy($id)
+    {
+        $data = Buyer::find($id);
+        $data->delete();
+        // return redirect('/buyer')->with('status', 'Data Buyer Berhasil Dihapus!');
+        return response()->json(['status' => 'Data Buyer Berhasil Dihapus!']);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required',
+            'address' => 'required',
+            'code' => 'required',
+        ]);
+
+        $data = Buyer::find($id);
+        $data->name = $request->name;
+        $data->address = $request->address;
+        $data->code = $request->code;
+        $data->save();
+
+        return redirect('/buyer')->with('status', 'Data Buyer Berhasil Diubah!');
     }
 }
