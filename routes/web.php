@@ -19,7 +19,6 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('datatable/{url}', [App\Http\Controllers\datatableController::class, 'index']);
 Route::middleware(['auth'])->group(function () {
     Route::resource('home', App\Http\Controllers\HomeController::class);
     Route::resource('cutting', App\Http\Controllers\CuttingController::class);
