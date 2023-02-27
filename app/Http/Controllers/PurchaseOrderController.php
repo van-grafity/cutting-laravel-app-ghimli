@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\PurchaseOrder;
 
 class PurchaseOrderController extends Controller
 {
@@ -13,7 +14,8 @@ class PurchaseOrderController extends Controller
      */
     public function index()
     {
-        return view('page.purchaseorder.index');
+        $data = PurchaseOrder::all();
+        return view('page.purchaseorder.index', compact('data'));
     }
 
     /**
@@ -34,7 +36,15 @@ class PurchaseOrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $data = PurchaseOrder::create($request->all());
+            return response()->json($data);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -45,7 +55,15 @@ class PurchaseOrderController extends Controller
      */
     public function show($id)
     {
-        //
+        try {
+            $data = PurchaseOrder::findOrFail($id);
+            return response()->json($data);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -68,7 +86,16 @@ class PurchaseOrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $data = PurchaseOrder::findOrFail($id);
+            $data->update($request->all());
+            return response()->json($data);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -79,6 +106,15 @@ class PurchaseOrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $data = PurchaseOrder::findOrFail($id);
+            $data->delete();
+            return redirect('/purchaseorder')->with('status', 'Data Purchase Order Berhasil Dihapus!');
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 }
