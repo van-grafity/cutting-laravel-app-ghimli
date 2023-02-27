@@ -331,6 +331,11 @@ return [
             'url'  => '/purchaseorder',
             'icon' => 'fas fa-fw fa-plus-square',
         ],
+        [
+            'text' => 'Buyer',
+            'url'  => '/buyer',
+            'icon' => 'fas fa-fw fa fa-user',
+        ],
     ],
 
     /*

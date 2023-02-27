@@ -25,4 +25,5 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('cutting', App\Http\Controllers\CuttingController::class);
     Route::resource('clothroll', App\Http\Controllers\ClothRollController::class);
     Route::resource('purchaseorder', App\Http\Controllers\PurchaseOrderController::class);
+    Route::resource('buyer', App\Http\Controllers\BuyerController::class);
 });
