@@ -341,6 +341,12 @@ return [
             'icon' => 'fas fa-fw fa fa-user',
             'can'  => 'accessSuperAdmin',
         ],
+        [
+            'text' => 'Laying Planning',
+            'url'  => '/laying-planning',
+            'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
+            'can'  => 'accessSuperAdmin',
+        ],
     ],
 
     /*

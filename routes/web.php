@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LayingPlanning;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,4 +26,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('clothroll', App\Http\Controllers\ClothRollController::class)->middleware('accessSuperAdmin');
     Route::resource('purchaseorder', App\Http\Controllers\PurchaseOrderController::class)->middleware('accessSuperAdmin');
     Route::resource('buyer', App\Http\Controllers\BuyerController::class)->middleware('accessSuperAdmin');
+});
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::resource('laying-planning',LayingPlanning\LayingPlanningsController::class)->middleware('accessSuperAdmin');
 });
