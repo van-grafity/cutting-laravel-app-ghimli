@@ -5,18 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Buyer extends Model
+class gl extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'id',
-        'name',
-        'address',
+        'season',
+        'size_order',
+        'buyer_id',
         'code',
     ];
 
-    public function gls()
+    public function buyer()
     {
-        return $this->hasMany(gl::class);
+        return $this->belongsTo(buyer::class);
     }
 }
