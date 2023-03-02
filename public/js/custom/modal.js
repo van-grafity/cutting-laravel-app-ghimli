@@ -1,3 +1,40 @@
+// function modalCutting(add, id = null, url) {
+//     var modal = $('#modalCutting'),
+//         form = modal.find('form');
+//     if (add) {
+//         modal.find('.modal-title').text('Add Cutting');
+//         // form.attr('action', '/cutting');
+//         form.attr('method', 'POST');
+//         form.find('input[name="_method"]').remove();
+//         form.find('input[name="job_number"]').val('');
+//         form.find('input[name="style_number"]').val('');
+//         form.find('input[name="table_number"]').val('');
+//         form.find('input[name="next_bundling"]').val('');
+//         form.find('input[name="color"]').val('');
+//         form.find('input[name="size"]').val('');
+//         modal.modal('show');
+//     } else {
+//         modal.find('.modal-title').text('Edit Cutting');
+//         form.attr('action', '/cutting/' + id);
+//         form.attr('method', 'POST');
+//         form.append('<input type="hidden" name="_method" value="PUT">');
+//         $.ajax({
+//             url: '/cutting/' + id,
+//             method: 'GET',
+//             success: function (res) {
+//                 form.find('input[name="job_number"]').val(res.job_number);
+//                 form.find('input[name="style_number"]').val(res.style_number);
+//                 form.find('input[name="table_number"]').val(res.table_number);
+//                 form.find('input[name="next_bundling"]').val(res.next_bundling);
+//                 form.find('input[name="color"]').val(res.color);
+//                 form.find('input[name="size"]').val(res.size);
+//             }
+//         }).then(function () {
+//             modal.modal('show');
+//         });
+//     }
+// }
+
 function modalClothRoll(add, id = null) {
     var modal = $('#modalClothRoll'),
         form = modal.find('form');

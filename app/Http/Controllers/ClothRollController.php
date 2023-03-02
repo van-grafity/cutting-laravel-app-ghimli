@@ -122,17 +122,6 @@ class ClothRollController extends Controller
         $data->save();
         return redirect('/clothroll')->with('status', 'Data Cloth Roll Berhasil Diubah!');
     }
-    // generateqr
-    /**
-     * Display a listing of the resource.
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function generateqr($id)
-    {
-        $data = ClothRoll::find($id);
-        return view('page.clothroll.qrcode.index', compact('data'));
-    }
 
     /**
      * Remove the specified resource from storage.

@@ -58,8 +58,6 @@
                                                 <button type="submit" class="btn btn-danger btn-sm ms-1"><i
                                                         class="bx bx-trash"></i></button>
                                             </form>
-                                            <a href="{{ url('/generateqr/' . $item->id) }}" class="btn btn-success btn-sm ms-1"><i
-                                                    class="bx bx-printer"></i></a>
                                         </div>
                                     </td>
                                 </tr>
