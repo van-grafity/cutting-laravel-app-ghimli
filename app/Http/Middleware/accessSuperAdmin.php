@@ -17,7 +17,7 @@ class accessSuperAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        $access = Auth::user()->access;
+        $access = Auth::user()->roles;
         if (!in_array($access,[1])) {
             return abort(404);
         }

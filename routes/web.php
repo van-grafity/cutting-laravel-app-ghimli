@@ -27,7 +27,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('cutting', App\Http\Controllers\CuttingController::class)->middleware('accessCutting');
     Route::resource('clothroll', App\Http\Controllers\ClothRollController::class)->middleware('accessSuperAdmin');
     Route::resource('purchaseorder', App\Http\Controllers\PurchaseOrderController::class)->middleware('accessSuperAdmin');
-    Route::resource('buyer', App\Http\Controllers\BuyerController::class)->middleware('accessSuperAdmin');
+    Route::resource('buyer', App\Http\Controllers\BuyerController::class)->middleware('accessSewing');
 });
 
 Route::group(['middleware' => ['auth']], function () {

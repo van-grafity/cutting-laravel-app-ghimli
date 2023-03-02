@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class accessCutting
+class accessSewing
 {
     /**
      * Handle an incoming request.
@@ -18,7 +18,7 @@ class accessCutting
     public function handle(Request $request, Closure $next)
     {
         $access = Auth::user()->roles;
-        if (!in_array($access,[2])) {
+        if (!in_array($access,[3])) {
             return abort(404);
         }
         return $next($request);

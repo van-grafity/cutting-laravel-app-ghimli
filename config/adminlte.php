@@ -339,7 +339,7 @@ return [
             'text' => 'Buyer',
             'url'  => '/buyer',
             'icon' => 'fas fa-fw fa fa-user',
-            'can'  => 'accessSuperAdmin',
+            'can'  => 'accessSewing',
         ],
         [
             'text' => 'Laying Planning',

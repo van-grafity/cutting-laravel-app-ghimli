@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'accessSuperAdmin' => \App\Http\Middleware\accessSuperAdmin::class,
         'accessCutting' => \App\Http\Middleware\accessCutting::class,
+        'accessSewing' => \App\Http\Middleware\accessSewing::class,
     ];
 }
