@@ -22,12 +22,11 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('home', App\Http\Controllers\HomeController::class);
-    Route::get('/qrcode', [App\Http\Controllers\CuttingQrCodeController::class, 'index']);
-    Route::get('/qrcode/1', [App\Http\Controllers\CuttingQrCodeController::class, 'show']);
     Route::resource('cutting', App\Http\Controllers\CuttingController::class)->middleware('accessCutting');
     Route::resource('clothroll', App\Http\Controllers\ClothRollController::class)->middleware('accessSuperAdmin');
     Route::resource('purchaseorder', App\Http\Controllers\PurchaseOrderController::class)->middleware('accessSuperAdmin');
     Route::resource('buyer', App\Http\Controllers\BuyerController::class)->middleware('accessSewing');
+    Route::get('/generateqr/{id}', [App\Http\Controllers\ClothRollController::class, 'generateqr']);
 });
 
 Route::group(['middleware' => ['auth']], function () {
