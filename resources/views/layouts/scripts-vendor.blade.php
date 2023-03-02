@@ -1,5 +1,4 @@
 @yield('script')
 
-<!-- App js -->
+<!-- JS From 3rd Party -->
 <script src="{{ URL::asset('js/custom/modal.js')}}"></script>
-<script src="{{ URL::asset('js/scripts.js')}}"></script>
