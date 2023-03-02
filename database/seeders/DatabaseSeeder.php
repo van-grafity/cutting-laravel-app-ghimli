@@ -14,6 +14,8 @@ use Database\Seeders\StylesTableSeeder;
 use Database\Seeders\ShipmentsTableSeeder;
 use Database\Seeders\FabricTypesTableSeeder;
 use Database\Seeders\FabricConssTableSeeder;
+use Database\Seeders\LayingPlanningsTableSeeder;
+use Database\Seeders\LayingPlanningSizesTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -34,5 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ShipmentsTableSeeder::class);
         $this->call(FabricTypesTableSeeder::class);
         $this->call(FabricConssTableSeeder::class);
+        $this->call(LayingPlanningsTableSeeder::class);
+        $this->call(LayingPlanningSizesTableSeeder::class);
     }
 }

@@ -13,14 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('laying_planings', function (Blueprint $table) {
+        Schema::create('laying_plannings', function (Blueprint $table) {
             $table->id();
             $table->integer('gl_id');
             $table->integer('style_id');
             $table->integer('buyer_id');
             $table->integer('color_id');
-            $table->integer('size_id');
-            $table->integer('qty');
+            $table->integer('quantity');
             $table->date('delivery_date');
             $table->date('plan_date');
             $table->string('fabric_po');
@@ -38,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('laying_planings');
+        Schema::dropIfExists('laying_plannings');
     }
 };

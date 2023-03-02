@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class layingPlaning extends Model
+class LayingPlanning extends Model
 {
     use HasFactory;
 
-    public function layingPlaningSizes()
+    public function layingPlanningSizes()
     {
-        return $this->hasMany(LayingPlaningSize::class, 'laying_planing_id', 'id');
+        return $this->hasMany(LayingPlanningSize::class, 'laying_planning_id', 'id');
     }
 
 }
