@@ -20,5 +20,5 @@
 @stop
 
 @yield('last-body')
-@include('layouts.scripts-app')
 @include('layouts.scripts-vendor')
+@include('layouts.scripts-app')
