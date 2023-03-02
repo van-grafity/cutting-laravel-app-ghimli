@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('fabric_cons', function (Blueprint $table) {
             $table->id();
-            $table->string('cons');
             $table->string('description');
             $table->string('name');
             $table->timestamps();
