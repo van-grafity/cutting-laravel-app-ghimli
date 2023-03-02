@@ -13,8 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->integer('roles');
+        Schema::create('styles', function (Blueprint $table) {
+            $table->id();
+            $table->string('style');
+            $table->string('description');
+            $table->string('gl_id');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            
-        });
+        Schema::dropIfExists('styles');
     }
 };

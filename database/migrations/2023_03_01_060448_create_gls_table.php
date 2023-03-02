@@ -13,8 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->integer('roles');
+
+        Schema::create('gls', function (Blueprint $table) {
+            $table->id();
+            $table->string('gl_number');
+            $table->string('season');
+            $table->string('size_order');
+            $table->foreignId('buyer_id')->constrained('buyers')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            
-        });
+        Schema::dropIfExists('gls');
     }
 };
