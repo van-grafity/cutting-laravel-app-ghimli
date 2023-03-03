@@ -1,18 +1,7 @@
 @extends('layouts.master')
 
 @section('title', 'Laying Planning')
-<!-- $table->foreignId('style_id')->constrained('styles')->onDelete('cascade');
-$table->foreignId('buyer_id')->constrained('buyers')->onDelete('cascade');
-$table->integer('buyer_id');
-$table->integer('color_id');
-$table->integer('quantity');
-$table->date('delivery_date');
-$table->date('plan_date');
-$table->string('fabric_po');
-$table->string('fabric_cons_id');
-$table->string('fabric_type_id');
-$table->string('fabric_cons_qty');
-$table->timestamps(); -->
+
 @section('content')
 <div class="container">
     <div class="row">
@@ -26,7 +15,7 @@ $table->timestamps(); -->
                                 <i class="bx bx-search-alt search-icon"></i>
                             </div>
                         </div>
-                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create" data-id='2'>Create</a>
+                        <a href="{{ route('laying-planning.create') }}" class="btn btn-success mb-2">Create</a>
                     </div>
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
