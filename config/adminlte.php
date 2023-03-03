@@ -321,31 +321,37 @@ return [
             'text' => 'Cutting',
             'url'  => '/cutting',
             'icon' => 'fas fa-fw fa-lock',
-            'can'  => 'accessCutting',
+            'can'  => ['accessSuperAdmin','accessCutting']
         ],
         [
             'text' => 'Cloth Roll',
             'url'  => '/clothroll',
             'icon' => 'fas fa-fw fa-lock',
-            'can'  => 'accessSuperAdmin',
+            'can'  => ['accessSuperAdmin'],
         ],
         [
             'text' => 'Purchase Order',
             'url'  => '/purchaseorder',
             'icon' => 'fas fa-fw fa-plus-square',
-            'can'  => 'accessSuperAdmin',
+            'can'  => ['accessSuperAdmin'],
         ],
         [
             'text' => 'Buyer',
             'url'  => '/buyer',
             'icon' => 'fas fa-fw fa fa-user',
-            'can'  => 'accessSewing',
+            'can'  => ['accessSuperAdmin','accessSewing'],
         ],
         [
             'text' => 'Laying Planning',
             'url'  => '/laying-planning',
             'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
-            'can'  => 'accessSuperAdmin',
+            'can'  => ['accessSuperAdmin','accessCutting'],
+        ],
+        [
+            'text' => 'Color',
+            'url'  => '/color',
+            'icon' => 'fas fa-fw fa fa-solid fa-palette',
+            'can'  => ['accessSuperAdmin'],
         ],
     ],
 
