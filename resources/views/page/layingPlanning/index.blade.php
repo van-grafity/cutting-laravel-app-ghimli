@@ -31,6 +31,7 @@ $table->timestamps(); -->
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
+                            <th scope="col" class="text-left">No. </th>
                                 <th scope="col" class="text-left">Gl No.</th>
                                 <th scope="col" class="text-left">Style</th>
                                 <th scope="col" class="text-left">Buyer</th>
@@ -41,6 +42,7 @@ $table->timestamps(); -->
                         <tbody>
                             @foreach ($data as $layingPlanning)
                             <tr>
+                                <td>{{ $loop->iteration }}</td>
                                 <td class="text-left">{{ $layingPlanning->gl->gl_number }}</td>
                                 <td class="text-left">{{ $layingPlanning->style->style }}</td>
                                 <td class="text-left">{{ $layingPlanning->buyer->name }}</td>
