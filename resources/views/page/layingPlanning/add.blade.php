@@ -53,24 +53,18 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="fabric_type" class="form-label">Fabric Type</label>
-                                    <select class="form-control" id="fabric_type" name="fabric_type">
-                                        @foreach ($fabricType as $ft)
-                                            <option value="{{ $ft->id }}">{{ $ft->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
                                     <label for="laying_planning_date" class="form-label">Laying Planning Date</label>
                                     <input type="date" class="form-control" id="laying_planning_date" name="laying_planning_date" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="laying_planning_size" class="form-label">Laying Planning Size</label>
-                                    <input type="text" class="form-control" id="laying_planning_size" name="laying_planning_size" required>
+                                    <label for="fabric_type" class="form-label">Fabric Type</label>
+                                    <select class="form-control" id="fabric_type" name="fabric_type">
+                                        @foreach ($fabricType as $ft)
+                                            <option value="{{ $ft->id }}">{{ $ft->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-6">

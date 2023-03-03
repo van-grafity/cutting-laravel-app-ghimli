@@ -15,7 +15,7 @@
                                 <i class="bx bx-search-alt search-icon"></i>
                             </div>
                         </div>
-                        <a href="{{ route('laying-planning.create') }}" class="btn btn-success mb-2">Create</a>
+                        <a  href="{{ url('/laying-planning-create') }}" class="btn btn-success mb-2">Create</a>
                     </div>
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
