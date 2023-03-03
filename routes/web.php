@@ -25,8 +25,6 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('home', App\Http\Controllers\HomeController::class);
-    Route::get('/qrcode', [App\Http\Controllers\CuttingQrCodeController::class, 'index']);
-    Route::get('/qrcode/1', [App\Http\Controllers\CuttingQrCodeController::class, 'show']);
     Route::resource('buyer', App\Http\Controllers\BuyerController::class)->middleware('accessSewing');
 });
 
