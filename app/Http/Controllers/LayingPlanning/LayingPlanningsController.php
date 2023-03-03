@@ -33,7 +33,8 @@ class LayingPlanningsController extends Controller
         $style = DB::table('styles')->get();
         $color = DB::table('colors')->get();
         $fabricType = DB::table('fabric_types')->get();
-        return view('page.layingPlanning.add', compact('gl', 'buyer', 'style', 'color', 'fabricType'));
+        $size = DB::table('sizes')->get();
+        return view('page.layingPlanning.add', compact('gl', 'buyer', 'style', 'color', 'fabricType', 'size'));
     }
 
     /**
