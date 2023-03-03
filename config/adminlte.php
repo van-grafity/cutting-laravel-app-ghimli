@@ -318,24 +318,6 @@ return [
             'can'  => 'accessSuperAdmin',
         ],
         [
-            'text' => 'Cutting',
-            'url'  => '/cutting',
-            'icon' => 'fas fa-fw fa-lock',
-            'can'  => ['accessSuperAdmin', 'accessCutting'],
-        ],
-        [
-            'text' => 'Cloth Roll',
-            'url'  => '/clothroll',
-            'icon' => 'fas fa-fw fa-lock',
-            'can'  => ['accessSuperAdmin'],
-        ],
-        [
-            'text' => 'Purchase Order',
-            'url'  => '/purchaseorder',
-            'icon' => 'fas fa-fw fa-plus-square',
-            'can'  => ['accessSuperAdmin'],
-        ],
-        [
             'text' => 'Buyer',
             'url'  => '/buyer',
             'icon' => 'fas fa-fw fa fa-user',
