@@ -28,6 +28,11 @@ class LayingPlanningsController extends Controller
      */
     public function create()
     {
+        //
+    }
+
+    public function layingCreate()
+    {
         $gl = DB::table('gls')->get();
         $buyer = DB::table('buyers')->get();
         $style = DB::table('styles')->get();
