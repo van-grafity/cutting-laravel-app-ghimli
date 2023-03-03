@@ -18,7 +18,7 @@ class accessSewing
     public function handle(Request $request, Closure $next)
     {
         $access = Auth::user()->roles;
-        if (!in_array($access,[3])) {
+        if (!in_array($access,[1,3])) {
             return abort(404);
         }
         return $next($request);
