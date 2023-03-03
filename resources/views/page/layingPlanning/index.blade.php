@@ -1,7 +1,18 @@
 @extends('layouts.master')
 
 @section('title', 'Laying Planning')
-
+<!-- $table->foreignId('style_id')->constrained('styles')->onDelete('cascade');
+$table->foreignId('buyer_id')->constrained('buyers')->onDelete('cascade');
+$table->integer('buyer_id');
+$table->integer('color_id');
+$table->integer('quantity');
+$table->date('delivery_date');
+$table->date('plan_date');
+$table->string('fabric_po');
+$table->string('fabric_cons_id');
+$table->string('fabric_type_id');
+$table->string('fabric_cons_qty');
+$table->timestamps(); -->
 @section('content')
 <div class="container">
     <div class="row">
@@ -20,24 +31,23 @@
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col" class="text-left">No. </th>
-                                <th scope="col" class="text-left">Buyer's Name</th>
-                                <th scope="col" class="text-left">Address</th>
-                                <th scope="col" class="text-left">Code</th>
-                                <th scope="col" class="text-left">Action</th>
+                                <th scope="col" class="text-left">Gl No.</th>
+                                <th scope="col" class="text-left">Style</th>
+                                <th scope="col" class="text-left">Buyer</th>
+                                <th scope="col" class="text-left">Color</th>
+                                <th scope="col" class="text-left">Fabric Type</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($data as $layingPlanning)
                             <tr>
-                                <td> - </td>
-                                <td> - </td>
-                                <td> - </td>
-                                <td> - </td>
-                                <td>
-                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-edit-buyer">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-buyer">Delete</a>
-                                </td>
+                                <td class="text-left">{{ $layingPlanning->gl->gl_number }}</td>
+                                <td class="text-left">{{ $layingPlanning->style->style }}</td>
+                                <td class="text-left">{{ $layingPlanning->buyer->name }}</td>
+                                <td class="text-left">{{ $layingPlanning->color->color }}</td>
+                                <td class="text-left">{{ $layingPlanning->fabricType->description }}</td>
                             </tr>
+                            @endforeach
                         </tbody>
                     </table>
                     

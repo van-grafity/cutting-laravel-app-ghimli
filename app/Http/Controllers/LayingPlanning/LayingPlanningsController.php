@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\LayingPlanning;
 
 use App\Http\Controllers\Controller;
-use App\Models\LayingPlannings;
+use App\Models\LayingPlanning;
 use Illuminate\Http\Request;
 
 class LayingPlanningsController extends Controller
@@ -15,7 +15,9 @@ class LayingPlanningsController extends Controller
      */
     public function index()
     {
-        return view('page.layingPlanning.index');
+        $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->get();
+        
+        return view('page.layingPlanning.index', compact('data'));
     }
 
     /**
