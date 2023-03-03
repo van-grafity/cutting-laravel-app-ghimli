@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LayingPlanning;
+use App\Http\Controllers\ColorsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,4 +33,6 @@ Route::middleware(['auth'])->group(function () {
 
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('laying-planning',LayingPlanning\LayingPlanningsController::class)->middleware('accessSuperAdmin');
+
+    Route::resource('color', ColorsController::class)->middleware('accessSuperAdmin');
 });
