@@ -321,7 +321,7 @@ return [
             'text' => 'Cutting',
             'url'  => '/cutting',
             'icon' => 'fas fa-fw fa-lock',
-            'can'  => ['accessSuperAdmin','accessCutting']
+            'can'  => ['accessSuperAdmin', 'accessCutting'],
         ],
         [
             'text' => 'Cloth Roll',

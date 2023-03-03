@@ -18,7 +18,7 @@ class accessCutting
     public function handle(Request $request, Closure $next)
     {
         $access = Auth::user()->roles;
-        if (!in_array($access,[2])) {
+        if (!in_array($access,[1,2])) {
             return abort(404);
         }
         return $next($request);
