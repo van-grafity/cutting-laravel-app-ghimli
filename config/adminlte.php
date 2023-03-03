@@ -321,7 +321,7 @@ return [
             'text' => 'Cutting',
             'url'  => '/cutting',
             'icon' => 'fas fa-fw fa-lock',
-            'can'  => ['accessSuperAdmin', 'accessCutting'],
+            'can'  => ['accessSuperAdmin','accessCutting'],
         ],
         [
             'text' => 'Cloth Roll',
@@ -362,7 +362,7 @@ return [
         [
             'text' => 'Fabric Type',
             'url'  => '/fabric-type',
-            'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
+            'icon' => 'fas fa-fw fa fa-solid fa-swatchbook',
             'can'  => ['accessSuperAdmin'],
         ],
     ],

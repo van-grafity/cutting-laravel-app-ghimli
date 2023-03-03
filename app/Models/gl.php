@@ -10,6 +10,7 @@ class Gl extends Model
     use HasFactory;
 
     protected $fillable = [
+        'gl_number',
         'season',
         'size_order',
         'buyer_id',
