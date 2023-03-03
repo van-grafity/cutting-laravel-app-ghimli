@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('laying_planning_sizes', function (Blueprint $table) {
             $table->id();
-            $table->string('laying_planning_id');
+            $table->foreignId('laying_planning_id')->constrained('laying_plannings')->onDelete('cascade');
             $table->string('size_id');
             $table->string('quantity');
         });
