@@ -353,6 +353,12 @@ return [
             'icon' => 'fas fa-fw fa fa-solid fa-palette',
             'can'  => ['accessSuperAdmin'],
         ],
+        [
+            'text' => 'Fabric Consumption',
+            'url'  => '/fabric-consupmtion',
+            'icon' => 'fas fa-fw fa fa-solid fa-blanket',
+            'can'  => ['accessSuperAdmin'],
+        ],
     ],
 
     /*
