@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('laying_plannings', function (Blueprint $table) {
             $table->id();
             $table->integer('gl_id');
-            $table->integer('style_id');
-            $table->integer('buyer_id');
+            $table->foreignId('style_id')->constrained('styles')->onDelete('cascade');
+            $table->foreignId('buyer_id')->constrained('buyers')->onDelete('cascade');
             $table->integer('color_id');
             $table->integer('quantity');
             $table->date('delivery_date');
