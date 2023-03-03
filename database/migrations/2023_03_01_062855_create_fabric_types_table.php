@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('fabric_types', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
+            $table->string('name');
             $table->string('description');
             $table->timestamps();
         });

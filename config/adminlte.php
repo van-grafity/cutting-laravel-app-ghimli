@@ -355,8 +355,14 @@ return [
         ],
         [
             'text' => 'Fabric Consumption',
-            'url'  => '/fabric-consupmtion',
-            'icon' => 'fas fa-fw fa fa-solid fa-blanket',
+            'url'  => '/fabric-cons',
+            'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
+            'can'  => ['accessSuperAdmin'],
+        ],
+        [
+            'text' => 'Fabric Type',
+            'url'  => '/fabric-type',
+            'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
             'can'  => ['accessSuperAdmin'],
         ],
     ],

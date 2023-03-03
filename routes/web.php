@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LayingPlanning;
 use App\Http\Controllers\ColorsController;
 use App\Http\Controllers\FabricConssController;
+use App\Http\Controllers\FabricTypesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,4 +38,5 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('color', ColorsController::class)->middleware('accessSuperAdmin');
     Route::resource('fabric-cons', FabricConssController::class)->middleware('accessSuperAdmin');
+    Route::resource('fabric-type', FabricTypesController::class)->middleware('accessSuperAdmin');
 });
