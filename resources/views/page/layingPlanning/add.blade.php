@@ -85,7 +85,38 @@
                                     <input type="text" class="form-control" id="laying_planning_remark" name="laying_planning_remark" required>
                                 </div>
                             </div>
-                        </div>
+
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Size</th>
+                                                <th>Qty</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tableLayingPlanningSize">
+                                            <tr>
+                                                <td>
+                                                    <select class="form-control" id="size" name="size[]">
+                                                        @foreach ($size as $s)
+                                                            <option value="{{ $s->id }}">{{ $s->size }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control" id="qty" name="qty[]" required>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary waves-effect waves-light" id="addLayingPlanningSize">Add</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- end table size line -->
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-3">
