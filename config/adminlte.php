@@ -150,8 +150,8 @@ return [
 
     'layout_topnav' => null,
     'layout_boxed' => null,
-    'layout_fixed_sidebar' => null,
-    'layout_fixed_navbar' => null,
+    'layout_fixed_sidebar' => true,
+    'layout_fixed_navbar' => true,
     'layout_fixed_footer' => null,
     'layout_dark_mode' => null,
 
@@ -411,7 +411,7 @@ return [
             ],
         ],
         'Select2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
@@ -457,6 +457,46 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js',
+                ],
+            ],
+        ],
+        'Moment' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '.\vendor\moment\moment-with-locales.js',
+                ],
+            ],
+        ],
+        'Daterangepicker' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '.\vendor\daterangepicker\daterangepicker.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '.\vendor\daterangepicker\daterangepicker.css',
+                ],
+            ],
+        ],
+        'Tempusdominusbootstrap4' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '.\vendor\tempusdominus-bootstrap-4\js\tempusdominus-bootstrap-4.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '.\vendor\tempusdominus-bootstrap-4\css\tempusdominus-bootstrap-4.css',
                 ],
             ],
         ],

@@ -9,6 +9,19 @@ class LayingPlanning extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'gl_id',
+        'style_id',
+        'buyer_id',
+        'quantity',
+        'delivery_date',
+        'plan_date',
+        'fabric_po',
+        'fabric_cons_id',
+        'fabric_type_id',
+        'fabric_cons_qty',
+    ];
+
     public function layingPlanningSizes()
     {
         return $this->hasMany(LayingPlanningSize::class, 'laying_planning_id', 'id');

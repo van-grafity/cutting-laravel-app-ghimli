@@ -17,7 +17,6 @@ class LayingPlanningsController extends Controller
     public function index()
     {
         $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->get();
-        
         return view('page.layingPlanning.index', compact('data'));
     }
 
@@ -33,13 +32,14 @@ class LayingPlanningsController extends Controller
 
     public function layingCreate()
     {
-        $gl = DB::table('gls')->get();
-        $buyer = DB::table('buyers')->get();
-        $style = DB::table('styles')->get();
-        $color = DB::table('colors')->get();
-        $fabricType = DB::table('fabric_types')->get();
-        $size = DB::table('sizes')->get();
-        return view('page.layingPlanning.add', compact('gl', 'buyer', 'style', 'color', 'fabricType', 'size'));
+        $gls = DB::table('gls')->get();
+        $buyers = DB::table('buyers')->get();
+        $styles = DB::table('styles')->get();
+        $colors = DB::table('colors')->get();
+        $fabricTypes = DB::table('fabric_types')->get();
+        $fabricCons = DB::table('fabric_cons')->get();
+        $sizes = DB::table('sizes')->get();
+        return view('page.layingPlanning.add', compact('gls', 'buyers', 'styles', 'colors', 'fabricTypes', 'fabricCons', 'sizes'));
     }
 
     /**
@@ -50,19 +50,33 @@ class LayingPlanningsController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'gl' => 'required',
-            'buyer' => 'required',
-            'style' => 'required',
-            'color' => 'required',
-            'fabric_type' => 'required',
-            'laying_planning_date' => 'required',
-            'laying_planning_size' => 'required',
-            'laying_planning_qty' => 'required',
-            'laying_planning_remark' => 'required',
-        ]);
+        // dd($request->all());
+        // $request->validate([
+        //     'gl' => 'required',
+        //     'buyer' => 'required',
+        //     'style' => 'required',
+        //     'color' => 'required',
+        //     'fabric_type' => 'required',
+        //     'laying_planning_date' => 'required',
+        //     'laying_planning_size' => 'required',
+        //     'laying_planning_qty' => 'required',
+        // ]);
 
-        LayingPlanning::create($request->all());
+        $layingData = [
+            'gl_id' => $request->gl,
+            'style_id' => $request->style,
+            'buyer_id' => $request->buyer,
+            'color_id' => $request->color,
+            'quantity' => $request->order_qty,
+            'delivery_date' => $request->delivery_date,
+            'plan_date' => $request->plan_date,
+            'fabric_po' => $request->fabric_po,
+            'fabric_cons_id' => $request->fabric_cons,
+            'fabric_type_id' => $request->fabric_type,
+            'fabric_cons_qty' => $request->fabric_cons_qty,
+        ];
+        
+        $insertLayingData = LayingPlanning::create($layingData);
 
         return redirect()->route('laying-planning.index')
             ->with('success', 'Laying Planning created successfully.');

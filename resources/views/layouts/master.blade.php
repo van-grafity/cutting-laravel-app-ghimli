@@ -6,6 +6,9 @@
 @stop
 
 @section('content_header')
+    <!-- CSS -->
+    <link href="{{ asset('css/main.css') }}" rel="stylesheet" />
+    
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
