@@ -82,15 +82,10 @@ class LayingPlanningsController extends Controller
             ->with('success', 'Laying Planning created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\LayingPlannings  $layingPlannings
-     * @return \Illuminate\Http\Response
-     */
-    public function show(LayingPlannings $layingPlannings)
+    public function show($id)
     {
-        //
+        $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->find($id);
+        return view('page.layingPlanning.detail', compact('data'));
     }
 
     /**

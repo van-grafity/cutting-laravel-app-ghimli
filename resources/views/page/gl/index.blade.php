@@ -16,7 +16,7 @@
                                 <i class="bx bx-search-alt search-icon"></i>
                             </div>
                         </div>
-                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create" data-id='2'>Create</a>
+                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
                     </div>
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">

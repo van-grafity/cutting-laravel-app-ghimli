@@ -8,6 +8,9 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    <div class="content-title text-center">
+                        <h3>Laying Planning List</h3>
+                    </div>
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <div class="search-box me-2 mb-2 d-inline-block">
                             <div class="position-relative">
@@ -20,23 +23,29 @@
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
-                            <th scope="col" class="text-left">No. </th>
-                                <th scope="col" class="text-left">Gl No.</th>
-                                <th scope="col" class="text-left">Style</th>
-                                <th scope="col" class="text-left">Buyer</th>
-                                <th scope="col" class="text-left">Color</th>
-                                <th scope="col" class="text-left">Fabric Type</th>
+                            <th scope="col" class="">No. </th>
+                                <th scope="col" class="" width="100">Gl No.</th>
+                                <th scope="col" class="">Style</th>
+                                <th scope="col" class="">Buyer</th>
+                                <th scope="col" class="">Color</th>
+                                <th scope="col" class="">Fabric Type</th>
+                                <th scope="col" class="" width="150">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($data as $layingPlanning)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class="text-left">{{ $layingPlanning->gl->gl_number }}</td>
-                                <td class="text-left">{{ $layingPlanning->style->style }}</td>
-                                <td class="text-left">{{ $layingPlanning->buyer->name }}</td>
-                                <td class="text-left">{{ $layingPlanning->color->color }}</td>
-                                <td class="text-left">{{ $layingPlanning->fabricType->description }}</td>
+                                <td class="">{{ $layingPlanning->gl->gl_number }}</td>
+                                <td class="">{{ $layingPlanning->style->style }}</td>
+                                <td class="">{{ $layingPlanning->buyer->name }}</td>
+                                <td class="">{{ $layingPlanning->color->color }}</td>
+                                <td class="">{{ $layingPlanning->fabricType->description }}</td>
+                                <td class="">
+                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning" data-id="{{ $layingPlanning->id }}">Edit</a>
+                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning" data-id="{{ $layingPlanning->id }}" data-url="">Delete</a>
+                                    <a href="{{ route('laying-planning.show',$layingPlanning->id) }}" class="btn btn-info btn-sm mt-1" data-id="{{ $layingPlanning->id }}" data-url="">Detail</a>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

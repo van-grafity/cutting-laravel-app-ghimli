@@ -13,6 +13,7 @@ class LayingPlanning extends Model
         'gl_id',
         'style_id',
         'buyer_id',
+        'color_id',
         'quantity',
         'delivery_date',
         'plan_date',
@@ -50,6 +51,11 @@ class LayingPlanning extends Model
     public function fabricType()
     {
         return $this->belongsTo(FabricType::class, 'fabric_type_id', 'id');
+    }
+
+    public function fabricCons()
+    {
+        return $this->belongsTo(FabricCons::class, 'fabric_cons_id', 'id');
     }
 
 }
