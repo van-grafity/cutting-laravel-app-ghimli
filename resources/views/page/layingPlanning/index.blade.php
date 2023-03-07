@@ -37,6 +37,9 @@
                                 <td class="text-left">{{ $layingPlanning->buyer->name }}</td>
                                 <td class="text-left">{{ $layingPlanning->color->color }}</td>
                                 <td class="text-left">{{ $layingPlanning->fabricType->description }}</td>
+                                <td class="text-left">
+                                    <a  href="{{ url('/laying-planning-qrcode/'.$layingPlanning->id) }}" class="btn btn-primary btn-sm">QR Code</a>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

@@ -82,6 +82,14 @@ class LayingPlanningsController extends Controller
             ->with('success', 'Laying Planning created successfully.');
     }
 
+    public function layingQrcode($id)
+    {
+        $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->where('id', $id)->first();
+        $qrCode = 'https://chart.googleapis.com/chart?chs=400x400&cht=qr&chl='.$data->gl;
+        return view('page.layingPlanning.qrcode', compact('data', 'qrCode'));
+    }
+
+
     /**
      * Display the specified resource.
      *
