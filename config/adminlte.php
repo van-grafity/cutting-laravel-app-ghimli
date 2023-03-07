@@ -330,12 +330,6 @@ return [
             'can'  => ['accessSuperAdmin','accessSewing'],
         ],
         [
-            'text' => 'Laying Planning',
-            'url'  => '/laying-planning',
-            'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
-            'can'  => ['accessSuperAdmin','accessCutting'],
-        ],
-        [
             'text' => 'Color',
             'url'  => '/color',
             'icon' => 'fas fa-fw fa fa-solid fa-palette',
@@ -352,6 +346,18 @@ return [
             'url'  => '/fabric-type',
             'icon' => 'fas fa-fw fa fa-solid fa-swatchbook',
             'can'  => ['accessSuperAdmin'],
+        ],
+        [
+            'text' => 'Laying Planning',
+            'url'  => '/laying-planning',
+            'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
+            'can'  => ['accessSuperAdmin','accessCutting'],
+        ],
+        [
+            'text' => 'Cutting Order Record',
+            'url'  => '/cutting-order',
+            'icon' => 'fas fa-fw fa fa-solid fa-cut',
+            'can'  => ['accessSuperAdmin','accessCutting'],
         ],
     ],
 

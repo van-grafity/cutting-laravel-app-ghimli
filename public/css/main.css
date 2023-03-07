@@ -9,3 +9,7 @@
 .mt-10rem {
   margin-top: 10rem;
 }
+
+.detail-section tr td {
+  padding-bottom: 10px;
+}
