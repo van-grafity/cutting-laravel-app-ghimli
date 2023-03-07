@@ -88,25 +88,33 @@ class LayingPlanningsController extends Controller
         return view('page.layingPlanning.detail', compact('data'));
     }
 
+    public function layingQrcode($id)
+    {
+        $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->where('id', $id)->first();
+        $qrCode = 'https://chart.googleapis.com/chart?chs=400x400&cht=qr&chl='.$data->gl;
+        return view('page.layingPlanning.qrcode', compact('data', 'qrCode'));
+    }
+
+
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\LayingPlannings  $layingPlannings
+     * @param  \App\Models\LayingPlanning  $layingPlannings
      * @return \Illuminate\Http\Response
      */
-    public function edit(LayingPlannings $layingPlannings)
+    public function edit(LayingPlanning $layingPlannings)
     {
         //
-    }
+    }   
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\LayingPlannings  $layingPlannings
+     * @param  \App\Models\LayingPlanning  $layingPlannings
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, LayingPlannings $layingPlannings)
+    public function update(Request $request, LayingPlanning $layingPlannings)
     {
         //
     }
@@ -114,10 +122,10 @@ class LayingPlanningsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\LayingPlannings  $layingPlannings
+     * @param  \App\Models\LayingPlanning  $layingPlannings
      * @return \Illuminate\Http\Response
      */
-    public function destroy(LayingPlannings $layingPlannings)
+    public function destroy(LayingPlanning $layingPlannings)
     {
         //
     }

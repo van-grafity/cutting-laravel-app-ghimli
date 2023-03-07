@@ -33,6 +33,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('laying-planning',LayingPlanning\LayingPlanningsController::class)->middleware('accessCutting');
 
     Route::get('/laying-planning-create', [LayingPlanning\LayingPlanningsController::class, 'layingCreate'])->middleware('accessCutting');
+    Route::get('/laying-planning-qrcode/{id}', [LayingPlanning\LayingPlanningsController::class, 'layingQrcode'])->middleware('accessCutting');
+
     Route::resource('color', ColorsController::class)->middleware('accessSuperAdmin');
     Route::resource('fabric-cons', FabricConssController::class)->middleware('accessSuperAdmin');
     Route::resource('fabric-type', FabricTypesController::class)->middleware('accessSuperAdmin');
