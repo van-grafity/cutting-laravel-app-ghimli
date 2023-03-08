@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('fabric_po');
             $table->foreignId('fabric_cons_id')->constrained('fabric_cons')->onDelete('cascade');
             $table->foreignId('fabric_type_id')->constrained('fabric_types')->onDelete('cascade');
-            $table->string('fabric_cons_qty');
+            $table->float('fabric_cons_qty');
             $table->timestamps();
         });
     }

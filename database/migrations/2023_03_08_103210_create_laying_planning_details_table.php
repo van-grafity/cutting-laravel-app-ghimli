@@ -20,10 +20,10 @@ return new class extends Migration
             $table->foreignId('laying_planning_id')->constrained('laying_plannings')->onDelete('cascade');
             $table->integer('layer_qty');
             $table->string('marker_code')->nullable();
-            $table->integer('marker_yard');
-            $table->integer('marker_inch');
-            $table->integer('marker_length');
-            $table->integer('total_length');
+            $table->float('marker_yard');
+            $table->float('marker_inch');
+            $table->float('marker_length');
+            $table->float('total_length');
             $table->integer('total_all_size');
             $table->timestamps();
         });
