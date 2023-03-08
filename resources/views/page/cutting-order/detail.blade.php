@@ -157,6 +157,15 @@
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
                                 </td>
                             </tr>
+                            <tr class="spacer" style="height:5px;">
+                                <td colspan="8"></td>
+                            </tr>
+                            <tr class="bg-dark mt-2">
+                                <td colspan="3">Total</td>
+                                <td>502</td>
+                                <td>170.55</td>
+                                <td>80</td>
+                            </tr>
                         </tbody>
                     </table>
                     
