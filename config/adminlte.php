@@ -359,6 +359,12 @@ return [
             'icon' => 'fas fa-fw fa fa-solid fa-cut',
             'can'  => ['accessSuperAdmin','accessCutting'],
         ],
+        [
+            'text' => 'Cutting Ticket',
+            'url'  => '/cutting-ticket',
+            'icon' => 'fas fa-fw fa fa-solid fa-clipboard-list',
+            'can'  => ['accessSuperAdmin','accessCutting'],
+        ],
     ],
 
     /*
