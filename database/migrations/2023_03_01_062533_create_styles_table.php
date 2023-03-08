@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('style');
             $table->string('description');
-            $table->string('gl_id');
+            $table->foreignId('gl_id')->constrained('gls')->onDelete('cascade');
+            
             $table->timestamps();
         });
     }

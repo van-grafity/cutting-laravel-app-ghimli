@@ -13,13 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('shipments', function (Blueprint $table) {
+        Schema::create('laying_planning_detail_sizes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('gl_id')->constrained('gls')->onDelete('cascade');
-            $table->string('delivery_number');
-            $table->date('delivery_date');
-            $table->integer('quantity');
-            $table->string('license');
+            $table->foreignId('laying_planning_detail_id')->constrained('laying_planning_details')->onDelete('cascade');
+            $table->foreignId('size_id')->constrained('sizes')->onDelete('cascade');
+            $table->integer('ratio_per_size');
+            $table->integer('qty_per_size')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shipments');
+        Schema::dropIfExists('laying_planning_detail_sizes');
     }
 };

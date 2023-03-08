@@ -14,7 +14,7 @@ class LayingPlanning extends Model
         'style_id',
         'buyer_id',
         'color_id',
-        'quantity',
+        'order_qty',
         'delivery_date',
         'plan_date',
         'fabric_po',

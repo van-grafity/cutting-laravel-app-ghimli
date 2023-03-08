@@ -67,7 +67,7 @@ class LayingPlanningsController extends Controller
             'style_id' => $request->style,
             'buyer_id' => $request->buyer,
             'color_id' => $request->color,
-            'quantity' => $request->order_qty,
+            'order_qty' => $request->order_qty,
             'delivery_date' => $request->delivery_date,
             'plan_date' => $request->plan_date,
             'fabric_po' => $request->fabric_po,

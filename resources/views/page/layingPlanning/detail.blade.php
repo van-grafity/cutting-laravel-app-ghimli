@@ -37,12 +37,12 @@
                                         <tr>
                                             <td>Order Qty</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $data->quantity }} Pcs</td>
+                                            <td>{{ $data->order_qty }} Pcs</td>
                                         </tr>
                                         <tr>
                                             <td>Total Qty</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $data->quantity * 25 }} Pcs</td>
+                                            <td>{{ $data->order_qty * 25 }} Pcs</td>
                                         </tr>
                                     </tbody>
                                 </table>

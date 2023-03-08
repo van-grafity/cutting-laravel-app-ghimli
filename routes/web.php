@@ -7,6 +7,7 @@ use App\Http\Controllers\FabricConssController;
 use App\Http\Controllers\FabricTypesController;
 use App\Http\Controllers\GlsController;
 use App\Http\Controllers\CuttingOrdersController;
+use App\Http\Controllers\CuttingTicketsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +33,6 @@ Route::middleware(['auth'])->group(function () {
 
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('laying-planning',LayingPlanning\LayingPlanningsController::class)->middleware('accessCutting');
-
     Route::get('/laying-planning-create', [LayingPlanning\LayingPlanningsController::class, 'layingCreate'])->middleware('accessCutting');
     Route::get('/laying-planning-qrcode/{id}', [LayingPlanning\LayingPlanningsController::class, 'layingQrcode'])->middleware('accessCutting');
 
@@ -42,6 +42,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('fabric-type', FabricTypesController::class)->middleware('accessSuperAdmin');
     Route::resource('gl', GlsController::class)->middleware('accessSuperAdmin');
     Route::resource('cutting-order', CuttingOrdersController::class)->middleware('accessSuperAdmin');
-
     Route::get('cutting-order-create/{id}', [CuttingOrdersController::class,'createNota'])->name('cutting-order.createNota')->middleware('accessSuperAdmin');
+    
+    Route::resource('cutting-ticket', CuttingTicketsController::class)->middleware('accessSuperAdmin');
+    Route::get('cutting-ticket-create', [CuttingTicketsController::class,'createTicket'])->name('cutting-ticket.createTicket')->middleware('accessSuperAdmin');
 });
