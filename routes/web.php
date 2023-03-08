@@ -6,6 +6,7 @@ use App\Http\Controllers\ColorsController;
 use App\Http\Controllers\FabricConssController;
 use App\Http\Controllers\FabricTypesController;
 use App\Http\Controllers\GlsController;
+use App\Http\Controllers\CuttingOrdersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,4 +41,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('fabric-cons', FabricConssController::class)->middleware('accessSuperAdmin');
     Route::resource('fabric-type', FabricTypesController::class)->middleware('accessSuperAdmin');
     Route::resource('gl', GlsController::class)->middleware('accessSuperAdmin');
+    Route::resource('cutting-order', CuttingOrdersController::class)->middleware('accessSuperAdmin');
+
+    Route::get('cutting-order-create/{id}', [CuttingOrdersController::class,'createNota'])->name('cutting-order.createNota')->middleware('accessSuperAdmin');
 });
