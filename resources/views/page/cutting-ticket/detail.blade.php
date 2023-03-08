@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Laying Planning Detail')
+@section('title', 'Cutting Ticket Detail')
 
 @section('content')
 <div class="container">
@@ -13,36 +13,36 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <table class="text-left">
-                                    <tbody>
+                                    <tbody class="align-top">
                                         <tr>
-                                            <td>GL No.</td>
+                                            <td>No. Laying Sheet</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $data->gl->gl_number }}</td>
+                                            <td>62843-026</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Table No</td>
+                                            <td class="pl-4">:</td>
+                                            <td>26</td>
+                                        </tr>
+                                        <tr>
+                                            <td>GL</td>
+                                            <td class="pl-4">:</td>
+                                            <td>62843-00</td>
                                         </tr>
                                         <tr>
                                             <td>Buyer</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $data->buyer->name }}</td>
+                                            <td>AEROPOSTALE</td>
                                         </tr>
                                         <tr>
                                             <td>Style</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $data->style->style }}</td>
+                                            <td>5243AU22</td>
                                         </tr>
                                         <tr>
                                             <td>Color</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $data->color->color }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Order Qty</td>
-                                            <td class="pl-4">:</td>
-                                            <td>{{ $data->order_qty }} Pcs</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Total Qty</td>
-                                            <td class="pl-4">:</td>
-                                            <td>{{ $data->order_qty * 25 }} Pcs</td>
+                                            <td>MED HEATHER GREY H125R (053)</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -53,32 +53,34 @@
                                         <tr>
                                             <td>Fabric P/O</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $data->fabric_po }}</td>
+                                            <td>100048963</td>
                                         </tr>
                                         <tr>
                                             <td>Fabric Type</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $data->fabricType->description }}</td>
+                                            <td>57% cotton 38 polyester 5%spandex pique 185gm/m</td>
                                         </tr>
                                         <tr>
                                             <td>Fabric Consumpition</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $data->fabricCons->description }}</td>
+                                            <td>
+                                                BODY+Sleeves+top and under placket :5.62yds x 74" x 322gm (cuttable)- Ctn poly spandex pique
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td>Description</td>
+                                            <td>Marker Length</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $data->style->description }}</td>
+                                            <td>5 yd 35" 12'</td>
                                         </tr>
                                         <tr>
-                                            <td>Delivery Date</td>
+                                            <td>Marker Ratio</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $data->delivery_date }}</td>
+                                            <td>XS = 3 | M = 1 | L = 4 | XL = 5</td>
                                         </tr>
                                         <tr>
-                                            <td>Plan Date</td>
+                                            <td>Layer</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $data->plan_date }}</td>
+                                            <td>80</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -90,7 +92,7 @@
                     <hr style="border-top:2px solid #bbb" class="py-3">
 
                     <div class="content-title text-center">
-                        <h3>Cutting Table List</h3>
+                        <h3>Cutting Order Detail List</h3>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <div class="search-box me-2 mb-2 d-inline-block">
@@ -99,55 +101,60 @@
                                 <i class="bx bx-search-alt search-icon"></i>
                             </div>
                         </div>
-                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
+                        <a href="javascript:void(0);" class="btn btn-success mb-2 d-none" id="btn_modal_create">Create</a>
                     </div>
 
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
                                 <th scope="col" class="">No. </th>
-                                <th scope="col" class="">No Laying Sheet</th>
-                                <th scope="col" class="">Total Qty</th>
-                                <th scope="col" class="">Marker Length</th>
-                                <th scope="col" class="">Layer Qty</th>
+                                <th scope="col" class="">Place No</th>
+                                <th scope="col" class="">Color</th>
+                                <th scope="col" class="">Width</th>
+                                <th scope="col" class="">Weight</th>
+                                <th scope="col" class="">Layer</th>
+                                <th scope="col" class="">Operator</th>
                                 <th scope="col" class="">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>01</td>
-                                <td>62843-001</td>
-                                <td>1120</td>
-                                <td>6.35 Yds</td>
-                                <td>80</td>
+                                <td>28</td>
+                                <td>MED HEATHER GREY H125R (053)</td>
+                                <td>61</td>
+                                <td>25.02</td>
+                                <td>10</td>
+                                <td>Juhri</td>
                                 <td>
                                     <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
-                                    <a href="{{ route('cutting-order.createNota', 1) }}" class="btn btn-info btn-sm">Create COR</a>
                                 </td>
                             </tr>
                             <tr>
                                 <td>02</td>
-                                <td>62843-002</td>
-                                <td>1120</td>
-                                <td>6.35 Yds</td>
-                                <td>80</td>
+                                <td>5</td>
+                                <td>MED HEATHER GREY H125R (053)</td>
+                                <td>87</td>
+                                <td>28.91</td>
+                                <td>15</td>
+                                <td>Jurhi</td>
                                 <td>
                                     <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
-                                    <a href="{{ route('cutting-order.createNota', 1) }}" class="btn btn-info btn-sm">Create COR</a>
                                 </td>
                             </tr>
                             <tr>
                                 <td>03</td>
-                                <td>62843-003</td>
-                                <td>1120</td>
-                                <td>6.35 Yds</td>
-                                <td>80</td>
+                                <td>31</td>
+                                <td>MED HEATHER GREY H125R (053)</td>
+                                <td>74</td>
+                                <td>24.16</td>
+                                <td>12</td>
+                                <td>Juhri</td>
                                 <td>
                                     <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
-                                    <a href="{{ route('cutting-order.createNota', 1) }}" class="btn btn-info btn-sm">Create COR</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -155,7 +162,7 @@
                     
                     <div class="row mt-10rem">
                         <div class="col-md-12 text-right">
-                            <a href="{{ url('/laying-planning') }}" class="btn btn-secondary shadow-sm">back</a>
+                            <a href="{{ url('/cutting-order') }}" class="btn btn-secondary shadow-sm">back</a>
                         </div>
                     </div>
 

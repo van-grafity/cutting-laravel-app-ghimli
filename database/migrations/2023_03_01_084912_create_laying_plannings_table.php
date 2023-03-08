@@ -15,16 +15,16 @@ return new class extends Migration
     {
         Schema::create('laying_plannings', function (Blueprint $table) {
             $table->id();
-            $table->integer('gl_id');
+            $table->foreignId('gl_id')->constrained('gls')->onDelete('cascade');
             $table->foreignId('style_id')->constrained('styles')->onDelete('cascade');
             $table->foreignId('buyer_id')->constrained('buyers')->onDelete('cascade');
-            $table->integer('color_id');
-            $table->integer('quantity');
+            $table->foreignId('color_id')->constrained('colors')->onDelete('cascade');
+            $table->integer('order_qty');
             $table->date('delivery_date');
             $table->date('plan_date');
             $table->string('fabric_po');
-            $table->string('fabric_cons_id');
-            $table->string('fabric_type_id');
+            $table->foreignId('fabric_cons_id')->constrained('fabric_cons')->onDelete('cascade');
+            $table->foreignId('fabric_type_id')->constrained('fabric_types')->onDelete('cascade');
             $table->string('fabric_cons_qty');
             $table->timestamps();
         });
