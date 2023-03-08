@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LayingPlanningSize extends Model
+class LayingPlanningDetailSize extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'laying_planning_id',
+        'laying_planning_detail_id',
         'size_id',
-        'quantity',
+        'ratio_per_size',
+        'qty_per_size',
     ];
 }

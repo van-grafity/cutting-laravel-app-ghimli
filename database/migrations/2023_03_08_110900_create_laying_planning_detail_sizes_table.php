@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('laying_planning_detail_sizes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('laying_planning_detail_id')->constrained('laying_planning_details')->onDelete('cascade');
+            $table->foreignId('size_id')->constrained('sizes')->onDelete('cascade');
             $table->integer('ratio_per_size');
             $table->integer('qty_per_size')->nullable();
             $table->timestamps();
