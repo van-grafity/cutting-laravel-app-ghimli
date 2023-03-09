@@ -87,7 +87,7 @@ class LayingPlanningsController extends Controller
     {
         $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->find($id);
         $details = LayingPlanningDetail::where('laying_planning_id', $id)->get();
-        return view('page.layingPlanning.detail', compact('data', 'details'));
+        return view('page.layingPlanning.detail', compact('data', 'details'))   ;
     }
 
     public function layingQrcode($id)
