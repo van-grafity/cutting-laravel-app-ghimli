@@ -46,5 +46,7 @@ class DatabaseSeeder extends Seeder
         $this->call(LayingPlanningDetailSizesTableSeeder::class);
         $this->call(CuttingOrderRecordsTableSeeder::class);
         $this->call(CuttingOrderRecordDetailsTableSeeder::class);
+        $this->call(StatusTableSeeder::class);
+        $this->call(CuttingTableListTableSeeder::class);
     }
 }
