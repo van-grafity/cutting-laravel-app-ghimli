@@ -23,25 +23,25 @@
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
-                            <th scope="col" class="">No. </th>
-                                <th scope="col" class="" width="100">Gl No.</th>
-                                <th scope="col" class="">Style</th>
-                                <th scope="col" class="">Buyer</th>
-                                <th scope="col" class="">Color</th>
-                                <th scope="col" class="">Fabric Type</th>
-                                <th scope="col" class="" width="150">Action</th>
+                            <th scope="col">No. </th>
+                                <th scope="col" width="100">Gl No.</th>
+                                <th scope="col">Style</th>
+                                <th scope="col">Buyer</th>
+                                <th scope="col">Color</th>
+                                <th scope="col">Fabric Type</th>
+                                <th scope="col" width="150">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($data as $layingPlanning)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class="">{{ $layingPlanning->gl->gl_number }}</td>
-                                <td class="">{{ $layingPlanning->style->style }}</td>
-                                <td class="">{{ $layingPlanning->buyer->name }}</td>
-                                <td class="">{{ $layingPlanning->color->color }}</td>
-                                <td class="">{{ $layingPlanning->fabricType->description }}</td>
-                                <td class="">
+                                <td>{{ $layingPlanning->gl->gl_number }}</td>
+                                <td>{{ $layingPlanning->style->style }}</td>
+                                <td>{{ $layingPlanning->buyer->name }}</td>
+                                <td>{{ $layingPlanning->color->color }}</td>
+                                <td>{{ $layingPlanning->fabricType->description }}</td>
+                                <td>
                                     <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning" data-id="{{ $layingPlanning->id }}">Edit</a>
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning" data-id="{{ $layingPlanning->id }}" data-url="">Delete</a>
                                     <a href="{{ route('laying-planning.show',$layingPlanning->id) }}" class="btn btn-info btn-sm mt-1" data-id="{{ $layingPlanning->id }}" data-url="">Detail</a>

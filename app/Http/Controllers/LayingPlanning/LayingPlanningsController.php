@@ -87,7 +87,15 @@ class LayingPlanningsController extends Controller
     {
         $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->find($id);
         $details = LayingPlanningDetail::where('laying_planning_id', $id)->get();
-        return view('page.layingPlanning.detail', compact('data', 'details'))   ;
+        $get_size_list = $data->layingPlanningSize()->get();
+        
+
+        $size_list = [];
+        foreach ($get_size_list as $key => $size) {
+            $size_list[] = $size->size;
+        }
+
+        return view('page.layingPlanning.detail', compact('data', 'details','size_list'))   ;
     }
 
     public function layingQrcode($id)

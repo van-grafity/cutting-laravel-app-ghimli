@@ -14,4 +14,9 @@ class LayingPlanningSize extends Model
         'size_id',
         'quantity',
     ];
+    
+    public function size()
+    {
+        return $this->belongsTo(size::class, 'size_id', 'id');
+    }
 }
