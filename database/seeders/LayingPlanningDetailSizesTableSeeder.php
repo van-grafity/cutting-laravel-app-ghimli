@@ -86,6 +86,36 @@ class LayingPlanningDetailSizesTableSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s')
                 
             ],
+            [
+                'id' => 8,
+                'laying_planning_detail_id' => '3',
+                'size_id' => '2',
+                'ratio_per_size' => '1',
+                'qty_per_size' => '80',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+                
+            ],
+            [
+                'id' => 9,
+                'laying_planning_detail_id' => '3',
+                'size_id' => '3',
+                'ratio_per_size' => '2',
+                'qty_per_size' => '160',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+                
+            ],
+            [
+                'id' => 10,
+                'laying_planning_detail_id' => '3',
+                'size_id' => '4',
+                'ratio_per_size' => '3',
+                'qty_per_size' => '240',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+                
+            ],
         ]);
     }
 }

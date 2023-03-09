@@ -114,16 +114,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($details as $item)
+                            @foreach ($details as $detail)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->no_laying_sheet }}</td>
-                                    <td>{{ $item->total_length }}</td>
-                                    <td>{{ $item->marker_length }}</td>
-                                    <td>{{ $item->layer_qty }}</td>
+                                    <td>{{ $detail->no_laying_sheet }}</td>
+                                    <td>{{ $detail->total_length }}</td>
+                                    <td>{{ $detail->marker_length }}</td>
+                                    <td>{{ $detail->layer_qty }}</td>
                                     <td>
-                                        <a href="javascript:void(0);" class="btn btn-primary btn-sm btn_modal_edit" data-id="{{ $item->id }}">Edit</a>
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm btn_modal_delete" data-id="{{ $item->id }}">Delete</a>
+                                        <a href="javascript:void(0);" class="btn btn-primary btn-sm btn_modal_edit" data-id="{{ $detail->id }}">Edit</a>
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm btn_modal_delete" data-id="{{ $detail->id }}">Delete</a>
+                                        <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm">Create COR</a>
                                     </td>
                                 </tr>
                             @endforeach
