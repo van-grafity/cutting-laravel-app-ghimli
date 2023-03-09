@@ -318,7 +318,7 @@ return [
             'can'  => 'accessSuperAdmin',
         ],
         [
-            'text' => 'Gl',
+            'text' => 'GL',
             'url'  => '/gl',
             'icon' => 'fas fa-fw fa fa-file-alt',
             'can'  => ['accessSuperAdmin','accessSewing'],

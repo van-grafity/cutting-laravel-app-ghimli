@@ -20,6 +20,7 @@ use Database\Seeders\LayingPlanningDetailsTableSeeder;
 use Database\Seeders\LayingPlanningDetailSizesTableSeeder;
 use Database\Seeders\CuttingOrderRecordsTableSeeder;
 use Database\Seeders\CuttingOrderRecordDetailsTableSeeder;
+use Database\Seeders\CuttingTicketsTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -46,5 +47,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LayingPlanningDetailSizesTableSeeder::class);
         $this->call(CuttingOrderRecordsTableSeeder::class);
         $this->call(CuttingOrderRecordDetailsTableSeeder::class);
+        $this->call(CuttingTicketsTableSeeder::class);
     }
 }

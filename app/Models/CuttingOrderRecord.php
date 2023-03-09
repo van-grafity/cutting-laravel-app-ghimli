@@ -23,5 +23,10 @@ class CuttingOrderRecord extends Model
         return $this->hasMany(CuttingOrderRecordDetail::class, 'cutting_order_record_id', 'id');
     }
 
+    public function cuttingTicket()
+    {
+        return $this->hasMany(CuttingTicket::class, 'cutting_order_record_id', 'id');
+    }
+
     
 }
