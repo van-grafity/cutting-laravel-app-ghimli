@@ -4,6 +4,7 @@ namespace App\Http\Controllers\LayingPlanning;
 
 use App\Http\Controllers\Controller;
 use App\Models\LayingPlanning;
+use App\Models\LayingPlanningDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -85,7 +86,8 @@ class LayingPlanningsController extends Controller
     public function show($id)
     {
         $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->find($id);
-        return view('page.layingPlanning.detail', compact('data'));
+        $details = LayingPlanningDetail::where('laying_planning_id', $id)->get();
+        return view('page.layingPlanning.detail', compact('data', 'details'))   ;
     }
 
     public function layingQrcode($id)

@@ -114,42 +114,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>01</td>
-                                <td>62843-001</td>
-                                <td>1120</td>
-                                <td>6.35 Yds</td>
-                                <td>80</td>
-                                <td>
-                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
-                                    <a href="{{ route('cutting-order.createNota', 1) }}" class="btn btn-info btn-sm">Create COR</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>02</td>
-                                <td>62843-002</td>
-                                <td>1120</td>
-                                <td>6.35 Yds</td>
-                                <td>80</td>
-                                <td>
-                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
-                                    <a href="{{ route('cutting-order.createNota', 1) }}" class="btn btn-info btn-sm">Create COR</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>03</td>
-                                <td>62843-003</td>
-                                <td>1120</td>
-                                <td>6.35 Yds</td>
-                                <td>80</td>
-                                <td>
-                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
-                                    <a href="{{ route('cutting-order.createNota', 1) }}" class="btn btn-info btn-sm">Create COR</a>
-                                </td>
-                            </tr>
+                            @foreach ($details as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item->no_laying_sheet }}</td>
+                                    <td>{{ $item->total_length }}</td>
+                                    <td>{{ $item->marker_length }}</td>
+                                    <td>{{ $item->layer_qty }}</td>
+                                    <td>
+                                        <a href="javascript:void(0);" class="btn btn-primary btn-sm btn_modal_edit" data-id="{{ $item->id }}">Edit</a>
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm btn_modal_delete" data-id="{{ $item->id }}">Delete</a>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                     
