@@ -105,12 +105,12 @@
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col" class="">No. </th>
-                                <th scope="col" class="">No Laying Sheet</th>
-                                <th scope="col" class="">Total Qty</th>
-                                <th scope="col" class="">Marker Length</th>
-                                <th scope="col" class="">Layer Qty</th>
-                                <th scope="col" class="">Action</th>
+                                <th scope="col">No. </th>
+                                <th scope="col">No Laying Sheet</th>
+                                <th scope="col">Total Qty</th>
+                                <th scope="col">Marker Length</th>
+                                <th scope="col">Layer Qty</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -199,59 +199,28 @@
                             <h4>Ratio</h4>
                         </div>
                         <div class="row">
+                            @foreach($size_list as $key => $size)
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="ratio_s">S</label>
-                                    <input type="text" class="form-control" id="ratio_s" name="ratio_s">
+                                    <label for="ratio_size_{{ $size->id }}">{{ $size->size }}</label>
+                                    <input type="text" class="form-control" id="ratio_size_{{ $size->id }}" name="ratio_size[{{ $size->id }}]">
                                 </div>
                             </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="ratio_m">M</label>
-                                    <input type="text" class="form-control" id="ratio_m" name="ratio_m">
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="ratio_l">L</label>
-                                    <input type="text" class="form-control" id="ratio_l" name="ratio_l">
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="ratio_xl">XL</label>
-                                    <input type="text" class="form-control" id="ratio_xl" name="ratio_xl">
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                         <div>
                             <h4>Qty Each Size</h4>
                         </div>
                         <div class="row">
+                            @foreach($size_list as $key => $size)
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="qty_size_s">S</label>
-                                    <input type="text" class="form-control" id="qty_size_s" name="qty_size_s">
+                                    <label for="qty_size_{{ $size->id }}">{{ $size->size }}</label>
+                                    <input type="text" class="form-control" id="qty_size_{{ $size->id }}" name="qty_size[{{ $size->id }}]">
                                 </div>
                             </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="qty_size_m">M</label>
-                                    <input type="text" class="form-control" id="qty_size_m" name="qty_size_m">
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="qty_size_l">L</label>
-                                    <input type="text" class="form-control" id="qty_size_l" name="qty_size_l">
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="qty_size_xl">XL</label>
-                                    <input type="text" class="form-control" id="qty_size_xl" name="qty_size_xl">
-                                </div>
-                            </div>
+                            @endforeach
+                            
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="qty_size_all">Total All Size</label>
@@ -264,7 +233,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="btn_submit">Add GL</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_submit">Add Cutting Table</button>
+                    <!-- <button type="submit" class="btn btn-primary" id="btn_submit">Add Cutting Table</button> -->
                 </div>
             </form>
         </div>

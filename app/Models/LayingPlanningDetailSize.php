@@ -15,4 +15,9 @@ class LayingPlanningDetailSize extends Model
         'ratio_per_size',
         'qty_per_size',
     ];
+
+    public function size()
+    {
+        return $this->belongsTo(size::class, 'size_id', 'id');
+    }
 }
