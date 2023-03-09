@@ -108,38 +108,48 @@
                                 <th scope="col" class="">No. </th>
                                 <th scope="col" class="">No Laying Sheet</th>
                                 <th scope="col" class="">Total Qty</th>
-                                <th scope="col" class="">Marker Code</th>
                                 <th scope="col" class="">Marker Length</th>
-                                <th scope="col" class="">Total Length</th>
                                 <th scope="col" class="">Layer Qty</th>
-                                <th scope="col" class="">Status</th>
                                 <th scope="col" class="">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($cuttingTableList as $item)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->no_laying_sheet }}</td>
-                                <td>{{ $item->total_qty }}</td>
-                                <td>{{ $item->marker_code }}</td>
-                                <td>{{ $item->marker_length }}</td>
-                                <td>{{ $item->total_length }}</td>
-                                <td>{{ $item->layer_qty }}</td>
+                                <td>01</td>
+                                <td>62843-001</td>
+                                <td>1120</td>
+                                <td>6.35 Yds</td>
+                                <td>80</td>
                                 <td>
-                                    @if ($item->status->id == 1)
-                                        <span class="badge bg-soft-success text-success">Done</span>
-                                    @elseif ($item->status->id == 2)
-                                        <span class="badge bg-soft-warning text-warning">On Progress</span>
-                                    @else
-                                        <span class="badge bg-soft-danger text-danger">Not Yet</span>
-                                    @endif
-                                <td>
-                                    <a href="javascript:void(0);" class="btn btn-sm btn-primary btn-edit" data-id="{{ $item->id }}">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger btn-delete" data-id="{{ $item->id }}">Delete</a>
+                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
+                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
+                                    <a href="{{ route('cutting-order.createNota', 1) }}" class="btn btn-info btn-sm">Create COR</a>
                                 </td>
                             </tr>
-                            @endforeach
+                            <tr>
+                                <td>02</td>
+                                <td>62843-002</td>
+                                <td>1120</td>
+                                <td>6.35 Yds</td>
+                                <td>80</td>
+                                <td>
+                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
+                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
+                                    <a href="{{ route('cutting-order.createNota', 1) }}" class="btn btn-info btn-sm">Create COR</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>03</td>
+                                <td>62843-003</td>
+                                <td>1120</td>
+                                <td>6.35 Yds</td>
+                                <td>80</td>
+                                <td>
+                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
+                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
+                                    <a href="{{ route('cutting-order.createNota', 1) }}" class="btn btn-info btn-sm">Create COR</a>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     

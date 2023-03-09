@@ -9,17 +9,37 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <table class="table align-middle table-nowrap table-hover table-datatable" id="color_table">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <div class="search-box me-2 mb-2 d-inline-block">
+                            <div class="position-relative">
+                                <input type="text" class="form-control searchTable" placeholder="Search">
+                                <i class="bx bx-search-alt search-icon"></i>
+                            </div>
+                        </div>
+                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create" data-id='2'>Create</a>
+                    </div>
+                    <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col" style="width: 70px;">#</th>
+                                <th scope="col" class="text-left">No. </th>
                                 <th scope="col" class="text-left">Color</th>
                                 <th scope="col" class="text-left">Code</th>
                                 <th scope="col" class="text-left">Action</th>
                             </tr>
                         </thead>
-                        <!-- <tbody>
-                        </tbody> -->
+                        <tbody>
+                            @foreach ($colors as $color)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $color->color }}</td>
+                                <td>{{ $color->color_code }}</td>
+                                <td>
+                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-edit-color" data-id="{{ $color->id }}" data-url="{{ route('color.show', $color->id) }}">Edit</a>
+                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-color" data-id="{{ $color->id }}" data-url="{{ route('color.destroy', $color->id) }}">Delete</a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -65,18 +85,87 @@
 
 @push('js')
 <script type="text/javascript">
-    $(function (e) {
-        $('#color_table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ url('/color-data') }}",
-            columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'color', name: 'color'},
-                {data: 'color_code', name: 'color_code'},
-                {data: 'action', name: 'action', orderable: false, searchable: false},
-            ]
-        });
+$(document).ready(function(){
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
     });
+
+    $('#btn_modal_create').click((e) => {
+        $('#modal_formLabel').text("Add Color")
+        $('#btn_submit').text("Add Color")
+        $('#color_form').find("input[type=text], textarea").val("");
+        $('#color_form').find('input[name="_method"]').remove();
+        $('#modal_form').modal('show')
+    })
+
+    $(".btn-delete-color").on('click', function(e) {
+        if(!confirm('apakah ingin menghapus data?')){
+            return false;
+        }
+        let delete_url = $(this).attr('data-url');
+        if (delete_url){
+            delete_color_ajax(delete_url);
+        } else {
+            alert("not found!");
+        }
+    })
+
+    $(".btn-edit-color").on('click', function(e) {
+        let get_data_url = $(this).attr('data-url');
+        if (get_data_url){
+            get_data_color_ajax(get_data_url);
+        } else {
+            alert("not found!");
+        }
+    })
+
+})
+</script>
+
+<script type="text/javascript">
+
+    function get_data_color_ajax(get_data_url) {
+        $.ajax({
+            type:'GET',
+            url:get_data_url,
+            success:function(res){
+                form = $('#color_form')
+                form.append('<input type="hidden" name="_method" value="PUT">');
+                $('#modal_formLabel').text("Edit Color");
+                $('#btn_submit').text("Save");
+                $('#modal_form').modal('show')
+
+                form.attr('action', get_data_url);
+                form.find('input[name="color"]').val(res.color);
+                form.find('input[name="color_code"]').val(res.color_code);
+            }
+        }).catch((err)=>{
+            console.log(err);
+        });
+    }
+
+    function delete_color_ajax(delete_url) {
+        $.ajax({
+            type:'DELETE',
+            url:delete_url,
+            success:function(res){
+                console.log(res);
+                if($.isEmptyObject(res.error)){
+                    alert(res.status);
+                    location.reload();
+                } else {
+                    console.log("lah error");
+                }
+            }
+        }).catch((err)=>{
+            console.log(err);
+        });
+    }
+
+    
+
+    
 </script>
 @endpush

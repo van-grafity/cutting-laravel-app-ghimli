@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Color;
-use Yajra\Datatables\Datatables;
-use Illuminate\Support\Facades\DB;
 
 class ColorsController extends Controller
 {
@@ -13,19 +11,6 @@ class ColorsController extends Controller
     {
         $colors = Color::all();
         return view('page.color.index', compact('colors'));
-    }
-
-    public function dataColor()
-    {
-        $query = DB::table('colors')->get();
-            return Datatables::of($query)
-            ->addIndexColumn()
-            ->escapeColumns([])
-            ->addColumn('action', function($data){
-                return '<a href="/color/'.$data->id.'/edit" class="btn btn-warning btn-sm">Edit</a>
-                <button class="btn btn-danger btn-sm" id="delete" data-id="'.$data->id.'">Delete</button>';
-            })
-            ->make(true);
     }
 
     public function show($id){

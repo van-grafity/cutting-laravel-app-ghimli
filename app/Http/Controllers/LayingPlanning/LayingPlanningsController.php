@@ -4,7 +4,6 @@ namespace App\Http\Controllers\LayingPlanning;
 
 use App\Http\Controllers\Controller;
 use App\Models\LayingPlanning;
-use App\Models\CuttingTableList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -86,8 +85,7 @@ class LayingPlanningsController extends Controller
     public function show($id)
     {
         $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->find($id);
-        $cuttingTableList = CuttingTableList::with(['status'])->get();
-        return view('page.layingPlanning.detail', compact('data', 'cuttingTableList'));
+        return view('page.layingPlanning.detail', compact('data'));
     }
 
     public function layingQrcode($id)
