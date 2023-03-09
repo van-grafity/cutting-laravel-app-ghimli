@@ -22,9 +22,16 @@ class LayingPlanningDetail extends Model
         'total_all_size',
     ];
 
-    public function layingPlanningDetailSizes()
+    public function layingPlanningDetailSize()
     {
         return $this->hasMany(LayingPlanningDetailSize::class, 'laying_planning_detail_id', 'id');
     }
+
+    public function cuttingOrderRecord()
+    {
+        return $this->hasOne(CuttingOrderRecord::class, 'laying_planning_detail_id', 'id');
+    }
+
+
 
 }

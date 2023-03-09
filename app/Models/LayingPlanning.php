@@ -23,7 +23,7 @@ class LayingPlanning extends Model
         'fabric_cons_qty',
     ];
 
-    public function layingPlanningSizes()
+    public function layingPlanningSize()
     {
         return $this->hasMany(LayingPlanningSize::class, 'laying_planning_id', 'id');
     }
