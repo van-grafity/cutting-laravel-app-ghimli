@@ -25,7 +25,7 @@ return new class extends Migration
             $table->integer('layer');
             $table->float('joint');
             $table->integer('balance_end');
-            $table->string('remakrs');
+            $table->string('remarks');
             
             $table->timestamps();
         });

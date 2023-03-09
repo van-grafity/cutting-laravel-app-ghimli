@@ -21,7 +21,18 @@ class CuttingOrderRecordsTableSeeder extends Seeder
                 'laying_planning_detail_id' => 1,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
-                
+            ],
+            [
+                'id' => 2,
+                'laying_planning_detail_id' => 2,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 3,
+                'laying_planning_detail_id' => 3,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
             ],
         ]);
     }
