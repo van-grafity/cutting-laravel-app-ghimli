@@ -9,37 +9,17 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <div class="search-box me-2 mb-2 d-inline-block">
-                            <div class="position-relative">
-                                <input type="text" class="form-control searchTable" placeholder="Search">
-                                <i class="bx bx-search-alt search-icon"></i>
-                            </div>
-                        </div>
-                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create" data-id='2'>Create</a>
-                    </div>
-                    <table class="table align-middle table-nowrap table-hover">
+                    <table class="table align-middle table-nowrap table-hover table-datatable" id="color_table">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col" class="text-left">No. </th>
+                                <th scope="col" style="width: 70px;">#</th>
                                 <th scope="col" class="text-left">Color</th>
                                 <th scope="col" class="text-left">Code</th>
                                 <th scope="col" class="text-left">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($colors as $color)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $color->color }}</td>
-                                <td>{{ $color->color_code }}</td>
-                                <td>
-                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-edit-color" data-id="{{ $color->id }}" data-url="{{ route('color.show', $color->id) }}">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-color" data-id="{{ $color->id }}" data-url="{{ route('color.destroy', $color->id) }}">Delete</a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
+                        <!-- <tbody>
+                        </tbody> -->
                     </table>
                 </div>
             </div>
@@ -167,5 +147,21 @@ $(document).ready(function(){
     
 
     
+</script>
+
+<script type="text/javascript">
+    $(function (e) {
+        $('#color_table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ url('/color-data') }}",
+            columns: [
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                {data: 'color', name: 'color'},
+                {data: 'color_code', name: 'color_code'},
+                {data: 'action', name: 'action', orderable: false, searchable: false},
+            ]
+        });
+    });
 </script>
 @endpush
