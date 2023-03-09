@@ -108,37 +108,24 @@
                                 <th scope="col" class="">No. </th>
                                 <th scope="col" class="">No Laying Sheet</th>
                                 <th scope="col" class="">Total Qty</th>
-                                <th scope="col" class="">Marker Code</th>
                                 <th scope="col" class="">Marker Length</th>
-                                <th scope="col" class="">Total Length</th>
                                 <th scope="col" class="">Layer Qty</th>
-                                <th scope="col" class="">Status</th>
                                 <th scope="col" class="">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($cuttingTableList as $item)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->no_laying_sheet }}</td>
-                                <td>{{ $item->total_qty }}</td>
-                                <td>{{ $item->marker_code }}</td>
-                                <td>{{ $item->marker_length }}</td>
-                                <td>{{ $item->total_length }}</td>
-                                <td>{{ $item->layer_qty }}</td>
-                                <td>
-                                    @if ($item->status->id == 1)
-                                        <span class="badge bg-soft-success text-success">Done</span>
-                                    @elseif ($item->status->id == 2)
-                                        <span class="badge bg-soft-warning text-warning">On Progress</span>
-                                    @else
-                                        <span class="badge bg-soft-danger text-danger">Not Yet</span>
-                                    @endif
-                                <td>
-                                    <a href="javascript:void(0);" class="btn btn-sm btn-primary btn-edit" data-id="{{ $item->id }}">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger btn-delete" data-id="{{ $item->id }}">Delete</a>
-                                </td>
-                            </tr>
+                            @foreach ($details as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item->no_laying_sheet }}</td>
+                                    <td>{{ $item->total_length }}</td>
+                                    <td>{{ $item->marker_length }}</td>
+                                    <td>{{ $item->layer_qty }}</td>
+                                    <td>
+                                        <a href="javascript:void(0);" class="btn btn-primary btn-sm btn_modal_edit" data-id="{{ $item->id }}">Edit</a>
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm btn_modal_delete" data-id="{{ $item->id }}">Delete</a>
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
