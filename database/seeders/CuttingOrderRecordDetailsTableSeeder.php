@@ -28,6 +28,7 @@ class CuttingOrderRecordDetailsTableSeeder extends Seeder
                 'joint' => 21.8,
                 'balance_end' => -2,
                 'remarks' => "2yd",
+                'operator' => "Juhri",
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
@@ -43,6 +44,7 @@ class CuttingOrderRecordDetailsTableSeeder extends Seeder
                 'joint' => 21.8,
                 'balance_end' => -2,
                 'remarks' => "1yd",
+                'operator' => "Juhri",
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
@@ -58,6 +60,7 @@ class CuttingOrderRecordDetailsTableSeeder extends Seeder
                 'joint' => 25.8,
                 'balance_end' => -2,
                 'remarks' => "1yd",
+                'operator' => "Juhri",
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
@@ -73,6 +76,7 @@ class CuttingOrderRecordDetailsTableSeeder extends Seeder
                 'joint' => 21.8,
                 'balance_end' => -2,
                 'remarks' => "4yd",
+                'operator' => "Juhri",
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
@@ -88,6 +92,7 @@ class CuttingOrderRecordDetailsTableSeeder extends Seeder
                 'joint' => 21,
                 'balance_end' => 2,
                 'remarks' => "4yd",
+                'operator' => "Juhri",
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],

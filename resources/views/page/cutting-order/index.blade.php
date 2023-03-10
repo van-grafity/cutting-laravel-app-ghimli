@@ -34,42 +34,20 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach( $data as $cuttingOrderRecord )
                             <tr>
-                                <td>01</td>
-                                <td>62843-001</td>
-                                <td>62843-00</td>
-                                <td>MED HEATHER GREY H125R (053)</td>
-                                <td>01</td>
+                                <td>{{ $cuttingOrderRecord->no }}</td>
+                                <td>{{ $cuttingOrderRecord->no_laying_sheet }}</td>
+                                <td>{{ $cuttingOrderRecord->gl_number }}</td>
+                                <td>{{ $cuttingOrderRecord->color }}</td>
+                                <td>{{ $cuttingOrderRecord->table_number}}</td>
                                 <td>
                                     <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
                                     <a href="{{ route('cutting-order.show', 1) }}" class="btn btn-info btn-sm">Detail</a>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>02</td>
-                                <td>62843-002</td>
-                                <td>62843-00</td>
-                                <td>MED HEATHER GREY H125R (053)</td>
-                                <td>02</td>
-                                <td>
-                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
-                                    <a href="{{ route('cutting-order.show', 1) }}" class="btn btn-info btn-sm">Detail</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>03</td>
-                                <td>62843-003</td>
-                                <td>62843-00</td>
-                                <td>MED HEATHER GREY H125R (053)</td>
-                                <td>03</td>
-                                <td>
-                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
-                                    <a href="{{ route('cutting-order.show', 1) }}" class="btn btn-info btn-sm">Detail</a>
-                                </td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>    
                 </div>
