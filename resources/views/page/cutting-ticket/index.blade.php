@@ -25,60 +25,35 @@
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col" class="">No. </th>
-                                <th scope="col" class="">Ticket Number</th>
-                                <th scope="col" class="">COR No.</th>
-                                <th scope="col" class="">Table No.</th>
-                                <th scope="col" class="">GL</th>
-                                <th scope="col" class="">Color</th>
-                                <th scope="col" class="">Size</th>
-                                <th scope="col" class="">Layer</th>
-                                <th scope="col" class="">Action</th>
+                                <th scope="col">No. </th>
+                                <th scope="col">Ticket Number</th>
+                                <th scope="col">No. Laying Sheet</th>
+                                <th scope="col">Table No.</th>
+                                <th scope="col">GL</th>
+                                <th scope="col">Color</th>
+                                <th scope="col">Size</th>
+                                <th scope="col">Layer</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach($tickets as $ticket)
                             <tr>
-                                <td>01</td>
-                                <td>CT-62843-026-001</td>
-                                <td>62843-026</td>
-                                <td>026</td>
-                                <td>62843-00</td>
-                                <td>MED HEATHER GREY H125R (053)</td>
-                                <td>XS</td>
-                                <td>11</td>
+                                <td>{{ $ticket->no }}</td>
+                                <td>{{ $ticket->ticket_number }}</td>
+                                <td>{{ $ticket->no_laying_sheet }}</td>
+                                <td>{{ $ticket->table_number }}</td>
+                                <td>{{ $ticket->gl_number }}</td>
+                                <td>{{ $ticket->color }}</td>
+                                <td>{{ $ticket->size }}</td>
+                                <td>{{ $ticket->layer }}</td>
                                 <td>
                                     <a href="" class="btn btn-primary btn-sm btn-print-ticket">Print</a>
-                                    <a href="javascript:void(0)" class="btn btn-info btn-sm btn-ticket-detail">Detail</a>
+                                    <a href="javascript:void(0)" class="btn btn-info btn-sm btn-ticket-detail" data-url="{{ route('cutting-ticket.show', $ticket->id) }}">Detail</a>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>02</td>
-                                <td>CT-62843-026-002</td>
-                                <td>62843-026</td>
-                                <td>026</td>
-                                <td>62843-00</td>
-                                <td>MED HEATHER GREY H125R (053)</td>
-                                <td>XS</td>
-                                <td>12</td>
-                                <td>
-                                    <a href="" class="btn btn-primary btn-sm btn-print-ticket">Print</a>
-                                    <a href="javascript:void(0)" class="btn btn-info btn-sm btn-ticket-detail">Detail</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>03</td>
-                                <td>CT-62843-026-003</td>
-                                <td>62843-026</td>
-                                <td>026</td>
-                                <td>62843-00</td>
-                                <td>MED HEATHER GREY H125R (053)</td>
-                                <td>XS</td>
-                                <td>10</td>
-                                <td>
-                                    <a href="" class="btn btn-primary btn-sm btn-print-ticket">Print</a>
-                                    <a href="javascript:void(0)" class="btn btn-info btn-sm btn-ticket-detail">Detail</a>
-                                </td>
-                            </tr>
+                            @endforeach
+
                         </tbody>
                     </table>    
                 </div>
@@ -107,42 +82,42 @@
                                     <tr style="font-weight:800;">
                                         <td>Ticket Number</td>
                                         <td class="pl-4">:</td>
-                                        <td>CT-62843-026</td>
+                                        <td id="detail_ticket_number"></td>
                                     </tr>
                                     <tr>
                                         <td>Size</td>
                                         <td class="pl-4">:</td>
-                                        <td>XS</td>
+                                        <td id="detail_size"></td>
                                     </tr>
                                     <tr>
-                                        <td>COR Number</td>
+                                        <td>No. Laying Sheet</td>
                                         <td class="pl-4">:</td>
-                                        <td>62843-026</td>
+                                        <td id="detail_no_laying_sheet"></td>
                                     </tr>
                                     <tr>
                                         <td>Table No</td>
                                         <td class="pl-4">:</td>
-                                        <td>26</td>
+                                        <td id="detail_table_number"></td>
                                     </tr>
                                     <tr>
                                         <td>GL</td>
                                         <td class="pl-4">:</td>
-                                        <td>62843-00</td>
+                                        <td id="detail_gl_number"></td>
                                     </tr>
                                     <tr>
                                         <td>Buyer</td>
                                         <td class="pl-4">:</td>
-                                        <td>AEROPOSTALE</td>
+                                        <td id="detail_buyer"></td>
                                     </tr>
                                     <tr>
                                         <td>Style</td>
                                         <td class="pl-4">:</td>
-                                        <td>5243AU22</td>
+                                        <td id="detail_style"></td>
                                     </tr>
                                     <tr>
                                         <td>Color</td>
                                         <td class="pl-4">:</td>
-                                        <td>MED HEATHER GREY H125R (053)</td>
+                                        <td id="detail_color"></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -156,29 +131,27 @@
                                     <tr>
                                         <td>Layer</td>
                                         <td class="pl-4">:</td>
-                                        <td>11</td>
+                                        <td id="detail_layer"></td>
                                     </tr>
                                     <tr>
                                         <td>Fabric Roll No</td>
                                         <td class="pl-4">:</td>
-                                        <td>34</td>
+                                        <td id="detail_fabric_roll"></td>
                                     </tr>
                                     <tr>
                                         <td>Fabric P/O</td>
                                         <td class="pl-4">:</td>
-                                        <td>100048963</td>
+                                        <td id="detail_fabric_po"></td>
                                     </tr>
                                     <tr>
                                         <td>Fabric Type</td>
                                         <td class="pl-4">:</td>
-                                        <td>57% cotton 38 polyester 5%spandex pique 185gm/m</td>
+                                        <td id="detail_fabric_type"></td>
                                     </tr>
                                     <tr>
                                         <td>Fabric Consumpition</td>
                                         <td class="pl-4">:</td>
-                                        <td>
-                                            BODY+Sleeves+top and under placket :5.62yds x 74" x 322gm (cuttable)- Ctn poly spandex pique
-                                        </td>
+                                        <td id="detail_fabric_cons"></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -191,7 +164,9 @@
                                 <div class="title-qr pt-3" style="font-size:20px; font-weight: 600;">
                                     QR Code
                                 </div>
-                                <img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=CT-62843-026" alt="">
+                                <div class="qr-wrapper">
+                                    <img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=CT-62843-026" alt="">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -216,11 +191,51 @@ $.ajaxSetup({
         }
     });
 
-    $('.btn-ticket-detail').click((e) => {
-        $('#modal_formLabel').text("Detail")
-        $('#btn_submit').text("OK")
-        $('#modal_form').modal('show')
+    $('.btn-ticket-detail').click( async function (e) {
+
+        let get_data_url = $(this).attr('data-url');
+        console.log(get_data_url);
+        if (get_data_url){
+            await get_data_ajax(get_data_url);
+        } else {
+            alert("not found!");
+        }
+
+        
     })
 
+</script>
+
+<script>
+    function get_data_ajax(get_data_url) {
+        $.ajax({
+            type:'GET',
+            url:get_data_url,
+            success:function(res){
+                
+                $('#detail_ticket_number').text(res.ticket_number)
+                $('#detail_size').text(res.size)
+                $('#detail_no_laying_sheet').text(res.no_laying_sheet)
+                $('#detail_table_number').text(res.table_number)
+                $('#detail_gl_number').text(res.gl_number)
+                $('#detail_buyer').text(res.buyer)
+                $('#detail_style').text(res.style)
+                $('#detail_color').text(res.color)
+                $('#detail_layer').text(res.layer)
+                $('#detail_fabric_roll').text(res.fabric_roll)
+                $('#detail_fabric_po').text(res.fabric_po)
+                $('#detail_fabric_type').text(res.fabric_type)
+                $('#detail_fabric_cons').text(res.fabric_cons)
+
+                $('.qr-wrapper').html(`<img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${res.ticket_number}" alt="">`)
+
+                $('#modal_formLabel').text("Detail")
+                $('#btn_submit').text("OK")
+                $('#modal_form').modal('show')
+            }
+        }).catch((err)=>{
+            console.log(err);
+        });
+    }
 </script>
 @endpush

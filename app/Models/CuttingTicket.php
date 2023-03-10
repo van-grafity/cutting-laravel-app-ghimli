@@ -27,5 +27,10 @@ class CuttingTicket extends Model
     {
         return $this->belongsTo(CuttingOrderRecordDetail::class, 'cutting_order_record_detail_id', 'id');
     }
+
+    public function size()
+    {
+        return $this->belongsTo(Size::class, 'size_id', 'id');
+    }
     
 }
