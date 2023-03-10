@@ -17,32 +17,32 @@
                                         <tr>
                                             <td>No. Laying Sheet</td>
                                             <td class="pl-4">:</td>
-                                            <td>62843-026</td>
+                                            <td>{{ $cutting_order->no_laying_sheet}}</td>
                                         </tr>
                                         <tr>
                                             <td>Table No</td>
                                             <td class="pl-4">:</td>
-                                            <td>26</td>
+                                            <td>{{ $cutting_order->table_number }}</td>
                                         </tr>
                                         <tr>
                                             <td>GL</td>
                                             <td class="pl-4">:</td>
-                                            <td>62843-00</td>
+                                            <td>{{ $cutting_order->gl_number }}</td>
                                         </tr>
                                         <tr>
                                             <td>Buyer</td>
                                             <td class="pl-4">:</td>
-                                            <td>AEROPOSTALE</td>
+                                            <td>{{ $cutting_order->buyer }}</td>
                                         </tr>
                                         <tr>
                                             <td>Style</td>
                                             <td class="pl-4">:</td>
-                                            <td>5243AU22</td>
+                                            <td>{{ $cutting_order->style }}</td>
                                         </tr>
                                         <tr>
                                             <td>Color</td>
                                             <td class="pl-4">:</td>
-                                            <td>MED HEATHER GREY H125R (053)</td>
+                                            <td>{{ $cutting_order->color }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -53,34 +53,32 @@
                                         <tr>
                                             <td>Fabric P/O</td>
                                             <td class="pl-4">:</td>
-                                            <td>100048963</td>
+                                            <td>{{ $cutting_order->fabric_po }}</td>
                                         </tr>
                                         <tr>
                                             <td>Fabric Type</td>
                                             <td class="pl-4">:</td>
-                                            <td>57% cotton 38 polyester 5%spandex pique 185gm/m</td>
+                                            <td>{{ $cutting_order->fabric_type }}</td>
                                         </tr>
                                         <tr>
                                             <td>Fabric Consumpition</td>
                                             <td class="pl-4">:</td>
-                                            <td>
-                                                BODY+Sleeves+top and under placket :5.62yds x 74" x 322gm (cuttable)- Ctn poly spandex pique
-                                            </td>
+                                            <td>{{ $cutting_order->fabric_cons }} </td>
                                         </tr>
                                         <tr>
                                             <td>Marker Length</td>
                                             <td class="pl-4">:</td>
-                                            <td>5 yd 35" 12'</td>
+                                            <td>{{ $cutting_order->marker_length }}</td>
                                         </tr>
                                         <tr>
                                             <td>Marker Ratio</td>
                                             <td class="pl-4">:</td>
-                                            <td>XS = 3 | M = 1 | L = 4 | XL = 5</td>
+                                            <td>{{ $cutting_order->size_ratio }}</td>
                                         </tr>
                                         <tr>
                                             <td>Layer</td>
                                             <td class="pl-4">:</td>
-                                            <td>80</td>
+                                            <td>{{ $cutting_order->layer }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -107,64 +105,40 @@
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col" class="">No. </th>
-                                <th scope="col" class="">Place No</th>
-                                <th scope="col" class="">Color</th>
-                                <th scope="col" class="">Width</th>
-                                <th scope="col" class="">Weight</th>
-                                <th scope="col" class="">Layer</th>
-                                <th scope="col" class="">Operator</th>
-                                <th scope="col" class="">Action</th>
+                                <th scope="col">No. </th>
+                                <th scope="col">Place No</th>
+                                <th scope="col">Color</th>
+                                <th scope="col">Width</th>
+                                <th scope="col">Weight</th>
+                                <th scope="col">Layer</th>
+                                <th scope="col">Operator</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach( $cutting_order_detail as $key => $detail )
                             <tr>
-                                <td>01</td>
-                                <td>28</td>
-                                <td>MED HEATHER GREY H125R (053)</td>
-                                <td>61</td>
-                                <td>25.02</td>
-                                <td>10</td>
-                                <td>Juhri</td>
+                                <td>{{ $key + 1 }}</td>
+                                <td>{{ $detail->fabric_roll }}</td>
+                                <td>{{ $detail->color->color }}</td>
+                                <td>{{ $detail->yardage }}</td>
+                                <td>{{ $detail->weight }}</td>
+                                <td>{{ $detail->layer }}</td>
+                                <td>{{ $detail->operator }}</td>
                                 <td>
                                     <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>02</td>
-                                <td>5</td>
-                                <td>MED HEATHER GREY H125R (053)</td>
-                                <td>87</td>
-                                <td>28.91</td>
-                                <td>15</td>
-                                <td>Jurhi</td>
-                                <td>
-                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>03</td>
-                                <td>31</td>
-                                <td>MED HEATHER GREY H125R (053)</td>
-                                <td>74</td>
-                                <td>24.16</td>
-                                <td>12</td>
-                                <td>Juhri</td>
-                                <td>
-                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
-                                </td>
-                            </tr>
+                            @endforeach
                             <tr class="spacer" style="height:5px;">
                                 <td colspan="8"></td>
                             </tr>
                             <tr class="bg-dark mt-2">
                                 <td colspan="3">Total</td>
-                                <td>502</td>
-                                <td>170.55</td>
-                                <td>80</td>
+                                <td>{{ $cutting_order->total_width }}</td>
+                                <td>{{ $cutting_order->total_weight }}</td>
+                                <td>{{ $cutting_order->total_layer }}</td>
                             </tr>
                         </tbody>
                     </table>

@@ -26,6 +26,7 @@ return new class extends Migration
             $table->float('joint');
             $table->integer('balance_end');
             $table->string('remarks');
+            $table->string('operator');
             
             $table->timestamps();
         });

@@ -26,6 +26,11 @@ class CuttingOrderRecordDetail extends Model
     {
         return $this->belongsTo(CuttingOrderRecord::class, 'cutting_order_record_id', 'id');
     }
+    
+    public function color()
+    {
+        return $this->belongsTo(Color::class, 'color_id', 'id');
+    }
 
     public function cuttingTicket()
     {
