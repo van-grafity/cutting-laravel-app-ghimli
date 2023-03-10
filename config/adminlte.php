@@ -349,9 +349,18 @@ return [
         ],
         [
             'text' => 'Laying Planning',
-            'url'  => '/laying-planning',
             'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
             'can'  => ['accessSuperAdmin','accessCutting'],
+            'submenu' => [
+                [
+                    'text' => 'Laying Planning List',
+                    'url' => '/laying-planning',
+                ],
+                [
+                    'text' => 'Create Laying Planning',
+                    'url' => '/laying-planning-create',
+                ],
+            ],
         ],
         [
             'text' => 'Cutting Order Record',
@@ -361,9 +370,18 @@ return [
         ],
         [
             'text' => 'Cutting Ticket',
-            'url'  => '/cutting-ticket',
             'icon' => 'fas fa-fw fa fa-solid fa-clipboard-list',
             'can'  => ['accessSuperAdmin','accessCutting'],
+            'submenu' => [
+                [
+                    'text' => 'Cutting Ticket List',
+                    'url' => '/cutting-ticket',
+                ],
+                [
+                    'text' => 'Create Cutting Ticket',
+                    'url' => '/cutting-ticket-create',
+                ],
+            ],
         ],
     ],
 
