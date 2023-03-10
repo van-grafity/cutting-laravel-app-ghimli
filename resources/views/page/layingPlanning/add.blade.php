@@ -160,8 +160,25 @@
                         </div>
 
                         <div class="row mt-5">
-                            <div class="col-md-3 col-sm-8">
-                                <!-- <h3>Add Size</h3> -->
+                            <div class="col-sm-12 col-md-6">
+                                <table id="table_laying_planning_size" class="table table-bordered align-middle">
+                                    <thead class="thead">
+                                        <tr>
+                                            <th class="text-center">Size</th>
+                                            <th class="text-center">Qty</th>
+                                            <th class="text-center" width="150">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-center align-middle" colspan="3">No Selected Size</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6">
                                 <label for="select_size" class="form-label">Add Size</label>
                                 <select class="form-control" id="select_size" name="select_size" style="width: 100%;" data-placeholder="Select Size">
                                 <option value="">Select Size</option>
@@ -176,10 +193,10 @@
                                     <input type="number" class="form-control" id="size_qty" name="size_qty" min="0">
                                 </div>
                             </div>
-                            <div class="col-md-1 col-sm-4">
+                            <div class="col-md-1 col-sm-2">
                                 <div class="form-group">
                                     <label for="" class="" style="color: rgba(255, 255, 255, 0">.</label>
-                                    <button class="btn btn-success form-control">Add Size</button>
+                                    <a id="btn_add_laying_size" class="btn btn-success form-control">Add Size</a>
                                 </div>
                             </div>
                         </div>
@@ -218,102 +235,7 @@
                             </div>
                         </div>
 
-                        <table class="table table-bordered table-striped col-md-6">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">Size</th>
-                                    <th class="text-center">Qty</th>
-                                    <th class="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableLayingPlanningSize">
-                                <tr>
-                                    <!-- add td center -->
-                                    <td class="text-center">
-                                        XS
-                                    </td>
-                                    <td class="text-center">
-                                        240
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="btn-group">
-                                            <a class="btn btn-primary" href="'.route('laying-planning.edit', $colors->id).'">Edit</a>
-                                            <a class="btn btn-danger">Delete</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        S
-                                    </td>
-                                    <td class="text-center">
-                                        0
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="btn-group">
-                                            <a class="btn btn-primary" href="'.route('laying-planning.edit', $colors->id).'">Edit</a>
-                                            <a class="btn btn-danger">Delete</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        M
-                                    </td>
-                                    <td class="text-center">
-                                        80
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="btn-group">
-                                            <a class="btn btn-primary" href="'.route('laying-planning.edit', $colors->id).'">Edit</a>
-                                            <a class="btn btn-danger">Delete</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-center">
-                                        L
-                                    </td>
-                                    <td class="text-center">
-                                        320
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="btn-group">
-                                            <a class="btn btn-primary" href="'.route('laying-planning.edit', $colors->id).'">Edit</a>
-                                            <a class="btn btn-danger">Delete</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                <td class="text-center">
-                                        XL
-                                    </td>
-                                    <td class="text-center">
-                                        400
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="btn-group">
-                                            <a class="btn btn-primary" href="'.route('laying-planning.edit', $colors->id).'">Edit</a>
-                                            <a class="btn btn-danger">Delete</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                <td class="text-center">
-                                        XXL
-                                    </td>
-                                    <td class="text-center">
-                                        0
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="btn-group">
-                                            <a class="btn btn-primary" href="'.route('laying-planning.edit', $colors->id).'">Edit</a>
-                                            <a class="btn btn-danger">Delete</a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        
                         
                         <div class="row mt-10rem">
                             <div class="col-md-12 text-right">
@@ -333,8 +255,7 @@
 @push('js')
 <script type="text/javascript">
     $( document ).ready(function() {
-        console.log( "ready!" );
-        $('.select2').select2({
+        $('.select2').select2({ 
         
         });
         $('#delivery_date').datetimepicker({
@@ -349,6 +270,129 @@
             minimumResultsForSearch: Infinity
         })
     });
+
+</script>
+<script type="text/javascript">
+    let element_html;
+    let data_row_count = $('#table_laying_planning_size > tbody tr').length;
+    let detached_options = [];
+
+    function is_table_empty_data(table_selector){
+
+        let data_row = $('#table_laying_planning_size > tbody tr td').length;
+        if(data_row <= 1){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function is_select_size_empty(){
+        if(!$('#select_size').val()) {
+            alert("Please select size")
+            return false;
+        }
+        
+        if(!$('#size_qty').val()) {
+            alert("Please select size quantity")
+            return false;
+        }
+
+        return true;
+    }
+
+    function create_tr_element() {
+        let select_size_value = $('#select_size').val();
+        let select_size_text = $('#select_size option:selected').text();
+        let size_qty = $('#size_qty').val();
+        let element = `
+        <tr>
+            <td class="text-center align-middle">
+                <input type="hidden" name="laying_planning_size_id[]" value="${select_size_value}">
+                ${select_size_text}
+            </td>
+            <td class="text-center align-middle">
+                <input type="hidden" name="laying_planning_size_qty[]" value="${size_qty}">
+                ${size_qty}
+            </td>
+            <td class="text-center align-middle">
+                <a class="btn btn-sm btn-danger btn-delete-size" data-id="${select_size_value}">Delete</a>
+            </td>
+        </tr>`
+        return element;
+    }
+
+    function is_size_already_added() {
+        var get_size = $("input[name='laying_planning_size_id[]']").map(function(){return $(this).val();}).get();
+        let select_size_value = $('#select_size').val();
+        // console.log(get_size);
+        // console.log(get_size.includes(select_size_value));
+    }
+
+    $('#btn_add_laying_size').on('click', function(e) {
+
+        if(!is_select_size_empty()){
+            return false;
+        }
+
+        
+        element_html = create_tr_element();
+        if(is_table_empty_data()){
+            $('#table_laying_planning_size > tbody').html(element_html);
+        } else {
+            is_size_already_added();
+            $('#table_laying_planning_size > tbody').append(element_html);
+        }
+
+        let select_size_value = $('#select_size').val();
+        detach_element = $(`#select_size option[value='${select_size_value}'`).detach();
+        let detach_option = {
+            'value': detach_element[0].value,
+            'text': detach_element[0].text,
+        };
+        detached_options.push(detach_option);
+        // console.log(detached_options);
+
+        data_row_count++;
+
+        $('#select_size').val('');
+        $('#select_size').trigger('change')
+        $('#size_qty').val('');
+    });
+
+
+    //when user click on remove button
+    $('#table_laying_planning_size > tbody').on("click",".btn-delete-size", function(e){ 
+        e.preventDefault();
+
+        deleted_size_id = $(this).data('id');
+        insert_option_after_delete(deleted_size_id);
+        
+        $(this).parent().parent().remove();
+		data_row_count--;
+        
+        if(is_table_empty_data()){
+            element_html = `
+            <tr>
+                <td class="text-center align-middle" colspan="3">No Selected Size</td>
+            </tr>`;
+
+            $('#table_laying_planning_size > tbody').html(element_html);
+        }
+    });
+
+    function insert_option_after_delete(option_value){
+        var result = detached_options.filter(obj => {
+            return obj.value === `${option_value}`
+        })
+        result.forEach( data => {
+            let new_option = new Option(data.text, data.value, false, false);
+            console.log(new_option);
+            $('#select_size').append(new_option).trigger('change');
+        })
+    }
+
+    
 
 </script>
 @endpush
