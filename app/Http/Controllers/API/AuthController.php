@@ -56,7 +56,11 @@ class AuthController extends BaseController
 
     public function me()
     {
-        return $this->onSuccess(auth()->user(), 'User fetched successfully');
+        $user = Auth::user();
+        $user = json_encode(array('users' => $user));
+        $user = json_decode($user, true);
+        return $this->onSuccess($user, 'User fetched successfully');
+        
     }
 
     public function logout(Request $request)
@@ -73,8 +77,10 @@ class AuthController extends BaseController
 
     public function index()
     {
-        $users = User::all();
-        return $this->onSuccess($users, 'Users fetched successfully');
+        $data = User::all();
+        $data = json_encode(array('users' => $data));
+        $data = json_decode($data, true);
+        return $this->onSuccess($data, 'User fetched successfully');
     }
    
 }

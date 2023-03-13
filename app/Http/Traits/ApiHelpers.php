@@ -50,6 +50,16 @@ trait ApiHelpers
         ], $code);
     }
 
+    protected function mapData($data, $model)
+    {
+        $result = [];
+        foreach ($data as $key => $value) {
+            $result[$key] = new $model($value);
+        }
+
+        return $result;
+    }
+
     protected function postValidationRules(): array
     {
         return [
