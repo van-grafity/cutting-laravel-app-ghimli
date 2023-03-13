@@ -19,11 +19,12 @@ use App\Http\Controllers\API\BlogController;
 
 Route::post('login', [AuthController::class, 'signin']);
 Route::post('register', [AuthController::class, 'signup']);
-
+Route::get('/users', [AuthController::class, 'index']);
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+
     
     Route::resource('blogs', BlogController::class);
     

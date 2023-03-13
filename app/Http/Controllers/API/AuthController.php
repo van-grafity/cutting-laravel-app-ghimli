@@ -58,7 +58,7 @@ class AuthController extends BaseController
     {
         return $this->onSuccess(auth()->user(), 'User fetched successfully');
     }
-    
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -69,6 +69,12 @@ class AuthController extends BaseController
         // return [
         //     'message' => 'Tokens Revoked'
         // ];
+    }
+
+    public function index()
+    {
+        $users = User::all();
+        return $this->onSuccess($users, 'Users fetched successfully');
     }
    
 }
