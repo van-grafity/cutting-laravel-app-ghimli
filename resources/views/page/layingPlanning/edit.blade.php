@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Create Laying Planning')
+@section('title', 'Edit Laying Planning')
 
 @section('content')
 
@@ -19,9 +19,10 @@
                         </div>
                     @endif
                     <!-- START FORM -->
-                    <form action="{{ url('/laying-planning') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="form_laying_planning">
+                    <form action="{{ route('laying-planning.update', $layingPlanning->id) }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="form_laying_planning">
                         @csrf
-                        @method('POST')
+                        @method('PUT')
+                        <input type="hidden" name="laying_planning_id" value="{{ $layingPlanning->id }}">
                         <div class="row">
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
@@ -29,7 +30,7 @@
                                     <select class="form-control select2" id="gl" name="gl" style="width: 100%;" data-placeholder="Choose GL">
                                         <option value="">Choose GL</option>
                                         @foreach ($gls as $gl)
-                                            <option value="{{ $gl->id }}">{{ $gl->gl_number }}</option>
+                                            <option value="{{ $gl->id }}" {{ $gl->id == $layingPlanning->gl_id ? 'selected' : '' }}>{{ $gl->gl_number }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -42,6 +43,9 @@
                                     <label for="style" class="form-label">Style</label>
                                     <select class="form-control select2" id="style" name="style" style="width: 100%;" data-placeholder="Choose Style">
                                         <option value=""> Choose Style</option>
+                                        @foreach ($styles as $style)
+                                            <option value="{{ $style->id }}" {{ $style->id == $layingPlanning->style->id ? 'selected' : '' }}>{{ $style->style }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -49,7 +53,7 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="style_desc" class="form-label">Description</label>
-                                    <textarea class="form-control" name="style_desc" id="style_desc" cols="30" rows="2" disabled></textarea>
+                                    <textarea class="form-control" name="style_desc" id="style_desc" cols="30" rows="2" disabled>{{ $layingPlanning->style->description }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -61,7 +65,7 @@
                                     <select class="form-control select2" id="buyer" name="buyer" style="width: 100%;" data-placeholder="Choose Buyer">
                                         <option value="">Choose Buyer</option>
                                         @foreach ($buyers as $buyer)
-                                            <option value="{{ $buyer->id }}">{{ $buyer->name }}</option>
+                                            <option value="{{ $buyer->id }}" {{ $buyer->id == $layingPlanning->buyer->id ? 'selected' : '' }} >{{ $buyer->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -73,7 +77,7 @@
                                     <select class="form-control select2" id="color" name="color" style="width: 100%;" data-placeholder="Choose Color">
                                         <option value="">Choose Color</option>
                                         @foreach ($colors as $color)
-                                            <option value="{{ $color->id }}">{{ $color->color }}</option>
+                                            <option value="{{ $color->id }}" {{ $color->id == $layingPlanning->color->id ? 'selected' : '' }} >{{ $color->color }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -84,13 +88,13 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="order_qty" class="form-label">Order Qty</label>
-                                    <input type="number" class="form-control" id="order_qty" name="order_qty" min="0">
+                                    <input type="number" class="form-control" id="order_qty" name="order_qty" min="0" value="{{ $layingPlanning->order_qty }}">
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="total_qty" class="form-label">Total Qty</label>
-                                    <input type="number" class="form-control" id="total_qty" name="total_qty" min="0">
+                                    <input type="number" class="form-control" id="total_qty" name="total_qty" min="0" value="{{ $layingPlanning->order_qty }}">
                                 </div>
                             </div>
                         </div>
@@ -100,7 +104,7 @@
                                 <div class="form-group">
                                     <label for="delivery_date" class="form-label">Delivery Date</label>
                                     <div class="input-group date" id="delivery_date" data-target-input="nearest">
-                                        <input type="text" class="form-control datetimepicker-input" data-target="#delivery_date" name="delivery_date"/>
+                                        <input type="text" class="form-control datetimepicker-input" data-target="#delivery_date" name="delivery_date" value="{{ $layingPlanning->delivery_date }}"/>
                                         <div class="input-group-append" data-target="#delivery_date" data-toggle="datetimepicker">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>
@@ -110,9 +114,9 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="plan_date" class="form-label">Plan Date</label>
-                                    <div class="input-group date" id="plan_date" data-target-input="nearest">
-                                        <input type="text" class="form-control datetimepicker-input" data-target="#plan_date" name="plan_date" readonly>
-                                        <div class="input-group-append" data-target="#plan_date" data-toggle="datetimepicker">
+                                    <div class="input-group" id="plan_date" data-target-input="nearest">
+                                        <input type="text" class="form-control" data-target="#plan_date" name="plan_date" value="{{ $layingPlanning->plan_date }}"readonly>
+                                        <div class="input-group-append" data-target="#plan_date" data-toggle="">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>
                                     </div>
@@ -124,7 +128,7 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="fabric_po" class="form-label">Fabric PO</label>
-                                    <input type="text" class="form-control" id="fabric_po" name="fabric_po">
+                                    <input type="text" class="form-control" id="fabric_po" name="fabric_po" value="{{ $layingPlanning->fabric_po }}">
                                 </div>
                             </div>
                         </div>
@@ -136,7 +140,7 @@
                                     <select class="form-control select2" id="fabric_type" name="fabric_type" style="width: 100%;" data-placeholder="Choose Fabric Type">
                                         <option value="">Choose Fabric Type</option>
                                         @foreach ($fabricTypes as $fabricType)
-                                            <option value="{{ $fabricType->id }}">{{ $fabricType->name }}</option>
+                                            <option value="{{ $fabricType->id }}" {{ $fabricType->id == $layingPlanning->fabricType->id ? 'selected' : '' }}>{{ $fabricType->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -147,7 +151,7 @@
                                     <select class="form-control select2" id="fabric_cons" name="fabric_cons" style="width: 100%;" data-placeholder="Choose Fabric Consumption">
                                         <option value="">Choose Fabric Consumption</option>
                                         @foreach ($fabricCons as $fabricCon)
-                                            <option value="{{ $fabricCon->id }}">{{ $fabricCon->description }}</option>
+                                            <option value="{{ $fabricCon->id }}" {{ $fabricCon->id == $layingPlanning->fabricCons->id ? 'selected' : '' }}>{{ $fabricCon->description }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -156,7 +160,7 @@
                                 <div class="form-group">
                                     <label for="fabric_cons_qty" class="form-label">qty</label>
                                     <div class="input-group mb-3">
-                                        <input type="number" class="form-control"  id="fabric_cons_qty" name="fabric_cons_qty" min="0">
+                                        <input type="number" class="form-control"  id="fabric_cons_qty" name="fabric_cons_qty" min="0" value="{{ $layingPlanning->fabric_cons_qty }}">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Yard</span>
                                         </div>
@@ -176,9 +180,21 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach ($layingPlanningSizes as $key => $value)
                                         <tr>
-                                            <td class="text-center align-middle" colspan="3">No Selected Size</td>
+                                            <td class="text-center align-middle">
+                                                <input type="hidden" name="laying_planning_size_id[]" value="{{ $value->size->id }}">
+                                                {{ $value->size->size }}
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <input type="hidden" name="laying_planning_size_qty[]" value="{{ $value->quantity }}">
+                                                {{ $value->quantity }}
+                                            </td>
+                                            <td class="text-center align-middle">
+                                                <a class="btn btn-sm btn-danger btn-delete-size" data-id="{{ $value->size->id }}">Delete</a>
+                                            </td>
                                         </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -228,12 +244,10 @@
         $('.select2').select2({ 
         
         });
+
         $('#delivery_date').datetimepicker({
             format: 'DD/MM/yyyy',
-        });
-        $('#plan_date').datetimepicker({
-            format: 'DD/MM/yyyy',
-            defaultDate: moment().format('YYYY-MM-DD'),
+            date: moment('{{ $layingPlanning->delivery_date }}').format('YYYY-MM-DD')
         });
     
         $('#select_size').select2({
@@ -267,9 +281,9 @@
 
             let params = new URLSearchParams();
             params.append('id', style_id);
-            let url_style = `{{ url('ajax/get-style') }}?${params.toString()}`;
+            url = `{{ url('ajax/get-style') }}?${params.toString()}`;
 
-            get_data_using_fetch(url_style).then((data) => {
+            get_data_using_fetch(url).then((data) => {
                 $('#style_desc').val(data.description);
             });
         })
@@ -285,6 +299,7 @@
 
     });
 
+    
 </script>
 <script type="text/javascript">
     let element_html;
@@ -350,11 +365,9 @@
     }
 
     $('#btn_add_laying_size').on('click', function(e) {
-
         if(!is_select_size_empty()){ // jika form untuk nambah size ada yang belum di isi, maka aksi gagal
             return false;
         }
-
         
         element_html = create_tr_element();
         if(is_table_empty_data()){
@@ -368,28 +381,14 @@
             }
         }
 
-        // let select_size_value = $('#select_size').val();
-        // detach_element = $(`#select_size option[value='${select_size_value}'`).detach();
-        // let detach_option = {
-        //     'value': detach_element[0].value,
-        //     'text': detach_element[0].text,
-        // };
-        // detached_options.push(detach_option);
-        // console.log(detached_options);
-
-
         $('#select_size').val('');
         $('#select_size').trigger('change')
         $('#size_qty').val('');
     });
 
-
     //when user click on remove button
     $('#table_laying_planning_size > tbody').on("click",".btn-delete-size", function(e){ 
         e.preventDefault();
-
-        // deleted_size_id = $(this).data('id');
-        // insert_option_after_delete(deleted_size_id);
         
         $(this).parent().parent().remove();
 		data_row_count--;
@@ -404,19 +403,7 @@
         }
     });
 
-    // function insert_option_after_delete(option_value){
-    //     var result = detached_options.filter(obj => {
-    //         return obj.value === `${option_value}`
-    //     })
-    //     result.forEach( data => {
-    //         let new_option = new Option(data.text, data.value, false, false);
-    //         console.log(new_option);
-    //         $('#select_size').append(new_option).trigger('change');
-    //     })
-    // }
-
 </script>
-
 
 <script type="text/javascript">
     async function get_data_using_fetch(url = "", data = {}) {
@@ -436,6 +423,5 @@
         });
         return response.json(); // parses JSON response into native JavaScript objects
     }
-
 </script>
 @endpush

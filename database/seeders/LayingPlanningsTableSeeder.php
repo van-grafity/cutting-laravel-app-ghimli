@@ -43,8 +43,8 @@ class LayingPlanningsTableSeeder extends Seeder
                 'fabric_type_id' => 2, 
                 'fabric_cons_id' => 2, 
                 'fabric_cons_qty' => 200, 
-                'plan_date' => date('2023-05-01'), 
-                'delivery_date' => date('2023-05-01'), 
+                'plan_date' => date('2023-04-12'), 
+                'delivery_date' => date('2023-06-01'), 
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],

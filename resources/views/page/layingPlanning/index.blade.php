@@ -42,8 +42,8 @@
                                 <td>{{ $layingPlanning->color->color }}</td>
                                 <td>{{ $layingPlanning->fabricType->description }}</td>
                                 <td>
-                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning" data-id="{{ $layingPlanning->id }}">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning" data-id="{{ $layingPlanning->id }}" data-url="">Delete</a>
+                                    <a href="{{ route('laying-planning.edit',$layingPlanning->id) }}" class="btn btn-primary btn-sm btn-edit-layingPlanning" data-id="{{ $layingPlanning->id }}">Edit</a>
+                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning" data-id="{{ $layingPlanning->id }}" data-url="{{ route('laying-planning.destroy', $layingPlanning->id) }}">Delete</a>
                                     <a href="{{ route('laying-planning.show',$layingPlanning->id) }}" class="btn btn-info btn-sm mt-1" data-id="{{ $layingPlanning->id }}" data-url="">Detail</a>
                                     <a  href="{{ url('/laying-planning-qrcode/'.$layingPlanning->id) }}" class="btn btn-primary btn-sm">QR Code</a>
                                 </td>
@@ -101,6 +101,8 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -109,6 +111,28 @@ $(document).ready(function(){
 
     $('#btn_modal_create').click((e) => {
         reset_form({title: "Add Planning", btn_textx: "Add Plan"});
+    })
+
+    $('.btn-delete-layingPlanning').on('click', async function(e){
+
+        if(!confirm("Apakah anda yakin ingin menghapus laying planning ini?")) {
+            return false;
+        }
+        let laying_planning_id = $(this).attr('data-id');
+        let url_delete = $(this).attr('data-url');
+        const data_params = {
+            token: token
+        };
+
+        result = await delete_using_fetch(url_delete, data_params);
+        if(result.status == "success"){
+            alert(result.message)
+            laying_planning_id = $(this).attr('data-id');
+            location.reload();
+        } else {
+            alert("Terjadi Kesalahan");
+        }
+
     })
 
 
@@ -123,5 +147,25 @@ $(document).ready(function(){
         $('#create_form').find('input[name="_method"]').remove();
         $('#modal_form').modal('show')
     }
+</script>
+
+<script type="text/javascript">
+    async function delete_using_fetch(url = "", data = {}) {
+    // Default options are marked with *
+        const response = await fetch(url, {
+            method: "DELETE",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+                'X-CSRF-TOKEN': data.token
+            },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+        });
+        return response.json();
+    }
+
 </script>
 @endpush('js')
