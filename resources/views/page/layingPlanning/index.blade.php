@@ -42,7 +42,7 @@
                                 <td>{{ $layingPlanning->color->color }}</td>
                                 <td>{{ $layingPlanning->fabricType->description }}</td>
                                 <td>
-                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning" data-id="{{ $layingPlanning->id }}">Edit</a>
+                                    <a href="{{ route('laying-planning.edit',$layingPlanning->id) }}" class="btn btn-primary btn-sm btn-edit-layingPlanning" data-id="{{ $layingPlanning->id }}">Edit</a>
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning" data-id="{{ $layingPlanning->id }}" data-url="">Delete</a>
                                     <a href="{{ route('laying-planning.show',$layingPlanning->id) }}" class="btn btn-info btn-sm mt-1" data-id="{{ $layingPlanning->id }}" data-url="">Detail</a>
                                     <a  href="{{ url('/laying-planning-qrcode/'.$layingPlanning->id) }}" class="btn btn-primary btn-sm">QR Code</a>

@@ -8,6 +8,7 @@ use App\Http\Controllers\FabricTypesController;
 use App\Http\Controllers\GlsController;
 use App\Http\Controllers\CuttingOrdersController;
 use App\Http\Controllers\CuttingTicketsController;
+use App\Http\Controllers\StylesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,4 +47,8 @@ Route::group(['middleware' => ['auth']], function () {
     
     Route::resource('cutting-ticket', CuttingTicketsController::class)->middleware('accessSuperAdmin');
     Route::get('cutting-ticket-create', [CuttingTicketsController::class,'createTicket'])->name('cutting-ticket.createTicket')->middleware('accessSuperAdmin');
+
+    Route::get('ajax/get-style', [StylesController::class, 'getStyle']);
+    Route::get('ajax/get-style/{id}', [StylesController::class, 'getStyle']);
+    
 });
