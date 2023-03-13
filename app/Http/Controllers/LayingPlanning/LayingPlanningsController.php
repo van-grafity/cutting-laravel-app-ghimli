@@ -4,9 +4,11 @@ namespace App\Http\Controllers\LayingPlanning;
 
 use App\Http\Controllers\Controller;
 use App\Models\LayingPlanning;
+use App\Models\LayingPlanningSize;
 use App\Models\LayingPlanningDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class LayingPlanningsController extends Controller
 {
@@ -51,17 +53,23 @@ class LayingPlanningsController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
-        // $request->validate([
-        //     'gl' => 'required',
-        //     'buyer' => 'required',
-        //     'style' => 'required',
-        //     'color' => 'required',
-        //     'fabric_type' => 'required',
-        //     'laying_planning_date' => 'required',
-        //     'laying_planning_size' => 'required',
-        //     'laying_planning_qty' => 'required',
-        // ]);
+        $rules = [
+            'gl' => 'required',
+            'buyer' => 'required',
+            'style' => 'required',
+            'color' => 'required',
+            'fabric_type' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages = [
+            'required' => 'The :attribute field is required.',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('laying-planning-create')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
 
         $layingData = [
             'gl_id' => $request->gl,
@@ -76,8 +84,18 @@ class LayingPlanningsController extends Controller
             'fabric_type_id' => $request->fabric_type,
             'fabric_cons_qty' => $request->fabric_cons_qty,
         ];
-        
         $insertLayingData = LayingPlanning::create($layingData);
+
+        $selected_sizes = $request->laying_planning_size_id;
+        $selected_sizes_qty = $request->laying_planning_size_qty;
+        foreach ($selected_sizes as $key => $size_id) {
+            $laying_planning_size = [
+                'size_id' => $size_id,
+                'quantity' => $selected_sizes_qty[$key],
+                'laying_planning_id' => $insertLayingData->id,
+            ];
+            $insertLayingsize = LayingPlanningSize::create($laying_planning_size);
+        }
 
         return redirect()->route('laying-planning.index')
             ->with('success', 'Laying Planning created successfully.');

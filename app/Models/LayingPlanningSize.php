@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class LayingPlanningSize extends Model
 {
     use HasFactory;
-
+    public $timestamps = false;
+    
     protected $fillable = [
         'laying_planning_id',
         'size_id',

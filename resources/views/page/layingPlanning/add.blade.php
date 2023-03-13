@@ -9,8 +9,17 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    @if ($errors->any())
+                        <div class="alert text-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <!-- START FORM -->
-                    <form action="{{ url('/laying-planning') }}" method="POST" class="custom-validation" enctype="multipart/form-data">
+                    <form action="{{ url('/laying-planning') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="form_laying_planning">
                         @csrf
                         @method('POST')
                         <div class="row">
@@ -201,46 +210,10 @@
                             </div>
                         </div>
 
-
-                        <div class="row d-none">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <table class="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Size</th>
-                                                <th>Qty</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tableLayingPlanningSize">
-                                            <tr>
-                                                <td>
-                                                    <select class="form-control" id="size" name="size[]">
-                                                        @foreach ($sizes as $size)
-                                                            <option value="{{ $size->id }}">{{ $size->size }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <input type="number" class="form-control" id="qty" name="qty[]">
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-primary waves-effect waves-light" id="addLayingPlanningSize">Add</button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        
-                        
                         <div class="row mt-10rem">
                             <div class="col-md-12 text-right">
                                 <a href="{{ url('/laying-planning') }}" class="btn btn-secondary shadow-sm">cancel</a>
-                                <button type="submit" class="btn btn-primary waves-effect waves-light shadow-sm">Submit</button>
+                                <a type="button" class="btn btn-primary waves-effect waves-light shadow-sm" id="submit_form">Submit</a>
                             </div>
                         </div>
                     </form>
@@ -427,5 +400,16 @@
     // }
     // get_data_using_ajax({ url: '/api/laying_plan'});
 
+</script>
+
+<script type="text/javascript">
+    $( "#submit_form" ).click(function(e) {
+        e.preventDefault();
+        if(is_table_empty_data()){
+            alert("belum ada size dipilih")
+            return false;
+        }
+        $("#form_laying_planning" ).submit();
+    });
 </script>
 @endpush
