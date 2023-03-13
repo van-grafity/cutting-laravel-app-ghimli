@@ -134,11 +134,10 @@ class LayingPlanningsController extends Controller
     public function edit(LayingPlanning $layingPlannings, $id)
     {
         
-        
         $layingPlanning = LayingPlanning::find($id);
         $gls = DB::table('gls')->get();
         $buyers = DB::table('buyers')->get();
-        $styles = DB::table('styles')->get();
+        $styles = DB::table('styles')->where('gl_id',$layingPlanning->gl_id)->get();
         $colors = DB::table('colors')->get();
         $fabricTypes = DB::table('fabric_types')->get();
         $fabricCons = DB::table('fabric_cons')->get();
@@ -216,8 +215,22 @@ class LayingPlanningsController extends Controller
      * @param  \App\Models\LayingPlanning  $layingPlannings
      * @return \Illuminate\Http\Response
      */
-    public function destroy(LayingPlanning $layingPlannings)
+    public function destroy($id)
     {
-        //
+        try {
+            $layingPlanning = LayingPlanning::find($id);
+            $layingPlanning->delete();
+            $date_return = [
+                'status' => 'success',
+                'data'=> $layingPlanning,
+                'message'=> 'Data Laying Planning berhasil di hapus',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 }
