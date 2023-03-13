@@ -277,7 +277,8 @@
     let data_row_count = $('#table_laying_planning_size > tbody tr').length;
     let detached_options = [];
 
-    function is_table_empty_data(table_selector){
+    // memeriksa jika di dalam tabel belum ada size yang dipilih
+    function is_table_empty_data(table_selector){ 
 
         let data_row = $('#table_laying_planning_size > tbody tr td').length;
         if(data_row <= 1){
@@ -287,6 +288,7 @@
         }
     }
 
+    // memeriksa jika input form untuk menambahkan size dan quantitiynya masih kosong apa tidak
     function is_select_size_empty(){
         if(!$('#select_size').val()) {
             alert("Please select size")
@@ -301,6 +303,7 @@
         return true;
     }
 
+    // membuat baris baru untuk setiap size yang telah di pilih
     function create_tr_element() {
         let select_size_value = $('#select_size').val();
         let select_size_text = $('#select_size option:selected').text();
@@ -322,16 +325,19 @@
         return element;
     }
 
+    // memeriksa apakah size yang akan ditambahkan sudah ada di dalam tabel
     function is_size_already_added() {
         var get_size = $("input[name='laying_planning_size_id[]']").map(function(){return $(this).val();}).get();
         let select_size_value = $('#select_size').val();
-        // console.log(get_size);
-        // console.log(get_size.includes(select_size_value));
+        if(get_size.includes(select_size_value)){
+            return true;
+        }
+        return false;
     }
 
     $('#btn_add_laying_size').on('click', function(e) {
 
-        if(!is_select_size_empty()){
+        if(!is_select_size_empty()){ // jika form untuk nambah size ada yang belum di isi, maka aksi gagal
             return false;
         }
 
@@ -340,20 +346,23 @@
         if(is_table_empty_data()){
             $('#table_laying_planning_size > tbody').html(element_html);
         } else {
-            is_size_already_added();
-            $('#table_laying_planning_size > tbody').append(element_html);
+            if(is_size_already_added()){
+                alert("Size sudah ditambahkan")
+            } else {
+                $('#table_laying_planning_size > tbody').append(element_html);
+                data_row_count++;
+            }
         }
 
-        let select_size_value = $('#select_size').val();
-        detach_element = $(`#select_size option[value='${select_size_value}'`).detach();
-        let detach_option = {
-            'value': detach_element[0].value,
-            'text': detach_element[0].text,
-        };
-        detached_options.push(detach_option);
+        // let select_size_value = $('#select_size').val();
+        // detach_element = $(`#select_size option[value='${select_size_value}'`).detach();
+        // let detach_option = {
+        //     'value': detach_element[0].value,
+        //     'text': detach_element[0].text,
+        // };
+        // detached_options.push(detach_option);
         // console.log(detached_options);
 
-        data_row_count++;
 
         $('#select_size').val('');
         $('#select_size').trigger('change')
@@ -365,8 +374,8 @@
     $('#table_laying_planning_size > tbody').on("click",".btn-delete-size", function(e){ 
         e.preventDefault();
 
-        deleted_size_id = $(this).data('id');
-        insert_option_after_delete(deleted_size_id);
+        // deleted_size_id = $(this).data('id');
+        // insert_option_after_delete(deleted_size_id);
         
         $(this).parent().parent().remove();
 		data_row_count--;
@@ -381,18 +390,42 @@
         }
     });
 
-    function insert_option_after_delete(option_value){
-        var result = detached_options.filter(obj => {
-            return obj.value === `${option_value}`
-        })
-        result.forEach( data => {
-            let new_option = new Option(data.text, data.value, false, false);
-            console.log(new_option);
-            $('#select_size').append(new_option).trigger('change');
-        })
-    }
+    // function insert_option_after_delete(option_value){
+    //     var result = detached_options.filter(obj => {
+    //         return obj.value === `${option_value}`
+    //     })
+    //     result.forEach( data => {
+    //         let new_option = new Option(data.text, data.value, false, false);
+    //         console.log(new_option);
+    //         $('#select_size').append(new_option).trigger('change');
+    //     })
+    // }
 
-    
+    // const get_data_using_ajax = ( params = { url: null }) => {
+    //     if (!params.url) {
+    //         return false;
+    //     }
+    //     console.log(params.url);
+    //     console.log("woi");
+        // return new Promise((resolve, reject) => {
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: '/api/laying_planning_size',
+        //         dataType: 'json',
+        //         success: (data) => {
+        //             resolve(data);
+        //         },
+        //         error: (error) => {
+        //             reject(error);
+        //         }
+        //     });
+        // });
+    // }
+
+    // data_url = {
+        
+    // }
+    // get_data_using_ajax({ url: '/api/laying_plan'});
 
 </script>
 @endpush
