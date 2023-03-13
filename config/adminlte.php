@@ -318,12 +318,6 @@ return [
             'can'  => 'accessSuperAdmin',
         ],
         [
-            'text' => 'GL',
-            'url'  => '/gl',
-            'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => ['accessSuperAdmin','accessSewing'],
-        ],
-        [
             'text' => 'Buyer',
             'url'  => '/buyer',
             'icon' => 'fas fa-fw fa fa-user',
@@ -346,6 +340,12 @@ return [
             'url'  => '/fabric-type',
             'icon' => 'fas fa-fw fa fa-solid fa-swatchbook',
             'can'  => ['accessSuperAdmin'],
+        ],
+        [
+            'text' => 'GL',
+            'url'  => '/gl',
+            'icon' => 'fas fa-fw fa fa-file-alt',
+            'can'  => ['accessSuperAdmin','accessSewing'],
         ],
         [
             'text' => 'Laying Planning',

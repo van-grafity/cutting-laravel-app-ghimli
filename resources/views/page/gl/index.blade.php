@@ -78,9 +78,9 @@
                             <input type="text" class="form-control" id="gl_size_order" name="size_order" placeholder="Enter Size Order">
                         </div>
                         <div class="form-group">
-                            <label for="gl_buyer">Gl</label>
+                            <label for="gl_buyer">Buyer</label>
                             <select name="buyer_id" class="form-control" id="gl_buyer">
-                                <option value="">Choose Gl</option>
+                                <option value="">Choose Buyer</option>
                                 @foreach($buyers as $key => $buyer)
                                     <option value="{{ $buyer->id }}" >{{ $buyer->name }}</option>
                                 @endforeach
