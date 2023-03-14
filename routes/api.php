@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BlogController;
+use App\Http\Controllers\API\CuttingOrdersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +26,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
-    
     Route::resource('blogs', BlogController::class);
+    Route::get('cutting-orders', [CuttingOrdersController::class, 'index']);
+    Route::get('cutting-orders/{id}', [CuttingOrdersController::class, 'show']);
+    Route::post('cutting-orders', [CuttingOrdersController::class, 'store']);
     
 });
