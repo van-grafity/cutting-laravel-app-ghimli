@@ -37,6 +37,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/laying-planning-create', [LayingPlanning\LayingPlanningsController::class, 'layingCreate'])->middleware('accessCutting');
     Route::get('/laying-planning-qrcode/{id}', [LayingPlanning\LayingPlanningsController::class, 'layingQrcode'])->middleware('accessCutting');
 
+    route::post('laying-planning-detail/create', [LayingPlanning\LayingPlanningsController::class, 'detail_create'])->middleware('accessCutting')->name('laying-planning.detail-create');
+    route::put('laying-planning-detail/{id}/', [LayingPlanning\LayingPlanningsController::class, 'detail_update'])->middleware('accessCutting')->name('laying-planning.detail-update');
+    route::delete('laying-planning-detail/{id}', [LayingPlanning\LayingPlanningsController::class, 'detail_delete'])->middleware('accessCutting')->name('laying-planning.detail-delete');
+    route::get('laying-planning-detail/{id}/edit', [LayingPlanning\LayingPlanningsController::class, 'detail_edit'])->middleware('accessCutting')->name('laying-planning.detail-edit');
+
     Route::resource('color', ColorsController::class)->middleware('accessSuperAdmin');
     Route::get('/color-data', [ColorsController::class, 'dataColor'])->middleware('accessSuperAdmin');
     Route::resource('fabric-cons', FabricConssController::class)->middleware('accessSuperAdmin');
@@ -50,5 +55,5 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('ajax/get-style', [StylesController::class, 'getStyle']);
     Route::get('ajax/get-style/{id}', [StylesController::class, 'getStyle']);
-    
+
 });

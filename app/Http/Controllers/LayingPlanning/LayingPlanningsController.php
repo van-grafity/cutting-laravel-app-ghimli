@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\LayingPlanning;
 use App\Models\LayingPlanningSize;
 use App\Models\LayingPlanningDetail;
+use App\Models\LayingPlanningDetailSize;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class LayingPlanningsController extends Controller
@@ -95,7 +97,7 @@ class LayingPlanningsController extends Controller
                 'quantity' => $selected_sizes_qty[$key],
                 'laying_planning_id' => $insertLayingData->id,
             ];
-            $insertLayingsize = LayingPlanningSize::create($laying_planning_size);
+            $insertLayingSize = LayingPlanningSize::create($laying_planning_size);
         }
 
         return redirect()->route('laying-planning.index')
@@ -203,7 +205,7 @@ class LayingPlanningsController extends Controller
                 'quantity' => $selected_sizes_qty[$key],
                 'laying_planning_id' => $layingPlanning->id,
             ];
-            $insertLayingsize = LayingPlanningSize::create($laying_planning_size);
+            $insertLayingSize = LayingPlanningSize::create($laying_planning_size);
         }
         
         return redirect('laying-planning');
@@ -232,5 +234,136 @@ class LayingPlanningsController extends Controller
                 'message' => $th->getMessage()
             ]);
         }
+    }
+
+    public function detail_create(Request $request) 
+    {
+        // dd($request->all());
+
+        $layingPlanning = LayingPlanning::find($request->laying_planning_id);
+        if(!$layingPlanning) {
+            return redirect('laying-planning-create')
+                        ->withInput();
+        }
+        $getLastDetail = LayingPlanningDetail::where('laying_planning_id', $layingPlanning->id)->orderBy('table_number','desc')->first();
+
+        $layingDetailData = [
+            'no_laying_sheet' => $this->generate_no_laying_sheet($layingPlanning),
+            'table_number' => $next_table_number = $getLastDetail ? $getLastDetail->table_number + 1 : 1,
+            'laying_planning_id' => $layingPlanning->id,
+            'layer_qty' => $request->layer_qty,
+            'marker_code' => $request->marker_code,
+            'marker_yard' => $request->marker_yard,
+            'marker_inch' => $request->marker_inch,
+            'marker_length' => $request->marker_length,
+            'total_length' => $request->marker_total_length,
+            'total_all_size' => $request->qty_size_all,
+        ];
+
+        $insertLayingDetail = LayingPlanningDetail::create($layingDetailData);
+        
+        $ratio_size = $request->ratio_size;
+        $qty_size = $request->qty_size;
+        foreach ($ratio_size as $key => $size_value) {
+            $laying_planning_detail_size = [
+                'laying_planning_detail_id' => $insertLayingDetail->id,
+                'size_id' => $key,
+                'ratio_per_size' => $ratio_size[$key],
+                'qty_per_size' => $qty_size[$key],
+            ];
+            $insertPlanningDetailSize = LayingPlanningDetailSize::create($laying_planning_detail_size);
+        }
+
+        return redirect()->route('laying-planning.show',$layingPlanning->id)
+            ->with('success', 'Laying Planning created successfully.');
+
+    }
+
+    public function detail_edit($id)
+    {
+        try {
+            $layingPlanningDetail = LayingPlanningDetail::with('layingPlanningDetailSize')->find($id);
+            $date_return = [
+                'status' => 'success',
+                'data'=> $layingPlanningDetail,
+                'message'=> 'Data Detail Laying Planning berhasil di ambil',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+    
+    public function detail_update(Request $request, $id)
+    {
+        try {
+            $layingPlanningDetail = LayingPlanningDetail::with('layingPlanningDetailSize')->find($id);
+            
+            $layingPlanningDetail->layer_qty = $request->layer_qty;
+            $layingPlanningDetail->marker_code = $request->marker_code;
+            $layingPlanningDetail->marker_yard = $request->marker_yard;
+            $layingPlanningDetail->marker_inch = $request->marker_inch;
+            $layingPlanningDetail->marker_length = $request->marker_length;
+            $layingPlanningDetail->total_length = $request->marker_total_length;
+            $layingPlanningDetail->total_all_size = $request->qty_size_all;
+            $layingPlanningDetail->save();
+
+            $deletePlanningDetailSize = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->delete();
+            
+            $ratio_size = $request->ratio_size;
+            $qty_size = $request->qty_size;
+            foreach ($ratio_size as $key => $size_value) {
+                $laying_planning_detail_size = [
+                    'laying_planning_detail_id' => $layingPlanningDetail->id,
+                    'size_id' => $key,
+                    'ratio_per_size' => $ratio_size[$key],
+                    'qty_per_size' => $qty_size[$key],
+                ];
+                $insertPlanningDetailSize = LayingPlanningDetailSize::create($laying_planning_detail_size);
+            }
+
+            return redirect()->route('laying-planning.show',$request->laying_planning_id)
+                ->with('success', 'Detail Laying Planning updated successfully.');
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
+    public function detail_delete($id) 
+    {
+        try {
+            $layingPlanningDetail = LayingPlanningDetail::find($id);
+            $layingPlanningDetail->delete();
+            $date_return = [
+                'status' => 'success',
+                'data'=> $layingPlanningDetail,
+                'message'=> 'Data Detail Laying Planning berhasil di hapus',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
+    function generate_no_laying_sheet($layingPlanning) {
+        $getLastDetail = LayingPlanningDetail::where('laying_planning_id', $layingPlanning->id)->orderBy('table_number','desc')->first();
+        $gl_number = explode('-', $layingPlanning->gl->gl_number)[0];
+        
+        if(!$getLastDetail){
+            $no_laying_sheet = $gl_number. "-" . Str::padLeft('1', 3, '0');
+        } else {
+            $next_table_number = $getLastDetail->table_number + 1;
+            $no_laying_sheet = $gl_number. "-" . Str::padLeft($next_table_number, 3, '0');
+        }
+        return $no_laying_sheet;
     }
 }
