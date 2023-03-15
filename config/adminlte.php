@@ -379,7 +379,7 @@ return [
                 ],
                 [
                     'text' => 'Create Cutting Ticket',
-                    'url' => '/cutting-ticket-create',
+                    'url' => '/cutting-ticket/create',
                 ],
             ],
         ],
