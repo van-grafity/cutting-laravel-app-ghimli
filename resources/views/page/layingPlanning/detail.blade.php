@@ -122,9 +122,9 @@
                                     <td>{{ $detail->marker_length }}</td>
                                     <td>{{ $detail->layer_qty }}</td>
                                     <td>
-                                        <a href="javascript:void(0);" class="btn btn-primary btn-sm btn_modal_edit" data-id="{{ $detail->id }}">Edit</a>
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm btn_modal_delete" data-id="{{ $detail->id }}">Delete</a>
-                                        <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm">Create COR</a>
+                                        <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
+                                        <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}">Create COR</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -148,18 +148,23 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal_formLabel">Add GL</h5>
+                <h5 class="modal-title" id="modal_formLabel">Add Cutting Table</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="" method="POST" class="custom-validation" enctype="multipart/form-data" id="gl_form">
+            <form action="{{ route('laying-planning.detail-create') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="planning_detail_form">
                 @csrf
+                <input type="hidden" name="laying_planning_id" value="{{ $data->id }}">
                 <div class="modal-body">
                     <div class="card-body">
-                        <div class="form-group">
-                            <label for="layer_qty">Layer Quantity</label>
-                            <input type="text" class="form-control" id="layer_qty" name="layer_qty" placeholder="Enter Layer Quantity">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="form-group">
+                                    <label for="layer_qty">Layer Quantity</label>
+                                    <input type="number" class="form-control" id="layer_qty" name="layer_qty" min="0" placeholder="Enter Layer Quantity">
+                                </div>
+                            </div>
                         </div>
                         <div>
                             <h4>Marker</h4>
@@ -174,25 +179,35 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="marker_yard">Yard</label>
-                                    <input type="text" class="form-control" id="marker_yard" name="marker_yard" placeholder="Yard">
+                                    <input type="number" class="form-control" id="marker_yard" name="marker_yard" placeholder="Yard" min="0" step="0.01">
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="marker_inch">Inch</label>
-                                    <input type="text" class="form-control" id="marker_inch" name="marker_inch" placeholder="Inch">
+                                    <input type="number" class="form-control" id="marker_inch" name="marker_inch" placeholder="Inch" min="0" step="0.01">
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="marker_length">Length</label>
-                                    <input type="text" class="form-control" id="marker_length" name="marker_length" placeholder="Length">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="marker_length" name="marker_length" value="0" readonly>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Yard</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="marker_total_length">Total Length</label>
-                                    <input type="text" class="form-control" id="marker_total_length" name="marker_total_length" placeholder="Total Length">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="marker_total_length" name="marker_total_length" value="0" readonly>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Yard</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -204,7 +219,7 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="ratio_size_{{ $size->id }}">{{ $size->size }}</label>
-                                    <input type="text" class="form-control" id="ratio_size_{{ $size->id }}" name="ratio_size[{{ $size->id }}]">
+                                    <input type="number" class="form-control ratio-size" id="ratio_size_{{ $size->id }}" name="ratio_size[{{ $size->id }}]" min="0">
                                 </div>
                             </div>
                             @endforeach
@@ -217,7 +232,7 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="qty_size_{{ $size->id }}">{{ $size->size }}</label>
-                                    <input type="text" class="form-control" id="qty_size_{{ $size->id }}" name="qty_size[{{ $size->id }}]">
+                                    <input type="number" class="form-control" id="qty_size_{{ $size->id }}" name="qty_size[{{ $size->id }}]" value="0" readonly>
                                 </div>
                             </div>
                             @endforeach
@@ -225,7 +240,7 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="qty_size_all">Total All Size</label>
-                                    <input type="text" class="form-control" id="qty_size_all" name="qty_size_all" readonly>
+                                    <input type="number" class="form-control" id="qty_size_all" name="qty_size_all" value="0" readonly>
                                 </div>
                             </div>
                         </div>
@@ -234,8 +249,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_submit">Add Cutting Table</button>
-                    <!-- <button type="submit" class="btn btn-primary" id="btn_submit">Add Cutting Table</button> -->
+                    <button type="submit" class="btn btn-primary" id="btn_submit">Add Cutting Table</button>
                 </div>
             </form>
         </div>
@@ -247,6 +261,12 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const size_list = {!! json_encode($size_list) !!};
+    const create_url = '{{ route("laying-planning.detail-create") }}';
+
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -256,12 +276,65 @@ $(document).ready(function(){
     $('#btn_modal_create').click((e) => {
         $('#modal_formLabel').text("Add Cutting Table")
         $('#btn_submit').text("Add Cutting Table")
-        $('#gl_form').find("input[type=text], textarea").val("");
-        $('#gl_form').find('input[name="_method"]').remove();
+        $('#planning_detail_form').find("input[type=text], input[type=number], textarea").val("");
+        $('#planning_detail_form').find('input[name="_method"]').remove();
+        $('#planning_detail_form').attr('action', create_url);
         $('#modal_form').modal('show')
-    })
+    });
 
+    $('#marker_yard, #marker_inch').on('keyup', function(e) {
+        set_marker_length();
+    });
 
+    $('#layer_qty').on('keyup', function(e) {
+        set_marker_total_length();
+        set_qty_size(size_list);
+    });
+
+    $('.ratio-size').on('keyup', function(e) {
+        set_qty_size(size_list);
+    });
+
+    $(".btn-detail-edit").on('click', async function(e) {
+        let get_data_url = $(this).attr('data-url');
+        let planning_detail_id = $(this).attr('data-id');
+        let result = await get_using_fetch(get_data_url);
+        
+        if(result.status == "success"){
+            let update_url = '{{ route("laying-planning.detail-update",":id") }}';
+            update_url = update_url.replace(':id', planning_detail_id);
+
+            laying_planning_detail_id = $(this).attr('data-id');
+            modal_show_edit(update_url, result.data)
+            
+        } else {
+            console.log(result.message);
+            alert("Terjadi Kesalahan");
+        }
+    });
+
+    $('.btn-detail-delete').on('click', async function(e){
+
+        if(!confirm("Apakah anda yakin ingin menghapus detail laying planning ini?")) {
+            return false;
+        }
+
+        let url_delete = $(this).attr('data-url');
+        const data_params = {
+            token: token
+        };
+
+        result = await delete_using_fetch(url_delete, data_params);
+        if(result.status == "success"){
+            alert(result.message)
+            laying_planning_detail_id = $(this).attr('data-id');
+            location.reload();
+        } else {
+            console.log(result.message);
+            alert("Terjadi Kesalahan");
+        }
+
+    });
 })
 </script>
 
@@ -271,6 +344,96 @@ $(document).ready(function(){
         $('#btn_submit').text(data.btn_text);
         $('#create_form').find("input[type=text], textarea").val("");
         $('#create_form').find('input[name="_method"]').remove();
+        $('#modal_form').modal('show');
+    };
+
+    const set_marker_length = () => {
+        let marker_yard = $('#marker_yard').val() ? parseFloat($('#marker_yard').val()) : 0;
+        let marker_inch = $('#marker_inch').val() ? parseFloat($('#marker_inch').val()) : 0;
+        let marker_length = marker_yard + (marker_inch/36);
+        $('#marker_length').val(marker_length);
+        set_marker_total_length();
+    };
+
+    const set_marker_total_length = () => {
+        let layer_qty = $('#layer_qty').val()? parseFloat($('#layer_qty').val()) : 0;
+        let marker_length = $('#marker_length').val() ? parseFloat($('#marker_length').val()) : 0;
+        let marker_total_length = layer_qty * marker_length;
+        $('#marker_total_length').val(marker_total_length);
+    };
+
+    const set_qty_size = (size_list) => {
+        size_list.forEach(function(size) {
+            let size_ratio = $(`#ratio_size_${size.id}`).val() ? parseInt($(`#ratio_size_${size.id}`).val()) : 0;
+            let layer_qty = $('#layer_qty').val() ? parseFloat($('#layer_qty').val()) : 0;
+            let qty_size = size_ratio * layer_qty;
+            $(`#qty_size_${size.id}`).val(qty_size);
+        });
+        set_qty_all_size(size_list);
+    };
+
+    const set_qty_all_size = (size_list) => {
+        let total_all_size = 0;
+        size_list.forEach(function(size) {
+            qty_size = $(`#qty_size_${size.id}`).val() ? parseInt($(`#qty_size_${size.id}`).val()) : 0;
+            total_all_size += qty_size;
+        });
+        $(`#qty_size_all`).val(total_all_size);
+    }
+</script>
+
+<script type="text/javascript">
+    async function delete_using_fetch(url = "", data = {}) {
+        const response = await fetch(url, {
+            method: "DELETE",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+                'X-CSRF-TOKEN': data.token
+            },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+        });
+        return response.json();
+    }
+
+    async function get_using_fetch(url = "", data = {}) {
+        const response = await fetch(url, {
+            method: "GET",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+        });
+        return response.json();
+    }
+
+    function modal_show_edit(update_url, data) {
+        form = $('#planning_detail_form')
+        form.append('<input type="hidden" name="_method" value="PUT">');
+        $('#modal_formLabel').text("Edit Cutting Table");
+        $('#btn_submit').text("Save");
+
+        form.attr('action', update_url);
+        form.find('input[name="layer_qty"]').val(data.layer_qty);
+        form.find('input[name="marker_code"]').val(data.marker_code);
+        form.find('input[name="marker_yard"]').val(data.marker_yard);
+        form.find('input[name="marker_inch"]').val(data.marker_inch);
+        
+        data.laying_planning_detail_size.forEach(function(detail_size) {
+            form.find(`input[name="ratio_size[${detail_size.size_id}]"]`).val(detail_size.ratio_per_size);
+            form.find(`input[name="qty_size[${detail_size.size_id}]"]`).val(detail_size.qty_per_size);
+        });
+        form.find('input[name="marker_length"]').val(data.marker_length);
+        form.find('input[name="marker_total_length"]').val(data.total_length);
+        form.find('input[name="qty_size_all"]').val(data.total_all_size);
+
         $('#modal_form').modal('show')
     }
 </script>

@@ -111,7 +111,7 @@ $(document).ready(function(){
 
     $('#btn_modal_create').click((e) => {
         reset_form({title: "Add Planning", btn_textx: "Add Plan"});
-    })
+    });
 
     $('.btn-delete-layingPlanning').on('click', async function(e){
 
@@ -133,7 +133,7 @@ $(document).ready(function(){
             alert("Terjadi Kesalahan");
         }
 
-    })
+    });
 
 
 })
@@ -166,6 +166,5 @@ $(document).ready(function(){
         });
         return response.json();
     }
-
 </script>
 @endpush('js')
