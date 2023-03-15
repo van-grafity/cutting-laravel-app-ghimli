@@ -112,7 +112,7 @@
                                 <th scope="col">Weight</th>
                                 <th scope="col">Layer</th>
                                 <th scope="col">Operator</th>
-                                <th scope="col">Action</th>
+                                <th scope="col" class="d-none">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -125,7 +125,7 @@
                                 <td>{{ $detail->weight }}</td>
                                 <td>{{ $detail->layer }}</td>
                                 <td>{{ $detail->operator }}</td>
-                                <td>
+                                <td class="d-none">
                                     <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
                                 </td>
