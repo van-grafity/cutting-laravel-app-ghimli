@@ -31,6 +31,7 @@ class CuttingOrdersController extends Controller
     public function createNota($laying_planning_detail_id) {
         $laying_planning_detail = LayingPlanningDetail::find($laying_planning_detail_id);
         $data = [
+            'id' => $laying_planning_detail->id,
             'no_laying_sheet' => $laying_planning_detail->no_laying_sheet,
             'table_number' => $laying_planning_detail->table_number,
             'gl_number' => $laying_planning_detail->layingPlanning->gl->gl_number,
