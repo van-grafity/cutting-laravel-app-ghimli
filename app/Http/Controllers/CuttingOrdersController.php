@@ -14,7 +14,9 @@ class CuttingOrdersController extends Controller
     public function index()
     {
         $get_data_cutting_order = CuttingOrderRecord::with('layingPlanningDetail')
-            ->join('laying_planning_details', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')->orderBy('laying_planning_details.table_number')
+            ->join('laying_planning_details', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
+            ->orderBy('laying_planning_details.id')
+            ->orderBy('laying_planning_details.table_number')
             ->select('cutting_order_records.id','laying_planning_detail_id')
             ->get();
 
