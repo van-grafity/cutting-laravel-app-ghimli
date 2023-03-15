@@ -47,8 +47,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('fabric-cons', FabricConssController::class)->middleware('accessSuperAdmin');
     Route::resource('fabric-type', FabricTypesController::class)->middleware('accessSuperAdmin');
     Route::resource('gl', GlsController::class)->middleware('accessSuperAdmin');
-    Route::resource('cutting-order', CuttingOrdersController::class)->middleware('accessSuperAdmin');
-    Route::get('cutting-order-create/{id}', [CuttingOrdersController::class,'createNota'])->name('cutting-order.createNota')->middleware('accessSuperAdmin');
+    
+    // Route::resource('cutting-order', CuttingOrdersController::class)->middleware('accessSuperAdmin');
+    // Route::get('cutting-order-create/{id}', [CuttingOrdersController::class,'createNota'])->name('cutting-order.createNota')->middleware('accessSuperAdmin');
     
     Route::resource('cutting-ticket', CuttingTicketsController::class)->middleware('accessSuperAdmin');
     Route::get('cutting-ticket-create', [CuttingTicketsController::class,'createTicket'])->name('cutting-ticket.createTicket')->middleware('accessSuperAdmin');
@@ -58,7 +59,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 });
 
-Route::group(['middleware' => ['auth','accessSuperAdmin']], function () {
+Route::group(['middleware' => ['auth','accessSuperAdmin','accessCutting']], function () {
     Route::resource('laying-planning',LayingPlanningsController::class);
     Route::get('/laying-planning-create', [LayingPlanningsController::class, 'layingCreate']);
     Route::get('/laying-planning-qrcode/{id}', [LayingPlanningsController::class, 'layingQrcode']);
@@ -69,4 +70,7 @@ Route::group(['middleware' => ['auth','accessSuperAdmin']], function () {
         route::delete('/{id}', [LayingPlanningsController::class, 'detail_delete'])->name('detail-delete');
         route::get('/{id}/edit', [LayingPlanningsController::class, 'detail_edit'])->name('detail-edit');
     });
+
+    Route::resource('cutting-order', CuttingOrdersController::class);
+    Route::get('cutting-order-create/{id}', [CuttingOrdersController::class,'createNota'])->name('cutting-order.createNota');
 });

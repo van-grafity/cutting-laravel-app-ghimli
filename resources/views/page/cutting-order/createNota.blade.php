@@ -14,9 +14,10 @@
                         <div>Cutting Table No : {{ $data->table_number }}</div>
                     </div>
                     <!-- START FORM -->
-                    <form action="{{ url('/cutting-order') }}" method="POST" class="custom-validation" enctype="multipart/form-data">
+                    <form action="{{ route('cutting-order.store') }}" method="POST" class="custom-validation" enctype="multipart/form-data">
                         @csrf
                         @method('POST')
+                        <input type="hidden" name="laying_planning_detail_id" value="{{ $data->laying_planning_detail_id }}">
                         <div class="row">
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
@@ -107,9 +108,9 @@
 
                         <div class="row mt-10rem">
                             <div class="col-md-12 text-right">
-                                <a href="{{ url('/laying-planning',$data->id) }}" class="btn btn-secondary shadow-sm">cancel</a>
-                                <a href="{{ url('/cutting-order') }}" class="btn btn-primary shadow-sm">Create Cutting Order</a>
-                                <!-- <button type="submit" class="btn btn-primary waves-effect waves-light shadow-sm">Create Cutting Order</button> -->
+                                <a href="{{ url('/laying-planning',$data->laying_planning_detail_id) }}" class="btn btn-secondary shadow-sm">cancel</a>
+                                <!-- <a href="{{ url('/cutting-order') }}" class="btn btn-primary shadow-sm">Create Cutting Order</a> -->
+                                <button type="submit" class="btn btn-primary waves-effect waves-light shadow-sm">Create Cutting Order</button>
                             </div>
                         </div>
                     </form>

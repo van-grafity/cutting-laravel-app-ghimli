@@ -44,7 +44,7 @@
                                 <td>
                                     <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
-                                    <a href="{{ route('cutting-order.show', 1) }}" class="btn btn-info btn-sm">Detail</a>
+                                    <a href="{{ route('cutting-order.show', $cuttingOrderRecord->id) }}" class="btn btn-info btn-sm">Detail</a>
                                 </td>
                             </tr>
                             @endforeach
