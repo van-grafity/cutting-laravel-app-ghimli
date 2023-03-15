@@ -42,8 +42,8 @@
                                 <td>{{ $cuttingOrderRecord->color }}</td>
                                 <td>{{ $cuttingOrderRecord->table_number}}</td>
                                 <td>
-                                    <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
+                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-cor-print">Print</a>
+                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-cor-delete" data-id="{{ $cuttingOrderRecord->id}}">Delete</a>
                                     <a href="{{ route('cutting-order.show', $cuttingOrderRecord->id) }}" class="btn btn-info btn-sm">Detail</a>
                                 </td>
                             </tr>
@@ -59,6 +59,28 @@
 @endsection
 @push('js')
 <script type="text/javascript">
+$(document).ready(function() {
 
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const delete_url ='{{ route("cutting-order.destroy",":id") }}';
+
+    $('.btn-cor-delete').on('click', async function(e){
+        if(!confirm("Apakah anda yakin ingin menghapus Cutting Order Record ini?")) { return false; };
+
+        let cutting_order_id = $(this).data('id');
+        let url = delete_url.replace(':id',cutting_order_id);
+        let data_params = { token };
+
+        result = await delete_using_fetch(url, data_params);
+        if(result.status == "success"){
+            alert(result.message)
+            laying_planning_detail_id = $(this).attr('data-id');
+            location.reload();
+        } else {
+            console.log(result.message);
+            alert("Terjadi Kesalahan");
+        }
+    });
+});
 </script>
 @endpush

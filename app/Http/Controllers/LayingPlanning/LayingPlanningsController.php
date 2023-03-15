@@ -277,7 +277,7 @@ class LayingPlanningsController extends Controller
         }
 
         return redirect()->route('laying-planning.show',$layingPlanning->id)
-            ->with('success', 'Laying Planning created successfully.');
+            ->with('success', 'Data Detail Laying Planning berhasil dibuat.');
 
     }
 
@@ -288,7 +288,7 @@ class LayingPlanningsController extends Controller
             $date_return = [
                 'status' => 'success',
                 'data'=> $layingPlanningDetail,
-                'message'=> 'Data Detail Laying Planning berhasil di ambil',
+                'message'=> 'Data Detail Laying Planning berhasil diambil',
             ];
             return response()->json($date_return, 200);
         } catch (\Throwable $th) {
@@ -314,7 +314,6 @@ class LayingPlanningsController extends Controller
             $layingPlanningDetail->save();
 
             $deletePlanningDetailSize = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->delete();
-            
             $ratio_size = $request->ratio_size;
             $qty_size = $request->qty_size;
             foreach ($ratio_size as $key => $size_value) {
@@ -328,7 +327,7 @@ class LayingPlanningsController extends Controller
             }
 
             return redirect()->route('laying-planning.show',$request->laying_planning_id)
-                ->with('success', 'Detail Laying Planning updated successfully.');
+                ->with('success', 'Data Detail Laying Planning berhasil diubah.');
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -345,7 +344,7 @@ class LayingPlanningsController extends Controller
             $date_return = [
                 'status' => 'success',
                 'data'=> $layingPlanningDetail,
-                'message'=> 'Data Detail Laying Planning berhasil di hapus',
+                'message'=> 'Data Detail Laying Planning berhasil dihapus',
             ];
             return response()->json($date_return, 200);
         } catch (\Throwable $th) {

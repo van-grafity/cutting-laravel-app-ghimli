@@ -133,12 +133,14 @@
                             @endforeach
                             <tr class="spacer" style="height:5px;">
                                 <td colspan="8"></td>
+                                <td colspan="2"></td>
                             </tr>
                             <tr class="bg-dark mt-2">
                                 <td colspan="3">Total</td>
                                 <td>{{ $cutting_order->total_width }}</td>
                                 <td>{{ $cutting_order->total_weight }}</td>
                                 <td>{{ $cutting_order->total_layer }}</td>
+                                <td colspan="2"></td>
                             </tr>
                         </tbody>
                     </table>

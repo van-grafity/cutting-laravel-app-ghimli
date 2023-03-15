@@ -13,7 +13,11 @@ class CuttingOrdersController extends Controller
 {
     public function index()
     {
-        $get_data_cutting_order = CuttingOrderRecord::with(['layingPlanningDetail'])->get();
+        $get_data_cutting_order = CuttingOrderRecord::with('layingPlanningDetail')
+            ->join('laying_planning_details', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')->orderBy('laying_planning_details.table_number')
+            ->select('cutting_order_records.id','laying_planning_detail_id')
+            ->get();
+
         $data = [];
         foreach ($get_data_cutting_order as $index => $cutting_order) {
             $temp = (object)[
@@ -112,6 +116,25 @@ class CuttingOrdersController extends Controller
         $cutting_order = (object)$cutting_order;
 
         return view('page.cutting-order.detail', compact('cutting_order','cutting_order_detail'));
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $cuttingOrder = CuttingOrderRecord::find($id);
+            $cuttingOrder->delete();
+            $date_return = [
+                'status' => 'success',
+                'data'=> $cuttingOrder,
+                'message'=> 'Data Cutting Order berhasil di hapus',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
 }
