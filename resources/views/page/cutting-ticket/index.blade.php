@@ -19,7 +19,7 @@
                                 <i class="bx bx-search-alt search-icon"></i>
                             </div>
                         </div>
-                        <a href="{{ route('cutting-ticket.createTicket') }}" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
+                        <a href="{{ route('cutting-ticket.create') }}" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
                     </div>
 
                     <table class="table align-middle table-nowrap table-hover">
@@ -185,57 +185,42 @@
 @endsection
 @push('js')
 <script type="text/javascript">
-$.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
 
     $('.btn-ticket-detail').click( async function (e) {
-
         let get_data_url = $(this).attr('data-url');
-        console.log(get_data_url);
         if (get_data_url){
-            await get_data_ajax(get_data_url);
+            result = await get_using_fetch(get_data_url);
+            show_detail_ticket(result);
+
         } else {
             alert("not found!");
         }
-
-        
     })
 
 </script>
 
 <script>
-    function get_data_ajax(get_data_url) {
-        $.ajax({
-            type:'GET',
-            url:get_data_url,
-            success:function(res){
-                
-                $('#detail_ticket_number').text(res.ticket_number)
-                $('#detail_size').text(res.size)
-                $('#detail_no_laying_sheet').text(res.no_laying_sheet)
-                $('#detail_table_number').text(res.table_number)
-                $('#detail_gl_number').text(res.gl_number)
-                $('#detail_buyer').text(res.buyer)
-                $('#detail_style').text(res.style)
-                $('#detail_color').text(res.color)
-                $('#detail_layer').text(res.layer)
-                $('#detail_fabric_roll').text(res.fabric_roll)
-                $('#detail_fabric_po').text(res.fabric_po)
-                $('#detail_fabric_type').text(res.fabric_type)
-                $('#detail_fabric_cons').text(res.fabric_cons)
 
-                $('.qr-wrapper').html(`<img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${res.ticket_number}" alt="">`)
+    const show_detail_ticket = (data_ticket) => {
+        $('#detail_ticket_number').text(data_ticket.ticket_number)
+        $('#detail_size').text(data_ticket.size)
+        $('#detail_no_laying_sheet').text(data_ticket.no_laying_sheet)
+        $('#detail_table_number').text(data_ticket.table_number)
+        $('#detail_gl_number').text(data_ticket.gl_number)
+        $('#detail_buyer').text(data_ticket.buyer)
+        $('#detail_style').text(data_ticket.style)
+        $('#detail_color').text(data_ticket.color)
+        $('#detail_layer').text(data_ticket.layer)
+        $('#detail_fabric_roll').text(data_ticket.fabric_roll)
+        $('#detail_fabric_po').text(data_ticket.fabric_po)
+        $('#detail_fabric_type').text(data_ticket.fabric_type)
+        $('#detail_fabric_cons').text(data_ticket.fabric_cons)
 
-                $('#modal_formLabel').text("Detail")
-                $('#btn_submit').text("OK")
-                $('#modal_form').modal('show')
-            }
-        }).catch((err)=>{
-            console.log(err);
-        });
+        $('.qr-wrapper').html(`<img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${data_ticket.ticket_number}" alt="">`)
+
+        $('#modal_formLabel').text("Detail")
+        $('#btn_submit').text("OK")
+        $('#modal_form').modal('show')
     }
 </script>
 @endpush

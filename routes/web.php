@@ -33,14 +33,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::group(['middleware' => ['auth']], function () {
-    // Route::resource('laying-planning',LayingPlanning\LayingPlanningsController::class)->middleware('accessCutting');
-    // Route::get('/laying-planning-create', [LayingPlanning\LayingPlanningsController::class, 'layingCreate'])->middleware('accessCutting');
-    // Route::get('/laying-planning-qrcode/{id}', [LayingPlanning\LayingPlanningsController::class, 'layingQrcode'])->middleware('accessCutting');
-
-    // route::post('laying-planning-detail/create', [LayingPlanning\LayingPlanningsController::class, 'detail_create'])->middleware('accessCutting')->name('laying-planning.detail-create');
-    // route::put('laying-planning-detail/{id}/', [LayingPlanning\LayingPlanningsController::class, 'detail_update'])->middleware('accessCutting')->name('laying-planning.detail-update');
-    // route::delete('laying-planning-detail/{id}', [LayingPlanning\LayingPlanningsController::class, 'detail_delete'])->middleware('accessCutting')->name('laying-planning.detail-delete');
-    // route::get('laying-planning-detail/{id}/edit', [LayingPlanning\LayingPlanningsController::class, 'detail_edit'])->middleware('accessCutting')->name('laying-planning.detail-edit');
 
     Route::resource('color', ColorsController::class)->middleware('accessSuperAdmin');
     Route::get('/color-data', [ColorsController::class, 'dataColor'])->middleware('accessSuperAdmin');
@@ -48,12 +40,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('fabric-type', FabricTypesController::class)->middleware('accessSuperAdmin');
     Route::resource('gl', GlsController::class)->middleware('accessSuperAdmin');
     
-    // Route::resource('cutting-order', CuttingOrdersController::class)->middleware('accessSuperAdmin');
-    // Route::get('cutting-order-create/{id}', [CuttingOrdersController::class,'createNota'])->name('cutting-order.createNota')->middleware('accessSuperAdmin');
-    
-    Route::resource('cutting-ticket', CuttingTicketsController::class)->middleware('accessSuperAdmin');
-    Route::get('cutting-ticket-create', [CuttingTicketsController::class,'createTicket'])->name('cutting-ticket.createTicket')->middleware('accessSuperAdmin');
-
     Route::get('ajax/get-style', [StylesController::class, 'getStyle']);
     Route::get('ajax/get-style/{id}', [StylesController::class, 'getStyle']);
 
@@ -66,11 +52,23 @@ Route::group(['middleware' => ['auth','accessSuperAdmin','accessCutting']], func
     
     Route::prefix('laying-planning-detail')->name('laying-planning.')->group(function(){
         route::post('/create', [LayingPlanningsController::class, 'detail_create'])->name('detail-create');
-        route::put('/{id}/', [LayingPlanningsController::class, 'detail_update'])->name('detail-update');
+        route::put('/{id}', [LayingPlanningsController::class, 'detail_update'])->name('detail-update');
         route::delete('/{id}', [LayingPlanningsController::class, 'detail_delete'])->name('detail-delete');
         route::get('/{id}/edit', [LayingPlanningsController::class, 'detail_edit'])->name('detail-edit');
     });
 
     Route::resource('cutting-order', CuttingOrdersController::class);
     Route::get('cutting-order-create/{id}', [CuttingOrdersController::class,'createNota'])->name('cutting-order.createNota');
+
+    Route::resource('cutting-ticket', CuttingTicketsController::class);
+    Route::prefix('cutting-ticket')->name('cutting-ticket.')->group(function(){
+        Route::post('/generate', [CuttingTicketsController::class, 'generate_ticket'])->name('generate');
+    });
+});
+
+Route::group(['middleware' => ['auth','accessSuperAdmin','accessCutting']], function () {
+
+    Route::prefix('fetch')->name('fetch.')->group(function(){
+        Route::get('get-laying-sheet/{id}', [CuttingTicketsController::class, 'get_laying_sheet'])->name('laying-sheet');
+    });
 });
