@@ -36,6 +36,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('color', ColorsController::class)->middleware('accessSuperAdmin');
     Route::get('/color-data', [ColorsController::class, 'dataColor'])->middleware('accessSuperAdmin');
+
+    Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
+
     Route::resource('fabric-cons', FabricConssController::class)->middleware('accessSuperAdmin');
     Route::resource('fabric-type', FabricTypesController::class)->middleware('accessSuperAdmin');
     Route::resource('gl', GlsController::class)->middleware('accessSuperAdmin');
