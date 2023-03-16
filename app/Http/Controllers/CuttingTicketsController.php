@@ -34,7 +34,6 @@ class CuttingTicketsController extends Controller
 
     public function create() {
         $no_laying_sheet_list = LayingPlanningDetail::select('id','no_laying_sheet')->get();
-        // dd($no_laying_sheet_list);
         return view('page.cutting-ticket.add', compact('no_laying_sheet_list'));
     }
 
@@ -107,13 +106,50 @@ class CuttingTicketsController extends Controller
 
     public function generate_ticket(Request $request)
     {
-        // dd($request->all());
-        $layingPlanningDetail = LayingPlanningDetail::find($request->laying_planning_detail_id);
-        // dd($layingPlanningDetail);
-        return redirect()->route('cutting-ticket.index');
-        // todo Generate Ticket Berdasarkan nomor laying sheet atau COR
+        // ***************************************************************
+        /*  1. Ambil Semua Size yang ada di cutting order record ini
+            2. Lalu ambil nilai rasio tiap masing masing size
+            3. Ambil data detail di Cutting Order Record ini. karena setiap detail di input berdasarkan fabric roll
+            4. Tikcet digunakan untuk menandakan atau mengikat kain dari tiap tiap roll.
+            5. Ticket di generate berdasarkam Cutting Order Recordnya
+        */
+        // ***************************************************************
 
+        try {
+
+            $get_last_ticket = CuttingTicket::orderBy('ticket_number', 'desc')->first();
+            $next_ticket_number = $get_last_ticket ? $get_last_ticket->ticket_number + 1 : 1;
+            $layingPlanningDetail = LayingPlanningDetail::find($request->laying_planning_detail_id);
+            
+            $planning_size_list = $layingPlanningDetail->layingPlanningDetailSize;
+            $cutting_order_details = $layingPlanningDetail->cuttingOrderRecord->cuttingOrderRecordDetail;
+    
+            foreach ($planning_size_list as $planning_size) {
+                $ratio_per_size = $planning_size->ratio_per_size;
+                for ($i=0; $i < $ratio_per_size; $i++) { 
+                    foreach($cutting_order_details as $cutting_order_detail) {
+                        $data_ticket = [
+                            'ticket_number' => $next_ticket_number,
+                            'size_id'=> $planning_size->size_id,
+                            'layer'=> $cutting_order_detail->layer,
+                            'cutting_order_record_id'=> $cutting_order_detail->cuttingOrderRecord->id,
+                            'cutting_order_record_detail_id'=> $cutting_order_detail->id,
+                            'table_number'=> $cutting_order_detail->cuttingOrderRecord->layingPlanningDetail->table_number,
+                            'fabric_roll'=> $cutting_order_detail->fabric_roll,
+                        ];
+                        $insertCuttingTicket = CuttingTicket::create($data_ticket);
+                        $next_ticket_number++;
+                    }
+                }
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
         
+        return redirect()->route('cutting-ticket.index');
     }
 
 

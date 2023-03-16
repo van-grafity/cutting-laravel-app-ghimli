@@ -22,14 +22,20 @@ class ColorsController extends Controller
             ->addIndexColumn()
             ->escapeColumns([])
             ->addColumn('action', function($data){
-                return '<a href="/color/'.$data->id.'/edit" class="btn btn-warning btn-sm">Edit</a>
-                <button class="btn btn-danger btn-sm" id="delete" data-id="'.$data->id.'">Delete</button>';
+                return '
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="edit_color('.$data->id.')">Edit</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_color('.$data->id.')">Delete</a>';
             })
             ->make(true);
     }
 
+    public function get_color_list()
+    {
+        $get_color = Color::all();
+        return response()->json($get_color,200);
+    }
+
     public function show($id){
-        $data = Color::find($id);
         try {
             $data = Color::find($id);
             return response()->json($data, 200);
@@ -63,10 +69,21 @@ class ColorsController extends Controller
 
     public function destroy($id)
     {
-        $color = Color::find($id);
-        $color->delete();
-        // return redirect('/buyer')->with('status', 'Data Buyer Berhasil Dihapus!');
-        return response()->json(['status' => 'Data Color Berhasil Dihapus!']);
+        try {
+            $color = Color::find($id);
+            $color->delete();
+            $date_return = [
+                'status' => 'success',
+                'data'=> $color,
+                'message'=> 'Data Color berhasil di hapus',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     public function update(Request $request, $id)

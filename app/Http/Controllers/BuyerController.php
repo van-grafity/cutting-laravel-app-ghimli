@@ -42,6 +42,7 @@ class BuyerController extends Controller
         $buyer = Buyer::firstOrCreate([
             'name' => $request->name,
             'address' => $request->address,
+            'shipment_address' => $request->shipment_address,
             'code' => $request->code,
         ]);
         $buyer->save();
@@ -68,6 +69,7 @@ class BuyerController extends Controller
         $data = Buyer::find($id);
         $data->name = $request->name;
         $data->address = $request->address;
+        $data->shipment_address = $request->shipment_address;
         $data->code = $request->code;
         $data->save();
 

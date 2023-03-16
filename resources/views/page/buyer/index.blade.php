@@ -24,7 +24,8 @@
                                 <th scope="col" class="text-left">No. </th>
                                 <th scope="col" class="text-left">Buyer's Name</th>
                                 <th scope="col" class="text-left">Address</th>
-                                <th scope="col" class="text-left">Code</th>
+                                <th scope="col" class="text-left">Shipment Address</th>
+                                <th scope="col" class="text-left d-none">Code</th>
                                 <th scope="col" class="text-left">Action</th>
                             </tr>
                         </thead>
@@ -34,7 +35,8 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $buyer->name }}</td>
                                 <td>{{ $buyer->address }}</td>
-                                <td>{{ $buyer->code }}</td>
+                                <td>{{ $buyer->shipment_address }}</td>
+                                <td class="d-none">{{ $buyer->code }}</td>
                                 <td>
                                     <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-edit-buyer" data-id="{{ $buyer->id }}" data-url="{{ route('buyer.show', $buyer->id) }}">Edit</a>
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-buyer" data-id="{{ $buyer->id }}" data-url="{{ route('buyer.destroy', $buyer->id) }}">Delete</a>
@@ -71,6 +73,10 @@
                         <div class="form-group">
                             <label for="buyer_address">Address</label>
                             <input type="text" class="form-control" id="buyer_address" name="address" placeholder="Enter address">
+                        </div>
+                        <div class="form-group">
+                            <label for="shipment_address">Shipement Address</label>
+                            <input type="text" class="form-control" id="shipment_address" name="shipment_address" placeholder="Enter address">
                         </div>
                         <div class="form-group">
                             <label for="buyer_code">Code</label>
@@ -163,6 +169,7 @@ $(document).ready(function(){
                 form.attr('action', get_data_url);
                 form.find('input[name="name"]').val(res.name);
                 form.find('input[name="address"]').val(res.address);
+                form.find('input[name="shipment_address"]').val(res.shipment_address);
                 form.find('input[name="code"]').val(res.code);
             }
         }).catch((err)=>{

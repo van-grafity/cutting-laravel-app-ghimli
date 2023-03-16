@@ -9,8 +9,11 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <table class="table align-middle table-nowrap table-hover table-datatable" id="color_table">
-                        <thead class="table-light">
+                    <div class="d-flex justify-content-end mb-1">
+                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create" data-id='2'>Create</a>
+                    </div>
+                    <table class="table table-bordered table-hover" id="color_table">
+                        <thead class="">
                             <tr>
                                 <th scope="col" style="width: 70px;">#</th>
                                 <th scope="col" class="text-left">Color</th>
@@ -65,6 +68,7 @@
 
 @push('js')
 <script type="text/javascript">
+
 $(document).ready(function(){
     $.ajaxSetup({
         headers: {
@@ -79,74 +83,46 @@ $(document).ready(function(){
         $('#color_form').find('input[name="_method"]').remove();
         $('#modal_form').modal('show')
     })
-
-    $(".btn-delete-color").on('click', function(e) {
-        if(!confirm('apakah ingin menghapus data?')){
-            return false;
-        }
-        let delete_url = $(this).attr('data-url');
-        if (delete_url){
-            delete_color_ajax(delete_url);
-        } else {
-            alert("not found!");
-        }
-    })
-
-    $(".btn-edit-color").on('click', function(e) {
-        let get_data_url = $(this).attr('data-url');
-        if (get_data_url){
-            get_data_color_ajax(get_data_url);
-        } else {
-            alert("not found!");
-        }
-    })
-
 })
 </script>
 
 <script type="text/javascript">
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const edit_url ='{{ route("color.show",":id") }}';
+    const update_url ='{{ route("color.update",":id") }}';
+    const delete_url ='{{ route("color.destroy",":id") }}';
 
-    function get_data_color_ajax(get_data_url) {
-        $.ajax({
-            type:'GET',
-            url:get_data_url,
-            success:function(res){
-                form = $('#color_form')
-                form.append('<input type="hidden" name="_method" value="PUT">');
-                $('#modal_formLabel').text("Edit Color");
-                $('#btn_submit').text("Save");
-                $('#modal_form').modal('show')
+    async function edit_color (color_id) {
+        let url_edit = edit_url.replace(':id',color_id);
 
-                form.attr('action', get_data_url);
-                form.find('input[name="color"]').val(res.color);
-                form.find('input[name="color_code"]').val(res.color_code);
-            }
-        }).catch((err)=>{
-            console.log(err);
-        });
+        result = await get_using_fetch(url_edit);
+        form = $('#color_form')
+        form.append('<input type="hidden" name="_method" value="PUT">');
+        $('#modal_formLabel').text("Edit Color");
+        $('#btn_submit').text("Save");
+        $('#modal_form').modal('show')
+
+        let url_update = update_url.replace(':id',color_id);
+        form.attr('action', url_update);
+        form.find('input[name="color"]').val(result.color);
+        form.find('input[name="color_code"]').val(result.color_code);
     }
 
-    function delete_color_ajax(delete_url) {
-        $.ajax({
-            type:'DELETE',
-            url:delete_url,
-            success:function(res){
-                console.log(res);
-                if($.isEmptyObject(res.error)){
-                    alert(res.status);
-                    location.reload();
-                } else {
-                    console.log("lah error");
-                }
-            }
-        }).catch((err)=>{
-            console.log(err);
-        });
+    async function delete_color (color_id) {
+        if(!confirm("Apakah anda yakin ingin menghapus Cutting Order Record ini?")) { return false; };
+
+        let url_delete = delete_url.replace(':id',color_id);
+        let data_params = { token };
+
+        result = await delete_using_fetch(url_delete, data_params)
+        if(result.status == "success"){
+            alert(result.message)
+            location.reload();
+        } else {
+            console.log(result.message);
+            alert("Terjadi Kesalahan");
+        }
     }
-
-    
-
-    
 </script>
 
 <script type="text/javascript">
@@ -160,8 +136,26 @@ $(document).ready(function(){
                 {data: 'color', name: 'color'},
                 {data: 'color_code', name: 'color_code'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
-            ]
+            ],
+            // dom: 'Bfrtip',
+            // dom: '<"wrapperx"flipt>',
+            // dom: '<"top"i>rt<"bottom"flp><"clear">',
+            // dom: '<"top"i>rt<"bottom"flp><"clear">',
+            // dom:    "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-3'l><'col-sm-12 col-md-3'f>>" +
+            //         "<'row'<'col-sm-12'tr>>" +
+            //         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            // buttons: [ 'copy', 'csv', 'excel', 'pdf', 'print'],
+            // paging: true,
+            lengthChange: true,
+            searching: true,
+            // ordering: true,
+            // info: true,
+            autoWidth: false,
+            responsive: true,
         });
+        // }).buttons().container().appendTo('#color_table_wrapper .col-md-6:eq(0)');
+
     });
+    
 </script>
 @endpush
