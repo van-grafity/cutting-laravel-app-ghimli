@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('address')->nullable();
+            $table->string('shipment_address')->nullable();
             $table->string('code')->unique();
             $table->timestamps();
         });

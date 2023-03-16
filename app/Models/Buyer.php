@@ -12,6 +12,7 @@ class Buyer extends Model
         'id',
         'name',
         'address',
+        'shipment_address',
         'code',
     ];
 
