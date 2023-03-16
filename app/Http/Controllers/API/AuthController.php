@@ -19,15 +19,31 @@ class AuthController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
+
+    //  $data = CuttingOrderRecord::with(['layingPlanningDetail'])->get();
+    //     $data = collect(
+    //         [
+    //             'cuttingOrderRecord' => $data
+    //         ]
+    //     );
+    //     return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
+
     public function signin(Request $request)
     {
+        // collect user
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
             $authUser = Auth::user(); 
             $success['token'] =  $authUser->createToken('MyAuthApp')->plainTextToken; 
             $success['name'] =  $authUser->name;
-   
-            return $this->onSuccess($success, 'Login successfully');
-        } 
+            $success['email'] =  $authUser->email;
+
+            $user = json_encode(array(
+                'token' => $success['token'],
+                'user' => $authUser
+            ));
+            $user = json_decode($user, true);
+            return $this->onSuccess($user, 'User logged in successfully');
+        }
         else{
             return $this->onError(401, 'Unauthorised');
         } 
