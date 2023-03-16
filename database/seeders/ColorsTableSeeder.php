@@ -19,7 +19,7 @@ class ColorsTableSeeder extends Seeder
             [
                 'id' => 1,
                 'color' => 'Med Heather Grey',
-                'color_code' => 'MHG (053)',
+                'color_code' => 'MHG',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
                 
@@ -27,42 +27,77 @@ class ColorsTableSeeder extends Seeder
             [
                 'id' => 2,
                 'color' => 'Bleach',
-                'color_code' => 'BLC (002)',
+                'color_code' => 'BLCH',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
             [
                 'id' => 3,
                 'color' => 'Black',
-                'color_code' => 'BLCK (020)',
+                'color_code' => 'BLCK',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
             [
                 'id' => 4,
                 'color' => 'Med Soft Pink',
-                'color_code' => 'MSPK (151)',
+                'color_code' => 'MSPK',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
             [
                 'id' => 5,
                 'color' => 'Aqua Dream',
-                'color_code' => 'AQD (078)',
+                'color_code' => 'AQD',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
             [
                 'id' => 6,
                 'color' => 'True Red',
-                'color_code' => 'TRD (087)',
+                'color_code' => 'TRD',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
             [
                 'id' => 7,
-                'color' => 'Royal Plum',
-                'color_code' => 'RYLP (091)',
+                'color' => 'Coral',
+                'color_code' => 'CORAL',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 8,
+                'color' => 'Brown',
+                'color_code' => 'BRWN',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 9,
+                'color' => 'Blue',
+                'color_code' => 'BLUE',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 10,
+                'color' => 'Blue Jeans',
+                'color_code' => 'BLJNS',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 11,
+                'color' => 'Burgundy',
+                'color_code' => 'BRGDY',
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
+            ],
+            [
+                'id' => 12,
+                'color' => 'Navy',
+                'color_code' => 'NAVY',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
