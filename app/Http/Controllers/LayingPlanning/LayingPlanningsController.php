@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\LayingPlanning;
 
 use App\Http\Controllers\Controller;
+use App\Models\Gl;
+use App\Models\Color;
 use App\Models\LayingPlanning;
 use App\Models\LayingPlanningSize;
 use App\Models\LayingPlanningDetail;
@@ -74,7 +76,9 @@ class LayingPlanningsController extends Controller
                         ->withInput();
         }
 
+        $serial_number = $this->generate_serial_number($request->gl,$request->color);
         $layingData = [
+            'serial_number' => $serial_number,
             'gl_id' => $request->gl,
             'style_id' => $request->style,
             'buyer_id' => $request->buyer,
@@ -366,5 +370,29 @@ class LayingPlanningsController extends Controller
             $no_laying_sheet = $gl_number. "-" . Str::padLeft($next_table_number, 3, '0');
         }
         return $no_laying_sheet;
+    }
+
+    function generate_serial_number($gl_id = null, $color_id = null) {
+        if (!$gl_id || !$color_id) {
+            return 0;
+        }
+        $gl = Gl::find($gl_id);
+        $gl_number = explode('-', $gl->gl_number)[0];
+        $color = Color::find($color_id);
+
+        $getDuplicateSN = LayingPlanning::select('gl_id','color_id')
+                            ->where('gl_id', $gl_id)
+                            ->where('color_id', $color_id)
+                            ->get();
+        $count_duplicate = $getDuplicateSN->count();
+
+        if ($count_duplicate <= 0) {
+            $serial_number = "LP-{$gl_number}-{$color->color_code}";
+            return $serial_number;
+        } else {
+            $count_duplicate++;
+            $serial_number = "LP-{$gl_number}-{$color->color_code}.{$count_duplicate}";
+            return $serial_number;
+        }
     }
 }

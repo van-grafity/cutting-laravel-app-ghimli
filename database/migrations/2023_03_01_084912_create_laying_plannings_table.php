@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('laying_plannings', function (Blueprint $table) {
             $table->id();
+            $table->string('serial_number')->unique();
             $table->foreignId('gl_id')->constrained('gls')->onDelete('cascade');
             $table->foreignId('style_id')->constrained('styles')->onDelete('cascade');
             $table->foreignId('buyer_id')->constrained('buyers')->onDelete('cascade');

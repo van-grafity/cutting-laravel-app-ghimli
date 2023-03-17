@@ -10,6 +10,7 @@ class LayingPlanning extends Model
     use HasFactory;
 
     protected $fillable = [
+        'serial_number',
         'gl_id',
         'style_id',
         'buyer_id',
