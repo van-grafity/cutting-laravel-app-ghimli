@@ -67,7 +67,7 @@ class AuthController extends BaseController
         $success['token'] =  $user->createToken('MyAuthApp')->plainTextToken;
         $success['name'] =  $user->name;
    
-        return $this->onSuccess($success, 'User created successfully');
+        return $this->onSuccess($success, 'You have successfully registered');
     }
 
     public function me()
