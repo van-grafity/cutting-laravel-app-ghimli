@@ -26,8 +26,8 @@
                         <thead class="table-light">
                             <tr>
                                 <th scope="col" class="">No. </th>
+                                <th scope="col" class="">Serial Number</th>
                                 <th scope="col" class="">No Laying Sheet</th>
-                                <th scope="col" class="">GL</th>
                                 <th scope="col" class="">Color</th>
                                 <th scope="col" class="">Table No</th>
                                 <th scope="col" class="">Action</th>
@@ -37,8 +37,8 @@
                             @foreach( $data as $cuttingOrderRecord )
                             <tr>
                                 <td>{{ $cuttingOrderRecord->no }}</td>
+                                <td>{{ $cuttingOrderRecord->serial_number }}</td>
                                 <td>{{ $cuttingOrderRecord->no_laying_sheet }}</td>
-                                <td>{{ $cuttingOrderRecord->gl_number }}</td>
                                 <td>{{ $cuttingOrderRecord->color }}</td>
                                 <td>{{ $cuttingOrderRecord->table_number}}</td>
                                 <td>

@@ -18,18 +18,21 @@ class CuttingOrderRecordsTableSeeder extends Seeder
         CuttingOrderRecord::insert([
             [
                 'id' => 1,
+                'serial_number' => "COR-62843-MHG-001",
                 'laying_planning_detail_id' => 1,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
             [
                 'id' => 2,
+                'serial_number' => "COR-62843-MHG-002",
                 'laying_planning_detail_id' => 2,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ],
             [
                 'id' => 3,
+                'serial_number' => "COR-62843-MHG-003",
                 'laying_planning_detail_id' => 3,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')

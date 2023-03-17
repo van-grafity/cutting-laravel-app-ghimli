@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 
 use App\Models\CuttingOrderRecord;
 use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanningDetailSize;
+
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class CuttingOrdersController extends Controller
 {
@@ -17,7 +19,7 @@ class CuttingOrdersController extends Controller
             ->join('laying_planning_details', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
             ->orderBy('laying_planning_details.id')
             ->orderBy('laying_planning_details.table_number')
-            ->select('cutting_order_records.id','laying_planning_detail_id')
+            ->select('cutting_order_records.id','laying_planning_detail_id','serial_number')
             ->get();
 
         $data = [];
@@ -25,6 +27,7 @@ class CuttingOrdersController extends Controller
             $temp = (object)[
                 'id' => $cutting_order->id,
                 'no' => $index + 1,
+                'serial_number' => $cutting_order->serial_number,
                 'no_laying_sheet' => $cutting_order->layingPlanningDetail->no_laying_sheet,
                 'gl_number' => $cutting_order->layingPlanningDetail->layingPlanning->gl->gl_number,
                 'color' => $cutting_order->layingPlanningDetail->layingPlanning->color->color,
@@ -37,7 +40,9 @@ class CuttingOrdersController extends Controller
 
     public function createNota($laying_planning_detail_id) {
         $layingPlanningDetail = LayingPlanningDetail::find($laying_planning_detail_id);
+
         $data = [
+            'serial_number' => $this->generate_serial_number($layingPlanningDetail),
             'laying_planning_detail_id' => $layingPlanningDetail->id,
             'no_laying_sheet' => $layingPlanningDetail->no_laying_sheet,
             'table_number' => $layingPlanningDetail->table_number,
@@ -68,7 +73,9 @@ class CuttingOrdersController extends Controller
 
     public function store(Request $request)
     {
+        $layingPlanningDetail = LayingPlanningDetail::find($request->laying_planning_detail_id);
         $dataCuttingOrder = [
+            'serial_number' => $this->generate_serial_number($layingPlanningDetail),
             'laying_planning_detail_id' => $request->laying_planning_detail_id
         ];
         $insertCuttingOrder = CuttingOrderRecord::create($dataCuttingOrder);
@@ -80,6 +87,7 @@ class CuttingOrdersController extends Controller
         $layingPlanningDetail = LayingPlanningDetail::find($getCuttingOrder->layingPlanningDetail->id);
         
         $cutting_order = [
+            'serial_number'=> $layingPlanningDetail->cuttingOrderRecord->serial_number,
             'no_laying_sheet'=> $layingPlanningDetail->no_laying_sheet,
             'table_number' => $layingPlanningDetail->table_number,
             'gl_number' => $layingPlanningDetail->layingPlanning->gl->gl_number,
@@ -137,6 +145,15 @@ class CuttingOrdersController extends Controller
                 'message' => $th->getMessage()
             ]);
         }
+    }
+
+    function generate_serial_number($layingPlanningDetail){
+        $gl_number = explode('-', $layingPlanningDetail->layingPlanning->gl->gl_number)[0];
+        $color_code = $layingPlanningDetail->layingPlanning->color->color_code;
+        $table_number = Str::padLeft($layingPlanningDetail->table_number, 3, '0');
+        
+        $serial_number = "COR-{$gl_number}-{$color_code}-{$table_number}";
+        return $serial_number;
     }
 
 }

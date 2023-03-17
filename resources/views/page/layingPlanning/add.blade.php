@@ -110,13 +110,18 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="plan_date" class="form-label">Plan Date</label>
-                                    <div class="input-group date" id="plan_date" data-target-input="nearest">
-                                        <input type="text" class="form-control datetimepicker-input" data-target="#plan_date" name="plan_date" readonly>
-                                        <div class="input-group-append" data-target="#plan_date" data-toggle="datetimepicker">
+                                    <div class="input-group date">
+                                        <input type="text" class="form-control" name="plan_date" id="plan_date" readonly>
+                                        <div class="input-group-append">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>
                                     </div>
                                 </div>
+                                
+
+
+
+                                
                             </div>
                         </div>
 
@@ -231,10 +236,7 @@
         $('#delivery_date').datetimepicker({
             format: 'DD/MM/yyyy',
         });
-        $('#plan_date').datetimepicker({
-            format: 'DD/MM/yyyy',
-            defaultDate: moment().format('YYYY-MM-DD'),
-        });
+        $('#plan_date').val(moment().format('DD/MM/yyyy'))
     
         $('#select_size').select2({
             minimumResultsForSearch: Infinity
@@ -438,4 +440,5 @@
     }
 
 </script>
+
 @endpush

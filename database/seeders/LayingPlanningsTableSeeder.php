@@ -18,6 +18,7 @@ class LayingPlanningsTableSeeder extends Seeder
         LayingPlanning::insert([
             [
                 'id' => 1,
+                'serial_number' => "LP-62843-MHG",
                 'gl_id' => 1,
                 'style_id' => 1,
                 'buyer_id' => 1,
@@ -34,6 +35,7 @@ class LayingPlanningsTableSeeder extends Seeder
             ],
             [
                 'id' => 2,
+                'serial_number' => "LP-62843-BLCH",
                 'gl_id' => 1,
                 'style_id' => 2,
                 'buyer_id' => 1,

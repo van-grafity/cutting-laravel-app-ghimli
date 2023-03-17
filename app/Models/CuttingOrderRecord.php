@@ -10,6 +10,7 @@ class CuttingOrderRecord extends Model
     use HasFactory;
 
     protected $fillable = [
+        'serial_number',
         'laying_planning_detail_id',
     ];
 
