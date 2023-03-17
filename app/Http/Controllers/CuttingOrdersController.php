@@ -43,6 +43,7 @@ class CuttingOrdersController extends Controller
 
         $data = [
             'serial_number' => $this->generate_serial_number($layingPlanningDetail),
+            'laying_planning_id' => $layingPlanningDetail->layingPlanning->id,
             'laying_planning_detail_id' => $layingPlanningDetail->id,
             'no_laying_sheet' => $layingPlanningDetail->no_laying_sheet,
             'table_number' => $layingPlanningDetail->table_number,

@@ -108,8 +108,7 @@
 
                         <div class="row mt-10rem">
                             <div class="col-md-12 text-right">
-                                <a href="{{ url('/laying-planning',$data->laying_planning_detail_id) }}" class="btn btn-secondary shadow-sm">cancel</a>
-                                <!-- <a href="{{ url('/cutting-order') }}" class="btn btn-primary shadow-sm">Create Cutting Order</a> -->
+                                <a href="{{ url('/laying-planning',$data->laying_planning_id) }}" class="btn btn-secondary shadow-sm">cancel</a>
                                 <button type="submit" class="btn btn-primary waves-effect waves-light shadow-sm">Create Cutting Order</button>
                             </div>
                         </div>
