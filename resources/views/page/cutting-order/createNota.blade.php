@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="my-2 pb-4 h4" style="font-size:20px; font-weight:900">
-                        <div>NO: {{ $data->no_laying_sheet}}</div>
+                        <div>NO: {{ $data->serial_number}}</div>
                         <div>Cutting Table No : {{ $data->table_number }}</div>
                     </div>
                     <!-- START FORM -->

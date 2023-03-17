@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use App\Models\CuttingTicket;
 use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanningDetailSize;
+
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 

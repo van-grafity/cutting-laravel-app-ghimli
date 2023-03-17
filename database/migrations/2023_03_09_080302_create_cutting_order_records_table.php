@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('cutting_order_records', function (Blueprint $table) {
             $table->id();
+            $table->string('serial_number')->unique();
             $table->foreignId('laying_planning_detail_id')->constrained('laying_planning_details')->onDelete('cascade');
             $table->timestamps();
         });

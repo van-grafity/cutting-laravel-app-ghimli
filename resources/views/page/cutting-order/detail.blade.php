@@ -10,6 +10,19 @@
                 <div class="card-body">
                     
                     <div class="detail-section my-5 px-5">
+                        <div class="row mb-3">
+                            <div class="col-sm-12">
+                                <table>
+                                    <thead>
+                                        <tr style="font-weight:700; font-size:20px;">
+                                            <td>NO</td>
+                                            <td>:</td>
+                                            <td>{{ $cutting_order->serial_number }}</td>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-4">
                                 <table class="text-left">
@@ -82,6 +95,14 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="qr-wrapper">
+                                    <img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl={{ $cutting_order->serial_number }}" alt="">
+                                </div>
                             </div>
                         </div>
 
