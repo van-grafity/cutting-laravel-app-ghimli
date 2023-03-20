@@ -11,6 +11,9 @@ use App\Models\LayingPlanningDetailSize;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
+use Carbon\Carbon;
+use PDF;
+
 class CuttingOrdersController extends Controller
 {
     public function index()
@@ -148,6 +151,34 @@ class CuttingOrdersController extends Controller
         }
     }
 
+    public function print_pdf($cutting_order_id){
+
+        $cutting_order = CuttingOrderRecord::find($cutting_order_id);
+        $filename = $cutting_order->serial_number . '.pdf';
+
+        $data = (object)[
+            'serial_number' => $cutting_order->serial_number,
+            'style' => $cutting_order->layingPlanningDetail->layingPlanning->style->style,
+            'gl_number' => $cutting_order->layingPlanningDetail->layingPlanning->gl->gl_number,
+            'no_laying_sheet' => $cutting_order->layingPlanningDetail->no_laying_sheet,
+            'fabric_po' => $cutting_order->layingPlanningDetail->no_laying_sheet,
+            'fabric_po' => $cutting_order->layingPlanningDetail->layingPlanning->fabric_po,
+            'marker_length' => $cutting_order->layingPlanningDetail->marker_yard.'Yd '.  $cutting_order->layingPlanningDetail->marker_inch.'" ',
+            'fabric_type' => $cutting_order->layingPlanningDetail->layingPlanning->fabricType->name,   
+            'table_number' => $cutting_order->layingPlanningDetail->table_number,   
+            'buyer' => $cutting_order->layingPlanningDetail->layingPlanning->buyer->name,   
+            'size_ratio' => $this->print_size_ratio($cutting_order->layingPlanningDetail),   
+            'color' => $cutting_order->layingPlanningDetail->layingPlanning->color->color,
+            'layer' => $cutting_order->layingPlanningDetail->layer_qty,
+            'date' => Carbon::now()->format('d-m-Y'),
+        ];
+
+        // dd($data);
+        // return view('page.cutting-order.print', compact('data'));
+        $pdf = PDF::loadview('page.cutting-order.print', compact('data'))->setPaper('a4', 'landscape');
+        return $pdf->stream($filename);
+    }
+
     function generate_serial_number($layingPlanningDetail){
         $gl_number = explode('-', $layingPlanningDetail->layingPlanning->gl->gl_number)[0];
         $color_code = $layingPlanningDetail->layingPlanning->color->color_code;
@@ -155,6 +186,32 @@ class CuttingOrdersController extends Controller
         
         $serial_number = "COR-{$gl_number}-{$color_code}-{$table_number}";
         return $serial_number;
+    }
+
+    function print_size_ratio($layingPlanningDetail){
+        
+        // $get_size_ratio = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
+        // $size_ratio = [];
+        // foreach( $get_size_ratio as $key => $size ) {
+        //     $collect_size[] = $size->size->size;
+        //     $collect_ratio[] = $size->ratio_per_size;
+        // }
+        // $collect_size = Arr::join($collect_size, ' | ');
+        // $collect_ratio = Arr::join($collect_ratio, ' | ');
+        // $size_ratio = [
+        //     'size'=> $collect_size,
+        //     'ratio'=>  $collect_ratio
+        // ];
+
+
+        $get_size_ratio = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
+        $size_ratio = [];
+
+        foreach( $get_size_ratio as $key => $size ) {
+            $size_ratio[] = $size->size->size . " = " . $size->ratio_per_size;
+        }
+        $size_ratio = Arr::join($size_ratio, ' | ');
+        return $size_ratio;
     }
 
 }
