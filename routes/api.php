@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BlogController;
 use App\Http\Controllers\API\CuttingOrdersController;
+use App\Http\Controllers\API\ColorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,8 +29,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/users', [AuthController::class, 'index']);
     
     Route::resource('blogs', BlogController::class);
+    Route::get('/colors', [ColorController::class, 'index']);
     Route::get('cutting-orders', [CuttingOrdersController::class, 'index']);
     Route::get('cutting-orders/{id}', [CuttingOrdersController::class, 'show']);
     Route::post('cutting-orders', [CuttingOrdersController::class, 'store']);
-    
+    Route::put('cutting-orders/{id}', [CuttingOrdersController::class, 'update']);
+    Route::delete('cutting-orders/{id}', [CuttingOrdersController::class, 'destroy']);
+
 });

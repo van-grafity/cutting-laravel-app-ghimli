@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Models\CuttingOrderRecord;
 use App\Models\CuttingOrderRecordDetail;
+use App\Models\Color;
 use App\Http\Traits\ApiHelpers;
 use App\Http\Controllers\API\BaseController as BaseController;
 
@@ -38,17 +39,63 @@ class CuttingOrdersController extends BaseController
         );
         return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
     }
-
-    // store cuttingorderrecorddetail by cuttingorderrecord
+    
     public function store(Request $request)
     {
         $input = $request->all();
-        $data = CuttingOrderRecordDetail::create($input);
+        $cuttingOrderRecord = CuttingOrderRecord::where('serial_number', $input['serial_number'])->first();
+        $cuttingOrderRecordDetail = new CuttingOrderRecordDetail;
+        $cuttingOrderRecordDetail->cutting_order_record_id = $cuttingOrderRecord->id;
+        $cuttingOrderRecordDetail->fabric_roll = $input['fabric_roll'];
+        $cuttingOrderRecordDetail->fabric_batch = $input['fabric_batch'];
+
+        $color = Color::where('color', $input['color'])->first();
+        $cuttingOrderRecordDetail->color_id = $color->id;
+
+        $cuttingOrderRecordDetail->yardage = $input['yardage'];
+        $cuttingOrderRecordDetail->weight = $input['weight'];
+        $cuttingOrderRecordDetail->layer = $input['layer'];
+        $cuttingOrderRecordDetail->joint = $input['joint'];
+        $cuttingOrderRecordDetail->balance_end = $input['balance_end'];
+        $cuttingOrderRecordDetail->remarks = $input['remarks'];
+        $cuttingOrderRecordDetail->operator = $input['operator'];
+        $cuttingOrderRecordDetail->save();
+        return $this->onSuccess($cuttingOrderRecordDetail, 'Cutting Order Record Detail created successfully.');
+    }
+
+    public function color()
+    {
+        $data = Color::all();
         $data = collect(
             [
-                'cuttingOrderRecordDetail' => $data
+                'color' => $data
             ]
         );
-        return $this->onSuccess($data, 'Cutting Order Record Detail created successfully.');
+        return $this->onSuccess($data, 'Color retrieved successfully.');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $input = $request->all();
+        $cuttingOrderRecordDetail = CuttingOrderRecordDetail::find($id);
+        $cuttingOrderRecordDetail->fabric_roll = $input['fabric_roll'];
+        $cuttingOrderRecordDetail->fabric_batch = $input['fabric_batch'];
+        $cuttingOrderRecordDetail->color_id = $input['color_id'];
+        $cuttingOrderRecordDetail->yardage = $input['yardage'];
+        $cuttingOrderRecordDetail->weight = $input['weight'];
+        $cuttingOrderRecordDetail->layer = $input['layer'];
+        $cuttingOrderRecordDetail->joint = $input['joint'];
+        $cuttingOrderRecordDetail->balance_end = $input['balance_end'];
+        $cuttingOrderRecordDetail->remarks = $input['remarks'];
+        $cuttingOrderRecordDetail->operator = $input['operator'];
+        $cuttingOrderRecordDetail->save();
+        return $this->onSuccess($cuttingOrderRecordDetail, 'Cutting Order Record Detail updated successfully.');
+    }
+
+    public function destroy($id)
+    {
+        $cuttingOrderRecordDetail = CuttingOrderRecordDetail::find($id);
+        $cuttingOrderRecordDetail->delete();
+        return $this->onSuccess($cuttingOrderRecordDetail, 'Cutting Order Record Detail deleted successfully.');
     }
 }
