@@ -306,51 +306,51 @@ return [
             'type' => 'sidebar-menu-search',
             'text' => 'search',
         ],
-        [
-            'text' => 'blog',
-            'url'  => 'admin/blog',
-            'can'  => 'manage-blog',
-        ],
+        // [
+        //     'text' => 'blog',
+        //     'url'  => 'admin/blog',
+        //     'can'  => 'manage-blog',
+        // ],
         [
             'text' => 'Dashboard',
             'url'  => '/home',
             'icon' => 'fas fa-fw fa-user',
-            'can'  => 'accessSuperAdmin',
+            'can'  => 'clerk',
         ],
         [
             'text' => 'Buyer',
             'url'  => '/buyer',
             'icon' => 'fas fa-fw fa fa-user',
-            'can'  => ['accessSuperAdmin','accessSewing'],
+            'can'  => 'admin-only', 
         ],
         [
             'text' => 'Color',
             'url'  => '/color',
             'icon' => 'fas fa-fw fa fa-solid fa-palette',
-            'can'  => ['accessSuperAdmin'],
+            'can'  => 'admin-only', 
         ],
         [
             'text' => 'Fabric Consumption',
             'url'  => '/fabric-cons',
             'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
-            'can'  => ['accessSuperAdmin'],
+            'can'  => 'admin-only', 
         ],
         [
             'text' => 'Fabric Type',
             'url'  => '/fabric-type',
             'icon' => 'fas fa-fw fa fa-solid fa-swatchbook',
-            'can'  => ['accessSuperAdmin'],
+            'can'  => 'admin-only', 
         ],
         [
             'text' => 'GL',
             'url'  => '/gl',
             'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => ['accessSuperAdmin','accessSewing'],
+            'can'  => 'admin-only', 
         ],
         [
             'text' => 'Laying Planning',
             'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
-            'can'  => ['accessSuperAdmin','accessCutting'],
+            'can'  => 'clerk',
             'submenu' => [
                 [
                     'text' => 'Laying Planning List',
@@ -366,12 +366,12 @@ return [
             'text' => 'Cutting Order Record',
             'url'  => '/cutting-order',
             'icon' => 'fas fa-fw fa fa-solid fa-cut',
-            'can'  => ['accessSuperAdmin','accessCutting'],
+            'can'  => 'clerk',
         ],
         [
             'text' => 'Cutting Ticket',
             'icon' => 'fas fa-fw fa fa-solid fa-clipboard-list',
-            'can'  => ['accessSuperAdmin','accessCutting'],
+            'can'  => 'clerk',
             'submenu' => [
                 [
                     'text' => 'Cutting Ticket List',

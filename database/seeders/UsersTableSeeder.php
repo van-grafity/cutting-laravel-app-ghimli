@@ -22,7 +22,6 @@ class UsersTableSeeder extends Seeder
                 'name' => 'admin',
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('123456789'),
-                'roles' => 1,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
                 
@@ -32,7 +31,6 @@ class UsersTableSeeder extends Seeder
                 'name' => 'cutting',
                 'email' => 'cutting@gmail.com',
                 'password' => Hash::make('123456789'),
-                'roles' => 2,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
                 
@@ -42,7 +40,6 @@ class UsersTableSeeder extends Seeder
                 'name' => 'sewing',
                 'email' => 'sewing@gmail.com',
                 'password' => Hash::make('123456789'),
-                'roles' => 3,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
                 
