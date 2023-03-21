@@ -41,13 +41,12 @@ class LayingPlanningsController extends Controller
     public function layingCreate()
     {
         $gls = DB::table('gls')->get();
-        $buyers = DB::table('buyers')->get();
         $styles = DB::table('styles')->get();
         $colors = DB::table('colors')->get();
         $fabricTypes = DB::table('fabric_types')->get();
         $fabricCons = DB::table('fabric_cons')->get();
         $sizes = DB::table('sizes')->get();
-        return view('page.layingPlanning.add', compact('gls', 'buyers', 'styles', 'colors', 'fabricTypes', 'fabricCons', 'sizes'));
+        return view('page.layingPlanning.add', compact('gls', 'styles', 'colors', 'fabricTypes', 'fabricCons', 'sizes'));
     }
 
     /**
@@ -144,7 +143,6 @@ class LayingPlanningsController extends Controller
         
         $layingPlanning = LayingPlanning::find($id);
         $gls = DB::table('gls')->get();
-        $buyers = DB::table('buyers')->get();
         $styles = DB::table('styles')->where('gl_id',$layingPlanning->gl_id)->get();
         $colors = DB::table('colors')->get();
         $fabricTypes = DB::table('fabric_types')->get();
@@ -156,7 +154,7 @@ class LayingPlanningsController extends Controller
         
         $layingPlanningSizes = LayingPlanningSize::where('laying_planning_id', $layingPlanning->id)->orderBy('size_id')->get();
 
-        return view('page.layingPlanning.edit', compact('gls', 'buyers', 'styles', 'colors', 'fabricTypes', 'fabricCons', 'sizes','layingPlanning','layingPlanningSizes'));
+        return view('page.layingPlanning.edit', compact('gls', 'styles', 'colors', 'fabricTypes', 'fabricCons', 'sizes','layingPlanning','layingPlanningSizes'));
     }   
 
     /**
@@ -244,8 +242,6 @@ class LayingPlanningsController extends Controller
 
     public function detail_create(Request $request) 
     {
-        // dd($request->all());
-
         $layingPlanning = LayingPlanning::find($request->laying_planning_id);
         if(!$layingPlanning) {
             return redirect('laying-planning-create')
