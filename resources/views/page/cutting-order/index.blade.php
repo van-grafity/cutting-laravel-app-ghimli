@@ -42,7 +42,7 @@
                                 <td>{{ $cuttingOrderRecord->color }}</td>
                                 <td>{{ $cuttingOrderRecord->table_number}}</td>
                                 <td>
-                                    <a href="{{ route('cutting-order.print', $cuttingOrderRecord->id) }}" class="btn btn-primary btn-sm btn-cor-print">Print Nota</a>
+                                    <a href="{{ route('cutting-order.print', $cuttingOrderRecord->id) }}" class="btn btn-primary btn-sm">Print Nota</a>
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-cor-delete" data-id="{{ $cuttingOrderRecord->id}}">Delete</a>
                                     <a href="{{ route('cutting-order.show', $cuttingOrderRecord->id) }}" class="btn btn-info btn-sm">Detail</a>
                                 </td>
@@ -70,23 +70,6 @@ $(document).ready(function() {
 
         let cutting_order_id = $(this).data('id');
         let url = delete_url.replace(':id',cutting_order_id);
-        let data_params = { token };
-
-        result = await delete_using_fetch(url, data_params);
-        if(result.status == "success"){
-            alert(result.message)
-            laying_planning_detail_id = $(this).attr('data-id');
-            location.reload();
-        } else {
-            console.log(result.message);
-            alert("Terjadi Kesalahan");
-        }
-    });
-
-    $('.btn-cor-print').on('click', async function(e){
-
-        let cutting_order_id = $(this).data('id');
-        let url = print_url.replace(':id',cutting_order_id);
         let data_params = { token };
 
         result = await delete_using_fetch(url, data_params);

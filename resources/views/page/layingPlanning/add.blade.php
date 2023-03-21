@@ -40,8 +40,8 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="style" class="form-label">Style</label>
-                                    <select class="form-control select2" id="style" name="style" style="width: 100%;" data-placeholder="Choose Style">
-                                        <option value=""> Choose Style</option>
+                                    <select class="form-control select2" id="style" name="style" style="width: 100%;" data-placeholder="Choose GL First">
+                                        <option value=""> Choose GL First</option>
                                     </select>
                                 </div>
                             </div>
@@ -58,12 +58,8 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="buyer" class="form-label">Buyer</label>
-                                    <select class="form-control select2" id="buyer" name="buyer" style="width: 100%;" data-placeholder="Choose Buyer">
-                                        <option value="">Choose Buyer</option>
-                                        @foreach ($buyers as $buyer)
-                                            <option value="{{ $buyer->id }}">{{ $buyer->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <input type="hidden" class="form-control" name="buyer" id="buyer" readonly>
+                                    <input type="text" class="form-control" name="buyer_name" id="buyer_name" readonly>
                                 </div>
                             </div>
                             
@@ -117,11 +113,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                
-
-
-
-                                
                             </div>
                         </div>
 
@@ -229,6 +220,9 @@
 @endsection
 @push('js')
 <script type="text/javascript">
+    const url_buyer = `{{ route('fetch.buyer') }}`;
+    const url_style = `{{ route('fetch.style') }}`;
+    
     $( document ).ready(function() {
         $('.select2').select2({ 
         
@@ -244,35 +238,40 @@
 
         $('#gl').on('change', function(e) {
             let gl_id = $(this).val();
+            let data_params = { gl_id }
 
-            let params = new URLSearchParams();
-            params.append('gl_id', gl_id);
-            let url_gl = `{{ url('ajax/get-style') }}?${params.toString()}`;
-
-            get_data_using_fetch(url_gl).then((result) => {
+            // ## Dynamic Data Select Style depend on Select GL
+            using_fetch(url_style, data_params, "GET").then((result) => {
                 $('#style').select2().empty();
-                var data = result.map(function(item) {
+                let data = result.data.map(function(item) {
                     return {
                         id: item.id,
                         text: item.style
                     };
                 });
-                let select_style = $('#style').select2({
-                    data: data,
-                })
+                let select_style = $('#style').select2({ data })
                 select_style.trigger('change');
+            }).catch((err) => {
+                console.log(err);
+            });
+
+            // ## Dynamic Data Buyer depend on Select GL
+            using_fetch(url_buyer, data_params, "GET").then((result) => {
+                $('#buyer').val(result.data[0].id);
+                $('#buyer_name').val(result.data[0].name);
+            }).catch((err) => {
+                console.log(err);
             });
         })
 
+        // ## Fill Style Description Box depend on Selected Style
         $('#style').on('change', function(e) {
             let style_id = $(this).val();
-
-            let params = new URLSearchParams();
-            params.append('id', style_id);
-            let url_style = `{{ url('ajax/get-style') }}?${params.toString()}`;
-
-            get_data_using_fetch(url_style).then((data) => {
-                $('#style_desc').val(data.description);
+            let data_params = { id : style_id }
+            using_fetch(url_style, data_params, "GET").then((result) => {
+                $('#style_desc').val(result.data[0].description);
+            }).catch((err) => {
+                console.log(err);
             });
         })
 
@@ -293,7 +292,7 @@
     let data_row_count = $('#table_laying_planning_size > tbody tr').length;
     let detached_options = [];
 
-    // memeriksa jika di dalam tabel belum ada size yang dipilih
+    // ## memeriksa jika di dalam tabel belum ada size yang dipilih
     function is_table_empty_data(table_selector){ 
 
         let data_row = $('#table_laying_planning_size > tbody tr td').length;
@@ -304,7 +303,7 @@
         }
     }
 
-    // memeriksa jika input form untuk menambahkan size dan quantitiynya masih kosong apa tidak
+    // ## memeriksa jika input form untuk menambahkan size dan quantitiynya masih kosong apa tidak
     function is_select_size_empty(){
         if(!$('#select_size').val()) {
             alert("Please select size")
@@ -319,7 +318,7 @@
         return true;
     }
 
-    // membuat baris baru untuk setiap size yang telah di pilih
+    // ## membuat baris baru untuk setiap size yang telah di pilih
     function create_tr_element() {
         let select_size_value = $('#select_size').val();
         let select_size_text = $('#select_size option:selected').text();
@@ -341,7 +340,7 @@
         return element;
     }
 
-    // memeriksa apakah size yang akan ditambahkan sudah ada di dalam tabel
+    // ## memeriksa apakah size yang akan ditambahkan sudah ada di dalam tabel
     function is_size_already_added() {
         var get_size = $("input[name='laying_planning_size_id[]']").map(function(){return $(this).val();}).get();
         let select_size_value = $('#select_size').val();
@@ -357,7 +356,6 @@
             return false;
         }
 
-        
         element_html = create_tr_element();
         if(is_table_empty_data()){
             $('#table_laying_planning_size > tbody').html(element_html);
@@ -386,7 +384,7 @@
     });
 
 
-    //when user click on remove button
+    // ## when user click on remove button
     $('#table_laying_planning_size > tbody').on("click",".btn-delete-size", function(e){ 
         e.preventDefault();
 
@@ -418,27 +416,4 @@
     // }
 
 </script>
-
-
-<script type="text/javascript">
-    async function get_data_using_fetch(url = "", data = {}) {
-    // Default options are marked with *
-        const response = await fetch(url, {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: "follow", // manual, *follow, error
-            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            // body: JSON.stringify(data), // body data type must match "Content-Type" header
-        });
-        return response.json(); // parses JSON response into native JavaScript objects
-    }
-
-</script>
-
 @endpush

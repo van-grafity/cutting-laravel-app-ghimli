@@ -9,6 +9,8 @@ use App\Http\Controllers\GlsController;
 use App\Http\Controllers\CuttingOrdersController;
 use App\Http\Controllers\CuttingTicketsController;
 use App\Http\Controllers\StylesController;
+use App\Http\Controllers\BuyerController;
+use App\Http\Controllers\FetchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,10 +44,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('fabric-cons', FabricConssController::class)->middleware('accessSuperAdmin');
     Route::resource('fabric-type', FabricTypesController::class)->middleware('accessSuperAdmin');
     Route::resource('gl', GlsController::class)->middleware('accessSuperAdmin');
-    
-    Route::get('ajax/get-style', [StylesController::class, 'getStyle']);
-    Route::get('ajax/get-style/{id}', [StylesController::class, 'getStyle']);
-
 });
 
 Route::group(['middleware' => ['auth','accessSuperAdmin','accessCutting']], function () {
@@ -73,6 +71,11 @@ Route::group(['middleware' => ['auth','accessSuperAdmin','accessCutting']], func
 Route::group(['middleware' => ['auth','accessSuperAdmin','accessCutting']], function () {
 
     Route::prefix('fetch')->name('fetch.')->group(function(){
+        Route::get('/',[FetchController::class, 'index'])->name('index');
+        Route::get('buyer', [FetchController::class, 'buyer'])->name('buyer');
+        Route::get('style', [FetchController::class, 'style'])->name('style');
+        Route::get('color', [FetchController::class, 'color'])->name('color');
+        
         Route::get('get-laying-sheet/{id}', [CuttingTicketsController::class, 'get_laying_sheet'])->name('laying-sheet');
     });
 });
