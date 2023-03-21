@@ -103,7 +103,7 @@
                 {{ $data->serial_number }}
             </div>
             <div class="title-nota">
-                Cutting Order Record
+                CUTTING ORDER RECORD
             </div>
 
         </div>

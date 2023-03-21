@@ -40,8 +40,8 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="style" class="form-label">Style</label>
-                                    <select class="form-control select2" id="style" name="style" style="width: 100%;" data-placeholder="Choose Style">
-                                        <option value=""> Choose Style</option>
+                                    <select class="form-control select2" id="style" name="style" style="width: 100%;" data-placeholder="Choose GL First">
+                                        <option value=""> Choose GL First</option>
                                     </select>
                                 </div>
                             </div>
@@ -58,12 +58,8 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="buyer" class="form-label">Buyer</label>
-                                    <select class="form-control select2" id="buyer" name="buyer" style="width: 100%;" data-placeholder="Choose Buyer">
-                                        <option value="">Choose Buyer</option>
-                                        @foreach ($buyers as $buyer)
-                                            <option value="{{ $buyer->id }}">{{ $buyer->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <input type="hidden" class="form-control" name="buyer" id="buyer" readonly>
+                                    <input type="text" class="form-control" name="buyer_name" id="buyer_name" readonly>
                                 </div>
                             </div>
                             
@@ -117,11 +113,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                
-
-
-
-                                
                             </div>
                         </div>
 
@@ -229,6 +220,9 @@
 @endsection
 @push('js')
 <script type="text/javascript">
+    const url_buyer = `{{ route('fetch.buyer') }}`;
+    const url_style = `{{ route('fetch.style') }}`;
+    
     $( document ).ready(function() {
         $('.select2').select2({ 
         
@@ -244,35 +238,40 @@
 
         $('#gl').on('change', function(e) {
             let gl_id = $(this).val();
+            let data_params = { gl_id }
 
-            let params = new URLSearchParams();
-            params.append('gl_id', gl_id);
-            let url_gl = `{{ url('ajax/get-style') }}?${params.toString()}`;
-
-            get_data_using_fetch(url_gl).then((result) => {
+            // ## Dynamic Data Select Style depend on Select GL
+            using_fetch(url_style, data_params, "GET").then((result) => {
                 $('#style').select2().empty();
-                var data = result.map(function(item) {
+                let data = result.data.map(function(item) {
                     return {
                         id: item.id,
                         text: item.style
                     };
                 });
-                let select_style = $('#style').select2({
-                    data: data,
-                })
+                let select_style = $('#style').select2({ data })
                 select_style.trigger('change');
+            }).catch((err) => {
+                console.log(err);
+            });
+
+            // ## Dynamic Data Select Style depend on Select GL
+            using_fetch(url_buyer, data_params, "GET").then((result) => {
+                $('#buyer').val(result.data[0].id);
+                $('#buyer_name').val(result.data[0].name);
+            }).catch((err) => {
+                console.log(err);
             });
         })
 
+        // ## Dynamic Data Style Description depend on Select Style
         $('#style').on('change', function(e) {
             let style_id = $(this).val();
-
-            let params = new URLSearchParams();
-            params.append('id', style_id);
-            let url_style = `{{ url('ajax/get-style') }}?${params.toString()}`;
-
-            get_data_using_fetch(url_style).then((data) => {
-                $('#style_desc').val(data.description);
+            let data_params = { id : style_id }
+            using_fetch(url_style, data_params, "GET").then((result) => {
+                $('#style_desc').val(result.data[0].description);
+            }).catch((err) => {
+                console.log(err);
             });
         })
 
@@ -357,7 +356,6 @@
             return false;
         }
 
-        
         element_html = create_tr_element();
         if(is_table_empty_data()){
             $('#table_laying_planning_size > tbody').html(element_html);
