@@ -255,7 +255,7 @@
                 console.log(err);
             });
 
-            // ## Dynamic Data Select Style depend on Select GL
+            // ## Dynamic Data Buyer depend on Select GL
             using_fetch(url_buyer, data_params, "GET").then((result) => {
                 $('#buyer').val(result.data[0].id);
                 $('#buyer_name').val(result.data[0].name);
@@ -264,7 +264,7 @@
             });
         })
 
-        // ## Dynamic Data Style Description depend on Select Style
+        // ## Fill Style Description Box depend on Selected Style
         $('#style').on('change', function(e) {
             let style_id = $(this).val();
             let data_params = { id : style_id }

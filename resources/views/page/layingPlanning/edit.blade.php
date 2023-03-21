@@ -272,7 +272,7 @@
                 console.log(err);
             });
 
-            // ## Dynamic Data Select Style depend on Select GL
+            // ## Dynamic Data Buyer depend on Select GL
             using_fetch(url_buyer, data_params, "GET").then((result) => {
                 $('#buyer').val(result.data[0].id);
                 $('#buyer_name').val(result.data[0].name);
@@ -281,17 +281,17 @@
             });
         })
 
+        // ## Fill Style Description Box depend on Selected Style
         $('#style').on('change', function(e) {
             let style_id = $(this).val();
-
-            let params = new URLSearchParams();
-            params.append('id', style_id);
-            url = `{{ url('ajax/get-style') }}?${params.toString()}`;
-
-            get_data_using_fetch(url).then((data) => {
-                $('#style_desc').val(data.description);
+            let data_params = { id : style_id }
+            using_fetch(url_style, data_params, "GET").then((result) => {
+                $('#style_desc').val(result.data[0].description);
+            }).catch((err) => {
+                console.log(err);
             });
         })
+        
 
         $( "#submit_form" ).click(function(e) {
             e.preventDefault();

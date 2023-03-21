@@ -44,10 +44,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('fabric-cons', FabricConssController::class)->middleware('accessSuperAdmin');
     Route::resource('fabric-type', FabricTypesController::class)->middleware('accessSuperAdmin');
     Route::resource('gl', GlsController::class)->middleware('accessSuperAdmin');
-    
-    Route::get('ajax/get-style', [StylesController::class, 'getStyle']);
-    Route::get('ajax/get-style/{id}', [StylesController::class, 'getStyle']);
-
 });
 
 Route::group(['middleware' => ['auth','accessSuperAdmin','accessCutting']], function () {
