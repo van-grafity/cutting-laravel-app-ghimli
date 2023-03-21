@@ -292,7 +292,7 @@
     let data_row_count = $('#table_laying_planning_size > tbody tr').length;
     let detached_options = [];
 
-    // memeriksa jika di dalam tabel belum ada size yang dipilih
+    // ## memeriksa jika di dalam tabel belum ada size yang dipilih
     function is_table_empty_data(table_selector){ 
 
         let data_row = $('#table_laying_planning_size > tbody tr td').length;
@@ -303,7 +303,7 @@
         }
     }
 
-    // memeriksa jika input form untuk menambahkan size dan quantitiynya masih kosong apa tidak
+    // ## memeriksa jika input form untuk menambahkan size dan quantitiynya masih kosong apa tidak
     function is_select_size_empty(){
         if(!$('#select_size').val()) {
             alert("Please select size")
@@ -318,7 +318,7 @@
         return true;
     }
 
-    // membuat baris baru untuk setiap size yang telah di pilih
+    // ## membuat baris baru untuk setiap size yang telah di pilih
     function create_tr_element() {
         let select_size_value = $('#select_size').val();
         let select_size_text = $('#select_size option:selected').text();
@@ -340,7 +340,7 @@
         return element;
     }
 
-    // memeriksa apakah size yang akan ditambahkan sudah ada di dalam tabel
+    // ## memeriksa apakah size yang akan ditambahkan sudah ada di dalam tabel
     function is_size_already_added() {
         var get_size = $("input[name='laying_planning_size_id[]']").map(function(){return $(this).val();}).get();
         let select_size_value = $('#select_size').val();
@@ -384,7 +384,7 @@
     });
 
 
-    //when user click on remove button
+    // ## when user click on remove button
     $('#table_laying_planning_size > tbody').on("click",".btn-delete-size", function(e){ 
         e.preventDefault();
 
@@ -416,27 +416,4 @@
     // }
 
 </script>
-
-
-<script type="text/javascript">
-    async function get_data_using_fetch(url = "", data = {}) {
-    // Default options are marked with *
-        const response = await fetch(url, {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            redirect: "follow", // manual, *follow, error
-            referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-            // body: JSON.stringify(data), // body data type must match "Content-Type" header
-        });
-        return response.json(); // parses JSON response into native JavaScript objects
-    }
-
-</script>
-
 @endpush
