@@ -35,11 +35,12 @@
 		}
 
         .table-nota td, .table-nota th {
-            padding: 0.35rem;
+            padding: 0rem 0.25rem;
+			font-size: 7pt;
         }
 
         .header-main { 
-            padding-bottom: 20px;
+            /* padding-bottom: 5px; */
         }
 
         .company-name {
@@ -50,21 +51,26 @@
 
         .title-nota {
             clear:left;
-            clear:right;
+            /* clear:right; */
             text-align: center;
             font-weight: bold;
             font-size: 14px;
         }
+        
+        .subtitle-nota {
+            font-weight: Normal;
+            font-size: 11px;
+        }
 
-        .serial-number {
+        .serial-number-qr {
             float:right;
             text-align: right;
-            font-size: 12px;
+            /* font-size: 12px; */
         }
 
         .header-subtitle {
             width: 100%;
-            margin-bottom: 1rem;
+            margin-bottom: .5rem;
         }
 
         .header-subtitle td {
@@ -89,6 +95,9 @@
         }
         .table-nota tbody td {
             border: 1px solid;
+            font-weight: bold;
+            height:25px;
+            font-size:6pt;
         }
         
 	</style>
@@ -99,11 +108,15 @@
             <div class="company-name">
                 PT. GHIMLI INDONESIA
             </div>
-            <div class="serial-number">
-                {{ $data->serial_number }}
+            <div class="serial-number-qr">
+                <div class="qr-wrapper" style="margin-top: -10px; margin-right: -10px;">
+                    <img src="https://chart.googleapis.com/chart?chs=70x70&cht=qr&chl={{ $data->serial_number }}" alt="">
+                </div>
             </div>
             <div class="title-nota">
                 CUTTING ORDER RECORD
+                <br>
+                <div class="subtitle-nota">{{ $data->serial_number }}</div>
             </div>
 
         </div>
@@ -127,14 +140,14 @@
             <table class="table table-nota">
                 <thead class="">
                     <tr>
-                        <th width="50">Fabric P/O No. </th>
-                        <th width="80"> {{ $data->fabric_po }} </th>
-                        <th width="70">Marker Length <br> <i style="font-weight: 500;">Panjang Marker</i></th>
+                        <th width="40">Fabric P/O No. </th>
+                        <th width="90"> {{ $data->fabric_po }} </th>
+                        <th width="60">Marker Length <br> <i style="font-weight: 500;">Panjang Marker</i></th>
                         <th width="150" colspan="2"> {{ $data->marker_length }} </th>
-                        <th  width="100" colspan="2">Fabric Type <br> <i style="font-weight: 500;">Jenis Kain</i></th>
-                        <th width="120"> {{ $data->fabric_type }} </th>
-                        <th width="50">Cutting Lot <br> <i style="font-weight: 500;">Lot Potongan</i></th>
-                        <th width="80"> {{ $data-> table_number }} </th>
+                        <th width="100" colspan="2">Fabric Type <br> <i style="font-weight: 500;">Jenis Kain</i></th>
+                        <th width="120" colspan="3"> {{ $data->fabric_type }} </th>
+                        <th width="60">Cutting Lot <br> <i style="font-weight: 500;">Lot Potongan</i></th>
+                        <th width="60"> {{ $data-> table_number }} </th>
                     </tr>
                     <tr>
                         <th rowspan="2">Buyer </th>
@@ -142,13 +155,13 @@
                         <th rowspan="2">Width <br> <i style="font-weight: 500;">Lebar</i></th>
                         <th rowspan="2" colspan="2"> {{ $data->size_ratio }} </th>
                         <th colspan="2">Colour / <i style="font-weight: 500;">Warna</i></th>
-                        <th> {{ $data->color }} </th>
+                        <th colspan="3"> {{ $data->color }} </th>
                         <th rowspan="2">Laid By <br> <i style="font-weight: 500;">Dibentang Oleh</i></th>
                         <th rowspan="2"> - </th>
                     </tr>
                     <tr>
                         <th colspan="2">Layer / <i style="font-weight: 500;">Lapisan</i></th>
-                        <th>{{ $data->layer }}</th>
+                        <th colspan="3">{{ $data->layer }}</th>
                     </tr>
                     <tr>
                         <th> Place No. </th>
@@ -157,13 +170,13 @@
                         <th> Weight <br> <i style="font-weight: 500;">Berat</i></th>
                         <th> Layer <br> <i style="font-weight: 500;">Lapisan</i></th>
                         <th> Joint <br> <i style="font-weight: 500;">Gabung</i></th>
-                        <th> Balance End <br> <i style="font-weight: 500;">Sisa</i></th>
+                        <th width="50"> Balance End <br> <i style="font-weight: 500;">Sisa</i></th>
                         <th> Remarks <br> <i style="font-weight: 500;">Keterangan</i></th>
-                        <th colspan="2"></th>
+                        <th colspan="4"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @for($i = 0; $i < 15; $i++)
+                    @for($i = 0; $i < 0; $i++)
                     <tr>
                         <td>{{ $i+1 }}</td>
                         <td></td>
@@ -177,6 +190,271 @@
                         <td></td>
                     </tr>
                     @endfor
+
+                    <tr>
+                        <td> 1 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td rowspan="2" style="vertical-align:middle;">1 Layer</td>
+                        <td rowspan="2" style="vertical-align:middle;" width="50">: 
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp; 
+                            &nbsp;&nbsp;&nbsp;&nbsp; 
+                            &nbsp; 
+                            Kg
+                        </td>
+                        <td rowspan="3" colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td> 2 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td> 3 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Replacement</td>
+                        <td rowspan="1" style="vertical-align:middle;">: 
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp; 
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp; 
+                            Kg
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> 4 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Shortend</td>
+                        <td rowspan="1" style="vertical-align:middle;">: 
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp; 
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp; 
+                            Kg
+                        </td>
+                        <td rowspan="3" colspan="2" style="vertical-align:bottom; text-align:center">Supervisor:</td>
+                    </tr>
+                    <tr>
+                        <td> 5 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td rowspan="2" style="vertical-align:middle;" >Ball Roll</td>
+                        <td rowspan="2" style="vertical-align:middle;">: 
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp; 
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp; 
+                            Kg
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> 6 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td> 7 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td rowspan="6" colspan="4" style="border:none">Remarks</td>
+                    </tr>
+                    <tr>
+                        <td> 8 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td> 9 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td> 10 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td> 11 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td> 12 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td> 13 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td rowspan="2" colspan="4" style="border:none; font-size:12px;">Group :</td>
+                    </tr>
+                    <tr>
+                        <td> 14 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td> 15 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Colour <br> <i style="font-weight: 500;">Warna</i></td>
+                        <td></td>
+                        <td>Spread Time <br> <i style="font-weight: 500;">Waktu Bentang</i></td>
+                        <td>Manpower : <br> <i style="font-weight: 500;">Tenaga Kerja</i></td>
+                    </tr>
+                    <tr>
+                        <td> 16 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Layer <br> <i style="font-weight: 500;">Lapisan</i></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td> 17 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Cut Qty <br> <i style="font-weight: 500;">Jumlah dipotong</i></td>
+                        <td></td>
+                        <td>Cutting Time <br> <i style="font-weight: 500;">Waktu Pemotongan</i></td>
+                        <td>Manpower : <br> <i style="font-weight: 500;">Tenaga Kerja</i></td>
+                    </tr>
+                    <tr>
+                        <td> 18 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Qty Used <br> <i style="font-weight: 500;">Jumlah dipakai</i></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td> 19 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Sub Fabric <br> <i style="font-weight: 500;">Subtitusi Kain</i></td>
+                        <td></td>
+                        <td>Bundle Time <br> <i style="font-weight: 500;">Waktu Ikat</i></td>
+                        <td>Manpower : <br> <i style="font-weight: 500;">Tenaga Kerja</i></td>
+                    </tr>
+                    <tr>
+                        <td> 20 </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Total</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
                 </tbody>
             </table>    
         </div>
