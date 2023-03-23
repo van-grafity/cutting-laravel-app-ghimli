@@ -324,6 +324,12 @@ return [
             'can'  => 'admin-only', 
         ],
         [
+            'text' => 'Size',
+            'url'  => '/size',
+            'icon' => 'fas fa-fw fa fa-solid fa-palette',
+            'can'  => 'admin-only', 
+        ],
+        [
             'text' => 'Color',
             'url'  => '/color',
             'icon' => 'fas fa-fw fa fa-solid fa-palette',

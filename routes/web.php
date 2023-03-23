@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LayingPlanning\LayingPlanningsController;
+use App\Http\Controllers\SizesController;
 use App\Http\Controllers\ColorsController;
 use App\Http\Controllers\FabricConssController;
 use App\Http\Controllers\FabricTypesController;
@@ -35,11 +36,13 @@ Route::middleware(['auth'])->group(function () {
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/color-data', [ColorsController::class, 'dataColor']);
+    Route::get('/size-data', [SizesController::class, 'dataSize']);
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
 });
 
 Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::resource('buyer', App\Http\Controllers\BuyerController::class);
+    Route::resource('size', SizesController::class);
     Route::resource('color', ColorsController::class);
     Route::resource('fabric-cons', FabricConssController::class);
     Route::resource('fabric-type', FabricTypesController::class);
