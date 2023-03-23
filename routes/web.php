@@ -31,13 +31,12 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('home', App\Http\Controllers\HomeController::class);
-    Route::resource('buyer', App\Http\Controllers\BuyerController::class)->middleware('accessSewing');
 });
 
 Route::group(['middleware' => ['auth']], function () {
 
-    Route::resource('color', ColorsController::class)->middleware('accessSuperAdmin');
-    Route::get('/color-data', [ColorsController::class, 'dataColor'])->middleware('accessSuperAdmin');
+    Route::resource('color', ColorsController::class);
+    Route::get('/color-data', [ColorsController::class, 'dataColor']);
 
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
 
@@ -46,7 +45,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('gl', GlsController::class)->middleware('accessSuperAdmin');
 });
 
-Route::group(['middleware' => ['auth','accessSuperAdmin','accessCutting']], function () {
+Route::group(['middleware' => ['auth']], function () {
+
+    Route::resource('buyer', App\Http\Controllers\BuyerController::class);
+
     Route::resource('laying-planning',LayingPlanningsController::class);
     Route::get('/laying-planning-create', [LayingPlanningsController::class, 'layingCreate']);
     Route::get('/laying-planning-qrcode/{id}', [LayingPlanningsController::class, 'layingQrcode']);
@@ -68,7 +70,7 @@ Route::group(['middleware' => ['auth','accessSuperAdmin','accessCutting']], func
     });
 });
 
-Route::group(['middleware' => ['auth','accessSuperAdmin','accessCutting']], function () {
+Route::group(['middleware' => ['auth']], function () {
 
     Route::prefix('fetch')->name('fetch.')->group(function(){
         Route::get('/',[FetchController::class, 'index'])->name('index');
