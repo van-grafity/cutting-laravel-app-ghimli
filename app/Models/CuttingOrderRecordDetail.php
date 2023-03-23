@@ -19,7 +19,8 @@ class CuttingOrderRecordDetail extends Model
         'layer',
         'joint',
         'balance_end',
-        'remakrs',
+        'remarks',
+        'operator'
     ];
 
     public function cuttingOrderRecord()

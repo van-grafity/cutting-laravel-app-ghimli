@@ -1,0 +1,210 @@
+{
+    "gl": [
+        {
+            "date": "2020-08-22",
+            "buyer": "Amazon",
+            "color": "Aqua Dream",
+            "size": "XL",
+            "laying_planning": "LP1",
+            "total": 42000
+        },
+        {
+            "date": "2019-10-04",
+            "buyer": "Adidas",
+            "color": "Black",
+            "size": "XXL",
+            "laying_planning": "LP2",
+            "total": 32000
+        },
+        {
+            "date": "2019-03-12",
+            "buyer": "NASA",
+            "color": "White",
+            "size": "L",
+            "laying_planning": "LP3",
+            "total": 438000
+        },
+        {
+            "date": "2020-04-10",
+            "buyer": "Aeropostale",
+            "color": "Med Soft Pink",
+            "size": "S",
+            "laying_planning": "LP4",
+            "total": 345000
+        },
+        {
+            "date": "2020-09-09",
+            "buyer": "Peter Says Denim",
+            "color": "True Red",
+            "size": "M",
+            "laying_planning": "LP5",
+            "total": 467000
+        },
+        {
+            "date": "2020-09-09",
+            "buyer": "Peter Says Denim",
+            "color": "White",
+            "size": "XS",
+            "laying_planning": "LP6",
+            "total": 288000
+        },
+        {
+            "date": "2020-09-09",
+            "buyer": "Peter Says Denim",
+            "color": "True Red",
+            "size": "XL",
+            "laying_planning": "LP7",
+            "total": 50000
+        },
+        {
+            "date": "2021-01-21",
+            "buyer": "Peter Says Denim",
+            "color": "Black",
+            "size": "XXL",
+            "laying_planning": "LP8",
+            "total": 98000
+        },
+        {
+            "date": "2021-01-26",
+            "buyer": "Levis",
+            "color": "True Red",
+            "size": "M",
+            "laying_planning": "LP9",
+            "total": 778000
+        },
+        {
+            "date": "2021-01-27",
+            "buyer": "Levis",
+            "color": "Royal Plum",
+            "size": "L",
+            "laying_planning": "LP10",
+            "total": 3559000
+        },
+        {
+            "date": "2021-01-30",
+            "buyer": "Uniqlo",
+            "color": "Royal Plum",
+            "size": "S",
+            "laying_planning": "LP11",
+            "total": 88000
+        },
+        {
+            "date": "2022-10-19",
+            "buyer": "Uniqlo",
+            "color": "Royal Plum",
+            "size": "XL",
+            "laying_planning": "LP12",
+            "total": 8983000
+        },
+        {
+            "date": "2022-10-20",
+            "buyer": "Uniqlo",
+            "color": "Royal Plum",
+            "size": "XL",
+            "laying_planning": "LP13",
+            "total": 2354000
+        },
+        {
+            "date": "2022-10-21",
+            "buyer": "The Executive",
+            "color": "Med Heather Grey",
+            "size": "M",
+            "laying_planning": "LP14",
+            "total": 546000
+        }
+    ],
+    "id": 560,
+    "invoice_number": "CBG20106",
+    "location_id": 126,
+    "location_name": "Cabang 20 Magelang",
+    "appointment_id": null,
+    "receipt_no": "IXNK64QA9DC2",
+    "original_invoice_id": null,
+    "original_invoice_number": null,
+    "invoice_type_id": 2,
+    "invoice_type_name": "Sale",
+    "source_by": "P",
+    "source_by_name": "POINT OF SALE",
+    "invoice_date": "2019-10-04 15:56:29",
+    "finvoice_date": "04-Oct-2019 15:56",
+    "due_date": "2019-10-04",
+    "fdue_date": "04-Oct-2019",
+    "walk_in": 1,
+    "customer_id": null,
+    "customer_name": "Ivan Suhendra",
+    "customer_email": null,
+    "customer_mobile": null,
+    "customer_address": null,
+    "customer_photo": "https://img.icons8.com/material/4ac144/256/user-male.png",
+    "customer_photo_sm": "https://zenwel.indociti.com/img/no_avatar.svg",
+    "customer_photo_xs": "https://zenwel.indociti.com/img/no_avatar.svg",
+    "staff_received_id": null,
+    "staff_received_name": null,
+    "notes": null,
+    "subtotal": "400000.00",
+    "fsubtotal": "400.000,00",
+    "total_discount": "0.00",
+    "ftotal_discount": "20.000,00",
+    "total_net_sales": "400000.00",
+    "ftotal_net_sales": "400.000,00",
+    "total_taxes": "0.00",
+    "ftotal_taxes": "100,00",
+    "total_tips": "6.000.00",
+    "ftotal_tips": "0,00",
+    "rounding_amount": "0.00",
+    "frounding_amount": "0,00",
+    "total_sales_rounding": "400000.00",
+    "ftotal_sales_rounding": "400.000,00",
+    "payable_amount": "400000.00",
+    "fpayable_amount": "400.000,00",
+    "total_payment": "60000.00",
+    "ftotal_payment": "60.000,00",
+    "change_amount": "0.00",
+    "fchange_amount": "0,00",
+    "outstanding_amount": "340000.00",
+    "foutstanding_amount": "340.000,00",
+    "status": 5,
+    "status_desc": "PART PAID",
+    "is_paid": 1,
+    "refunded": 0,
+    "voided": 0,
+    "items": [
+        {
+            "product_name": "Hair cut - Long",
+            "qty": "2",
+            "fprice": "40.000",
+            "discount_name": "Promo HUT 74"
+        },
+        {
+            "product_name": "Yoga Asik - Regular",
+            "qty": "3",
+            "fprice": "98.000",
+            "discount_name": "Promo HUT 74"
+        },
+        {
+            "product_name": "Shampo - 125ml",
+            "qty": "1",
+            "fprice": "32.000",
+            "discount_name": "PPN 10%"
+        },
+        {
+            "product_name": "Juice Pokat - 1kg",
+            "qty": "1",
+            "fprice": "63.000",
+            "discount_name": ""
+        },
+        {
+            "product_name": "SPA - face",
+            "qty": "2",
+            "fprice": "210.000",
+            "discount_name": ""
+        },
+        {
+            "product_name": "Snack - small",
+            "qty": "5",
+            "fprice": "87.000",
+            "discount_name": "PPN 10%"
+        }
+    ],
+    "fbalance_amount": "0,00"
+}
