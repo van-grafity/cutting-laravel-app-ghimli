@@ -31,7 +31,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('blogs', BlogController::class);
     Route::get('/colors', [ColorController::class, 'index']);
     Route::get('cutting-orders', [CuttingOrdersController::class, 'index']);
-    Route::get('cutting-orders/{id}', [CuttingOrdersController::class, 'show']);
+    Route::get('cutting-orders/{serial_number}', [CuttingOrdersController::class, 'show']);
     Route::post('cutting-orders', [CuttingOrdersController::class, 'store']);
     Route::put('cutting-orders/{id}', [CuttingOrdersController::class, 'update']);
     Route::delete('cutting-orders/{id}', [CuttingOrdersController::class, 'destroy']);

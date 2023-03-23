@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Models\CuttingOrderRecord;
 use App\Models\CuttingOrderRecordDetail;
+use App\Models\LayingPlanningDetail;
 use App\Models\Color;
 use App\Http\Traits\ApiHelpers;
 use App\Http\Controllers\API\BaseController as BaseController;
@@ -29,12 +30,13 @@ class CuttingOrdersController extends BaseController
         return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
     }
 
-    public function show($id)
+    public function show($serial_number)
     {
-        $data = CuttingOrderRecord::with(['layingPlanningDetail'])->find($id);
+        $getCuttingOrder = CuttingOrderRecord::with(['CuttingOrderRecordDetail', 'CuttingOrderRecordDetail.color'])->where('serial_number', $serial_number)->latest()->first();
+        $layingPlanningDetail = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.color'])->find($getCuttingOrder->layingPlanningDetail->id);
         $data = collect(
             [
-                'cuttingOrderRecord' => $data
+                'laying_planning_detail' => $layingPlanningDetail
             ]
         );
         return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
