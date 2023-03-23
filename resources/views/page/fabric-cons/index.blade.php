@@ -95,6 +95,7 @@ $(document).ready(function(){
     $('#btn_modal_create').click((e) => {
         $('#modal_formLabel').text("Add Color")
         $('#btn_submit').text("Add Color")
+        $('#fabricCons_form').attr("action", create_url);
         $('#fabricCons_form').find("input[type=text], textarea").val("");
         $('#fabricCons_form').find('input[name="_method"]').remove();
         $('#modal_form').modal('show')
@@ -125,6 +126,7 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
+    const create_url ='{{ route("fabric-cons.store",":id") }}';
 
     function get_data_fabricCons_ajax(get_data_url) {
         $.ajax({
