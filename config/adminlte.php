@@ -324,12 +324,6 @@ return [
             'can'  => 'admin-only', 
         ],
         [
-            'text' => 'Style',
-            'url'  => '/style',
-            'icon' => 'fas fa-fw fa fa-solid fa-palette',
-            'can'  => 'admin-only', 
-        ],
-        [
             'text' => 'Size',
             'url'  => '/size',
             'icon' => 'fas fa-fw fa fa-solid fa-ruler',
@@ -357,6 +351,12 @@ return [
             'text' => 'GL',
             'url'  => '/gl',
             'icon' => 'fas fa-fw fa fa-file-alt',
+            'can'  => 'admin-only', 
+        ],
+        [
+            'text' => 'Style',
+            'url'  => '/style',
+            'icon' => 'fas fa-fw fa fa-solid fa-palette',
             'can'  => 'admin-only', 
         ],
         [

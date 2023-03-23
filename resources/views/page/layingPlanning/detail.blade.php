@@ -245,7 +245,7 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="qty_size_{{ $size->id }}">{{ $size->size }}</label>
-                                    <input type="number" class="form-control" id="qty_size_{{ $size->id }}" name="qty_size[{{ $size->id }}]" value="0" readonly>
+                                    <input type="number" class="form-control" id="qty_size_{{ $size->id }}" name="qty_size[{{ $size->id }}]" readonly>
                                 </div>
                             </div>
                             @endforeach
@@ -279,7 +279,6 @@ $(document).ready(function(){
     const size_list = {!! json_encode($size_list) !!};
     const create_url = '{{ route("laying-planning.detail-create") }}';
 
-
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -293,6 +292,10 @@ $(document).ready(function(){
         $('#planning_detail_form').find('input[name="_method"]').remove();
         $('#planning_detail_form').attr('action', create_url);
         $('#modal_form').modal('show')
+
+        set_qty_size(size_list);
+        set_marker_length();
+        set_marker_total_length();
     });
 
     $('#marker_yard, #marker_inch').on('keyup', function(e) {
@@ -378,6 +381,7 @@ $(document).ready(function(){
     const set_qty_size = (size_list) => {
         size_list.forEach(function(size) {
             let size_ratio = $(`#ratio_size_${size.id}`).val() ? parseInt($(`#ratio_size_${size.id}`).val()) : 0;
+            $(`#ratio_size_${size.id}`).val(size_ratio)
             let layer_qty = $('#layer_qty').val() ? parseFloat($('#layer_qty').val()) : 0;
             let qty_size = size_ratio * layer_qty;
             $(`#qty_size_${size.id}`).val(qty_size);
