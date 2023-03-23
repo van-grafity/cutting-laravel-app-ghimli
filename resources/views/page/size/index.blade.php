@@ -74,6 +74,7 @@ $(document).ready(function(){
     $('#btn_modal_create').click((e) => {
         $('#modal_formLabel').text("Add Size")
         $('#btn_submit').text("Add Size")
+        $('#size_form').attr('action', create_url);
         $('#size_form').find("input[type=text], textarea").val("");
         $('#size_form').find('input[name="_method"]').remove();
         $('#modal_form').modal('show')
@@ -83,6 +84,7 @@ $(document).ready(function(){
 
 <script type="text/javascript">
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const create_url ='{{ route("size.store",":id") }}';
     const edit_url ='{{ route("size.show",":id") }}';
     const update_url ='{{ route("size.update",":id") }}';
     const delete_url ='{{ route("size.destroy",":id") }}';

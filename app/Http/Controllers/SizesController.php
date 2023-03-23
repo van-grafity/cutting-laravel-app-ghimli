@@ -53,7 +53,7 @@ class SizesController extends Controller
             'size' => 'required',
         ]);
 
-        $check_duplicate_code = Size::where('size', $request->size_code)->first();
+        $check_duplicate_code = Size::where('size', $request->size)->first();
         if($check_duplicate_code){
             return back()->withInput();
         }

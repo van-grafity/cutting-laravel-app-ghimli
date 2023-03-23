@@ -35,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::group(['middleware' => ['auth']], function () {
+    Route::get('/style-data', [StylesController::class, 'dataStyle']);
     Route::get('/color-data', [ColorsController::class, 'dataColor']);
     Route::get('/size-data', [SizesController::class, 'dataSize']);
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
@@ -42,6 +43,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::resource('buyer', App\Http\Controllers\BuyerController::class);
+    Route::resource('style', StylesController::class);
     Route::resource('size', SizesController::class);
     Route::resource('color', ColorsController::class);
     Route::resource('fabric-cons', FabricConssController::class);

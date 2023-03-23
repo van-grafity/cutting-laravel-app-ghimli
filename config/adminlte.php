@@ -324,15 +324,21 @@ return [
             'can'  => 'admin-only', 
         ],
         [
+            'text' => 'Style',
+            'url'  => '/style',
+            'icon' => 'fas fa-fw fa fa-solid fa-palette',
+            'can'  => 'admin-only', 
+        ],
+        [
             'text' => 'Size',
             'url'  => '/size',
-            'icon' => 'fas fa-fw fa fa-solid fa-palette',
+            'icon' => 'fas fa-fw fa fa-solid fa-ruler',
             'can'  => 'admin-only', 
         ],
         [
             'text' => 'Color',
             'url'  => '/color',
-            'icon' => 'fas fa-fw fa fa-solid fa-palette',
+            'icon' => 'fas fa-fw fa fa-solid fa-fill-drip',
             'can'  => 'admin-only', 
         ],
         [
