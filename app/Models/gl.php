@@ -21,4 +21,9 @@ class Gl extends Model
     {
         return $this->belongsTo(buyer::class);
     }
+
+    public function style()
+    {
+        return $this->hasMany(Style::class,'gl_id','id');
+    }
 }

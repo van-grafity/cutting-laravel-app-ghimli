@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Color')
+@section('title', 'Size')
 
 @section('content')
 
@@ -12,12 +12,11 @@
                     <div class="d-flex justify-content-end mb-1">
                         <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create" data-id='2'>Create</a>
                     </div>
-                    <table class="table table-bordered table-hover" id="color_table">
+                    <table class="table table-bordered table-hover" id="size_table">
                         <thead class="">
                             <tr>
-                                <th scope="col" style="width: 70px;">#</th>
-                                <th scope="col" class="text-left">Color</th>
-                                <th scope="col" class="text-left">Code</th>
+                                <th scope="col" style="width: 20px">No</th>
+                                <th scope="col" class="text-left">Size</th>
                                 <th scope="col" class="text-left">Action</th>
                             </tr>
                         </thead>
@@ -36,29 +35,25 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal_formLabel">Add Color</h5>
+                <h5 class="modal-title" id="modal_formLabel">Add Size</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('color.store') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="color_form">
+            <form action="{{ route('size.store') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="size_form">
                 @csrf
                 <div class="modal-body">
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="color_name">Color</label>
-                            <input type="text" class="form-control" id="color_name" name="color" placeholder="Enter name">
-                        </div>
-                        <div class="form-group">
-                            <label for="color_code">Code</label>
-                            <input type="text" class="form-control" id="color_code" name="color_code" placeholder="Enter code">
+                            <label for="size">Size</label>
+                            <input type="text" class="form-control" id="size" name="size" placeholder="Enter size">
                         </div>
                     </div>
                     <!-- END .card-body -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="btn_submit">Add Color</button>
+                    <button type="submit" class="btn btn-primary" id="btn_submit">Add Size</button>
                 </div>
             </form>
         </div>
@@ -77,11 +72,11 @@ $(document).ready(function(){
     });
 
     $('#btn_modal_create').click((e) => {
-        $('#modal_formLabel').text("Add Color")
-        $('#btn_submit').text("Add Color")
-        $('#color_form').attr('action', create_url);
-        $('#color_form').find("input[type=text], textarea").val("");
-        $('#color_form').find('input[name="_method"]').remove();
+        $('#modal_formLabel').text("Add Size")
+        $('#btn_submit').text("Add Size")
+        $('#size_form').attr('action', create_url);
+        $('#size_form').find("input[type=text], textarea").val("");
+        $('#size_form').find('input[name="_method"]').remove();
         $('#modal_form').modal('show')
     })
 })
@@ -89,16 +84,16 @@ $(document).ready(function(){
 
 <script type="text/javascript">
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const create_url ='{{ route("color.store",":id") }}';
-    const edit_url ='{{ route("color.show",":id") }}';
-    const update_url ='{{ route("color.update",":id") }}';
-    const delete_url ='{{ route("color.destroy",":id") }}';
+    const create_url ='{{ route("size.store",":id") }}';
+    const edit_url ='{{ route("size.show",":id") }}';
+    const update_url ='{{ route("size.update",":id") }}';
+    const delete_url ='{{ route("size.destroy",":id") }}';
 
-    async function edit_color (color_id) {
+    async function edit_size (color_id) {
         let url_edit = edit_url.replace(':id',color_id);
 
         result = await get_using_fetch(url_edit);
-        form = $('#color_form')
+        form = $('#size_form')
         form.append('<input type="hidden" name="_method" value="PUT">');
         $('#modal_formLabel').text("Edit Color");
         $('#btn_submit').text("Save");
@@ -106,12 +101,11 @@ $(document).ready(function(){
 
         let url_update = update_url.replace(':id',color_id);
         form.attr('action', url_update);
-        form.find('input[name="color"]').val(result.color);
-        form.find('input[name="color_code"]').val(result.color_code);
+        form.find('input[name="size"]').val(result.size);
     }
 
-    async function delete_color (color_id) {
-        if(!confirm("Apakah anda yakin ingin menghapus Cutting Order Record ini?")) { return false; };
+    async function delete_size (color_id) {
+        if(!confirm("Apakah anda yakin ingin menghapus Size ini?")) { return false; };
 
         let url_delete = delete_url.replace(':id',color_id);
         let data_params = { token };
@@ -129,14 +123,13 @@ $(document).ready(function(){
 
 <script type="text/javascript">
     $(function (e) {
-        $('#color_table').DataTable({
+        $('#size_table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ url('/color-data') }}",
+            ajax: "{{ url('/size-data') }}",
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'color', name: 'color'},
-                {data: 'color_code', name: 'color_code'},
+                {data: 'size', name: 'size'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
             // dom: 'Bfrtip',
@@ -155,7 +148,7 @@ $(document).ready(function(){
             autoWidth: false,
             responsive: true,
         });
-        // }).buttons().container().appendTo('#color_table_wrapper .col-md-6:eq(0)');
+        // }).buttons().container().appendTo('#size_table_wrapper .col-md-6:eq(0)');
 
     });
     

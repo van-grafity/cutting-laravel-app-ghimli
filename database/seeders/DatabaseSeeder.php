@@ -21,6 +21,7 @@ use Database\Seeders\LayingPlanningDetailSizesTableSeeder;
 use Database\Seeders\CuttingOrderRecordsTableSeeder;
 use Database\Seeders\CuttingOrderRecordDetailsTableSeeder;
 use Database\Seeders\CuttingTicketsTableSeeder;
+use Database\Seeders\UserRolePermissionsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,8 +32,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(RolesTableSeeder::class);
-        $this->call(UsersTableSeeder::class);
+        // $this->call(RolesTableSeeder::class);
+        // $this->call(UsersTableSeeder::class);
+        $this->call(UserRolePermissionsSeeder::class);
         $this->call(ColorsTableSeeder::class);
         $this->call(SizesTableSeeder::class);
         $this->call(BuyersTableSeeder::class);

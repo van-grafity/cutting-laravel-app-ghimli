@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LayingPlanning\LayingPlanningsController;
+use App\Http\Controllers\SizesController;
 use App\Http\Controllers\ColorsController;
 use App\Http\Controllers\FabricConssController;
 use App\Http\Controllers\FabricTypesController;
@@ -31,31 +32,36 @@ Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('home', App\Http\Controllers\HomeController::class);
-    Route::resource('buyer', App\Http\Controllers\BuyerController::class)->middleware('accessSewing');
 });
 
 Route::group(['middleware' => ['auth']], function () {
-
-    Route::resource('color', ColorsController::class)->middleware('accessSuperAdmin');
-    Route::get('/color-data', [ColorsController::class, 'dataColor'])->middleware('accessSuperAdmin');
-
+    Route::get('/style-data', [StylesController::class, 'dataStyle']);
+    Route::get('/color-data', [ColorsController::class, 'dataColor']);
+    Route::get('/size-data', [SizesController::class, 'dataSize']);
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
-
-    Route::resource('fabric-cons', FabricConssController::class)->middleware('accessSuperAdmin');
-    Route::resource('fabric-type', FabricTypesController::class)->middleware('accessSuperAdmin');
-    Route::resource('gl', GlsController::class)->middleware('accessSuperAdmin');
 });
 
-Route::group(['middleware' => ['auth','accessSuperAdmin','accessCutting']], function () {
+Route::group(['middleware' => ['auth','can:admin-only']], function () {
+    Route::resource('buyer', App\Http\Controllers\BuyerController::class);
+    Route::resource('style', StylesController::class);
+    Route::resource('size', SizesController::class);
+    Route::resource('color', ColorsController::class);
+    Route::resource('fabric-cons', FabricConssController::class);
+    Route::resource('fabric-type', FabricTypesController::class);
+    Route::resource('gl', GlsController::class);
+});
+
+Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::resource('laying-planning',LayingPlanningsController::class);
     Route::get('/laying-planning-create', [LayingPlanningsController::class, 'layingCreate']);
     Route::get('/laying-planning-qrcode/{id}', [LayingPlanningsController::class, 'layingQrcode']);
     
-    Route::prefix('laying-planning-detail')->name('laying-planning.')->group(function(){
-        route::post('/create', [LayingPlanningsController::class, 'detail_create'])->name('detail-create');
-        route::put('/{id}', [LayingPlanningsController::class, 'detail_update'])->name('detail-update');
-        route::delete('/{id}', [LayingPlanningsController::class, 'detail_delete'])->name('detail-delete');
-        route::get('/{id}/edit', [LayingPlanningsController::class, 'detail_edit'])->name('detail-edit');
+    Route::controller(LayingPlanningsController::class)
+    ->prefix('laying-planning-detail')->name('laying-planning.')->group(function(){
+        route::post('/create', 'detail_create')->name('detail-create');
+        route::put('/{id}', 'detail_update')->name('detail-update');
+        route::delete('/{id}', 'detail_delete')->name('detail-delete');
+        route::get('/{id}/edit', 'detail_edit')->name('detail-edit');
     });
 
     Route::resource('cutting-order', CuttingOrdersController::class);
@@ -68,14 +74,11 @@ Route::group(['middleware' => ['auth','accessSuperAdmin','accessCutting']], func
     });
 });
 
-Route::group(['middleware' => ['auth','accessSuperAdmin','accessCutting']], function () {
-
-    Route::prefix('fetch')->name('fetch.')->group(function(){
-        Route::get('/',[FetchController::class, 'index'])->name('index');
-        Route::get('buyer', [FetchController::class, 'buyer'])->name('buyer');
-        Route::get('style', [FetchController::class, 'style'])->name('style');
-        Route::get('color', [FetchController::class, 'color'])->name('color');
-        
-        Route::get('get-laying-sheet/{id}', [CuttingTicketsController::class, 'get_laying_sheet'])->name('laying-sheet');
-    });
+Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(function(){
+    Route::get('/',[FetchController::class, 'index'])->name('index');
+    Route::get('buyer', [FetchController::class, 'buyer'])->name('buyer');
+    Route::get('style', [FetchController::class, 'style'])->name('style');
+    Route::get('color', [FetchController::class, 'color'])->name('color');
+    
+    Route::get('get-laying-sheet/{id}', [CuttingTicketsController::class, 'get_laying_sheet'])->name('laying-sheet');
 });

@@ -111,6 +111,7 @@ $(document).ready(function(){
     $('#btn_modal_create').click((e) => {
         $('#modal_formLabel').text("Add GL")
         $('#btn_submit').text("Add GL")
+        $('#gl_form').attr("action", create_url);
         $('#gl_form').find("input[type=text], textarea").val("");
         $('#gl_form').find('input[name="_method"]').remove();
         $('#modal_form').modal('show')
@@ -141,6 +142,8 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
+    const create_url ='{{ route("gl.store",":id") }}';
+    
     function delete_gl_ajax(delete_url) {
         $.ajax({
             type:'DELETE',
