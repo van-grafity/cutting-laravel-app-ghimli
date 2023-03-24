@@ -55,7 +55,7 @@
                                         <tr>
                                             <td>Total Qty</td>
                                             <td class="pl-3">:</td>
-                                            <td>{{ $data->order_qty * 25 }} Pcs</td>
+                                            <td>{{ $data->total_order_qty }} Pcs</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -298,19 +298,13 @@ $(document).ready(function(){
         set_marker_total_length();
     });
 
-    $('#marker_yard, #marker_inch').on('keyup', function(e) {
+    $('#layer_qty, #marker_yard, #marker_inch, .ratio-size').on('keyup', function(e) {
         set_marker_length();
-    });
-
-    $('#layer_qty').on('keyup', function(e) {
         set_marker_total_length();
         set_qty_size(size_list);
     });
 
-    $('.ratio-size').on('keyup', function(e) {
-        set_qty_size(size_list);
-    });
-
+    
     $(".btn-detail-edit").on('click', async function(e) {
         let get_data_url = $(this).attr('data-url');
         let planning_detail_id = $(this).attr('data-id');
@@ -366,7 +360,7 @@ $(document).ready(function(){
     const set_marker_length = () => {
         let marker_yard = $('#marker_yard').val() ? parseFloat($('#marker_yard').val()) : 0;
         let marker_inch = $('#marker_inch').val() ? parseFloat($('#marker_inch').val()) : 0;
-        let marker_length = marker_yard + (marker_inch/36);
+        let marker_length = marker_yard + (marker_inch/36) + 0.04;
         $('#marker_length').val(marker_length);
         set_marker_total_length();
     };

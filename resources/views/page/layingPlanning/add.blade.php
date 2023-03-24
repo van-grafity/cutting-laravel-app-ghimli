@@ -178,7 +178,7 @@
                                             <td class="text-center align-middle" colspan="3">No Selected Size</td>
                                         </tr>
                                     </tbody>
-                                    <tfoot>
+                                    <tfoot class="bg-dark">
                                         <tr>
                                             <th class="text-center">Total</th>
                                             <th class="" id="total_size_qty" colspan="2">: </th>
