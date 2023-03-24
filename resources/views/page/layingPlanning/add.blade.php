@@ -161,8 +161,10 @@
                             </div>
                         </div>
 
+                        <!-- Table List Size -->
                         <div class="row mt-5">
                             <div class="col-sm-12 col-md-6">
+                                <label for="fabric_type" class="form-label">List Size</label>
                                 <table id="table_laying_planning_size" class="table table-bordered align-middle">
                                     <thead class="thead">
                                         <tr>
@@ -176,6 +178,12 @@
                                             <td class="text-center align-middle" colspan="3">No Selected Size</td>
                                         </tr>
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th class="text-center">Total</th>
+                                            <th class="" id="total_size_qty" colspan="2">: </th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
@@ -223,7 +231,11 @@
     const url_buyer = `{{ route('fetch.buyer') }}`;
     const url_style = `{{ route('fetch.style') }}`;
     
+    
     $( document ).ready(function() {
+        $('#total_size_qty').html(': '+sum_size_qty()); // ## update total size
+
+
         $('.select2').select2({ 
         
         });
@@ -350,6 +362,14 @@
         return false;
     }
 
+    // ## menjumlahkan quantity tiap size
+    function sum_size_qty() {
+        var get_size_qty = $("input[name='laying_planning_size_qty[]']").map(function(){return $(this).val();}).get();
+        const sum = get_size_qty.reduce((tempSum, next_arr) => tempSum + parseInt(next_arr), 0);
+        return sum;
+    }
+
+    // ## user add size ke table list size
     $('#btn_add_laying_size').on('click', function(e) {
 
         if(!is_select_size_empty()){ // jika form untuk nambah size ada yang belum di isi, maka aksi gagal
@@ -381,6 +401,7 @@
         $('#select_size').val('');
         $('#select_size').trigger('change')
         $('#size_qty').val('');
+        $('#total_size_qty').html(': '+sum_size_qty());
     });
 
 
@@ -402,6 +423,8 @@
 
             $('#table_laying_planning_size > tbody').html(element_html);
         }
+
+        $('#total_size_qty').html(': '+sum_size_qty());
     });
 
     // function insert_option_after_delete(option_value){
