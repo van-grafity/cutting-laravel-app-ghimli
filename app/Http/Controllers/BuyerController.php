@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Buyer;
 
+use Yajra\Datatables\Datatables;
+
 class BuyerController extends Controller
 {
     
@@ -14,8 +16,21 @@ class BuyerController extends Controller
         return view('page.buyer.index', compact('buyers'));
     }
 
+    public function dataBuyer()
+    {
+        $query = Buyer::get();
+            return Datatables::of($query)
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->addColumn('action', function($data){
+                return '
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="edit_buyer('.$data->id.')">Edit</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_buyer('.$data->id.')">Delete</a>';
+            })
+            ->make(true);
+    }
+
     public function show($id){
-        $data = Buyer::find($id);
         try {
             $data = Buyer::find($id);
             return response()->json($data, 200);
@@ -52,10 +67,21 @@ class BuyerController extends Controller
 
     public function destroy($id)
     {
-        $data = Buyer::find($id);
-        $data->delete();
-        // return redirect('/buyer')->with('status', 'Data Buyer Berhasil Dihapus!');
-        return response()->json(['status' => 'Data Buyer Berhasil Dihapus!']);
+        try {
+            $buyer = Buyer::find($id);
+            $buyer->delete();
+            $date_return = [
+                'status' => 'success',
+                'data'=> $buyer,
+                'message'=> 'Data Buyer berhasil di hapus',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     public function update(Request $request, $id)

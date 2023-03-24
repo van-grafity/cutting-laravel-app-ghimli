@@ -68,7 +68,7 @@
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <input type="text" class="form-control" id="description" name="description" placeholder="Enter description">
+                            <textarea class="form-control" name="description" id="description" cols="30" rows="3"></textarea>
                         </div>
                     </div>
                     <!-- END .card-body -->
@@ -141,7 +141,7 @@ $(document).ready(function(){
 
                 form.attr('action', get_data_url);
                 form.find('input[name="name"]').val(res.name);
-                form.find('input[name="description"]').val(res.description);
+                form.find('textarea[name="description"]').val(res.description);
             }
         }).catch((err)=>{
             console.log(err);

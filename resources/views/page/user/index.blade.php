@@ -161,6 +161,5 @@ $(document).ready(function(){
             responsive: true,
         });
     });
-    
 </script>
 @endpush

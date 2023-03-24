@@ -36,10 +36,11 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/style-data', [StylesController::class, 'dataStyle']);
-    Route::get('/color-data', [ColorsController::class, 'dataColor']);
-    Route::get('/size-data', [SizesController::class, 'dataSize']);
     Route::get('/user-data', [UsersController::class, 'dataUser']);
+    Route::get('/buyer-data', [BuyerController::class, 'dataBuyer']);
+    Route::get('/size-data', [SizesController::class, 'dataSize']);
+    Route::get('/color-data', [ColorsController::class, 'dataColor']);
+    Route::get('/style-data', [StylesController::class, 'dataStyle']);
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
 });
 
