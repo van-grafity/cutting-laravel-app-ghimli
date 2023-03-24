@@ -105,12 +105,7 @@ class CuttingOrdersController extends Controller
             'layer' => $layingPlanningDetail->layer_qty,
         ];
 
-        $get_size_ratio = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
-        $size_ratio = [];
-        foreach( $get_size_ratio as $key => $size ) {
-            $size_ratio[] = $size->size->size . " = " . $size->ratio_per_size;
-        }
-        $size_ratio = Arr::join($size_ratio, ' | ');
+        $size_ratio = $this->print_size_ratio($layingPlanningDetail);
         $cutting_order = Arr::add($cutting_order, 'size_ratio', $size_ratio);
 
         $cutting_order_detail = $getCuttingOrder->cuttingOrderRecordDetail;
@@ -161,10 +156,11 @@ class CuttingOrdersController extends Controller
             'style' => $cutting_order->layingPlanningDetail->layingPlanning->style->style,
             'gl_number' => $cutting_order->layingPlanningDetail->layingPlanning->gl->gl_number,
             'no_laying_sheet' => $cutting_order->layingPlanningDetail->no_laying_sheet,
-            'fabric_po' => $cutting_order->layingPlanningDetail->no_laying_sheet,
             'fabric_po' => $cutting_order->layingPlanningDetail->layingPlanning->fabric_po,
+            'marker_code' => $cutting_order->layingPlanningDetail->marker_code,
             'marker_length' => $cutting_order->layingPlanningDetail->marker_yard.'Yd '.  $cutting_order->layingPlanningDetail->marker_inch.'" ',
             'fabric_type' => $cutting_order->layingPlanningDetail->layingPlanning->fabricType->name,   
+            'fabric_cons' => $cutting_order->layingPlanningDetail->layingPlanning->fabricCons->name,   
             'table_number' => $cutting_order->layingPlanningDetail->table_number,   
             'buyer' => $cutting_order->layingPlanningDetail->layingPlanning->buyer->name,   
             'size_ratio' => $this->print_size_ratio($cutting_order->layingPlanningDetail),   

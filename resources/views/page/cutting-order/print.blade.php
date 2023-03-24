@@ -69,6 +69,7 @@
         }
 
         .header-subtitle {
+            font-weight: bold;
             width: 100%;
             margin-bottom: .5rem;
         }
@@ -76,6 +77,7 @@
         .header-subtitle td {
             vertical-align: bottom;
             border-bottom: 1px solid;
+            font-size:12px;
         }
         .header-subtitle td.no-border {
             border: none;
@@ -109,7 +111,7 @@
                 PT. GHIMLI INDONESIA
             </div>
             <div class="serial-number-qr">
-                <div class="qr-wrapper" style="margin-top: -10px; margin-right: -10px;">
+                <div class="qr-wrapper" style="margin-top: -15px; margin-right: -15px;">
                     <img src="https://chart.googleapis.com/chart?chs=70x70&cht=qr&chl={{ $data->serial_number }}" alt="">
                 </div>
             </div>
@@ -121,20 +123,22 @@
 
         </div>
         <table class="header-subtitle">
-            <tbody>
+            <thead>
                 <tr>
-                    <td width="120"> Style No : {{ $data->style }} </td>
+                    <td width="35" class="no-border"> Style No</td>
+                    <td width="80">: {{ $data->style }} </td>
+                    <td width="60" class="no-border text-right"> {{ $data->marker_code }} </td>
+                    <td width="80" class="no-border text-right"> GL No </td>
+                    <td width="110" class="" >: {{ $data->gl_number}} </td>
+                    <td width="100" class="no-border text-right">Portion</td>
+                    <td width="100" class="">: {{ $data->fabric_cons }} </td>
                     <td width="100" class="no-border"></td>
-                    <td width="110" class="text-center" > GL No : {{ $data->gl_number}} </td>
-                    <td width="100" class="no-border"></td>
-                    <td width="50" class="text-center"> Body </td>
-                    <td width="180" class="no-border"></td>
                     <td width="80" class="subtitle-right"> 
                         No : {{ $data->no_laying_sheet}} <br> 
                         Date : {{ $data->date }} 
                     </td>
                 </tr>
-            </tbody>
+            </thead>
         </table>
         <div class="body-nota">
             <table class="table table-nota">
