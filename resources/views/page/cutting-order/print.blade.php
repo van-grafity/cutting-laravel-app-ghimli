@@ -147,7 +147,7 @@
                         <th width="100" colspan="2">Fabric Type <br> <i style="font-weight: 500;">Jenis Kain</i></th>
                         <th width="120" colspan="3"> {{ $data->fabric_type }} </th>
                         <th width="60">Cutting Lot <br> <i style="font-weight: 500;">Lot Potongan</i></th>
-                        <th width="60"> {{ $data-> table_number }} </th>
+                        <th width="60" style="text-align:center; font-size:14px;"> {{ $data-> table_number }} </th>
                     </tr>
                     <tr>
                         <th rowspan="2">Buyer </th>

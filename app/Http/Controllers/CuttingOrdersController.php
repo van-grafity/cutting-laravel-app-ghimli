@@ -208,7 +208,9 @@ class CuttingOrdersController extends Controller
         $size_ratio = [];
 
         foreach( $get_size_ratio as $key => $size ) {
-            $size_ratio[] = $size->size->size . " = " . $size->ratio_per_size;
+            if($size->ratio_per_size > 0){
+                $size_ratio[] = $size->size->size . " = " . $size->ratio_per_size;
+            }
         }
         $size_ratio = Arr::join($size_ratio, ' | ');
         return $size_ratio;
