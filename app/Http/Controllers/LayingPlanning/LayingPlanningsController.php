@@ -111,6 +111,9 @@ class LayingPlanningsController extends Controller
     {
         $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->find($id);
         $details = LayingPlanningDetail::where('laying_planning_id', $id)->get();
+        $total_order_qty = LayingPlanning::where('gl_id', $data->gl_id)->sum('order_qty');
+        $data->total_order_qty = $total_order_qty;
+
         foreach($details as $key => $value) {
             $details[$key]->cor_status = $value->cuttingOrderRecord ? 'disabled' : '';
         }
@@ -120,7 +123,6 @@ class LayingPlanningsController extends Controller
         foreach ($get_size_list as $key => $size) {
             $size_list[] = $size->size;
         }
-        
         return view('page.layingPlanning.detail', compact('data', 'details','size_list'))   ;
     }
 

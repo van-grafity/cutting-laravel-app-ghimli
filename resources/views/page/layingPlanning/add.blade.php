@@ -83,7 +83,7 @@
                                     <input type="number" class="form-control" id="order_qty" name="order_qty" min="0">
                                 </div>
                             </div>
-                            <div class="col-md-6 col-sm-12">
+                            <div class="col-md-6 col-sm-12 d-none">
                                 <div class="form-group">
                                     <label for="total_qty" class="form-label">Total Qty</label>
                                     <input type="number" class="form-control" id="total_qty" name="total_qty" min="0">

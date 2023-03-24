@@ -24,73 +24,73 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <table class="text-left">
                                     <tbody>
                                         <tr>
                                             <td>GL No.</td>
-                                            <td class="pl-4">:</td>
+                                            <td class="pl-3">:</td>
                                             <td>{{ $data->gl->gl_number }}</td>
                                         </tr>
                                         <tr>
                                             <td>Buyer</td>
-                                            <td class="pl-4">:</td>
+                                            <td class="pl-3">:</td>
                                             <td>{{ $data->buyer->name }}</td>
                                         </tr>
                                         <tr>
                                             <td>Style</td>
-                                            <td class="pl-4">:</td>
+                                            <td class="pl-3">:</td>
                                             <td>{{ $data->style->style }}</td>
                                         </tr>
                                         <tr>
                                             <td>Color</td>
-                                            <td class="pl-4">:</td>
+                                            <td class="pl-3">:</td>
                                             <td>{{ $data->color->color }}</td>
                                         </tr>
                                         <tr>
                                             <td>Order Qty</td>
-                                            <td class="pl-4">:</td>
+                                            <td class="pl-3">:</td>
                                             <td>{{ $data->order_qty }} Pcs</td>
                                         </tr>
                                         <tr>
                                             <td>Total Qty</td>
-                                            <td class="pl-4">:</td>
+                                            <td class="pl-3">:</td>
                                             <td>{{ $data->order_qty * 25 }} Pcs</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-7">
                                 <table>
                                     <tbody class="align-top">
                                         <tr>
                                             <td>Fabric P/O</td>
-                                            <td class="pl-4">:</td>
+                                            <td class="pl-3">:</td>
                                             <td>{{ $data->fabric_po }}</td>
                                         </tr>
                                         <tr>
                                             <td>Fabric Type</td>
-                                            <td class="pl-4">:</td>
+                                            <td class="pl-3">:</td>
                                             <td>{{ $data->fabricType->description }}</td>
                                         </tr>
                                         <tr>
                                             <td>Fabric Consumpition</td>
-                                            <td class="pl-4">:</td>
+                                            <td class="pl-3">:</td>
                                             <td>{{ $data->fabricCons->description }}</td>
                                         </tr>
                                         <tr>
                                             <td>Description</td>
-                                            <td class="pl-4">:</td>
+                                            <td class="pl-3">:</td>
                                             <td>{{ $data->style->description }}</td>
                                         </tr>
                                         <tr>
                                             <td>Delivery Date</td>
-                                            <td class="pl-4">:</td>
+                                            <td class="pl-3">:</td>
                                             <td>{{ $data->delivery_date }}</td>
                                         </tr>
                                         <tr>
                                             <td>Plan Date</td>
-                                            <td class="pl-4">:</td>
+                                            <td class="pl-3">:</td>
                                             <td>{{ $data->plan_date }}</td>
                                         </tr>
                                     </tbody>
