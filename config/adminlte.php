@@ -313,6 +313,12 @@ return [
             'can'  => 'clerk',
         ],
         [
+            'text' => 'User Management',
+            'url'  => '/user-management',
+            'icon' => 'fas fa-fw fa-users',
+            'can'  => 'admin-only',
+        ],
+        [
             'text' => 'Buyer',
             'url'  => '/buyer',
             'icon' => 'fas fa-fw fa fa-user',

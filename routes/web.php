@@ -12,6 +12,7 @@ use App\Http\Controllers\CuttingTicketsController;
 use App\Http\Controllers\StylesController;
 use App\Http\Controllers\BuyerController;
 use App\Http\Controllers\FetchController;
+use App\Http\Controllers\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,11 +39,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/style-data', [StylesController::class, 'dataStyle']);
     Route::get('/color-data', [ColorsController::class, 'dataColor']);
     Route::get('/size-data', [SizesController::class, 'dataSize']);
+    Route::get('/user-data', [UsersController::class, 'dataUser']);
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
 });
 
 Route::group(['middleware' => ['auth','can:admin-only']], function () {
-    Route::resource('buyer', App\Http\Controllers\BuyerController::class);
+    Route::resource('buyer', BuyerController::class);
+    Route::resource('user-management', UsersController::class);
     Route::resource('style', StylesController::class);
     Route::resource('size', SizesController::class);
     Route::resource('color', ColorsController::class);
