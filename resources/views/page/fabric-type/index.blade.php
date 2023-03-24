@@ -75,7 +75,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="btn_submit">Add Color</button>
+                    <button type="submit" class="btn btn-primary" id="btn_submit">Add Fabric Type</button>
                 </div>
             </form>
         </div>
@@ -93,8 +93,8 @@ $(document).ready(function(){
     });
 
     $('#btn_modal_create').click((e) => {
-        $('#modal_formLabel').text("Add Color")
-        $('#btn_submit').text("Add Color")
+        $('#modal_formLabel').text("Add Fabric Type")
+        $('#btn_submit').text("Add Fabric Type")
         $('#fabricType_form').attr("action", create_url);
         $('#fabricType_form').find("input[type=text], textarea").val("");
         $('#fabricType_form').find('input[name="_method"]').remove();

@@ -89,25 +89,25 @@ $(document).ready(function(){
     const update_url ='{{ route("size.update",":id") }}';
     const delete_url ='{{ route("size.destroy",":id") }}';
 
-    async function edit_size (color_id) {
-        let url_edit = edit_url.replace(':id',color_id);
+    async function edit_size (size_id) {
+        let url_edit = edit_url.replace(':id',size_id);
 
         result = await get_using_fetch(url_edit);
         form = $('#size_form')
         form.append('<input type="hidden" name="_method" value="PUT">');
-        $('#modal_formLabel').text("Edit Color");
+        $('#modal_formLabel').text("Edit Size");
         $('#btn_submit').text("Save");
         $('#modal_form').modal('show')
 
-        let url_update = update_url.replace(':id',color_id);
+        let url_update = update_url.replace(':id',size_id);
         form.attr('action', url_update);
         form.find('input[name="size"]').val(result.size);
     }
 
-    async function delete_size (color_id) {
+    async function delete_size (size_id) {
         if(!confirm("Apakah anda yakin ingin menghapus Size ini?")) { return false; };
 
-        let url_delete = delete_url.replace(':id',color_id);
+        let url_delete = delete_url.replace(':id',size_id);
         let data_params = { token };
 
         result = await delete_using_fetch(url_delete, data_params)
