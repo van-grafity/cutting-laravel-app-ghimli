@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+
+use Yajra\Datatables\Datatables;
+
 use Carbon\Carbon;
 
 class LayingPlanningsController extends Controller
@@ -26,6 +29,36 @@ class LayingPlanningsController extends Controller
     {
         $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->get();
         return view('page.layingPlanning.index', compact('data'));
+    }
+
+    public function dataLayingPlanning (){
+        $query = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])
+            ->select('laying_plannings.id','laying_plannings.serial_number','laying_plannings.gl_id','laying_plannings.style_id','laying_plannings.buyer_id','laying_plannings.color_id','laying_plannings.fabric_type_id')->get();
+            return Datatables::of($query)
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->addColumn('gl_number', function ($data){
+                return $data->gl->gl_number;
+            })
+            ->addColumn('style', function ($data){
+                return $data->style->style;
+            })
+            ->addColumn('buyer', function ($data){
+                return $data->buyer->name;
+            })
+            ->addColumn('color', function ($data){
+                return $data->color->color;
+            })
+            ->addColumn('fabric_type', function ($data){
+                return $data->fabricType->description;
+            })
+            ->addColumn('action', function($data){
+                return '
+                <a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm"">Edit</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_layingPlanning('.$data->id.')">Delete</a>
+                <a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1">Detail</a>';
+            })
+            ->make(true);
     }
 
     /**
@@ -113,10 +146,17 @@ class LayingPlanningsController extends Controller
         $details = LayingPlanningDetail::where('laying_planning_id', $id)->get();
         $total_order_qty = LayingPlanning::where('gl_id', $data->gl_id)->sum('order_qty');
         $data->total_order_qty = $total_order_qty;
+        $total_pcs_all_table = 0;
+        $total_length_all_table = 0;
 
         foreach($details as $key => $value) {
             $details[$key]->cor_status = $value->cuttingOrderRecord ? 'disabled' : '';
+            $total_pcs_all_table = $total_pcs_all_table + $value->total_all_size;
+            $total_length_all_table = $total_length_all_table + $value->total_length;
         }
+
+        $data->total_pcs_all_table = $total_pcs_all_table;
+        $data->total_length_all_table = $total_length_all_table;
 
         $get_size_list = $data->layingPlanningSize()->get();
         $size_list = [];
@@ -181,7 +221,7 @@ class LayingPlanningsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('laying-planning-create')
+            return redirect()->route('laying-planning.edit', $request->laying_planning_id)
                         ->withErrors($validator)
                         ->withInput();
         }

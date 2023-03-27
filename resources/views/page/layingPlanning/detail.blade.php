@@ -105,13 +105,7 @@
                     <div class="content-title text-center">
                         <h3>Cutting Table List</h3>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <div class="search-box me-2 mb-2 d-inline-block">
-                            <div class="position-relative">
-                                <input type="text" class="form-control searchTable" placeholder="Search">
-                                <i class="bx bx-search-alt search-icon"></i>
-                            </div>
-                        </div>
+                    <div class="d-flex justify-content-end mb-1">
                         <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
                     </div>
 
@@ -119,8 +113,9 @@
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">No. </th>
-                                <th scope="col">No Laying Sheet</th>
-                                <th scope="col">Total Qty</th>
+                                <th scope="col">Table No</th>
+                                <th scope="col">Total Pcs</th>
+                                <th scope="col">Total Yds Qty</th>
                                 <th scope="col">Marker Length</th>
                                 <th scope="col">Layer Qty</th>
                                 <th scope="col">Action</th>
@@ -130,7 +125,8 @@
                             @foreach ($details as $detail)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $detail->no_laying_sheet }}</td>
+                                    <td>{{ $detail->table_number }}</td>
+                                    <td>{{ $detail->total_all_size }}</td>
                                     <td>{{ $detail->total_length }}</td>
                                     <td>{{ $detail->marker_length }}</td>
                                     <td>{{ $detail->layer_qty }}</td>
@@ -142,6 +138,16 @@
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th class="text-center" colspan="2">Total :</th>
+                                <th class="" colspan="1">{{ $data->total_pcs_all_table }} Pcs </th>
+                                <th class="" colspan="1">{{ $data->total_length_all_table }} Yd </th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
                     </table>
                     
                     <div class="row mt-10rem">

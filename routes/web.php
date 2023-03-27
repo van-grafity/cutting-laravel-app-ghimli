@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/fabric-type-data', [FabricTypesController::class, 'dataFabricType']);
     Route::get('/gl-data', [GlsController::class, 'dataGl']);
     Route::get('/style-data', [StylesController::class, 'dataStyle']);
+    Route::get('/laying-planning-data', [LayingPlanningsController::class, 'dataLayingPlanning']);
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
 });
 

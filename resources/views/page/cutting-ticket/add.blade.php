@@ -94,8 +94,7 @@
     
     const url_get_cutting_order = '{{ route("fetch.cutting-order",":id") }}';
     
-    $('#cutting_order_id').select2({
-    });
+    $('#cutting_order_id').select2({});
 
     $('#cutting_order_id').on('change', async function(e){
         let selected_cutting_order = $('#cutting_order_id').val();

@@ -62,7 +62,7 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="buyer" class="form-label">Buyer</label>
-                                    <input type="hidden" class="form-control" name="buyer" id="buyer" readonly>
+                                    <input type="hidden" class="form-control" name="buyer" id="buyer"  value="{{ $layingPlanning->buyer->id }}">
                                     <input type="text" class="form-control" name="buyer_name" id="buyer_name" readonly value="{{ $layingPlanning->buyer->name }}">
                                 </div>
                             </div>
@@ -87,7 +87,7 @@
                                     <input type="number" class="form-control" id="order_qty" name="order_qty" min="0" value="{{ $layingPlanning->order_qty }}">
                                 </div>
                             </div>
-                            <div class="col-md-6 col-sm-12">
+                            <div class="col-md-6 col-sm-12 d-none">
                                 <div class="form-group">
                                     <label for="total_qty" class="form-label">Total Qty</label>
                                     <input type="number" class="form-control" id="total_qty" name="total_qty" min="0" value="{{ $layingPlanning->order_qty }}">
