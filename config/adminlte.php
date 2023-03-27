@@ -64,7 +64,7 @@ return [
     */
 
     'logo' => '<b>GHIM LI INDONESIA</b>',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    'logo_img' => 'assets/img/ghimli-logo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
@@ -86,7 +86,7 @@ return [
     'auth_logo' => [
         'enabled' => false,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => 'assets/img/ghimli-logo.png',
             'alt' => 'Auth Logo',
             'class' => '',
             'width' => 50,
@@ -109,8 +109,8 @@ return [
     'preloader' => [
         'enabled' => true,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-            'alt' => 'AdminLTE Preloader Image',
+            'path' => 'assets/img/ghimli-logo.png',
+            'alt' => 'Ghim Li Preloader Image',
             'effect' => 'animation__shake',
             'width' => 60,
             'height' => 60,
@@ -314,7 +314,7 @@ return [
         ],
         [
             'text' => 'Master Data',
-            'icon' => 'fas fa-fw fa-users',
+            'icon' => 'fas fa-fw fa-server',
             'can'  => 'admin-only',
             'submenu' => [
                 [

@@ -15,7 +15,7 @@
                     <table class="table table-bordered table-hover" id="remark_table">
                         <thead class="">
                             <tr>
-                                <th scope="col" style="width: 70px;">#</th>
+                                <th scope="col" style="width: 30px;">No</th>
                                 <th scope="col" class="text-left">Name</th>
                                 <th scope="col" class="text-left">Description</th>
                                 <th scope="col" class="text-left">Action</th>
