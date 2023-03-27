@@ -13,6 +13,7 @@ use App\Http\Controllers\StylesController;
 use App\Http\Controllers\BuyerController;
 use App\Http\Controllers\FetchController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\RemarksController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +43,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/color-data', [ColorsController::class, 'dataColor']);
     Route::get('/fabric-cons-data', [FabricConssController::class, 'dataFabricCons']);
     Route::get('/fabric-type-data', [FabricTypesController::class, 'dataFabricType']);
+    Route::get('/remark-data', [RemarksController::class, 'dataRemark']);
     Route::get('/gl-data', [GlsController::class, 'dataGl']);
     Route::get('/style-data', [StylesController::class, 'dataStyle']);
     Route::get('/laying-planning-data', [LayingPlanningsController::class, 'dataLayingPlanning']);
@@ -55,6 +57,7 @@ Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::resource('color', ColorsController::class);
     Route::resource('fabric-cons', FabricConssController::class);
     Route::resource('fabric-type', FabricTypesController::class);
+    Route::resource('remark', RemarksController::class);
     Route::resource('gl', GlsController::class);
     Route::resource('style', StylesController::class);
 });

@@ -291,21 +291,21 @@ return [
 
     'menu' => [
         // Navbar items:
-        [
-            'type'         => 'navbar-search',
-            'text'         => 'search',
-            'topnav_right' => true,
-        ],
+        // [
+        //     'type'         => 'navbar-search',
+        //     'text'         => 'search',
+        //     'topnav_right' => true,
+        // ],
         [
             'type'         => 'fullscreen-widget',
             'topnav_right' => true,
         ],
 
         // Sidebar items:
-        [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
-        ],
+        // [
+        //     'type' => 'sidebar-menu-search',
+        //     'text' => 'search',
+        // ],
         [
             'text' => 'Dashboard',
             'url'  => '/home',
@@ -313,40 +313,61 @@ return [
             'can'  => 'clerk',
         ],
         [
-            'text' => 'User Management',
-            'url'  => '/user-management',
+            'text' => 'Master Data',
             'icon' => 'fas fa-fw fa-users',
             'can'  => 'admin-only',
-        ],
-        [
-            'text' => 'Buyer',
-            'url'  => '/buyer',
-            'icon' => 'fas fa-fw fa fa-user',
-            'can'  => 'admin-only', 
-        ],
-        [
-            'text' => 'Size',
-            'url'  => '/size',
-            'icon' => 'fas fa-fw fa fa-solid fa-ruler',
-            'can'  => 'admin-only', 
-        ],
-        [
-            'text' => 'Color',
-            'url'  => '/color',
-            'icon' => 'fas fa-fw fa fa-solid fa-fill-drip',
-            'can'  => 'admin-only', 
-        ],
-        [
-            'text' => 'Fabric Consumption',
-            'url'  => '/fabric-cons',
-            'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
-            'can'  => 'admin-only', 
-        ],
-        [
-            'text' => 'Fabric Type',
-            'url'  => '/fabric-type',
-            'icon' => 'fas fa-fw fa fa-solid fa-swatchbook',
-            'can'  => 'admin-only', 
+            'submenu' => [
+                [
+                    'text' => 'User Management',
+                    'url'  => '/user-management',
+                    'classes'=> 'ml-3',
+                    'icon' => 'fas fa-fw fa-users',
+                    'can'  => 'admin-only',
+                ],
+                [
+                    'text' => 'Buyer',
+                    'url'  => '/buyer',
+                    'classes'=> 'ml-3',
+                    'icon' => 'fas fa-fw fa fa-user',
+                    'can'  => 'admin-only', 
+                ],
+                [
+                    'text' => 'Size',
+                    'url'  => '/size',
+                    'classes'=> 'ml-3',
+                    'icon' => 'fas fa-fw fa fa-solid fa-ruler',
+                    'can'  => 'admin-only', 
+                ],
+                [
+                    'text' => 'Color',
+                    'url'  => '/color',
+                    'classes'=> 'ml-3',
+                    'icon' => 'fas fa-fw fa fa-solid fa-fill-drip',
+                    'can'  => 'admin-only', 
+                ],
+                [
+                    'text' => 'Fabric Consumption',
+                    'url'  => '/fabric-cons',
+                    'classes'=> 'ml-3',
+                    'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
+                    'can'  => 'admin-only', 
+                ],
+                [
+                    'text' => 'Fabric Type',
+                    'url'  => '/fabric-type',
+                    'classes'=> 'ml-3',
+                    'icon' => 'fas fa-fw fa fa-solid fa-swatchbook',
+                    'can'  => 'admin-only', 
+                ],
+                [
+                    'text' => 'Remarks',
+                    'url'  => '/remark',
+                    'classes'=> 'ml-3',
+                    'icon' => 'fas fa-fw fa fa-solid fa-sticky-note',
+                    'can'  => 'admin-only', 
+                ],
+                
+            ],
         ],
         [
             'text' => 'GL',
@@ -366,10 +387,12 @@ return [
             'can'  => 'clerk',
             'submenu' => [
                 [
+                    'classes'   => 'ml-3',
                     'text' => 'Laying Planning List',
                     'url' => '/laying-planning',
                 ],
                 [
+                    'classes'   => 'ml-3',
                     'text' => 'Create Laying Planning',
                     'url' => '/laying-planning-create',
                 ],
@@ -387,10 +410,12 @@ return [
             'can'  => 'clerk',
             'submenu' => [
                 [
+                    'classes'=> 'ml-3',
                     'text' => 'Cutting Ticket List',
                     'url' => '/cutting-ticket',
                 ],
                 [
+                    'classes'=> 'ml-3',
                     'text' => 'Create Cutting Ticket',
                     'url' => '/cutting-ticket/create',
                 ],
