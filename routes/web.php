@@ -42,6 +42,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/color-data', [ColorsController::class, 'dataColor']);
     Route::get('/fabric-cons-data', [FabricConssController::class, 'dataFabricCons']);
     Route::get('/fabric-type-data', [FabricTypesController::class, 'dataFabricType']);
+    Route::get('/gl-data', [GlsController::class, 'dataGl']);
     Route::get('/style-data', [StylesController::class, 'dataStyle']);
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
 });

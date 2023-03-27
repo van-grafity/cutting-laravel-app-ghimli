@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Gl;
 use App\Models\Buyer;
 
+use Yajra\Datatables\Datatables;
+
 class GlsController extends Controller
 {
     
@@ -14,6 +16,23 @@ class GlsController extends Controller
         $gls = Gl::all();
         $buyers = Buyer::all();
         return view('page.gl.index', compact('gls','buyers'));
+    }
+
+    public function dataGl()
+    {
+        $query = Gl::with('buyer')->get();
+        return Datatables::of($query)
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->addColumn('buyer', function($data) {
+                return $data->buyer->name;
+            })
+            ->addColumn('action', function($data){
+                return '
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="edit_gl('.$data->id.')">Edit</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_gl('.$data->id.')">Delete</a>';
+            })
+            ->make(true);
     }
 
     public function show($id){
@@ -53,10 +72,21 @@ class GlsController extends Controller
 
     public function destroy($id)
     {
-        $data = Gl::find($id);
-        $data->delete();
-        // return redirect('/gl')->with('status', 'Data Gl Berhasil Dihapus!');
-        return response()->json(['status' => 'Data Gl Berhasil Dihapus!']);
+        try {
+            $user = Gl::find($id);
+            $user->delete();
+            $date_return = [
+                'status' => 'success',
+                'data'=> $user,
+                'message'=> 'Data GL berhasil di hapus',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     public function update(Request $request, $id)

@@ -96,7 +96,7 @@
         result = await get_using_fetch(url_edit);
         form = $('#fabricType_form')
         form.append('<input type="hidden" name="_method" value="PUT">');
-        $('#modal_formLabel').text("Edit Fabric Consumption");
+        $('#modal_formLabel').text("Edit Fabric Type");
         $('#btn_submit').text("Save");
         $('#modal_form').modal('show')
 

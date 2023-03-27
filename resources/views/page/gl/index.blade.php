@@ -9,40 +9,22 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <div class="search-box me-2 mb-2 d-inline-block">
-                            <div class="position-relative">
-                                <input type="text" class="form-control searchTable" placeholder="Search">
-                                <i class="bx bx-search-alt search-icon"></i>
-                            </div>
-                        </div>
+                    <div class="d-flex justify-content-end mb-1">
                         <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
                     </div>
-                    <table class="table align-middle table-nowrap table-hover">
-                        <thead class="table-light">
+                    <table class="table table-bordered table-hover" id="gl_table">
+                        <thead class="">
                             <tr>
                                 <th scope="col" class="text-left">No. </th>
                                 <th scope="col" class="text-left">GL Number</th>
+                                <th scope="col" class="text-left">Buyer</th>
                                 <th scope="col" class="text-left">Season</th>
                                 <th scope="col" class="text-left">Size Order</th>
-                                <th scope="col" class="text-left">Gl</th>
+                                <th scope="col" class="text-left">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($gls as $gl)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $gl->gl_number }}</td>
-                                <td>{{ $gl->season }}</td>
-                                <td>{{ $gl->size_order }}</td>
-                                <td>{{ $gl->buyer->name }}</td>
-                                <td>
-                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-edit-gl" data-id="{{ $gl->id }}" data-url="{{ route('gl.show', $gl->id) }}">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-gl" data-id="{{ $gl->id }}" data-url="{{ route('gl.destroy', $gl->id) }}">Delete</a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
+                        <!-- <tbody>
+                        </tbody> -->
                     </table>
                 </div>
             </div>
@@ -78,13 +60,14 @@
                             <input type="text" class="form-control" id="gl_size_order" name="size_order" placeholder="Enter Size Order">
                         </div>
                         <div class="form-group">
-                            <label for="gl_buyer">Buyer</label>
-                            <select name="buyer_id" class="form-control" id="gl_buyer">
+                            <label for="gl_buyer" class="form-label">Buyer</label>
+                            <select name="buyer_id" class="form-control select2" id="gl_buyer" style="width: 100%;" data-placeholder="Choose Buyer">
                                 <option value="">Choose Buyer</option>
                                 @foreach($buyers as $key => $buyer)
                                     <option value="{{ $buyer->id }}" >{{ $buyer->name }}</option>
                                 @endforeach
                             </select>
+
                         </div>
                     </div>
                     <!-- END .card-body -->
@@ -102,90 +85,86 @@
 @push('js')
 <script type="text/javascript">
 $(document).ready(function(){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
+
+    $('.select2').select2({ 
+        dropdownParent: $('#modal_form')
     });
 
     $('#btn_modal_create').click((e) => {
         $('#modal_formLabel').text("Add GL")
         $('#btn_submit').text("Add GL")
         $('#gl_form').attr("action", create_url);
+        $('#gl_form').find('#gl_buyer').val('').trigger('change');
         $('#gl_form').find("input[type=text], textarea").val("");
         $('#gl_form').find('input[name="_method"]').remove();
         $('#modal_form').modal('show')
-    })
-
-    $(".btn-delete-gl").on('click', function(e) {
-        if(!confirm('apakah ingin menghapus data?')){
-            return false;
-        }
-        let delete_url = $(this).attr('data-url');
-        if (delete_url){
-            delete_gl_ajax(delete_url);
-        } else {
-            alert("not found!");
-        }
-    })
-
-    $(".btn-edit-gl").on('click', function(e) {
-        let get_data_url = $(this).attr('data-url');
-        if (get_data_url){
-            get_data_gl_ajax(get_data_url);
-        } else {
-            alert("not found!");
-        }
     })
 
 })
 </script>
 
 <script type="text/javascript">
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const create_url ='{{ route("gl.store",":id") }}';
+    const edit_url ='{{ route("gl.show",":id") }}';
+    const update_url ='{{ route("gl.update",":id") }}';
+    const delete_url ='{{ route("gl.destroy",":id") }}';
     
-    function delete_gl_ajax(delete_url) {
-        $.ajax({
-            type:'DELETE',
-            url:delete_url,
-            success:function(res){
-                console.log(res);
-                if($.isEmptyObject(res.error)){
-                    alert(res.status);
-                    location.reload();
-                } else {
-                    console.log("lah error");
-                }
-            }
-        }).catch((err)=>{
-            console.log(err);
-        });
+
+    async function edit_gl(user_id) {
+        let url_edit = edit_url.replace(':id',user_id);
+
+        result = await get_using_fetch(url_edit);
+        form = $('#gl_form')
+        form.append('<input type="hidden" name="_method" value="PUT">');
+        $('#modal_formLabel').text("Edit GL");
+        $('#btn_submit').text("Save");
+        $('#modal_form').modal('show')
+
+        let url_update = update_url.replace(':id',user_id);
+        form.attr('action', url_update);
+        form.find('#gl_buyer').val(result.buyer_id).trigger('change');
+        form.find('input[name="gl_number"]').val(result.gl_number);
+        form.find('input[name="season"]').val(result.season);
+        form.find('input[name="size_order"]').val(result.size_order);
     }
 
-    function get_data_gl_ajax(get_data_url) {
-        $.ajax({
-            type:'GET',
-            url:get_data_url,
-            success:function(res){
-                form = $('#gl_form')
-                form.append('<input type="hidden" name="_method" value="PUT">');
-                $('#modal_formLabel').text("Edit Gl");
-                $('#btn_submit').text("Save");
-                $('#modal_form').modal('show')
+    async function delete_gl(user_id) {
+        if(!confirm("Apakah anda yakin ingin menghapus GL ini?")) { return false; };
 
-                form.attr('action', get_data_url);
-                form.find('input[name="gl_number"]').val(res.gl_number);
-                form.find('input[name="season"]').val(res.season);
-                form.find('input[name="size_order"]').val(res.size_order);
+        let url_delete = delete_url.replace(':id',user_id);
+        let data_params = { token };
 
-                $('#gl_buyer').val(res.buyer_id)
-
-            }
-        }).catch((err)=>{
-            console.log(err);
-        });
+        result = await delete_using_fetch(url_delete, data_params)
+        if(result.status == "success"){
+            alert(result.message)
+            location.reload();
+        } else {
+            console.log(result.message);
+            alert("Terjadi Kesalahan");
+        }
     }
+</script>
 
-    
+<script type="text/javascript">
+    $(function (e) {
+        $('#gl_table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ url('/gl-data') }}",
+            columns: [
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                {data: 'gl_number', name: 'gl_number'},
+                {data: 'buyer', name: 'buyer'},
+                {data: 'season', name: 'season'},
+                {data: 'size_order', name: 'size_order'},
+                {data: 'action', name: 'action', orderable: false, searchable: false},
+            ],
+            lengthChange: true,
+            searching: true,
+            autoWidth: false,
+            responsive: true,
+        });
+    });
 </script>
 @endpush
