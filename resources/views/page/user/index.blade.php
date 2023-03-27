@@ -83,12 +83,6 @@ $(document).ready(function(){
         dropdownParent: $('#modal_form')
     });
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
     $('#btn_modal_create').click((e) => {
         $('#modal_formLabel').text("Add User")
         $('#btn_submit').text("Add User")

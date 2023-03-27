@@ -5,12 +5,29 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\FabricType;
 
+use Yajra\Datatables\Datatables;
+
+
 class FabricTypesController extends Controller
 {
     public function index()
     {
         $fabricTypes = FabricType::all();
         return view('page.fabric-type.index', compact('fabricTypes'));
+    }
+
+    public function dataFabrictype()
+    {
+        $query = Fabrictype::get();
+        return Datatables::of($query)
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->addColumn('action', function($data){
+                return '
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="edit_fabricType('.$data->id.')">Edit</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_fabricType('.$data->id.')">Delete</a>';
+            })
+            ->make(true);
     }
 
     public function show($id){
@@ -44,10 +61,21 @@ class FabricTypesController extends Controller
 
     public function destroy($id)
     {
-        $fabricType = FabricType::find($id);
-        $fabricType->delete();
-        // return redirect('/buyer')->with('status', 'Data Buyer Berhasil Dihapus!');
-        return response()->json(['status' => 'Data FabricType Berhasil Dihapus!']);
+        try {
+            $user = FabricType::find($id);
+            $user->delete();
+            $date_return = [
+                'status' => 'success',
+                'data'=> $user,
+                'message'=> 'Data Fabric Type berhasil di hapus',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     public function update(Request $request, $id)

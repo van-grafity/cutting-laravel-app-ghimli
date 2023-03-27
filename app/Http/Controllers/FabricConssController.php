@@ -5,12 +5,28 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\FabricCons;
 
+use Yajra\Datatables\Datatables;
+
 class FabricConssController extends Controller
 {
     public function index()
     {
         $fabricConss = FabricCons::all();
         return view('page.fabric-cons.index', compact('fabricConss'));
+    }
+
+    public function dataFabricCons()
+    {
+        $query = FabricCons::get();
+        return Datatables::of($query)
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->addColumn('action', function($data){
+                return '
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="edit_fabricCons('.$data->id.')">Edit</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_fabricCons('.$data->id.')">Delete</a>';
+            })
+            ->make(true);
     }
 
     public function show($id){
@@ -44,10 +60,21 @@ class FabricConssController extends Controller
 
     public function destroy($id)
     {
-        $fabricCons = FabricCons::find($id);
-        $fabricCons->delete();
-        // return redirect('/buyer')->with('status', 'Data Buyer Berhasil Dihapus!');
-        return response()->json(['status' => 'Data FabricCons Berhasil Dihapus!']);
+        try {
+            $user = FabricCons::find($id);
+            $user->delete();
+            $date_return = [
+                'status' => 'success',
+                'data'=> $user,
+                'message'=> 'Data Fabric Consumption berhasil di hapus',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     public function update(Request $request, $id)

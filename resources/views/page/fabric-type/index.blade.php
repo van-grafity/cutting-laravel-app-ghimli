@@ -9,17 +9,11 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <div class="search-box me-2 mb-2 d-inline-block">
-                            <div class="position-relative">
-                                <input type="text" class="form-control searchTable" placeholder="Search">
-                                <i class="bx bx-search-alt search-icon"></i>
-                            </div>
-                        </div>
+                    <div class="d-flex justify-content-end align-items-center mb-1">
                         <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create" data-id='2'>Create</a>
                     </div>
-                    <table class="table align-middle table-nowrap table-hover">
-                        <thead class="table-light">
+                    <table class="table table-bordered table-hover" id="fabric_type_table">
+                        <thead class="">
                             <tr>
                                 <th scope="col" class="text-left">No. </th>
                                 <th scope="col" class="text-left">Name</th>
@@ -27,19 +21,8 @@
                                 <th scope="col" class="text-left">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($fabricTypes as $fabricType)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $fabricType->name }}</td>
-                                <td>{{ $fabricType->description }}</td>
-                                <td>
-                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-edit-fabricType" data-id="{{ $fabricType->id }}" data-url="{{ route('fabric-type.show', $fabricType->id) }}">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-fabricType" data-id="{{ $fabricType->id }}" data-url="{{ route('fabric-type.destroy', $fabricType->id) }}">Delete</a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
+                        <!-- <tbody>
+                        </tbody> -->
                     </table>
                 </div>
             </div>
@@ -85,89 +68,79 @@
 
 @push('js')
 <script type="text/javascript">
-$(document).ready(function(){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+    $(document).ready(function(){
 
-    $('#btn_modal_create').click((e) => {
-        $('#modal_formLabel').text("Add Fabric Type")
-        $('#btn_submit').text("Add Fabric Type")
-        $('#fabricType_form').attr("action", create_url);
-        $('#fabricType_form').find("input[type=text], textarea").val("");
-        $('#fabricType_form').find('input[name="_method"]').remove();
-        $('#modal_form').modal('show')
+        $('#btn_modal_create').click((e) => {
+            $('#modal_formLabel').text("Add Fabric Type")
+            $('#btn_submit').text("Add Fabric Type")
+            $('#fabricType_form').attr("action", create_url);
+            $('#fabricType_form').find("input[type=text], textarea").val("");
+            $('#fabricType_form').find('input[name="_method"]').remove();
+            $('#modal_form').modal('show')
+        })
+
     })
-
-    $(".btn-delete-fabricType").on('click', function(e) {
-        if(!confirm('apakah ingin menghapus data?')){
-            return false;
-        }
-        let delete_url = $(this).attr('data-url');
-        if (delete_url){
-            delete_fabricType_ajax(delete_url);
-        } else {
-            alert("not found!");
-        }
-    })
-
-    $(".btn-edit-fabricType").on('click', function(e) {
-        let get_data_url = $(this).attr('data-url');
-        if (get_data_url){
-            get_data_fabricType_ajax(get_data_url);
-        } else {
-            alert("not found!");
-        }
-    })
-
-})
 </script>
 
 <script type="text/javascript">
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const create_url ='{{ route("fabric-type.store",":id") }}';
+    const edit_url ='{{ route("fabric-type.show",":id") }}';
+    const update_url ='{{ route("fabric-type.update",":id") }}';
+    const delete_url ='{{ route("fabric-type.destroy",":id") }}';
 
-    function get_data_fabricType_ajax(get_data_url) {
-        $.ajax({
-            type:'GET',
-            url:get_data_url,
-            success:function(res){
-                form = $('#fabricType_form')
-                form.append('<input type="hidden" name="_method" value="PUT">');
-                $('#modal_formLabel').text("Edit Fabric Type");
-                $('#btn_submit').text("Save");
-                $('#modal_form').modal('show')
 
-                form.attr('action', get_data_url);
-                form.find('input[name="name"]').val(res.name);
-                form.find('textarea[name="description"]').val(res.description);
-            }
-        }).catch((err)=>{
-            console.log(err);
-        });
+    async function edit_fabricType(user_id) {
+        let url_edit = edit_url.replace(':id',user_id);
+
+        result = await get_using_fetch(url_edit);
+        form = $('#fabricType_form')
+        form.append('<input type="hidden" name="_method" value="PUT">');
+        $('#modal_formLabel').text("Edit Fabric Consumption");
+        $('#btn_submit').text("Save");
+        $('#modal_form').modal('show')
+
+        let url_update = update_url.replace(':id',user_id);
+        form.attr('action', url_update);
+        form.find('input[name="name"]').val(result.name);
+        form.find('textarea[name="description"]').val(result.description);
     }
 
-    function delete_fabricType_ajax(delete_url) {
-        $.ajax({
-            type:'DELETE',
-            url:delete_url,
-            success:function(res){
-                console.log(res);
-                if($.isEmptyObject(res.error)){
-                    alert(res.status);
-                    location.reload();
-                } else {
-                    console.log("lah error");
-                }
-            }
-        }).catch((err)=>{
-            console.log(err);
-        });
+    async function delete_fabricType(user_id) {
+        if(!confirm("Apakah anda yakin ingin menghapus Fabric Type ini?")) { return false; };
+
+        let url_delete = delete_url.replace(':id',user_id);
+        let data_params = { token };
+
+        result = await delete_using_fetch(url_delete, data_params)
+        if(result.status == "success"){
+            alert(result.message)
+            location.reload();
+        } else {
+            console.log(result.message);
+            alert("Terjadi Kesalahan");
+        }
     }
 
-    
+</script>
 
-    
+<script type="text/javascript">
+    $(function (e) {
+        $('#fabric_type_table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ url('/fabric-type-data') }}",
+            columns: [
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                {data: 'name', name: 'name'},
+                {data: 'description', name: 'description'},
+                {data: 'action', name: 'action', orderable: false, searchable: false},
+            ],
+            lengthChange: true,
+            searching: true,
+            autoWidth: false,
+            responsive: true,
+        });
+    });
 </script>
 @endpush
