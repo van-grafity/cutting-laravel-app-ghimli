@@ -29,7 +29,6 @@
                                 <th scope="col">Ticket Number</th>
                                 <th scope="col">No. Laying Sheet</th>
                                 <th scope="col">Table No.</th>
-                                <th scope="col">GL</th>
                                 <th scope="col">Color</th>
                                 <th scope="col">Size</th>
                                 <th scope="col">Layer</th>
@@ -43,7 +42,6 @@
                                 <td>{{ $ticket->ticket_number }}</td>
                                 <td>{{ $ticket->no_laying_sheet }}</td>
                                 <td>{{ $ticket->table_number }}</td>
-                                <td>{{ $ticket->gl_number }}</td>
                                 <td>{{ $ticket->color }}</td>
                                 <td>{{ $ticket->size }}</td>
                                 <td>{{ $ticket->layer }}</td>

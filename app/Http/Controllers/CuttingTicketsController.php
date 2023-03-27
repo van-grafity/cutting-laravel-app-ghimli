@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\CuttingTicket;
+use App\Models\CuttingOrderRecord;
 use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanningDetailSize;
 
@@ -25,7 +26,6 @@ class CuttingTicketsController extends Controller
                 'ticket_number' => $this->generate_ticket_number($ticket->id),
                 'no_laying_sheet' => $ticket->cuttingOrderRecord->layingPlanningDetail->no_laying_sheet,
                 'table_number' => Str::padLeft($ticket->cuttingOrderRecord->layingPlanningDetail->table_number, 3, '0'),
-                'gl_number' => $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->gl->gl_number,
                 'color' => $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->color->color,
                 'size' => $ticket->size->size,
                 'layer' => $ticket->layer,
@@ -35,8 +35,8 @@ class CuttingTicketsController extends Controller
     }
 
     public function create() {
-        $no_laying_sheet_list = LayingPlanningDetail::select('id','no_laying_sheet')->get();
-        return view('page.cutting-ticket.add', compact('no_laying_sheet_list'));
+        $cutting_order_records = CuttingOrderRecord::select('id','serial_number')->get();
+        return view('page.cutting-ticket.add', compact('cutting_order_records'));
     }
 
     public function show($id){
@@ -68,10 +68,11 @@ class CuttingTicketsController extends Controller
         }
     }
 
-    public function get_laying_sheet($laying_planning_detail_id)
+    public function get_cutting_order($cutting_order_record_id)
     {
         try {
-            $layingPlanningDetail = LayingPlanningDetail::find($laying_planning_detail_id);
+            $cuttingOrderRecord = CuttingOrderRecord::find($cutting_order_record_id);
+            $layingPlanningDetail = $cuttingOrderRecord->layingPlanningDetail;
             
             $data = [
                 'laying_planning_detail_id' => $layingPlanningDetail->id,
@@ -82,13 +83,7 @@ class CuttingTicketsController extends Controller
                 'buyer' => $layingPlanningDetail->layingPlanning->buyer->name,
             ];
 
-            $get_size_ratio = LayingPlanningDetailSize::where('laying_planning_detail_id', $laying_planning_detail_id)->get();
-            $size_ratio = [];
-
-            foreach( $get_size_ratio as $key => $size ) {
-                $size_ratio[] = $size->size->size . " = " . $size->ratio_per_size;
-            }
-            $size_ratio = Arr::join($size_ratio, ' | ');
+            $size_ratio = $this->print_size_ratio($layingPlanningDetail);
             $data = Arr::add($data, 'size_ratio', $size_ratio);
             $data = (object)$data;
 
@@ -121,7 +116,8 @@ class CuttingTicketsController extends Controller
 
             $get_last_ticket = CuttingTicket::orderBy('ticket_number', 'desc')->first();
             $next_ticket_number = $get_last_ticket ? $get_last_ticket->ticket_number + 1 : 1;
-            $layingPlanningDetail = LayingPlanningDetail::find($request->laying_planning_detail_id);
+            $cuttingOrderRecord = CuttingOrderRecord::find($request->cutting_order_id);
+            $layingPlanningDetail = $cuttingOrderRecord->layingPlanningDetail;
             
             $planning_size_list = $layingPlanningDetail->layingPlanningDetailSize;
             $cutting_order_details = $layingPlanningDetail->cuttingOrderRecord->cuttingOrderRecordDetail;
@@ -150,7 +146,6 @@ class CuttingTicketsController extends Controller
                 'message' => $th->getMessage()
             ]);
         }
-        
         return redirect()->route('cutting-ticket.index');
     }
 
@@ -163,12 +158,27 @@ class CuttingTicketsController extends Controller
         $gl_number = $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->gl->gl_number;
         $gl_number = explode('-', $gl_number)[0];
         
+        $color_code = $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->color->color_code;
+
         $table_number = $ticket->cuttingOrderRecord->layingPlanningDetail->table_number;
         $table_number = Str::padLeft($table_number, 3, '0');
         
         $ticket_number = Str::padLeft($ticket->ticket_number, 3, '0');
         
-        return "CT-{$gl_number}-{$table_number}-{$ticket_number}";
+        return "CT-{$gl_number}-{$color_code}-{$table_number}-{$ticket_number}";
+    }
+
+    function print_size_ratio($layingPlanningDetail) {
+        $get_size_ratio = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
+        $size_ratio = [];
+
+        foreach( $get_size_ratio as $key => $size ) {
+            if($size->ratio_per_size > 0){
+                $size_ratio[] = $size->size->size . " = " . $size->ratio_per_size;
+            }
+        }
+        $size_ratio = Arr::join($size_ratio, ' | ');
+        return $size_ratio;
     }
 
 }

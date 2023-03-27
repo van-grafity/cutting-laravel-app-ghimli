@@ -87,5 +87,5 @@ Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(
     Route::get('style', [FetchController::class, 'style'])->name('style');
     Route::get('color', [FetchController::class, 'color'])->name('color');
     
-    Route::get('get-laying-sheet/{id}', [CuttingTicketsController::class, 'get_laying_sheet'])->name('laying-sheet');
+    Route::get('get-cutting-order/{id}', [CuttingTicketsController::class, 'get_cutting_order'])->name('cutting-order');
 });

@@ -42,7 +42,7 @@
                                 <td>{{ $cuttingOrderRecord->color }}</td>
                                 <td>{{ $cuttingOrderRecord->table_number}}</td>
                                 <td>
-                                    <a href="{{ route('cutting-order.print', $cuttingOrderRecord->id) }}" class="btn btn-primary btn-sm">Print Nota</a>
+                                    <a href="{{ route('cutting-order.print', $cuttingOrderRecord->id) }}" class="btn btn-primary btn-sm" target="_blank">Print Nota</a>
                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-cor-delete" data-id="{{ $cuttingOrderRecord->id}}">Delete</a>
                                     <a href="{{ route('cutting-order.show', $cuttingOrderRecord->id) }}" class="btn btn-info btn-sm">Detail</a>
                                 </td>

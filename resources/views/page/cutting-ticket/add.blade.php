@@ -16,11 +16,11 @@
                         <div class="row">
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
-                                    <label for="laying_planning_detail_id" class="form-label">No. Laying Sheet</label>
-                                        <select class="form-control" id="laying_planning_detail_id" name="laying_planning_detail_id" style="width: 100%;" data-placeholder="Choose Laying Sheet">
-                                        <option value="">Choose Laying Sheet</option>
-                                        @foreach ( $no_laying_sheet_list as $laying_sheet )
-                                            <option value="{{ $laying_sheet->id }}">{{ $laying_sheet->no_laying_sheet }}</option>
+                                    <label for="cutting_order_id" class="form-label">No. Cutting Order</label>
+                                        <select class="form-control" id="cutting_order_id" name="cutting_order_id" style="width: 100%;" data-placeholder="Choose Cutting Order">
+                                        <option value="">Choose Cutting Order</option>
+                                        @foreach ( $cutting_order_records as $cutting_order )
+                                            <option value="{{ $cutting_order->id }}">{{ $cutting_order->serial_number }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -92,15 +92,14 @@
 @push('js')
 <script type="text/javascript">
     
-    const url_get_laying_sheet = '{{ route("fetch.laying-sheet",":id") }}';
+    const url_get_cutting_order = '{{ route("fetch.cutting-order",":id") }}';
     
-    $('#laying_planning_detail_id').select2({
-        minimumResultsForSearch: Infinity
+    $('#cutting_order_id').select2({
     });
 
-    $('#laying_planning_detail_id').on('change', async function(e){
-        let selected_laying_sheet = $('#laying_planning_detail_id').val();
-        url = url_get_laying_sheet.replace(':id',selected_laying_sheet);
+    $('#cutting_order_id').on('change', async function(e){
+        let selected_cutting_order = $('#cutting_order_id').val();
+        url = url_get_cutting_order.replace(':id',selected_cutting_order);
         let result = await get_using_fetch(url);
 
         fill_form_input(result.data);
@@ -108,8 +107,8 @@
 
     $('#submit_form').on('click', function(e){
         e.preventDefault();
-        if(!$('#laying_planning_detail_id').val()){
-            alert("No Laying Sheet belum dipilih")
+        if(!$('#cutting_order_id').val()){
+            alert("No Cutting Order belum dipilih")
             return false;
         }
         $("#form_generate_ticket" ).submit();
