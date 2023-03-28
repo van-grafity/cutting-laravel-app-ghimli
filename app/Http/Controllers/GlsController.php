@@ -67,18 +67,18 @@ class GlsController extends Controller
         ]);
         $gl->save();
 
-        return redirect('/gl')->with('status', 'Data Gl Berhasil Ditambahkan!');
+        return redirect('/gl')->with('success', 'Gl '.$gl->gl_number.' Successfully Added!');
     }
 
     public function destroy($id)
     {
         try {
-            $user = Gl::find($id);
-            $user->delete();
+            $gl = Gl::find($id);
+            $gl->delete();
             $date_return = [
                 'status' => 'success',
-                'data'=> $user,
-                'message'=> 'Data GL berhasil di hapus',
+                'data'=> $gl,
+                'message'=> 'Gl '.$gl->gl_number.' successfully Deleted',
             ];
             return response()->json($date_return, 200);
         } catch (\Throwable $th) {
@@ -96,13 +96,13 @@ class GlsController extends Controller
             'buyer_id' => 'required',
         ]);
 
-        $data = Gl::find($id);
-        $data->gl_number = $request->gl_number;
-        $data->season = $request->season;
-        $data->size_order = $request->size_order;
-        $data->buyer_id = $request->buyer_id;
-        $data->save();
+        $gl = Gl::find($id);
+        $gl->gl_number = $request->gl_number;
+        $gl->season = $request->season;
+        $gl->size_order = $request->size_order;
+        $gl->buyer_id = $request->buyer_id;
+        $gl->save();
 
-        return redirect('/gl')->with('status', 'Data Gl Berhasil Diubah!');
+        return redirect('/gl')->with('success', 'Gl '.$gl->gl_number.' Successfully Updated!');
     }
 }

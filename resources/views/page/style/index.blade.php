@@ -78,8 +78,12 @@
 
 @push('js')
 <script type="text/javascript">
-
 $(document).ready(function(){
+
+    // ## Show Flash Message
+    let session = {!! json_encode(session()->all()) !!};
+    show_flash_message(session);
+    
     $('.select2').select2({ 
         dropdownParent: $('#modal_form')
     });
@@ -93,7 +97,81 @@ $(document).ready(function(){
         $('#style_form').find('input[name="_method"]').remove();
         $('#modal_form').modal('show')
     })
+
+    // Ketika opsi dipilih pada select2, panggil validasi untuk menghilangkan pesan error
+    $("#gl").on("select2:close", function() {
+        if ($(this).valid()) {
+            $(this).removeClass("is-invalid");
+            $(this).next(".invalid-feedback").remove();
+        }
+    });
 })
+</script>
+
+<script type="text/javascript">
+$(function (e) {
+
+    // ## Datatable Initialize
+    $('#style_table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ url('/style-data') }}",
+        columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'gl_number', name: 'gl_number'},
+            {data: 'style', name: 'style'},
+            {data: 'description', name: 'description'},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ],
+        lengthChange: true,
+        searching: true,
+        autoWidth: false,
+        responsive: true,
+    });
+
+
+    // ## Form Validation
+    let rules = {
+        gl: {
+            required: true,
+        },
+        style: {
+            required: true,
+        },
+        style_desc: {
+            required: true,
+        },
+    };
+    let messages = {
+        gl: {
+            required: "Please choose GL Number",
+        },
+        style: {
+            required: "Please enter the style name",
+        },
+        style_desc: {
+            required: "Please provide a description",
+        },
+    };
+    let validator = $("#style_form").validate({
+        rules: rules,
+        messages: messages,
+        errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass("is-invalid");
+        },
+        submitHandler: function (form) {
+            form.submit();
+        }
+    });
+});
 </script>
 
 <script type="text/javascript">
@@ -121,54 +199,22 @@ $(document).ready(function(){
     }
 
     async function delete_style(style_id) {
-        if(!confirm("Apakah anda yakin ingin menghapus Style ini?")) { return false; };
+        data = { title: "Are you sure?" };
+        let confirm_delete = await swal_delete_confirm(data);
+        if(!confirm_delete) { return false; };
 
         let url_delete = delete_url.replace(':id',style_id);
         let data_params = { token };
-
         result = await delete_using_fetch(url_delete, data_params)
+
         if(result.status == "success"){
-            alert(result.message)
-            location.reload();
+            swal_info({
+                title : result.message,
+                reload_option: true, 
+            });
         } else {
-            console.log(result.message);
-            alert("Terjadi Kesalahan");
+            swal_failed({ title: result.message });
         }
     }
-</script>
-
-<script type="text/javascript">
-    $(function (e) {
-        $('#style_table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ url('/style-data') }}",
-            columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'gl_number', name: 'gl_number'},
-                {data: 'style', name: 'style'},
-                {data: 'description', name: 'description'},
-                {data: 'action', name: 'action', orderable: false, searchable: false},
-            ],
-            // dom: 'Bfrtip',
-            // dom: '<"wrapperx"flipt>',
-            // dom: '<"top"i>rt<"bottom"flp><"clear">',
-            // dom: '<"top"i>rt<"bottom"flp><"clear">',
-            // dom:    "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-3'l><'col-sm-12 col-md-3'f>>" +
-            //         "<'row'<'col-sm-12'tr>>" +
-            //         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-            // buttons: [ 'copy', 'csv', 'excel', 'pdf', 'print'],
-            // paging: true,
-            lengthChange: true,
-            searching: true,
-            // ordering: true,
-            // info: true,
-            autoWidth: false,
-            responsive: true,
-        });
-        // }).buttons().container().appendTo('#style_table_wrapper .col-md-6:eq(0)');
-
-    });
-    
 </script>
 @endpush

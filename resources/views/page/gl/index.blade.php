@@ -86,6 +86,10 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
+    // ## Show Flash Message
+    let session = {!! json_encode(session()->all()) !!};
+    show_flash_message(session);
+
     $('.select2').select2({ 
         dropdownParent: $('#modal_form')
     });
@@ -100,7 +104,91 @@ $(document).ready(function(){
         $('#modal_form').modal('show')
     })
 
+    $('#modal_form').on('hidden.bs.modal', function () {
+        $(this).find('.is-invalid').removeClass('is-invalid');
+    });
+
+    $("#gl_buyer").on("select2:close", function() {
+        if ($(this).valid()) {
+            $(this).removeClass("is-invalid");
+            $(this).next(".invalid-feedback").remove();
+        }
+    });
+
 })
+</script>
+
+<script type="text/javascript">
+$(function (e) {
+
+    // ## Datatable Initialize
+    $('#gl_table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ url('/gl-data') }}",
+        columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'gl_number', name: 'gl_number'},
+            {data: 'buyer', name: 'buyer'},
+            {data: 'season', name: 'season'},
+            {data: 'size_order', name: 'size_order'},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ],
+        lengthChange: true,
+        searching: true,
+        autoWidth: false,
+        responsive: true,
+    });
+
+
+    // ## Form Validation
+    let rules = {
+        gl_number: {
+            required: true,
+        },
+        season: {
+            required: true,
+        },
+        size_order: {
+            required: true,
+        },
+        buyer_id: {
+            required: true,
+        },
+    };
+    let messages = {
+        gl_number: {
+            required: "Please enter GL Number",
+        },
+        season: {
+            required: "Please enter the season",
+        },
+        size_order: {
+            required: "Please enter the size order",
+        },
+        buyer_id: {
+            required: "Please select buyer",
+        },
+    };
+    let validator = $("#gl_form").validate({
+        rules: rules,
+        messages: messages,
+        errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass("is-invalid");
+        },
+        submitHandler: function (form) {
+            form.submit();
+        }
+    });
+});
 </script>
 
 <script type="text/javascript">
@@ -130,41 +218,22 @@ $(document).ready(function(){
     }
 
     async function delete_gl(user_id) {
-        if(!confirm("Apakah anda yakin ingin menghapus GL ini?")) { return false; };
+        data = { title: "Are you sure?" };
+        let confirm_delete = await swal_delete_confirm(data);
+        if(!confirm_delete) { return false; };
 
         let url_delete = delete_url.replace(':id',user_id);
         let data_params = { token };
-
         result = await delete_using_fetch(url_delete, data_params)
+
         if(result.status == "success"){
-            alert(result.message)
-            location.reload();
+            swal_info({
+                title : result.message,
+                reload_option: true, 
+            });
         } else {
-            console.log(result.message);
-            alert("Terjadi Kesalahan");
+            swal_failed({ title: result.message });
         }
     }
-</script>
-
-<script type="text/javascript">
-    $(function (e) {
-        $('#gl_table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ url('/gl-data') }}",
-            columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'gl_number', name: 'gl_number'},
-                {data: 'buyer', name: 'buyer'},
-                {data: 'season', name: 'season'},
-                {data: 'size_order', name: 'size_order'},
-                {data: 'action', name: 'action', orderable: false, searchable: false},
-            ],
-            lengthChange: true,
-            searching: true,
-            autoWidth: false,
-            responsive: true,
-        });
-    });
 </script>
 @endpush

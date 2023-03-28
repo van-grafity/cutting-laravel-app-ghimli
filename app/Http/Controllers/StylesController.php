@@ -48,7 +48,7 @@ class StylesController extends Controller
         ]);
         $style->save();
 
-        return redirect('/style')->with('status', 'Data Size Berhasil Ditambahkan!');
+        return redirect('/style')->with('success', 'Style '.$style->style.' Successfully Added!');
     }
 
     public function show($id){
@@ -72,7 +72,7 @@ class StylesController extends Controller
             $date_return = [
                 'status' => 'success',
                 'data'=> $style,
-                'message'=> 'Data Style berhasil di hapus',
+                'message'=> 'Style '.$style->style.' Successfully Deleted',
             ];
             return response()->json($date_return, 200);
         } catch (\Throwable $th) {
@@ -96,7 +96,7 @@ class StylesController extends Controller
         $style->description = $request->style_desc;
         $style->save();
 
-        return redirect('/style')->with('status', 'Data Style Berhasil Diubah!');
+        return redirect('/style')->with('success', 'Style '.$style->style.' Successfully Updated!');
     }
 
 }
