@@ -16,7 +16,7 @@ class RemarksController extends Controller
         $data = Remark::all();
         $data = collect(
             [
-                'remarks' => $data
+                'cutting_record_remark' => $data
             ]
         );
         return $this->onSuccess($data, 'Remarks retrieved successfully.');
