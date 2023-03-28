@@ -71,13 +71,8 @@
 $(document).ready(function(){
 
     // ## Show Flash Message
-    let check_flash_msg = '{!! session()->has('status') !!}';
-    if(check_flash_msg){
-        data = {
-            title: "{!! session('status'); !!}";
-        }
-        swal_info(data);
-    }
+    let session = {!! json_encode(session()->all()) !!};
+    show_flash_message(session);
 
     $('#btn_modal_create').click((e) => {
         $('#modal_formLabel').text("Add Remark");
@@ -142,6 +137,9 @@ $(function (e) {
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass("is-invalid");
         },
+        submitHandler: function (form) {
+            form.submit();
+        }
     });
     
 });

@@ -60,12 +60,14 @@ class UsersController extends Controller
         try {
             $request->validate([
                 'name' => 'required',
+                'email' => 'required',
             ]);
 
-            $check_duplicate_code = User::where('name', $request->name)->first();
+            $check_duplicate_code = User::where('email', $request->email)->first();
             if($check_duplicate_code){
-                return back()->withInput();
+                return back()->with('error', 'Email already exists, please choose another');
             }
+
             $user = User::firstOrCreate([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -76,11 +78,18 @@ class UsersController extends Controller
             $user->save();
             $user->assignRole($request->role);
 
-            return redirect('/user-management')->with('status', 'Data User Berhasil Ditambahkan!');
-        
-        } catch (\Exception $ex){
-            $this->error($ex->getMessage());
+            return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Added!');
+            
+        } catch (\Throwable $th){
+            return redirect('/user-management')->with('error', $ex->getMessage());
         }
+
+        try {
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        
     }
 
     public function destroy($id)
@@ -91,7 +100,7 @@ class UsersController extends Controller
             $date_return = [
                 'status' => 'success',
                 'data'=> $user,
-                'message'=> 'Data User berhasil di hapus',
+                'message'=> 'User '.$user->name.' Deleted',
             ];
             return response()->json($date_return, 200);
         } catch (\Throwable $th) {
@@ -115,7 +124,7 @@ class UsersController extends Controller
         $user->save();
         $user->syncRoles($request->role);
         
-        return redirect('/user-management')->with('status', 'Data User Berhasil Diubah!');
+        return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Updated!');
     }
 
 }

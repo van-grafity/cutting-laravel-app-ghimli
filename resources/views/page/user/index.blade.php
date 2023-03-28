@@ -79,6 +79,11 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
+
+    // ## Show Flash Message
+    let session = {!! json_encode(session()->all()) !!};
+    show_flash_message(session);
+
     $('.select2').select2({ 
         dropdownParent: $('#modal_form')
     });
@@ -93,6 +98,83 @@ $(document).ready(function(){
         $('#modal_form').modal('show')
     })
 })
+</script>
+
+<script type="text/javascript">
+$(function (e) {
+
+    // ## Datatable Initialize
+    $('#user_table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ url('/user-data') }}",
+        columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'name', name: 'name'},
+            {data: 'email', name: 'email'},
+            {data: 'role', name: 'role'},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ],
+        lengthChange: true,
+        searching: true,
+        autoWidth: false,
+        responsive: true,
+    });
+
+
+    // ## Form Validation
+    let rules = {
+        name: {
+            required: true,
+        },
+        email: {
+            required: true,
+            email: true,
+        },
+        role: {
+            required: true,
+        }
+    };
+    let messages = {
+        name: {
+            required: "Please enter the user's name",
+        },
+        email: {
+            required: "Please provide an email address",
+            email: "must be an email format",
+        },
+        role: {
+            required: "Please select the role",
+        },
+    };
+    let validator = $("#user_form").validate({
+        rules: rules,
+        messages: messages,
+        errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass("is-invalid");
+        },
+        submitHandler: function (form) {
+            form.submit();
+        }
+    });
+
+    // Ketika opsi dipilih pada select2, panggil validasi untuk menghilangkan pesan error
+    $("#role").on("select2:close", function() {
+        if ($(this).valid()) {
+            $(this).removeClass("is-invalid");
+            $(this).next(".invalid-feedback").remove();
+        }
+    });
+    
+});
 </script>
 
 <script type="text/javascript">
@@ -120,40 +202,23 @@ $(document).ready(function(){
     }
 
     async function delete_user (user_id) {
-        if(!confirm("Apakah anda yakin ingin menghapus User ini?")) { return false; };
+        data = { title: "Are you sure?" };
+        let confirm_delete = await swal_delete_confirm(data);
+        if(!confirm_delete) { return false; };
 
         let url_delete = delete_url.replace(':id',user_id);
         let data_params = { token };
 
         result = await delete_using_fetch(url_delete, data_params)
         if(result.status == "success"){
-            alert(result.message)
-            location.reload();
+            swal_info({
+                title : result.message,
+                reload_option: true, 
+            });
         } else {
-            console.log(result.message);
-            alert("Terjadi Kesalahan");
+            swal_failed({ title: result.message });
         }
     }
 </script>
 
-<script type="text/javascript">
-    $(function (e) {
-        $('#user_table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ url('/user-data') }}",
-            columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'name', name: 'name'},
-                {data: 'email', name: 'email'},
-                {data: 'role', name: 'role'},
-                {data: 'action', name: 'action', orderable: false, searchable: false},
-            ],
-            lengthChange: true,
-            searching: true,
-            autoWidth: false,
-            responsive: true,
-        });
-    });
-</script>
 @endpush

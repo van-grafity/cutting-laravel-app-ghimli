@@ -57,7 +57,7 @@ class RemarksController extends Controller
         ]);
         $remark->save();
 
-        return redirect('/remark')->with('status', 'Remark Successfully Added!');
+        return redirect('/remark')->with('success', 'Remark Successfully Added!');
     }
 
     public function show($id){
@@ -104,7 +104,7 @@ class RemarksController extends Controller
         $remark->description = $request->description;
         $remark->save();
 
-        return redirect('/remark')->with('status', 'Remark Successfully Updated!');
+        return redirect('/remark')->with('success', 'Remark Successfully Updated!');
     }
 
 }

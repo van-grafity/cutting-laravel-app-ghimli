@@ -124,6 +124,23 @@ const swal_failed = (data) => {
         title: data.title ? data.title : "Something Error",
         text: 'Please contact the Administrator',
         showConfirmButton: false,
-        timer: 2000,
     });
+}
+
+const show_flash_message = ( session = {} ) => {
+    if ("success" in session) {
+        Swal.fire({
+            icon: "success",
+            title: session.success,
+            showConfirmButton: false,
+            timer: 3000,
+        });
+    }
+    if ("error" in session) {
+        Swal.fire({
+            icon: "error",
+            title: session.error,
+            confirmButtonColor: "#007bff",
+        });
+    }
 }
