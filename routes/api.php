@@ -36,6 +36,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('cutting-orders/{id}', [CuttingOrdersController::class, 'update']);
     Route::delete('cutting-orders/{id}', [CuttingOrdersController::class, 'destroy']);
 
-    Route::get('remarks', [RemarksController::class, 'index']);
+    Route::get('cutting-record-remark', [RemarksController::class, 'index']);
 
 });
