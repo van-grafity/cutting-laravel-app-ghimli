@@ -55,18 +55,18 @@ class FabricConssController extends Controller
         ]);
         $fabricCons->save();
 
-        return redirect('/fabric-cons')->with('status', 'Data Fabric Consumption Berhasil Ditambahkan!');
+        return redirect('/fabric-cons')->with('success', 'Fabric Consumption '.$fabricCons->name.' Successfully Added!');
     }
 
     public function destroy($id)
     {
         try {
-            $user = FabricCons::find($id);
-            $user->delete();
+            $fabricCons = FabricCons::find($id);
+            $fabricCons->delete();
             $date_return = [
                 'status' => 'success',
-                'data'=> $user,
-                'message'=> 'Data Fabric Consumption berhasil di hapus',
+                'data'=> $fabricCons,
+                'message'=> 'Fabric Consumption '.$fabricCons->name.' Successfully Deleted',
             ];
             return response()->json($date_return, 200);
         } catch (\Throwable $th) {
@@ -89,7 +89,7 @@ class FabricConssController extends Controller
         $fabricCons->description = $request->description;
         $fabricCons->save();
 
-        return redirect('/fabric-cons')->with('status', 'Data Fabric Consumption Berhasil Diubah!');
+        return redirect('/fabric-cons')->with('success', 'Fabric Consumption '.$fabricCons->name.' Successfully Updated!');
     }
 
 }

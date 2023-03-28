@@ -56,18 +56,18 @@ class FabricTypesController extends Controller
         ]);
         $fabricType->save();
 
-        return redirect('/fabric-type')->with('status', 'Data Fabric Consumption Berhasil Ditambahkan!');
+        return redirect('/fabric-type')->with('success', 'Fabric Type '.$fabricType->name.' Successfully Added!');
     }
 
     public function destroy($id)
     {
         try {
-            $user = FabricType::find($id);
-            $user->delete();
+            $fabricType = FabricType::find($id);
+            $fabricType->delete();
             $date_return = [
                 'status' => 'success',
-                'data'=> $user,
-                'message'=> 'Data Fabric Type berhasil di hapus',
+                'data'=> $fabricType,
+                'message'=> 'Fabric Type '.$fabricType->name.' Successfully Deleted',
             ];
             return response()->json($date_return, 200);
         } catch (\Throwable $th) {
@@ -90,7 +90,7 @@ class FabricTypesController extends Controller
         $fabricType->description = $request->description;
         $fabricType->save();
 
-        return redirect('/fabric-type')->with('status', 'Data Fabric Consumption Berhasil Diubah!');
+        return redirect('/fabric-type')->with('success', 'Fabric Type '.$fabricType->name.' Successfully Updated!');
     }
 
 }

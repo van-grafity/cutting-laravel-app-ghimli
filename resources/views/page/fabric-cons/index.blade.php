@@ -68,18 +68,85 @@
 
 @push('js')
 <script type="text/javascript">
-    $(document).ready(function(){
+$(document).ready(function(){
 
-        $('#btn_modal_create').click((e) => {
-            $('#modal_formLabel').text("Add Fabric Consumption")
-            $('#btn_submit').text("Add Fabric Consumption")
-            $('#fabricCons_form').attr("action", create_url);
-            $('#fabricCons_form').find("input[type=text], textarea").val("");
-            $('#fabricCons_form').find('input[name="_method"]').remove();
-            $('#modal_form').modal('show')
-        })
+    // ## Show Flash Message
+    let session = {!! json_encode(session()->all()) !!};
+    show_flash_message(session);
 
+    $('#btn_modal_create').click((e) => {
+        $('#modal_formLabel').text("Add Fabric Consumption")
+        $('#btn_submit').text("Add Fabric Consumption")
+        $('#fabricCons_form').attr("action", create_url);
+        $('#fabricCons_form').find("input[type=text], textarea").val("");
+        $('#fabricCons_form').find('input[name="_method"]').remove();
+        $('#modal_form').modal('show')
     })
+
+    $('#modal_form').on('hidden.bs.modal', function () {
+        $(this).find('.is-invalid').removeClass('is-invalid');
+    });
+
+})
+</script>
+
+<script type="text/javascript">
+$(function (e) {
+
+    // ## Datatable Initialize
+    $('#fabric_cons_table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ url('/fabric-cons-data') }}",
+        columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'name', name: 'name'},
+            {data: 'description', name: 'description'},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ],
+        lengthChange: true,
+        searching: true,
+        autoWidth: false,
+        responsive: true,
+    });
+
+
+    // ## Form Validation
+    let rules = {
+        name: {
+            required: true,
+        },
+        description: {
+            required: true,
+        },
+    };
+    let messages = {
+        name: {
+            required: "Please enter the name",
+        },
+        description: {
+            required: "Please provide a description",
+        },
+    };
+    let validator = $("#fabricCons_form").validate({
+        rules: rules,
+        messages: messages,
+        errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass("is-invalid");
+        },
+        submitHandler: function (form) {
+            form.submit();
+        }
+    });
+});
 </script>
 
 <script type="text/javascript">
@@ -107,39 +174,24 @@
     }
 
     async function delete_fabricCons(user_id) {
-        if(!confirm("Apakah anda yakin ingin menghapus Fabric Consumption ini?")) { return false; };
+        data = { title: "Are you sure?" };
+        let confirm_delete = await swal_delete_confirm(data);
+        if(!confirm_delete) { return false; };
 
         let url_delete = delete_url.replace(':id',user_id);
         let data_params = { token };
-
         result = await delete_using_fetch(url_delete, data_params)
+
         if(result.status == "success"){
-            alert(result.message)
-            location.reload();
+            swal_info({
+                title : result.message,
+                reload_option: true, 
+            });
         } else {
-            console.log(result.message);
-            alert("Terjadi Kesalahan");
+            swal_failed({ title: result.message });
         }
     }
 
 </script>
-<script type="text/javascript">
-    $(function (e) {
-        $('#fabric_cons_table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ url('/fabric-cons-data') }}",
-            columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'name', name: 'name'},
-                {data: 'description', name: 'description'},
-                {data: 'action', name: 'action', orderable: false, searchable: false},
-            ],
-            lengthChange: true,
-            searching: true,
-            autoWidth: false,
-            responsive: true,
-        });
-    });
-</script>
+
 @endpush
