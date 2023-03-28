@@ -47,11 +47,11 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter name">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" value="{{ old('name') }}">
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea class="form-control" name="description" id="description" cols="30" rows="2"></textarea>
+                            <textarea class="form-control" name="description" id="description" cols="30" rows="2">{{ old('description') }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -69,15 +69,82 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
+
+    // ## Show Flash Message
+    let check_flash_msg = '{!! session()->has('status') !!}';
+    if(check_flash_msg){
+        data = {
+            title: "{!! session('status'); !!}";
+        }
+        swal_info(data);
+    }
+
     $('#btn_modal_create').click((e) => {
-        $('#modal_formLabel').text("Add Remark")
-        $('#btn_submit').text("Add Remark")
+        $('#modal_formLabel').text("Add Remark");
+        $('#btn_submit').text("Add Remark");
         $('#remark_form').attr('action', create_url);
         $('#remark_form').find("input[type=text], textarea").val("");
         $('#remark_form').find('input[name="_method"]').remove();
-        $('#modal_form').modal('show')
+        $('#modal_form').modal('show');
     })
 })
+</script>
+
+<script type="text/javascript">
+$(function (e) {
+
+    // ## Datatable Initialize
+    $('#remark_table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ url('/remark-data') }}",
+        columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'name', name: 'name'},
+            {data: 'description', name: 'description'},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ],
+        lengthChange: true,
+        searching: true,
+        autoWidth: false,
+        responsive: true,
+    });
+
+    
+    // ## Form Validation
+    let rules = {
+        name: {
+            required: true,
+        },
+        description: {
+            required: true,
+        },
+    };
+    let messages = {
+        name: {
+            required: "Please enter the remark's name",
+        },
+        description: {
+            required: "Please fill the description",
+        },
+    };
+    $("#remark_form").validate({
+        rules: rules,
+        messages: messages,
+        errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass("is-invalid");
+        },
+    });
+    
+});
 </script>
 
 <script type="text/javascript">
@@ -91,11 +158,11 @@ $(document).ready(function(){
         let url_edit = edit_url.replace(':id',remark_id);
 
         result = await get_using_fetch(url_edit);
-        form = $('#remark_form')
+        form = $('#remark_form');
         form.append('<input type="hidden" name="_method" value="PUT">');
         $('#modal_formLabel').text("Edit Remark");
         $('#btn_submit').text("Save");
-        $('#modal_form').modal('show')
+        $('#modal_form').modal('show');
 
         let url_update = update_url.replace(':id',remark_id);
         form.attr('action', url_update);
@@ -104,39 +171,25 @@ $(document).ready(function(){
     }
 
     async function delete_remark(remark_id) {
-        if(!confirm("Apakah anda yakin ingin menghapus Remark ini?")) { return false; };
+        data = { title: "Are you sure?" };
+        let confirm_delete = await swal_delete_confirm(data);
+        if(!confirm_delete) { return false; };
 
         let url_delete = delete_url.replace(':id',remark_id);
         let data_params = { token };
-
-        result = await delete_using_fetch(url_delete, data_params)
+        result = await delete_using_fetch(url_delete, data_params);
+        
         if(result.status == "success"){
-            alert(result.message)
-            location.reload();
+            swal_info({
+                title : result.message,
+                reload_option: true, 
+            });
         } else {
-            console.log(result.message);
-            alert("Terjadi Kesalahan");
+            swal_failed({ title: result.message });
         }
     }
 </script>
 
-<script type="text/javascript">
-    $(function (e) {
-        $('#remark_table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ url('/remark-data') }}",
-            columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'name', name: 'name'},
-                {data: 'description', name: 'description'},
-                {data: 'action', name: 'action', orderable: false, searchable: false},
-            ],
-            lengthChange: true,
-            searching: true,
-            autoWidth: false,
-            responsive: true,
-        });
-    });
-</script>
+
+
 @endpush

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Remark;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+
 
 class RemarksController extends Controller
 {
@@ -31,17 +33,31 @@ class RemarksController extends Controller
 
     public function store(Request $request)
     {
+        // $rules = [
+        //     'name' => 'required',
+        // ];
+
+        // $validator = Validator::make($request->all(), $rules, $messages = [
+        //     'required' => 'The :attribute field is required.',
+        // ]);
+
+        // if ($validator->fails()) {
+        //     return redirect('/remark')
+        //                 ->withErrors($validator)
+        //                 ->withInput();
+        // }
+
         $request->validate([
             'name' => 'required',
         ]);
 
-        $remark = Remark::firstOrCreate([
+        $remark = Remark::create([
             'name' => $request->name,
             'description' => $request->description,
         ]);
         $remark->save();
 
-        return redirect('/remark')->with('status', 'Data Remark Berhasil Ditambahkan!');
+        return redirect('/remark')->with('status', 'Remark Successfully Added!');
     }
 
     public function show($id){
@@ -65,7 +81,7 @@ class RemarksController extends Controller
             $date_return = [
                 'status' => 'success',
                 'data'=> $remark,
-                'message'=> 'Data Remark berhasil di hapus',
+                'message'=> 'Remark Deleted!',
             ];
             return response()->json($date_return, 200);
         } catch (\Throwable $th) {
@@ -88,7 +104,7 @@ class RemarksController extends Controller
         $remark->description = $request->description;
         $remark->save();
 
-        return redirect('/remark')->with('status', 'Data Remark Berhasil Diubah!');
+        return redirect('/remark')->with('status', 'Remark Successfully Updated!');
     }
 
 }

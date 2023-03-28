@@ -544,12 +544,12 @@ return [
             ],
         ],
         'Sweetalert2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => false,
-                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@8',
+                    'asset' => true,
+                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@11',
                 ],
             ],
         ],
@@ -605,6 +605,36 @@ return [
                     'type' => 'css',
                     'asset' => true,
                     'location' => '.\vendor\tempusdominus-bootstrap-4\css\tempusdominus-bootstrap-4.css',
+                ],
+            ],
+        ],
+        'Toastr' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '.\vendor\toastr\toastr.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '.\vendor\toastr\toastr.min.js',
+                ],
+            ],
+        ],
+        'JqueryValidation' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '.\vendor\jquery-validation\jquery.validate.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '.\vendor\jquery-validation\additional-methods.min.js',
                 ],
             ],
         ],
