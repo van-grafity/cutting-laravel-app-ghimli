@@ -7,6 +7,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BlogController;
 use App\Http\Controllers\API\CuttingOrdersController;
 use App\Http\Controllers\API\ColorController;
+use App\Http\Controllers\API\RemarksController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,12 +29,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/users', [AuthController::class, 'index']);
     
-    Route::resource('blogs', BlogController::class);
     Route::get('/colors', [ColorController::class, 'index']);
     Route::get('cutting-orders', [CuttingOrdersController::class, 'index']);
     Route::get('cutting-orders/{serial_number}', [CuttingOrdersController::class, 'show']);
     Route::post('cutting-orders', [CuttingOrdersController::class, 'store']);
     Route::put('cutting-orders/{id}', [CuttingOrdersController::class, 'update']);
     Route::delete('cutting-orders/{id}', [CuttingOrdersController::class, 'destroy']);
+
+    Route::get('remarks', [RemarksController::class, 'index']);
 
 });
