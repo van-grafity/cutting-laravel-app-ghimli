@@ -82,6 +82,10 @@ $(document).ready(function(){
         $('#remark_form').find('input[name="_method"]').remove();
         $('#modal_form').modal('show');
     })
+
+    $('#modal_form').on('hidden.bs.modal', function () {
+        $(this).find('.is-invalid').removeClass('is-invalid');
+    });
 })
 </script>
 

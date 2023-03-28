@@ -52,9 +52,9 @@ class BuyerController extends Controller
 
         $check_duplicate_code = Buyer::where('code', $request->code)->first();
         if($check_duplicate_code){
-            return back()->withInput();
+            return back()->with('error', 'Buyer Code has been exist, Please input another code');;
         }
-        $buyer = Buyer::firstOrCreate([
+        $buyer = Buyer::create([
             'name' => $request->name,
             'address' => $request->address,
             'shipment_address' => $request->shipment_address,
@@ -62,7 +62,7 @@ class BuyerController extends Controller
         ]);
         $buyer->save();
 
-        return redirect('/buyer')->with('status', 'Data Buyer Berhasil Ditambahkan!');
+        return redirect('/buyer')->with('success', 'Buyer '.$buyer->name.' Successfully Added!');
     }
 
     public function destroy($id)
@@ -73,7 +73,7 @@ class BuyerController extends Controller
             $date_return = [
                 'status' => 'success',
                 'data'=> $buyer,
-                'message'=> 'Data Buyer berhasil di hapus',
+                'message'=> 'Buyer '.$buyer->name.' Successfully Deleted',
             ];
             return response()->json($date_return, 200);
         } catch (\Throwable $th) {
@@ -92,13 +92,13 @@ class BuyerController extends Controller
             'code' => 'required',
         ]);
 
-        $data = Buyer::find($id);
-        $data->name = $request->name;
-        $data->address = $request->address;
-        $data->shipment_address = $request->shipment_address;
-        $data->code = $request->code;
-        $data->save();
+        $buyer = Buyer::find($id);
+        $buyer->name = $request->name;
+        $buyer->address = $request->address;
+        $buyer->shipment_address = $request->shipment_address;
+        $buyer->code = $request->code;
+        $buyer->save();
 
-        return redirect('/buyer')->with('status', 'Data Buyer Berhasil Diubah!');
+        return redirect('/buyer')->with('success', 'Buyer '.$buyer->name.' Successfully Updated!');
     }
 }
