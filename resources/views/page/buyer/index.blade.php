@@ -140,7 +140,7 @@ $(function (e) {
     };
     let messages = {
         name: {
-            required: "Please enter the user's name",
+            required: "Please enter the buyer's name",
         },
         address: {
             required: "Please enter address",
@@ -207,8 +207,8 @@ $(function (e) {
 
         let url_delete = delete_url.replace(':id',buyer_id);
         let data_params = { token };
-
         result = await delete_using_fetch(url_delete, data_params)
+
         if(result.status == "success"){
             swal_info({
                 title : result.message,

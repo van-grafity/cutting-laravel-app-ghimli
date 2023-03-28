@@ -64,7 +64,7 @@ class ColorsController extends Controller
         ]);
         $color->save();
 
-        return redirect('/color')->with('status', 'Data Color Berhasil Ditambahkan!');
+        return redirect('/color')->with('success', 'Color '.$color->color.' Successfully Added!');
     }
 
     public function destroy($id)
@@ -75,7 +75,7 @@ class ColorsController extends Controller
             $date_return = [
                 'status' => 'success',
                 'data'=> $color,
-                'message'=> 'Data Color berhasil di hapus',
+                'message'=> 'Color '.$color->color.' successfully Deleted!',
             ];
             return response()->json($date_return, 200);
         } catch (\Throwable $th) {
@@ -98,7 +98,7 @@ class ColorsController extends Controller
         $color->color_code = $request->color_code;
         $color->save();
 
-        return redirect('/color')->with('status', 'Data Color Berhasil Diubah!');
+        return redirect('/color')->with('success', 'Color '.$color->color.' Successfully Updated!');
     }
 
 }

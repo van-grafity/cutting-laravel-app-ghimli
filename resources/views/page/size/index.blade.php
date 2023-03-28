@@ -63,13 +63,11 @@
 
 @push('js')
 <script type="text/javascript">
-
 $(document).ready(function(){
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+
+    // ## Show Flash Message
+    let session = {!! json_encode(session()->all()) !!};
+    show_flash_message(session);
 
     $('#btn_modal_create').click((e) => {
         $('#modal_formLabel').text("Add Size")
@@ -79,7 +77,64 @@ $(document).ready(function(){
         $('#size_form').find('input[name="_method"]').remove();
         $('#modal_form').modal('show')
     })
+
+    $('#modal_form').on('hidden.bs.modal', function () {
+        $(this).find('.is-invalid').removeClass('is-invalid');
+    });
 })
+</script>
+
+<script type="text/javascript">
+$(function (e) {
+
+    // ## Datatable Initialize
+    $('#size_table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ url('/size-data') }}",
+        columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'size', name: 'size'},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ],
+        lengthChange: true,
+        searching: true,
+        autoWidth: false,
+        responsive: true,
+    });
+
+
+    // ## Form Validation
+    let rules = {
+        size: {
+            required: true,
+        },
+    };
+    let messages = {
+        size: {
+            required: "Please enter the size",
+        },
+    };
+    let validator = $("#size_form").validate({
+        rules: rules,
+        messages: messages,
+        errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass("is-invalid");
+        },
+        submitHandler: function (form) {
+            form.submit();
+        }
+    });
+});
+    
 </script>
 
 <script type="text/javascript">
@@ -105,52 +160,22 @@ $(document).ready(function(){
     }
 
     async function delete_size (size_id) {
-        if(!confirm("Apakah anda yakin ingin menghapus Size ini?")) { return false; };
+        data = { title: "Are you sure?" };
+        let confirm_delete = await swal_delete_confirm(data);
+        if(!confirm_delete) { return false; };
 
         let url_delete = delete_url.replace(':id',size_id);
         let data_params = { token };
-
         result = await delete_using_fetch(url_delete, data_params)
+
         if(result.status == "success"){
-            alert(result.message)
-            location.reload();
+            swal_info({
+                title : result.message,
+                reload_option: true, 
+            });
         } else {
-            console.log(result.message);
-            alert("Terjadi Kesalahan");
+            swal_failed({ title: result.message });
         }
     }
-</script>
-
-<script type="text/javascript">
-    $(function (e) {
-        $('#size_table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ url('/size-data') }}",
-            columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'size', name: 'size'},
-                {data: 'action', name: 'action', orderable: false, searchable: false},
-            ],
-            // dom: 'Bfrtip',
-            // dom: '<"wrapperx"flipt>',
-            // dom: '<"top"i>rt<"bottom"flp><"clear">',
-            // dom: '<"top"i>rt<"bottom"flp><"clear">',
-            // dom:    "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-3'l><'col-sm-12 col-md-3'f>>" +
-            //         "<'row'<'col-sm-12'tr>>" +
-            //         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-            // buttons: [ 'copy', 'csv', 'excel', 'pdf', 'print'],
-            // paging: true,
-            lengthChange: true,
-            searching: true,
-            // ordering: true,
-            // info: true,
-            autoWidth: false,
-            responsive: true,
-        });
-        // }).buttons().container().appendTo('#size_table_wrapper .col-md-6:eq(0)');
-
-    });
-    
 </script>
 @endpush

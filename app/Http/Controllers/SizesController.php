@@ -62,7 +62,7 @@ class SizesController extends Controller
         ]);
         $size->save();
 
-        return redirect('/size')->with('status', 'Data Size Berhasil Ditambahkan!');
+        return redirect('/size')->with('success', 'Size '.$size->size.' Successfully Added!');
     }
 
     public function destroy($id)
@@ -73,7 +73,7 @@ class SizesController extends Controller
             $date_return = [
                 'status' => 'success',
                 'data'=> $size,
-                'message'=> 'Data Size berhasil di hapus',
+                'message'=> 'Size '.$size->size.' Successfully Deleted',
             ];
             return response()->json($date_return, 200);
         } catch (\Throwable $th) {
@@ -94,7 +94,7 @@ class SizesController extends Controller
         $size->size = $request->size;
         $size->save();
 
-        return redirect('/size')->with('status', 'Data Size Berhasil Diubah!');
+        return redirect('/size')->with('success', 'Size '.$size->size.' Successfully Updated!');
     }
 
 }
