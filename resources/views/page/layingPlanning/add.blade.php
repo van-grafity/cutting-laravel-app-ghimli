@@ -370,7 +370,7 @@
             $('#table_laying_planning_size > tbody').html(element_html);
         } else {
             if(is_size_already_added()){
-                alert("Size sudah ditambahkan")
+                swal_warning({title: "Size already added"})
             } else {
                 $('#table_laying_planning_size > tbody').append(element_html);
                 data_row_count++;

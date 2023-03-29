@@ -228,7 +228,7 @@
                         <div class="row mt-10rem">
                             <div class="col-md-12 text-right">
                                 <a href="{{ url('/laying-planning') }}" class="btn btn-secondary shadow-sm">cancel</a>
-                                <a type="button" class="btn btn-primary waves-effect waves-light shadow-sm" id="submit_form">Submit</a>
+                                <button type="submit" class="btn btn-primary waves-effect waves-light shadow-sm" id="submit_form">Submit</button>
                             </div>
                         </div>
                     </form>
@@ -297,17 +297,6 @@
                 console.log(err);
             });
         })
-        
-
-        $("#submit_form").click(function(e) {
-            e.preventDefault();
-            if(is_table_empty_data()){
-                alert("belum ada size dipilih")
-                return false;
-            }
-            $("#form_laying_planning").submit();
-        });
-
     });
 
     
@@ -330,12 +319,12 @@
     // ## memeriksa jika input form untuk menambahkan size dan quantitiynya masih kosong atau tidak
     function is_select_size_empty(){
         if(!$('#select_size').val()) {
-            alert("Please select size")
+            swal_warning({ title: "Please select size"})
             return false;
         }
         
         if(!$('#size_qty').val()) {
-            alert("Please select size quantity")
+            swal_warning({ title: "Please select size quantity"})
             return false;
         }
 
@@ -392,7 +381,7 @@
             $('#table_laying_planning_size > tbody').html(element_html);
         } else {
             if(is_size_already_added()){
-                alert("Size sudah ditambahkan")
+                swal_warning({ title:"Size already added" })
             } else {
                 $('#table_laying_planning_size > tbody').append(element_html);
                 data_row_count++;
@@ -422,6 +411,117 @@
         }
 
         $('#total_size_qty').html(': '+sum_size_qty());
+    });
+
+</script>
+
+<script type="text/javascript">
+
+    // ## Ketika opsi diganti pada select2, panggil validasi, jika valid pesan error menghilang
+    $(".select2").on("change", function() {
+        if ($(this).valid()) {
+            $(this).removeClass("is-invalid");
+            $(this).next(".invalid-feedback").remove();
+            $(this).parent().find('.select2-container').removeClass('select2-container--error');
+        }
+    });
+    
+    // ## Form Validation
+    let rules = {
+        gl: {
+            required: true,
+        },
+        style: {
+            required: true,
+        },
+        color: {
+            required: true,
+        },
+        order_qty: {
+            required: true,
+        },
+        delivery_date: {
+            required: true,
+        },
+        fabric_po: {
+            required: true,
+        },
+        fabric_cons: {
+            required: true,
+        },
+        fabric_type: {
+            required: true,
+        },
+        fabric_cons_qty: {
+            required: true,
+        },
+    };
+    let messages = {
+        gl: {
+            required: "Please choose GL Number",
+        },
+        style: {
+            required: "Please choose Style",
+        },
+        color: {
+            required: "Please choose Color",
+        },
+        order_qty: {
+            required: "Please enter Order Qty",
+        },
+        delivery_date: {
+            required: "Please Select Delivery Date",
+        },
+        fabric_po: {
+            required: "Please Enter Fabric PO",
+        },
+        fabric_cons: {
+            required: "Please Choose Fabric Consumption",
+        },
+        fabric_type: {
+            required: "Please Enter Fabric Type",
+        },
+        fabric_cons_qty: {
+            required: "Please Enter Fabric Cons Qty",
+        },
+    };
+    let validator = $("#form_laying_planning").validate({
+        rules: rules,
+        messages: messages,
+        errorElement: "span",
+        ignore: [],
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+
+            // ## khusus untuk select2
+            if (element.hasClass('select2-hidden-accessible')) {
+                error.insertAfter(element.next('span.select2-container'));
+            }
+
+            // validasi error pada select2
+            if (!$(element).val()) {
+                $(element).parent().find('.select2-container').addClass('select2-container--error');
+            }
+            // ## ----------------------------------------------------
+
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass("is-invalid");
+        },
+        submitHandler: function (form) {
+            if(is_table_empty_data()){
+                swal_warning({
+                    title: "No Size Selected!",
+                    text: "Please select at least one Size"
+                })
+                return false;
+            }
+            form.submit();
+        }
     });
 
 </script>
