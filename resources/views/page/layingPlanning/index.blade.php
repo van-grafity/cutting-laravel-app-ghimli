@@ -45,20 +45,21 @@
     
     async function delete_layingPlanning(user_id) {
 
-        if(!confirm("Apakah anda yakin ingin menghapus laying planning ini?")) {
-            return false;
-        }
+        data = { title: "Are you sure?" };
+        let confirm_delete = await swal_delete_confirm(data);
+        if(!confirm_delete) { return false; };
 
         let url_delete = delete_url.replace(':id',user_id);
         let data_params = { token };
 
         result = await delete_using_fetch(url_delete, data_params)
         if(result.status == "success"){
-            alert(result.message)
-            laying_planning_id = $(this).attr('data-id');
-            location.reload();
+            swal_info({
+                title : result.message,
+                reload_option: true, 
+            });
         } else {
-            alert("Terjadi Kesalahan");
+            swal_failed({ title: result.message });
         }
     };
 </script>
