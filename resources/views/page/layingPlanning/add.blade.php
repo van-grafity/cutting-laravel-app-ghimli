@@ -431,12 +431,12 @@
 
 <script type="text/javascript">
 
-    // Ketika opsi dipilih pada select2, panggil validasi untuk menghilangkan pesan error
-    $(".select2").on("select2:close", function() {
+    // ## Ketika opsi diganti pada select2, panggil validasi, jika valid pesan error menghilang
+    $(".select2").on("change", function() {
         if ($(this).valid()) {
-            console.log($(this));
             $(this).removeClass("is-invalid");
             $(this).next(".invalid-feedback").remove();
+            $(this).parent().find('.select2-container').removeClass('select2-container--error');
         }
     });
     
@@ -496,7 +496,7 @@
             required: "Please Enter Fabric Type",
         },
         fabric_cons_qty: {
-            required: "Please Enter Fabric Type",
+            required: "Please Enter Fabric Cons Qty",
         },
     };
     let validator = $("#form_laying_planning").validate({
@@ -509,15 +509,14 @@
             element.closest(".form-group").append(error);
 
             // ## khusus untuk select2
-            // if (element.hasClass('select2-hidden-accessible')) {
-            //     error.insertAfter(element.next('span.select2-container'));
-            // } else {
-            //     error.insertAfter(element);
-            // }
-            //     // validasi error pada select2
-            // if (!$(element).val()) {
-            //     $(element).parent().find('.select2-container').addClass('select2-container--error');
-            // }
+            if (element.hasClass('select2-hidden-accessible')) {
+                error.insertAfter(element.next('span.select2-container'));
+            }
+
+            // validasi error pada select2
+            if (!$(element).val()) {
+                $(element).parent().find('.select2-container').addClass('select2-container--error');
+            }
             // ## ----------------------------------------------------
 
         },
@@ -526,12 +525,6 @@
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass("is-invalid");
-        },
-        success: function(label, element) {
-            // saat select2 valid, menghilangkan class error pada select2 container
-            $('.select2').on('select2:valid', function () {
-                $(this).parent().find('.select2-container').removeClass('select2-container--error');
-            });
         },
         submitHandler: function (form) {
             if(is_table_empty_data()){
