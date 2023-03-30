@@ -52,7 +52,7 @@ class BuyerController extends Controller
 
         $check_duplicate_code = Buyer::where('code', $request->code)->first();
         if($check_duplicate_code){
-            return back()->with('error', 'Buyer Code has been exist, Please input another code');;
+            return back()->with('error', 'Buyer Code has been exist, Please input another code');
         }
         $buyer = Buyer::create([
             'name' => $request->name,

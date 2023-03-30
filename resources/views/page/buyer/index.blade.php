@@ -19,7 +19,6 @@
                                 <th scope="col" class="text-left">Name</th>
                                 <th scope="col" class="text-left">Address</th>
                                 <th scope="col" class="text-left">Shipment Address</th>
-                                <th scope="col" class="text-left">Code</th>
                                 <th scope="col" class="text-left">Action</th>
                             </tr>
                         </thead>
@@ -113,7 +112,6 @@ $(function (e) {
             {data: 'name', name: 'name'},
             {data: 'address', name: 'address'},
             {data: 'shipment_address', name: 'shipment_address'},
-            {data: 'code', name: 'code'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ],
         lengthChange: true,
