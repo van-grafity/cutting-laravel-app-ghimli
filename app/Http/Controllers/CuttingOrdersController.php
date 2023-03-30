@@ -101,7 +101,7 @@ class CuttingOrdersController extends Controller
             'fabric_po' => $layingPlanningDetail->layingPlanning->fabric_po,
             'fabric_type' => $layingPlanningDetail->layingPlanning->fabricType->description,
             'fabric_cons' => $layingPlanningDetail->layingPlanning->fabricCons->description,
-            'marker_length' => $layingPlanningDetail->marker_yard ."yd ". $layingPlanningDetail->marker_inch,
+            'marker_length' => $layingPlanningDetail->marker_yard ." yd ". $layingPlanningDetail->marker_inch. " inch",
             'layer' => $layingPlanningDetail->layer_qty,
         ];
 

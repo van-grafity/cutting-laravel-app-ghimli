@@ -186,7 +186,7 @@
                             </div>
                         </div>
                         <div>
-                            <h4>Marker</h4>
+                            <h5>Marker</h5>
                         </div>
                         <div class="row">
                             <div class="col-sm-3">
@@ -195,16 +195,27 @@
                                     <input type="text" class="form-control" id="marker_code" name="marker_code" placeholder="Code">
                                 </div>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="marker_yard">Yard</label>
                                     <input type="number" class="form-control" id="marker_yard" name="marker_yard" placeholder="Yard" min="0" step="0.01">
                                 </div>
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="marker_inch">Inch</label>
                                     <input type="number" class="form-control" id="marker_inch" name="marker_inch" placeholder="Inch" min="0" step="0.01">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="marker_allowence">Allowence</label>
+                                    <div class="input-group">
+                                        <input type="string" class="form-control" id="marker_allowence" name="marker_allowence" value="1.5" step="0.01" readonly>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Inch</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-sm-3">
@@ -231,7 +242,7 @@
                             </div>
                         </div>
                         <div>
-                            <h4>Ratio</h4>
+                            <h5>Ratio</h5>
                         </div>
                         <div class="row">
                             @foreach($size_list as $key => $size)
@@ -244,7 +255,7 @@
                             @endforeach
                         </div>
                         <div>
-                            <h4>Qty Each Size</h4>
+                            <h5>Qty Each Size</h5>
                         </div>
                         <div class="row">
                             @foreach($size_list as $key => $size)
@@ -255,10 +266,11 @@
                                 </div>
                             </div>
                             @endforeach
-                            
+                        </div>
+                        <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="qty_size_all">Total All Size</label>
+                                    <label for="qty_size_all"><h5>Total Qty All Size</h5></label>
                                     <input type="number" class="form-control" id="qty_size_all" name="qty_size_all" value="0" readonly>
                                 </div>
                             </div>
@@ -366,7 +378,7 @@ $(document).ready(function(){
     const set_marker_length = () => {
         let marker_yard = $('#marker_yard').val() ? parseFloat($('#marker_yard').val()) : 0;
         let marker_inch = $('#marker_inch').val() ? parseFloat($('#marker_inch').val()) : 0;
-        let marker_length = marker_yard + (marker_inch/36) + 0.04;
+        let marker_length = (marker_yard + ((marker_inch+1.5)/36)).toFixed(2);
         $('#marker_length').val(marker_length);
         set_marker_total_length();
     };
@@ -374,7 +386,7 @@ $(document).ready(function(){
     const set_marker_total_length = () => {
         let layer_qty = $('#layer_qty').val()? parseFloat($('#layer_qty').val()) : 0;
         let marker_length = $('#marker_length').val() ? parseFloat($('#marker_length').val()) : 0;
-        let marker_total_length = layer_qty * marker_length;
+        let marker_total_length = (layer_qty * marker_length).toFixed(2);
         $('#marker_total_length').val(marker_total_length);
     };
 
