@@ -33,30 +33,43 @@ async function get_using_fetch(url = "", data = {}) {
 
 async function using_fetch(url = "", data = {}, method = "GET") {
 
+    let fetch_data = {
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+    };
+
     if(method === "GET") {
         query_string = new URLSearchParams(data).toString();
         url = url + "?" + query_string
-        headers = {
+
+        fetch_data.method = method;
+        fetch_data.headers = {
             "Content-Type": "application/json",
         };
     }
 
     if(method === "DELETE") {
-        headers = {
+        fetch_data.method = method;
+        fetch_data.headers = {
             "Content-Type": "application/json",
-            'X-CSRF-TOKEN': data.token
+            "X-CSRF-TOKEN": data.token,
         };
     }
-    
-    const response = await fetch(url, {
-        method: method,
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: headers,
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-    });
+
+    if(method === "PUT") {
+        fetch_data.method = method;
+        fetch_data.headers = {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": data.token,
+        };
+
+        fetch_data.body = JSON.stringify(data.body);
+    }
+
+    const response = await fetch(url, fetch_data);
     return response.json();
 }
 

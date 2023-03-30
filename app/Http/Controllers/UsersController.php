@@ -29,7 +29,8 @@ class UsersController extends Controller
             ->addColumn('action', function($data){
                 return '
                 <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="edit_user('.$data->id.')">Edit</a>
-                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_user('.$data->id.')">Delete</a>';
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_user('.$data->id.')">Delete</a>
+                <a href="javascript:void(0);" class="btn bg-gray btn-sm" onclick="reset_user('.$data->id.')">Reset Password</a>';
             })
             ->addColumn('role', function($data){
                 return $data->roles->isNotEmpty() ? $data->roles[0]->name : 'Not Assigned';
@@ -127,4 +128,25 @@ class UsersController extends Controller
         return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Updated!');
     }
 
+    public function reset(Request $request, $id)
+    {
+        try {
+            $user = User::find($id);
+            $user->password = Hash::make("123456789");
+            $user->save();
+            $date_return = [
+                    'status' => 'success',
+                    'data'=> $user,
+                    'message'=> 'Password '.$user->name.' has been Reset',
+            ];
+            return response()->json($date_return, 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
+
+    }
 }

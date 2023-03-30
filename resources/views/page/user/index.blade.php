@@ -187,8 +187,9 @@ $(function (e) {
     const edit_url ='{{ route("user-management.show",":id") }}';
     const update_url ='{{ route("user-management.update",":id") }}';
     const delete_url ='{{ route("user-management.destroy",":id") }}';
+    const reset_password_url ='{{ route("user-management.reset",":id") }}';
 
-    async function edit_user (user_id) {
+    async function edit_user(user_id) {
         let url_edit = edit_url.replace(':id',user_id);
 
         result = await get_using_fetch(url_edit);
@@ -205,7 +206,7 @@ $(function (e) {
         form.find('input[name="email"]').val(result.email);
     }
 
-    async function delete_user (user_id) {
+    async function delete_user(user_id) {
         data = { title: "Are you sure?" };
         let confirm_delete = await swal_delete_confirm(data);
         if(!confirm_delete) { return false; };
@@ -217,8 +218,27 @@ $(function (e) {
         if(result.status == "success"){
             swal_info({
                 title : result.message,
-                reload_option: true, 
+                reload_option: true,
             });
+        } else {
+            swal_failed({ title: result.message });
+        }
+    }
+
+    async function reset_user(user_id) {
+        data = { title: "Want to Reset Password?" };
+        let confirm_delete = await swal_delete_confirm(data);
+        if(!confirm_delete) { return false; };
+
+        let url_reset_password = reset_password_url.replace(':id',user_id);
+        let data_params = { 
+            token,
+            body: { id: user_id }
+         };
+
+        result = await using_fetch(url_reset_password, data_params, "PUT");
+        if(result.status == "success"){
+            swal_info({ title : result.message });
         } else {
             swal_failed({ title: result.message });
         }

@@ -60,6 +60,9 @@ Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::resource('remark', RemarksController::class);
     Route::resource('gl', GlsController::class);
     Route::resource('style', StylesController::class);
+    
+
+    Route::put('user-management/reset/{id}', [UsersController::class,'reset'])->name('user-management.reset');
 });
 
 Route::group(['middleware' => ['auth','can:clerk']], function () {
