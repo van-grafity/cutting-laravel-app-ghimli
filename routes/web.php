@@ -63,6 +63,8 @@ Route::group(['middleware' => ['auth','can:admin-only']], function () {
     
 
     Route::put('user-management/reset/{id}', [UsersController::class,'reset'])->name('user-management.reset');
+    Route::get('profile', [UsersController::class,'profile'])->name('profile.index');
+    Route::post('profile/change_password', [UsersController::class,'profile_change_password'])->name('profile.change-password');
 });
 
 Route::group(['middleware' => ['auth','can:clerk']], function () {

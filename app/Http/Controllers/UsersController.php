@@ -9,6 +9,7 @@ use Yajra\Datatables\Datatables;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class UsersController extends Controller
@@ -147,6 +148,39 @@ class UsersController extends Controller
                 'message' => $th->getMessage()
             ]);
         }
+    }
 
+    public function profile(Request $request)
+    {
+        $user = User::with('roles')->find(Auth::user()->id);
+        return view('page.user.profile', compact('user'));
+    }
+
+    public function profile_change_password(Request $request)
+    {
+        try {
+            $user = User::find(Auth::user()->id);
+            if(!Hash::check($request->old_password, $user->password)) {
+                $date_return = [
+                    'status' => 'failed',
+                    'message'=> 'Incorrect old Password!',
+                ];
+                return response()->json($date_return, 200);
+            }
+            
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+            
+            $date_return = [
+                'status' => 'success',
+                'message'=> 'Password Changed Successfully!',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 }

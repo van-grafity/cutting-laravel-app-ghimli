@@ -1,5 +1,5 @@
 .select2-container .select2-selection--single {
-  height: 38px; /* ganti tinggi ini sesuai keinginan */
+    height: 38px; /* ganti tinggi ini sesuai keinginan */
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
@@ -7,14 +7,19 @@
 }
 
 .mt-10rem {
-  margin-top: 10rem;
+    margin-top: 10rem;
 }
 
 .detail-section tr td {
-  padding-bottom: 10px;
+    padding-bottom: 10px;
 }
 
 /* mengubah warna border menjadi merah pada select2 setelah terjadi validasi error */
 .select2-container--default.select2-container--error .select2-selection {
     border-color: #dc3545 !important;
+}
+
+.toggle-password {
+    width: 50px;
+    text-align: center;
 }
