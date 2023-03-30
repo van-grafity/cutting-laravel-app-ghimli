@@ -13,3 +13,8 @@
 .detail-section tr td {
   padding-bottom: 10px;
 }
+
+/* mengubah warna border menjadi merah pada select2 setelah terjadi validasi error */
+.select2-container--default.select2-container--error .select2-selection {
+    border-color: #dc3545 !important;
+}

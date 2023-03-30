@@ -127,6 +127,15 @@ const swal_failed = (data) => {
     });
 }
 
+const swal_warning = (data) => {
+    Swal.fire({
+        icon: "warning",
+        title: data.title ? data.title : "Caution!",
+        text:  data.text ? data.text : null,
+        showConfirmButton: false,
+    });
+}
+
 const show_flash_message = ( session = {} ) => {
     if ("success" in session) {
         Swal.fire({

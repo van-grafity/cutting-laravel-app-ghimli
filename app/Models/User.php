@@ -47,4 +47,19 @@ class User extends Authenticatable
     {
         return $this->hasOne(Access::class, 'id', 'access');
     }
+
+    public function adminlte_image()
+    {
+        return 'https://picsum.photos/300/300';
+    }
+
+    public function adminlte_desc()
+    {
+        return 'Cutting Department';
+    }
+
+    public function adminlte_profile_url()
+    {
+        return 'profile/username';
+    }
 }
