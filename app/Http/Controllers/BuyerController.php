@@ -92,6 +92,11 @@ class BuyerController extends Controller
             'code' => 'required',
         ]);
 
+        $check_duplicate_code = Buyer::where('code', $request->code)->where('id','!=', $id)->first();
+        if($check_duplicate_code){
+            return back()->with('error', 'Buyer Code has been exist, Please input another code');
+        }
+
         $buyer = Buyer::find($id);
         $buyer->name = $request->name;
         $buyer->address = $request->address;
