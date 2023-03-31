@@ -346,6 +346,13 @@ return [
                     'can'  => 'admin-only', 
                 ],
                 [
+                    'text' => 'Fabric Usage',
+                    'url'  => '/fabric-usage',
+                    'classes'=> 'ml-3',
+                    'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
+                    'can'  => 'admin-only', 
+                ],
+                [
                     'text' => 'Fabric Consumption',
                     'url'  => '/fabric-cons',
                     'classes'=> 'ml-3',

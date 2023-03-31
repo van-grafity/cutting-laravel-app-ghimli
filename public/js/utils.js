@@ -136,7 +136,7 @@ const swal_info = (data = { title: "Success", option: false }) => {
         icon: "success",
         title: data.title,
         showConfirmButton: false,
-        timer: 3000,
+        timer: 2000,
         didClose: afterClose,
     });
 };
