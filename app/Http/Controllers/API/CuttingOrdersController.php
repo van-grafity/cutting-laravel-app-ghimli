@@ -18,7 +18,6 @@ class CuttingOrdersController extends BaseController
     // {
     //     $this->middleware('auth:api');
     // }
-
     public function index()
     {
         $data = CuttingOrderRecord::with(['layingPlanningDetail'])->get();
@@ -33,7 +32,10 @@ class CuttingOrdersController extends BaseController
     public function show($serial_number)
     {
         $getCuttingOrder = CuttingOrderRecord::with(['CuttingOrderRecordDetail', 'CuttingOrderRecordDetail.color'])->where('serial_number', $serial_number)->latest()->first();
+        if ($getCuttingOrder == null) return $this->onError(404, 'Cutting Order Record not found.');
         $layingPlanningDetail = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.color'])->find($getCuttingOrder->layingPlanningDetail->id);
+        if ($layingPlanningDetail->layingPlanning->color == null || $layingPlanningDetail->layingPlanning->color->id == null) return $this->onError(404, 'Color not found.');
+        if ($layingPlanningDetail->marker_yard == null) return $this->onError(404, 'Marker Yard not found.');
         $data = collect(
             [
                 'laying_planning_detail' => $layingPlanningDetail
