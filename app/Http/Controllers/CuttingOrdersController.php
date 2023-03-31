@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\CuttingOrderRecord;
+use App\Models\CuttingOrderRecordDetail;
 use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanningDetailSize;
 
@@ -132,12 +133,12 @@ class CuttingOrdersController extends Controller
         try {
             $cuttingOrder = CuttingOrderRecord::find($id);
             $cuttingOrder->delete();
-            $date_return = [
+            $data_return = [
                 'status' => 'success',
                 'data'=> $cuttingOrder,
                 'message'=> 'Data Cutting Order berhasil di hapus',
             ];
-            return response()->json($date_return, 200);
+            return response()->json($data_return, 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -173,6 +174,16 @@ class CuttingOrdersController extends Controller
         // return view('page.cutting-order.print', compact('data'));
         $pdf = PDF::loadview('page.cutting-order.print', compact('data'))->setPaper('a4', 'landscape');
         return $pdf->stream($filename);
+    }
+
+    public function cutting_order_detail(Request $request, $id) {
+
+        $cutting_order_record_detail = CuttingOrderRecordDetail::find($id);
+        $cutting_order_record_detail->color = $cutting_order_record_detail->color->color;
+        return response()->json([
+            'status' => 'success',
+            'data' => $cutting_order_record_detail
+        ], 200);
     }
 
     function generate_serial_number($layingPlanningDetail){

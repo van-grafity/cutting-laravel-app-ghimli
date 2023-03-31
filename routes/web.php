@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('home', App\Http\Controllers\HomeController::class);
 });
 
+// ## Route for Datatable
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/user-data', [UsersController::class, 'dataUser']);
     Route::get('/buyer-data', [BuyerController::class, 'dataBuyer']);
@@ -50,6 +51,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
 });
 
+// ## Route for Master Data (Admin)
 Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::resource('user-management', UsersController::class);
     Route::resource('buyer', BuyerController::class);
@@ -83,6 +85,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::resource('cutting-order', CuttingOrdersController::class);
     Route::get('cutting-order-create/{id}', [CuttingOrdersController::class,'createNota'])->name('cutting-order.createNota');
     Route::get('cutting-order-print/{id}', [CuttingOrdersController::class,'print_pdf'])->name('cutting-order.print');
+    Route::get('cutting-order-detail/{id}', [CuttingOrdersController::class,'cutting_order_detail'])->name('cutting-order.detail');
 
     Route::resource('cutting-ticket', CuttingTicketsController::class);
     Route::prefix('cutting-ticket')->name('cutting-ticket.')->group(function(){
@@ -90,6 +93,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     });
 });
 
+// ## Route for Fetch Select2 Form
 Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(function(){
     Route::get('/',[FetchController::class, 'index'])->name('index');
     Route::get('buyer', [FetchController::class, 'buyer'])->name('buyer');
