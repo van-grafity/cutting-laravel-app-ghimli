@@ -7,6 +7,7 @@ use App\Models\CuttingOrderRecord;
 use App\Models\CuttingOrderRecordDetail;
 use App\Models\LayingPlanningDetail;
 use App\Models\Color;
+use App\Models\Remark;
 use App\Http\Traits\ApiHelpers;
 use App\Http\Controllers\API\BaseController as BaseController;
 
@@ -54,6 +55,7 @@ class CuttingOrdersController extends BaseController
         $cuttingOrderRecordDetail->fabric_batch = $input['fabric_batch'];
 
         $color = Color::where('color', $input['color'])->first();
+        if ($color == null) return $this->onError(404, 'Color not found.'); // ?
         $cuttingOrderRecordDetail->color_id = $color->id;
 
         $cuttingOrderRecordDetail->yardage = $input['yardage'];
@@ -61,6 +63,11 @@ class CuttingOrdersController extends BaseController
         $cuttingOrderRecordDetail->layer = $input['layer'];
         $cuttingOrderRecordDetail->joint = $input['joint'];
         $cuttingOrderRecordDetail->balance_end = $input['balance_end'];
+
+        // $remark = Remark::where('name', $input['remarks'])->first();
+        // if ($remark == null) return $this->onError(404, 'Remark not found.'); // not relation
+        // $cuttingOrderRecordDetail->remark_id = $remark->id;
+
         $cuttingOrderRecordDetail->remarks = $input['remarks'];
         $cuttingOrderRecordDetail->operator = $input['operator'];
         $cuttingOrderRecordDetail->save();
