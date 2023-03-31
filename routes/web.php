@@ -59,17 +59,21 @@ Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::resource('buyer', BuyerController::class);
     Route::resource('size', SizesController::class);
     Route::resource('color', ColorsController::class);
-    Route::resource('fabric-cons', FabricConssController::class);
-    Route::resource('fabric-type', FabricTypesController::class);
-    Route::resource('fabric-usage', FabricUsagesController::class);
+    
     Route::resource('remark', RemarksController::class);
     Route::resource('gl', GlsController::class);
     Route::resource('style', StylesController::class);
     
-
     Route::put('user-management/reset/{id}', [UsersController::class,'reset'])->name('user-management.reset');
     Route::get('profile', [UsersController::class,'profile'])->name('profile.index');
     Route::post('profile/change_password', [UsersController::class,'profile_change_password'])->name('profile.change-password');
+});
+
+// ## Route for Master Data (Cutting Department)
+Route::group(['middleware' => ['auth','can:clerk-cutting']], function () {
+    Route::resource('fabric-cons', FabricConssController::class);
+    Route::resource('fabric-type', FabricTypesController::class);
+    Route::resource('fabric-usage', FabricUsagesController::class);
 });
 
 Route::group(['middleware' => ['auth','can:clerk']], function () {

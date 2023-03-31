@@ -66,7 +66,7 @@
                         </div>
                         <div class="form-group">
                             <label for="quantity">Quantity Consumed</label>
-                            <input type="number" class="form-control" id="quantity_consumed" name="quantity_consumed" placeholder="Enter quantity">
+                            <input type="number" class="form-control" id="quantity_consumed" name="quantity_consumed" placeholder="Enter quantity" step="0.01">
                         </div>
                     </div>
                     <!-- END .card-body -->
