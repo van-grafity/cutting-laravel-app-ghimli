@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BlogController;
 use App\Http\Controllers\API\CuttingOrdersController;
+use App\Http\Controllers\API\LayingPlanningController;
 use App\Http\Controllers\API\ColorController;
 use App\Http\Controllers\API\RemarksController;
 
@@ -35,6 +36,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('cutting-orders', [CuttingOrdersController::class, 'store']);
     Route::put('cutting-orders/{id}', [CuttingOrdersController::class, 'update']);
     Route::delete('cutting-orders/{id}', [CuttingOrdersController::class, 'destroy']);
+
+    Route::get('laying-planning', [LayingPlanningController::class, 'index']);
+    Route::get('laying-planning/{serial_number}', [LayingPlanningController::class, 'show']);
 
     Route::get('cutting-record-remark', [RemarksController::class, 'index']);
 
