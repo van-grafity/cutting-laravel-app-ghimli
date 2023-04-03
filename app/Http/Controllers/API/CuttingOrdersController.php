@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\API\BaseController as BaseController;
 use Illuminate\Http\Request;
 use App\Models\CuttingOrderRecord;
 use App\Models\CuttingOrderRecordDetail;
@@ -9,7 +10,6 @@ use App\Models\LayingPlanningDetail;
 use App\Models\Color;
 use App\Models\Remark;
 use App\Http\Traits\ApiHelpers;
-use App\Http\Controllers\API\BaseController as BaseController;
 
 class CuttingOrdersController extends BaseController
 {
@@ -21,10 +21,16 @@ class CuttingOrdersController extends BaseController
     // }
     public function index()
     {
-        $data = CuttingOrderRecord::with(['layingPlanningDetail'])->get();
+        $data = CuttingOrderRecord::with('layingPlanningDetail')
+            ->join('laying_planning_details', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
+            ->orderBy('laying_planning_details.id')
+            ->orderBy('laying_planning_details.table_number')
+            ->select('cutting_order_records.id','laying_planning_detail_id','serial_number')
+            ->with('cuttingOrderRecordDetail')
+            ->get();
         $data = collect(
             [
-                'cuttingOrderRecord' => $data
+                'cutting_order_record' => $data
             ]
         );
         return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
@@ -32,14 +38,11 @@ class CuttingOrdersController extends BaseController
 
     public function show($serial_number)
     {
-        $getCuttingOrder = CuttingOrderRecord::with(['CuttingOrderRecordDetail', 'CuttingOrderRecordDetail.color'])->where('serial_number', $serial_number)->latest()->first();
+        $getCuttingOrder = CuttingOrderRecord::with(['layingPlanningDetail', 'CuttingOrderRecordDetail', 'layingPlanningDetail.layingPlanning.color'])->where('serial_number', $serial_number)->latest()->first();
         if ($getCuttingOrder == null) return $this->onError(404, 'Cutting Order Record not found.');
-        $layingPlanningDetail = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.color'])->find($getCuttingOrder->layingPlanningDetail->id);
-        if ($layingPlanningDetail->layingPlanning->color == null || $layingPlanningDetail->layingPlanning->color->id == null) return $this->onError(404, 'Color not found.');
-        if ($layingPlanningDetail->marker_yard == null) return $this->onError(404, 'Marker Yard not found.');
         $data = collect(
             [
-                'laying_planning_detail' => $layingPlanningDetail
+                'cutting_order_record' => $getCuttingOrder
             ]
         );
         return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
