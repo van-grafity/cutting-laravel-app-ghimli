@@ -124,8 +124,31 @@
                                 </div>
                             </div>
                         </div>
-
+                        <hr>
+                        <h5 style="font-weight:700">Fabric Consumpition</h5>
                         <div class="row">
+                            <div class="col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label for="fabric_cons" class="form-label">Portion</label>
+                                    <select class="form-control select2" id="fabric_cons" name="fabric_cons" style="width: 100%;" data-placeholder="Choose Portion">
+                                        <option value="">Choose Portion</option>
+                                        @foreach ($fabricCons as $fabricCon)
+                                            <option value="{{ $fabricCon->id }}">{{ $fabricCon->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6">
+                                <div class="form-group">
+                                    <label for="fabric_cons_qty" class="form-label">Quantity Consumed</label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control"  id="fabric_cons_qty" name="fabric_cons_qty" min="0">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Yard</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="fabric_type" class="form-label">Fabric Type</label>
@@ -137,26 +160,11 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-6">
+                            
+                            <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
-                                    <label for="fabric_cons" class="form-label">Fabric Consumption</label>
-                                    <select class="form-control select2" id="fabric_cons" name="fabric_cons" style="width: 100%;" data-placeholder="Choose Fabric Consumption">
-                                        <option value="">Choose Fabric Consumption</option>
-                                        @foreach ($fabricCons as $fabricCon)
-                                            <option value="{{ $fabricCon->id }}">{{ $fabricCon->description }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-sm-6">
-                                <div class="form-group">
-                                    <label for="fabric_cons_qty" class="form-label">qty</label>
-                                    <div class="input-group mb-3">
-                                        <input type="number" class="form-control"  id="fabric_cons_qty" name="fabric_cons_qty" min="0">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">Yard</span>
-                                        </div>
-                                    </div>
+                                    <label for="fabric_cons_desc" class="form-label">Consumption Description</label>
+                                    <textarea class="form-control" name="fabric_cons_desc" id="fabric_cons_desc" cols="30" rows="2"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -490,7 +498,7 @@
             required: "Please Enter Fabric PO",
         },
         fabric_cons: {
-            required: "Please Choose Fabric Consumption",
+            required: "Please Choose Portion",
         },
         fabric_type: {
             required: "Please Enter Fabric Type",

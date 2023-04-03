@@ -17,7 +17,7 @@
                         <thead class="">
                             <tr>
                                 <th scope="col" class="text-left">No. </th>
-                                <th scope="col" class="text-left">Name</th>
+                                <th scope="col" class="text-left">Portion</th>
                                 <th scope="col" class="text-left">Description</th>
                                 <th scope="col" class="text-left">Action</th>
                             </tr>
@@ -46,7 +46,7 @@
                 <div class="modal-body">
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="fabricCons_name">Name</label>
+                            <label for="fabricCons_name">Portion</label>
                             <input type="text" class="form-control" id="fabricCons_name" name="name" placeholder="Enter name">
                         </div>
                         <div class="form-group">

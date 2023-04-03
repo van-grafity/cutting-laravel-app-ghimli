@@ -94,7 +94,7 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="length" class="form-label">Marker Length</label>
-                                    <input type="text" class="form-control" readonly value='{{ $data->marker_length }}"' id="length" name="length">
+                                    <input type="text" class="form-control" readonly value='{{ $data->marker_length }}' id="length" name="length">
                                 </div>
                             </div>
                             

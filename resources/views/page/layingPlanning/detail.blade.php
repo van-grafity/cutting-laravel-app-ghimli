@@ -71,12 +71,12 @@
                                         <tr>
                                             <td>Fabric Type</td>
                                             <td class="pl-3">:</td>
-                                            <td>{{ $data->fabricType->description }}</td>
+                                            <td>{{ $data->fabricType->name }}</td>
                                         </tr>
                                         <tr>
                                             <td>Fabric Consumpition</td>
                                             <td class="pl-3">:</td>
-                                            <td>{{ $data->fabricCons->description }}</td>
+                                            <td>{{ $data->fabricCons->name }}</td>
                                         </tr>
                                         <tr>
                                             <td>Description</td>

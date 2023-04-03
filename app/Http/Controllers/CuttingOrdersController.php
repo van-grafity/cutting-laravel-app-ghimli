@@ -58,18 +58,12 @@ class CuttingOrdersController extends Controller
             'color' => $layingPlanningDetail->layingPlanning->color->color,
             'layer' => $layingPlanningDetail->layer_qty,
             'fabric_po' => $layingPlanningDetail->layingPlanning->fabric_po,
-            'fabric_type' => $layingPlanningDetail->layingPlanning->fabricType->description,
-            'fabric_consumption' => $layingPlanningDetail->layingPlanning->fabricCons->description,
-            'marker_length' => $layingPlanningDetail->marker_yard ."yd ". $layingPlanningDetail->marker_inch,
+            'fabric_type' => $layingPlanningDetail->layingPlanning->fabricType->name,
+            'fabric_consumption' => $layingPlanningDetail->layingPlanning->fabricCons->name,
+            'marker_length' => $layingPlanningDetail->marker_yard ." yd ". $layingPlanningDetail->marker_inch ." inch",
         ];
 
-        $get_size_ratio = LayingPlanningDetailSize::where('laying_planning_detail_id', $laying_planning_detail_id)->get();
-        $size_ratio = [];
-
-        foreach( $get_size_ratio as $key => $size ) {
-            $size_ratio[] = $size->size->size . " = " . $size->ratio_per_size;
-        }
-        $size_ratio = Arr::join($size_ratio, ' | ');
+        $size_ratio = $this->print_size_ratio($layingPlanningDetail);
         $data = Arr::add($data, 'size_ratio', $size_ratio);
         $data = (object)$data;
 
@@ -100,8 +94,8 @@ class CuttingOrdersController extends Controller
             'style' => $layingPlanningDetail->layingPlanning->style->style,
             'color' => $layingPlanningDetail->layingPlanning->color->color,
             'fabric_po' => $layingPlanningDetail->layingPlanning->fabric_po,
-            'fabric_type' => $layingPlanningDetail->layingPlanning->fabricType->description,
-            'fabric_cons' => $layingPlanningDetail->layingPlanning->fabricCons->description,
+            'fabric_type' => $layingPlanningDetail->layingPlanning->fabricType->name,
+            'fabric_cons' => $layingPlanningDetail->layingPlanning->fabricCons->name,
             'marker_length' => $layingPlanningDetail->marker_yard ." yd ". $layingPlanningDetail->marker_inch. " inch",
             'layer' => $layingPlanningDetail->layer_qty,
         ];
@@ -159,7 +153,7 @@ class CuttingOrdersController extends Controller
             'no_laying_sheet' => $cutting_order->layingPlanningDetail->no_laying_sheet,
             'fabric_po' => $cutting_order->layingPlanningDetail->layingPlanning->fabric_po,
             'marker_code' => $cutting_order->layingPlanningDetail->marker_code,
-            'marker_length' => $cutting_order->layingPlanningDetail->marker_yard.'Yd '.  $cutting_order->layingPlanningDetail->marker_inch.'" ',
+            'marker_length' => $cutting_order->layingPlanningDetail->marker_yard.' yd '.  $cutting_order->layingPlanningDetail->marker_inch.' inch',
             'fabric_type' => $cutting_order->layingPlanningDetail->layingPlanning->fabricType->name,   
             'fabric_cons' => $cutting_order->layingPlanningDetail->layingPlanning->fabricCons->name,   
             'table_number' => $cutting_order->layingPlanningDetail->table_number,   

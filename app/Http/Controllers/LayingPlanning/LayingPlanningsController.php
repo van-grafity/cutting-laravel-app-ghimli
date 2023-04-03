@@ -122,6 +122,7 @@ class LayingPlanningsController extends Controller
             'fabric_cons_id' => $request->fabric_cons,
             'fabric_type_id' => $request->fabric_type,
             'fabric_cons_qty' => $request->fabric_cons_qty,
+            'fabric_cons_desc' => $request->fabric_cons_desc,
         ];
         $insertLayingData = LayingPlanning::create($layingData);
 
@@ -137,7 +138,7 @@ class LayingPlanningsController extends Controller
         }
 
         return redirect()->route('laying-planning.index')
-            ->with('success', 'Laying Planning created successfully.');
+            ->with('success', 'Laying Planning successfully Added!');
     }
 
     public function show($id)
@@ -238,6 +239,7 @@ class LayingPlanningsController extends Controller
         $layingPlanning->fabric_cons_id = $request->fabric_cons;
         $layingPlanning->fabric_type_id = $request->fabric_type;
         $layingPlanning->fabric_cons_qty = $request->fabric_cons_qty;
+        $layingPlanning->fabric_cons_desc = $request->fabric_cons_desc;
 
         $layingPlanning->save();
 
@@ -254,7 +256,7 @@ class LayingPlanningsController extends Controller
             $insertLayingSize = LayingPlanningSize::create($laying_planning_size);
         }
         
-        return redirect('laying-planning');
+        return redirect('laying-planning')->with('success', 'Laying Planning '. $layingPlanning->serial_number . " successfully Updated!");
     }
 
     /**

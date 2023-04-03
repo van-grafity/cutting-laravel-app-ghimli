@@ -43,21 +43,22 @@ class CuttingTicketsController extends Controller
         $data = CuttingTicket::find($id);
         try {
             $ticket = CuttingTicket::find($id);
+            $layingPlanningDetail = $ticket->cuttingOrderRecord->layingPlanningDetail;
             $data = [
                 'id' => $ticket->id,
                 'ticket_number' => $this->generate_ticket_number($ticket->id),
-                'no_laying_sheet' => $ticket->cuttingOrderRecord->layingPlanningDetail->no_laying_sheet,
-                'table_number' => Str::padLeft($ticket->cuttingOrderRecord->layingPlanningDetail->table_number, 3, '0'),
-                'gl_number' => $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->gl->gl_number,
-                'buyer' => $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->buyer->name,
-                'style' => $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->style->style,
-                'color' => $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->color->color,
+                'no_laying_sheet' => $layingPlanningDetail->no_laying_sheet,
+                'table_number' => Str::padLeft($layingPlanningDetail->table_number, 3, '0'),
+                'gl_number' => $layingPlanningDetail->layingPlanning->gl->gl_number,
+                'buyer' => $layingPlanningDetail->layingPlanning->buyer->name,
+                'style' => $layingPlanningDetail->layingPlanning->style->style,
+                'color' => $layingPlanningDetail->layingPlanning->color->color,
                 'size' => $ticket->size->size,
                 'layer' => $ticket->layer,
                 'fabric_roll' => $ticket->cuttingOrderRecordDetail->fabric_roll,
-                'fabric_po' => $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->fabric_po,
-                'fabric_type' => $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->fabricType->description,
-                'fabric_cons' => $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->fabricCons->description,
+                'fabric_po' => $layingPlanningDetail->layingPlanning->fabric_po,
+                'fabric_type' => $layingPlanningDetail->layingPlanning->fabricType->name,
+                'fabric_cons' => $layingPlanningDetail->layingPlanning->fabricCons->name,
             ];
             return response()->json($data, 200);
         } catch (\Throwable $th) {

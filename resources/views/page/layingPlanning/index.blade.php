@@ -39,7 +39,11 @@
 @push('js')
 <script type="text/javascript">
     $(document).ready(function(){
+        // ## Show Flash Message
+        let session = {!! json_encode(session()->all()) !!};
+        show_flash_message(session);
     })
+    
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const delete_url ='{{ route("laying-planning.destroy",":id") }}';
     

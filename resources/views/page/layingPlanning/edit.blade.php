@@ -128,8 +128,31 @@
                                 </div>
                             </div>
                         </div>
-
+                        <hr>
+                        <h5 style="font-weight:700">Fabric Consumpition</h5>
                         <div class="row">
+                            <div class="col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label for="fabric_cons" class="form-label">Portion</label>
+                                    <select class="form-control select2" id="fabric_cons" name="fabric_cons" style="width: 100%;" data-placeholder="Choose Portion">
+                                        <option value="">Choose Portion</option>
+                                        @foreach ($fabricCons as $fabricCon)
+                                            <option value="{{ $fabricCon->id }}" {{ $fabricCon->id == $layingPlanning->fabricCons->id ? 'selected' : '' }}>{{ $fabricCon->description }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-6">
+                                <div class="form-group">
+                                    <label for="fabric_cons_qty" class="form-label">Quantity Consumed</label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" class="form-control"  id="fabric_cons_qty" name="fabric_cons_qty" min="0" value="{{ $layingPlanning->fabric_cons_qty }}">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">Yard</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="fabric_type" class="form-label">Fabric Type</label>
@@ -141,32 +164,17 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-6">
+                            <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
-                                    <label for="fabric_cons" class="form-label">Fabric Consumption</label>
-                                    <select class="form-control select2" id="fabric_cons" name="fabric_cons" style="width: 100%;" data-placeholder="Choose Fabric Consumption">
-                                        <option value="">Choose Fabric Consumption</option>
-                                        @foreach ($fabricCons as $fabricCon)
-                                            <option value="{{ $fabricCon->id }}" {{ $fabricCon->id == $layingPlanning->fabricCons->id ? 'selected' : '' }}>{{ $fabricCon->description }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-sm-6">
-                                <div class="form-group">
-                                    <label for="fabric_cons_qty" class="form-label">qty</label>
-                                    <div class="input-group mb-3">
-                                        <input type="number" class="form-control"  id="fabric_cons_qty" name="fabric_cons_qty" min="0" value="{{ $layingPlanning->fabric_cons_qty }}">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text">Yard</span>
-                                        </div>
-                                    </div>
+                                    <label for="fabric_cons_desc" class="form-label">Consumption Description</label>
+                                    <textarea class="form-control" name="fabric_cons_desc" id="fabric_cons_desc" cols="30" rows="2">{{ $layingPlanning->fabric_cons_desc }}</textarea>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row mt-5">
                             <div class="col-sm-12 col-md-6">
+                                <label for="fabric_type" class="form-label">List Size</label>
                                 <table id="table_laying_planning_size" class="table table-bordered align-middle">
                                     <thead class="thead">
                                         <tr>
@@ -227,7 +235,7 @@
 
                         <div class="row mt-10rem">
                             <div class="col-md-12 text-right">
-                                <a href="{{ url('/laying-planning') }}" class="btn btn-secondary shadow-sm">cancel</a>
+                                <a href="{{ url('/laying-planning') }}" class="btn btn-secondary shadow-sm">Cancel</a>
                                 <button type="submit" class="btn btn-primary waves-effect waves-light shadow-sm" id="submit_form">Submit</button>
                             </div>
                         </div>
@@ -476,7 +484,7 @@
             required: "Please Enter Fabric PO",
         },
         fabric_cons: {
-            required: "Please Choose Fabric Consumption",
+            required: "Please Choose Portion",
         },
         fabric_type: {
             required: "Please Enter Fabric Type",
