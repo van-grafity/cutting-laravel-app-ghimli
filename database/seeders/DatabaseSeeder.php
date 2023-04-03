@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
         $this->call(LayingPlanningDetailSizesTableSeeder::class);
         $this->call(CuttingOrderRecordsTableSeeder::class);
         $this->call(CuttingOrderRecordDetailsTableSeeder::class);
-        $this->call(CuttingTicketsTableSeeder::class);
+        // $this->call(CuttingTicketsTableSeeder::class);
         $this->call(RemarkTableSeeder::class);
 
     }
