@@ -360,13 +360,13 @@ return [
             'icon' => 'fas fa-fw fa-server',
             'can'  => 'clerk-cutting',
             'submenu' => [
-                [
-                    'text' => 'Fabric Usage',
-                    'url'  => '/fabric-usage',
-                    'classes'=> 'ml-3',
-                    'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
-                    'can'  => 'clerk-cutting', 
-                ],
+                // [
+                //     'text' => 'Fabric Usage',
+                //     'url'  => '/fabric-usage',
+                //     'classes'=> 'ml-3',
+                //     'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
+                //     'can'  => 'clerk-cutting', 
+                // ],
                 [
                     'text' => 'Fabric Consumption',
                     'url'  => '/fabric-cons',
