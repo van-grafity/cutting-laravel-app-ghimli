@@ -50,6 +50,11 @@ class FabricTypesController extends Controller
             'description' => 'required',
         ]);
 
+        $check_duplicate = FabricType::where('name', $request->name)->first();
+        if($check_duplicate){
+            return back()->with('error', 'Fabric Type Name has been exist, Please input another Name');
+        }
+
         $fabricType = FabricType::firstOrCreate([
             'name' => $request->name,
             'description' => $request->description,
@@ -84,6 +89,11 @@ class FabricTypesController extends Controller
             'name' => 'required',
             'description' => 'required',
         ]);
+
+        $check_duplicate = FabricType::where('name', $request->name)->where('id','!=', $id)->first();
+        if($check_duplicate){
+            return back()->with('error', 'Fabric Type Name has been exist, Please input another Name');
+        }
 
         $fabricType = FabricType::find($id);
         $fabricType->name = $request->name;

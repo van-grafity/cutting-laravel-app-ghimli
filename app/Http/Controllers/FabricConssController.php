@@ -49,6 +49,11 @@ class FabricConssController extends Controller
             'description' => 'required',
         ]);
 
+        $check_duplicate = FabricCons::where('name', $request->name)->first();
+        if($check_duplicate){
+            return back()->with('error', 'Portion has been exist, Please input another Portion');
+        }
+
         $fabricCons = FabricCons::firstOrCreate([
             'name' => $request->name,
             'description' => $request->description,
@@ -83,6 +88,11 @@ class FabricConssController extends Controller
             'name' => 'required',
             'description' => 'required',
         ]);
+
+        $check_duplicate = FabricCons::where('name', $request->name)->where('id','!=', $id)->first();
+        if($check_duplicate){
+            return back()->with('error', 'Portion has been exist, Please input another Portion');
+        }
 
         $fabricCons = FabricCons::find($id);
         $fabricCons->name = $request->name;
