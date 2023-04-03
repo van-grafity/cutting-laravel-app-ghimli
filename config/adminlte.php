@@ -389,12 +389,12 @@ return [
             'icon' => 'fas fa-fw fa fa-file-alt',
             'can'  => 'admin-only', 
         ],
-        [
-            'text' => 'Style',
-            'url'  => '/style',
-            'icon' => 'fas fa-fw fa fa-solid fa-palette',
-            'can'  => 'admin-only', 
-        ],
+        // [
+        //     'text' => 'Style',
+        //     'url'  => '/style',
+        //     'icon' => 'fas fa-fw fa fa-solid fa-palette',
+        //     'can'  => 'admin-only', 
+        // ],
         [
             'text' => 'Laying Planning',
             'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
