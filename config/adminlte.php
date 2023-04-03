@@ -387,7 +387,7 @@ return [
             'text' => 'GL',
             'url'  => '/gl',
             'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'admin-only', 
+            'can'  => 'clerk-cutting', 
         ],
         // [
         //     'text' => 'Style',
