@@ -167,6 +167,12 @@
                                     <textarea class="form-control" name="fabric_cons_desc" id="fabric_cons_desc" cols="30" rows="2"></textarea>
                                 </div>
                             </div>
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="fabric_type_desc" class="form-label">Fabric Type Content</label>
+                                    <textarea class="form-control" name="fabric_type_desc" id="fabric_type_desc" cols="30" rows="2" readonly></textarea>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Table List Size -->
@@ -238,6 +244,7 @@
 <script type="text/javascript">
     const url_buyer = `{{ route('fetch.buyer') }}`;
     const url_style = `{{ route('fetch.style') }}`;
+    const url_fabric_type = `{{ route('fetch.fabric-type') }}`;
     
     
     $( document ).ready(function() {
@@ -290,6 +297,17 @@
             let data_params = { id : style_id }
             using_fetch(url_style, data_params, "GET").then((result) => {
                 $('#style_desc').val(result.data[0].description);
+            }).catch((err) => {
+                console.log(err);
+            });
+        })
+
+        // ## Fill Fabric Type Description Box depend on Selected Fabric Type
+        $('#fabric_type').on('change', function(e) {
+            let fabric_type_id = $(this).val();
+            let data_params = { id : fabric_type_id }
+            using_fetch(url_fabric_type, data_params, "GET").then((result) => {
+                $('#fabric_type_desc').val(result.data[0].description);
             }).catch((err) => {
                 console.log(err);
             });

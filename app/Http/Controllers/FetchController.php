@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Buyer;
 use App\Models\Style;
 use App\Models\Color;
+use App\Models\FabricType;
 
 class FetchController extends Controller
 {
@@ -111,6 +112,29 @@ class FetchController extends Controller
                 'status' => 'success',
                 'data'=> $color,
                 'message'=> 'Data Color berhasil diambil',
+            ];
+            return response()->json($date_return, 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+    
+    public function fabric_type(Request $request) {
+        try {
+            $id = $request->id;
+            $fabric_type = FabricType::select('*')
+                    ->when($id, function ($query, $id){
+                        $query->where('id', $id);
+                    })->get();
+
+            $date_return = [
+                'status' => 'success',
+                'data'=> $fabric_type,
+                'message'=> 'Data Fabric Type berhasil diambil',
             ];
             return response()->json($date_return, 200);
 
