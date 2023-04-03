@@ -46,7 +46,7 @@
                                 <td>{{ $ticket->size }}</td>
                                 <td>{{ $ticket->layer }}</td>
                                 <td>
-                                    <a href="" class="btn btn-primary btn-sm btn-print-ticket">Print</a>
+                                    <a href="{{ route('cutting-ticket.print', $ticket->id) }}" target="_blank" class="btn btn-primary btn-sm btn-print-ticket">Print</a>
                                     <a href="javascript:void(0)" class="btn btn-info btn-sm btn-ticket-detail" data-url="{{ route('cutting-ticket.show', $ticket->id) }}">Detail</a>
                                 </td>
                             </tr>
@@ -172,7 +172,6 @@
             </div>
             <div class="modal-footer">
                 <div class="col-md-12 text-right">
-                    <button type="button" class="btn bg-cyan" style="width:100px;">Print QR</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal" style="width:100px;">OK</button>
                 </div>
             </div>

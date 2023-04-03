@@ -12,6 +12,8 @@ use App\Models\LayingPlanningDetailSize;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 
+use PDF;
+
 class CuttingTicketsController extends Controller
 {
     public function index()
@@ -150,7 +152,27 @@ class CuttingTicketsController extends Controller
         return redirect()->route('cutting-ticket.index');
     }
 
+    public function print_ticket(Request $request, $ticket_id) {
 
+        $ticket = CuttingTicket::find($ticket_id);
+        $filename = $ticket->serial_number . '.pdf';
+
+        $layingPlanningDetail = $ticket->cuttingOrderRecord->layingPlanningDetail;
+
+
+        $data = (object)[
+            'serial_number' => $this->generate_ticket_number($ticket->id),
+            'buyer' => $layingPlanningDetail->layingPlanning->gl->buyer->name,
+            'size' => $ticket->size->size,
+            'color' => $layingPlanningDetail->layingPlanning->color->color,
+            'ticket_number' => Str::padLeft($ticket->ticket_number, 3, '0'),
+            'layer' => $ticket->layer,
+        ];
+
+        // return view('page.cutting-ticket.print',compact('data'));
+        $pdf = PDF::loadview('page.cutting-ticket.print', compact('data'))->setPaper('a4', 'portrait');
+        return $pdf->stream($filename);
+    }
 
     // private function
     function generate_ticket_number($ticket_id) {
