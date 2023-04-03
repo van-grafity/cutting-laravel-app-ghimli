@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Gl;
 use App\Models\Buyer;
+use App\Models\Style;
 
 use Yajra\Datatables\Datatables;
 
@@ -57,7 +58,7 @@ class GlsController extends Controller
 
         $check_duplicate_gl_number = Gl::where('gl_number', $request->gl_number)->first();
         if($check_duplicate_gl_number){
-            return back()->withInput();
+            return back()->with('error', 'GL Number has been exist, Please input another GL Number');
         }
         $gl = Gl::firstOrCreate([
             'gl_number' => $request->gl_number,
@@ -66,6 +67,19 @@ class GlsController extends Controller
             'buyer_id' => $request->buyer_id,
         ]);
         $gl->save();
+
+        $styles = $request->style;
+        $styles_desc = $request->style_desc;
+        foreach ($styles as $key => $style) {
+            if($style && $styles_desc[$key]){
+                $style = [
+                    'style' => $style,
+                    'description' => $styles_desc[$key],
+                    'gl_id' => $gl->id,
+                ];
+                $insertStyle = Style::create($style);
+            }
+        }
 
         return redirect('/gl')->with('success', 'Gl '.$gl->gl_number.' Successfully Added!');
     }
@@ -103,6 +117,27 @@ class GlsController extends Controller
         $gl->buyer_id = $request->buyer_id;
         $gl->save();
 
+        Style::where('gl_id', $gl->id)->delete();
+
+        $styles = $request->style;
+        $styles_desc = $request->style_desc;
+        foreach ($styles as $key => $style) {
+            if($style && $styles_desc[$key]){
+                $style = [
+                    'style' => $style,
+                    'description' => $styles_desc[$key],
+                    'gl_id' => $gl->id,
+                ];
+                $insertStyle = Style::create($style);
+            }
+        }
+
         return redirect('/gl')->with('success', 'Gl '.$gl->gl_number.' Successfully Updated!');
+    }
+
+    public function detail(Request $request, $gl_id) {
+
+        $gls = Gl::find($gl_id);
+        return view('page.gl.detail', compact('gls'));
     }
 }

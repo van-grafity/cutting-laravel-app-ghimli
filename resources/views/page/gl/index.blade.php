@@ -3,6 +3,11 @@
 @section('title', 'GL')
 
 @section('content')
+<style>
+    .form-group {
+        margin-bottom:0px;
+    }
+</style>
 
 <div class="container">
     <div class="row">
@@ -35,7 +40,7 @@
 
 <!-- Modal Section -->
 <div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="modal_formLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modal_formLabel">Add GL</h5>
@@ -51,13 +56,19 @@
                             <label for="gl_number">GL Number</label>
                             <input type="text" class="form-control" id="gl_number" name="gl_number" placeholder="Enter GL Number">
                         </div>
-                        <div class="form-group">
-                            <label for="gl_season">Season</label>
-                            <input type="text" class="form-control" id="gl_season" name="season" placeholder="Enter season">
-                        </div>
-                        <div class="form-group">
-                            <label for="gl_size_order">Size Order</label>
-                            <input type="text" class="form-control" id="gl_size_order" name="size_order" placeholder="Enter Size Order">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="gl_season">Season</label>
+                                    <input type="text" class="form-control" id="gl_season" name="season" placeholder="Enter season">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="gl_size_order">Size Order</label>
+                                    <input type="text" class="form-control" id="gl_size_order" name="size_order" placeholder="Enter Size Order">
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="gl_buyer" class="form-label">Buyer</label>
@@ -67,7 +78,38 @@
                                     <option value="{{ $buyer->id }}" >{{ $buyer->name }}</option>
                                 @endforeach
                             </select>
+                        </div>
 
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-bordered table-hover" id="table_style">
+                                    <thead>
+                                        <tr>
+                                            <th >Style</th>
+                                            <th >Description</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td width="150">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" id="style" name="style[]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" id="style_desc" name="style_desc[]">
+                                                </div>
+                                            </td>
+                                            <td width="100" class="text-center">
+                                                <a href="javascript:void(0);" class="btn btn-success btn-sm p-2" onclick="add_new_tr()" ><i class="fas fa-plus"></i></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                     <!-- END .card-body -->
@@ -101,6 +143,12 @@ $(document).ready(function(){
         $('#gl_form').find('#gl_buyer').val('').trigger('change');
         $('#gl_form').find("input[type=text], textarea").val("");
         $('#gl_form').find('input[name="_method"]').remove();
+
+
+        $('#table_style > tbody').html('');
+        element_html = create_tr_element();
+        $('#table_style > tbody').append(element_html);
+
         $('#modal_form').modal('show')
     })
 
@@ -113,6 +161,11 @@ $(document).ready(function(){
             $(this).removeClass("is-invalid");
             $(this).next(".invalid-feedback").remove();
         }
+    });
+
+    $('#table_style > tbody').on("click",".btn-style-delete", function(e){ 
+        e.preventDefault();
+        $(this).parent().parent().remove();
     });
 
 })
@@ -155,6 +208,12 @@ $(function (e) {
         buyer_id: {
             required: true,
         },
+        "style[]": {
+            required: true,
+        },
+        "style_desc[]": {
+            required: true,
+        },
     };
     let messages = {
         gl_number: {
@@ -168,6 +227,12 @@ $(function (e) {
         },
         buyer_id: {
             required: "Please select buyer",
+        },
+        "style[]": {
+            required: "Please enter style name",
+        },
+        "style_desc[]": {
+            required: "Please provide style description",
         },
     };
     let validator = $("#gl_form").validate({
@@ -193,36 +258,62 @@ $(function (e) {
 
 <script type="text/javascript">
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const create_url ='{{ route("gl.store",":id") }}';
+    const create_url ='{{ route("gl.store") }}';
     const edit_url ='{{ route("gl.show",":id") }}';
     const update_url ='{{ route("gl.update",":id") }}';
     const delete_url ='{{ route("gl.destroy",":id") }}';
+    const fetch_style_url = '{{ route("fetch.style") }}';
     
 
-    async function edit_gl(user_id) {
-        let url_edit = edit_url.replace(':id',user_id);
+    async function edit_gl(gl_id) {
+        let url_edit = edit_url.replace(':id',gl_id);
 
         result = await get_using_fetch(url_edit);
         form = $('#gl_form')
         form.append('<input type="hidden" name="_method" value="PUT">');
         $('#modal_formLabel').text("Edit GL");
         $('#btn_submit').text("Save");
-        $('#modal_form').modal('show')
 
-        let url_update = update_url.replace(':id',user_id);
+        let url_update = update_url.replace(':id',gl_id);
         form.attr('action', url_update);
         form.find('#gl_buyer').val(result.buyer_id).trigger('change');
         form.find('input[name="gl_number"]').val(result.gl_number);
         form.find('input[name="season"]').val(result.season);
         form.find('input[name="size_order"]').val(result.size_order);
+
+        // ## Get Style from the GL
+        let data_style_params = { gl_id: gl_id };
+        style_result = await using_fetch(fetch_style_url, data_style_params, "GET");
+        data_style = style_result.data;
+
+        // ## Insert to Style table list
+        let button_type;
+        data_style.forEach((data, i) => {
+            if(i <= 0) {
+                // ## If first row using button icon plus
+                $('#table_style > tbody').html('');
+                button_type = 'button-add';
+            } else {
+                button_type = 'button-delete';
+            }
+
+            let params = {
+                data,
+                button_type
+            }
+            element_html = create_tr_element(params);
+            $('#table_style > tbody').append(element_html);
+        });
+
+        $('#modal_form').modal('show')
     }
 
-    async function delete_gl(user_id) {
+    async function delete_gl(gl_id) {
         data = { title: "Are you sure?" };
         let confirm_delete = await swal_delete_confirm(data);
         if(!confirm_delete) { return false; };
 
-        let url_delete = delete_url.replace(':id',user_id);
+        let url_delete = delete_url.replace(':id',gl_id);
         let data_params = { token };
         result = await delete_using_fetch(url_delete, data_params)
 
@@ -235,5 +326,49 @@ $(function (e) {
             swal_failed({ title: result.message });
         }
     }
+
+    function add_new_tr(){
+        element_html = create_tr_element({button_type: "button-delete"});
+        $('#table_style > tbody').append(element_html);
+    }
+
+    function create_tr_element(params = {}) {
+        // ## Create tr element with some option.
+        data = params.hasOwnProperty('data') ? params.data : null;
+        button_type = params.hasOwnProperty('button_type') ? params.button_type : 'button-add';
+        
+        let button_element;
+        if(button_type == 'button-add') {
+            button_element = `
+            <a href="javascript:void(0);" class="btn btn-success btn-sm p-2" onclick="add_new_tr()"><i class="fas fa-plus"></i></a>
+            `;
+        } else {
+            button_element = `
+            <a href="javascript:void(0);" class="btn btn-danger btn-sm p-2 btn-style-delete"><i class="fas fa-trash-alt"></i></a>
+            `;
+        }
+
+        let style = data ? data.style : '';
+        let style_desc = data ? data.description : '';
+        let element = `
+        <tr>
+            <td width="150">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="style[]" value="${style}">
+                </div>
+            </td>
+            <td>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="style_desc[]" value="${style_desc}">
+                </div>
+            </td>
+            <td width="100" class="text-center">
+                ${button_element}
+            </td>
+        </tr>
+        `
+        return element;
+    }
+
 </script>
 @endpush

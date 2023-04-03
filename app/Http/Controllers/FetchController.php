@@ -27,6 +27,10 @@ class FetchController extends Controller
                     'route.name' => "fetch.color",
                     'options' => ['id']
                 ],
+                'fabric_type' => [
+                    'route.name' => "fetch.fabric-type",
+                    'options' => ['id']
+                ],
             ];
             $date_return = [
                 'status' => 'success',

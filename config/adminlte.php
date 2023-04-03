@@ -643,7 +643,7 @@ return [
                 [
                     'type' => 'js',
                     'asset' => true,
-                    'location' => '.\vendor\jquery-validation\jquery.validate.min.js',
+                    'location' => '.\vendor\jquery-validation\jquery.validate.js',
                 ],
                 [
                     'type' => 'js',
