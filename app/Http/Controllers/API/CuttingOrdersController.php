@@ -21,7 +21,7 @@ class CuttingOrdersController extends BaseController
     // }
     public function index()
     {
-        $data = CuttingOrderRecord::with('cuttingOrderRecordDetail')->latest()->get();
+        $data = CuttingOrderRecord::with('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->latest()->get();
         $data = collect(
             [
                 'cutting_order_record' => $data
