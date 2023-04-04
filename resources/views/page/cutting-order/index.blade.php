@@ -12,18 +12,12 @@
                     <div class="content-title text-center">
                         <h3>Cutting Order Record List</h3>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <div class="search-box me-2 mb-2 d-inline-block">
-                            <div class="position-relative">
-                                <input type="text" class="form-control searchTable" placeholder="Search">
-                                <i class="bx bx-search-alt search-icon"></i>
-                            </div>
-                        </div>
+                    <div class="d-flex justify-content-end mb-1">
                         <a href="javascript:void(0);" class="btn btn-success mb-2 d-none" id="btn_modal_create">Create</a>
                     </div>
 
-                    <table class="table align-middle table-nowrap table-hover">
-                        <thead class="table-light">
+                    <table class="table table-bordered table-hover" id="cutting_order_table">
+                        <thead class="">
                             <tr>
                                 <th scope="col" class="">No. </th>
                                 <th scope="col" class="">Serial Number</th>
@@ -33,22 +27,8 @@
                                 <th scope="col" class="">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach( $data as $cuttingOrderRecord )
-                            <tr>
-                                <td>{{ $cuttingOrderRecord->no }}</td>
-                                <td>{{ $cuttingOrderRecord->serial_number }}</td>
-                                <td>{{ $cuttingOrderRecord->no_laying_sheet }}</td>
-                                <td>{{ $cuttingOrderRecord->color }}</td>
-                                <td>{{ $cuttingOrderRecord->table_number}}</td>
-                                <td>
-                                    <a href="{{ route('cutting-order.print', $cuttingOrderRecord->id) }}" class="btn btn-primary btn-sm" target="_blank">Print Nota</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-cor-delete" data-id="{{ $cuttingOrderRecord->id}}">Delete</a>
-                                    <a href="{{ route('cutting-order.show', $cuttingOrderRecord->id) }}" class="btn btn-info btn-sm">Detail</a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
+                        <!-- <tbody>
+                        </tbody> -->
                     </table>    
                 </div>
             </div>
@@ -59,29 +39,59 @@
 @endsection
 @push('js')
 <script type="text/javascript">
-$(document).ready(function() {
 
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const delete_url ='{{ route("cutting-order.destroy",":id") }}';
-    const print_url ='{{ route("cutting-order.print",":id") }}';
+    
+    async function delete_cuttingOrder(cutting_order_id) {
 
-    $('.btn-cor-delete').on('click', async function(e){
-        if(!confirm("Apakah anda yakin ingin menghapus Cutting Order Record ini?")) { return false; };
+        data = { title: "Are you sure?" };
+        let confirm_delete = await swal_delete_confirm(data);
+        if(!confirm_delete) { return false; };
 
-        let cutting_order_id = $(this).data('id');
-        let url = delete_url.replace(':id',cutting_order_id);
+        let url_delete = delete_url.replace(':id',cutting_order_id);
         let data_params = { token };
 
-        result = await delete_using_fetch(url, data_params);
+        result = await delete_using_fetch(url_delete, data_params)
         if(result.status == "success"){
-            alert(result.message)
-            laying_planning_detail_id = $(this).attr('data-id');
-            location.reload();
+            swal_info({
+                title : result.message,
+                reload_option: true, 
+            });
         } else {
-            console.log(result.message);
-            alert("Terjadi Kesalahan");
+            swal_failed({ title: result.message });
         }
+    };
+
+</script>
+
+<script type="text/javascript">
+    $(function (e) {
+        $('#cutting_order_table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ url('/cutting-order-data') }}",
+            columns: [
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                {data: 'serial_number', name: 'serial_number'},
+                {data: 'no_laying_sheet', name: 'no_laying_sheet'},
+                {data: 'color', name: 'color'},
+                {data: 'table_number', name: 'table_number'},
+                {data: 'action', name: 'action', orderable: false, searchable: false},
+            ],
+            lengthChange: true,
+            searching: true,
+            autoWidth: false,
+            responsive: true,
+        });
     });
+</script>
+
+<script type="text/javascript">
+    
+$(document).ready(function() {
+
+
 });
 </script>
 @endpush

@@ -53,6 +53,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/gl-data', [GlsController::class, 'dataGl']);
     Route::get('/style-data', [StylesController::class, 'dataStyle']);
     Route::get('/laying-planning-data', [LayingPlanningsController::class, 'dataLayingPlanning']);
+    Route::get('/cutting-order-data', [CuttingOrdersController::class, 'dataCuttingOrder']);
+    Route::get('/cutting-ticket-data', [CuttingTicketsController::class, 'dataCuttingTicket']);
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
 });
 

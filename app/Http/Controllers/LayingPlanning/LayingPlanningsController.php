@@ -149,6 +149,11 @@ class LayingPlanningsController extends Controller
         $data->total_order_qty = $total_order_qty;
         $total_pcs_all_table = 0;
         $total_length_all_table = 0;
+        
+        $delivery_date = Carbon::createFromFormat('Y-m-d', $data->delivery_date)->format('d-m-Y');
+        $data->delivery_date = $delivery_date;
+        $plan_date = Carbon::createFromFormat('Y-m-d', $data->plan_date)->format('d-m-Y');
+        $data->plan_date = $plan_date;
 
         foreach($details as $key => $value) {
             $details[$key]->cor_status = $value->cuttingOrderRecord ? 'disabled' : '';

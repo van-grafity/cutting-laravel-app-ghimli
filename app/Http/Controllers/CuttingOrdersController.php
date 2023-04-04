@@ -12,6 +12,7 @@ use App\Models\LayingPlanningDetailSize;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
+use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
 use PDF;
 
@@ -40,6 +41,37 @@ class CuttingOrdersController extends Controller
             $data[] = $temp;
         }
         return view('page.cutting-order.index',compact('data'));
+    }
+
+    public function dataCuttingOrder(){
+        $query = CuttingOrderRecord::with(['layingPlanningDetail'])
+            ->select('cutting_order_records.id','laying_planning_detail_id','serial_number')->get();
+            return Datatables::of($query)
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->addColumn('serial_number', function ($data){
+                return $data->serial_number;
+            })
+            ->addColumn('no_laying_sheet', function ($data){
+                return $data->layingPlanningDetail->no_laying_sheet;
+            })
+            ->addColumn('gl_number', function ($data){
+                return $data->layingPlanningDetail->layingPlanning->gl->gl_number;
+            })
+            ->addColumn('color', function ($data){
+                return $data->layingPlanningDetail->layingPlanning->color->color;
+            })
+            ->addColumn('table_number', function ($data){
+                return $data->layingPlanningDetail->table_number;
+            })
+            ->addColumn('action', function($data){
+                return '
+                <a href="'.route('cutting-order.print', $data->id).'" class="btn btn-primary btn-sm" target="_blank">Print Nota</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'">Delete</a>
+                <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm">Detail</a>
+                ';
+            })
+            ->make(true);
     }
 
     public function createNota($laying_planning_detail_id) {

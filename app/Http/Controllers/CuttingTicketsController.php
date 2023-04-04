@@ -12,6 +12,7 @@ use App\Models\LayingPlanningDetailSize;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 
+use Yajra\Datatables\Datatables;
 use PDF;
 
 class CuttingTicketsController extends Controller
@@ -34,6 +35,39 @@ class CuttingTicketsController extends Controller
             ];
         }
         return view('page.cutting-ticket.index',compact('tickets'));
+    }
+
+    public function dataCuttingTicket(){
+        $query = CuttingTicket::with([])
+            ->select('cutting_tickets.id','cutting_order_record_id','size_id','layer','ticket_number')->get();
+            return Datatables::of($query)
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->addColumn('ticket_number', function ($data){
+                return $this->generate_ticket_number($data->id);
+            })
+            ->addColumn('no_laying_sheet', function ($data){
+                return $data->cuttingOrderRecord->layingPlanningDetail->no_laying_sheet;
+            })
+            ->addColumn('table_number', function ($data){
+                return Str::padLeft($data->cuttingOrderRecord->layingPlanningDetail->table_number, 3, '0');
+            })
+            ->addColumn('color', function ($data){
+                return $data->cuttingOrderRecord->layingPlanningDetail->layingPlanning->color->color;
+            })
+            ->addColumn('size', function ($data){
+                return $data->size->size;
+            })
+            ->addColumn('layer', function ($data){
+                return $data->layer;
+            })
+            ->addColumn('action', function($data){
+                return '
+                <a href="'.route('cutting-ticket.print', $data->id).'" target="_blank" class="btn btn-primary btn-sm btn-print-ticket">Print</a>
+                <a href="javascript:void(0)" class="btn btn-info btn-sm" onclick="show_detail_ticket('. $data->id .')">Detail</a>
+                ';
+            })
+            ->make(true);
     }
 
     public function create() {
