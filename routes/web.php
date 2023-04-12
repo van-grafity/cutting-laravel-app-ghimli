@@ -90,6 +90,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
         route::put('/{id}', 'detail_update')->name('detail-update');
         route::delete('/{id}', 'detail_delete')->name('detail-delete');
         route::get('/{id}/edit', 'detail_edit')->name('detail-edit');
+        route::post('/detail-duplicate','detail_duplicate')->name('detail-duplicate');
     });
 
     Route::resource('cutting-order', CuttingOrdersController::class);
@@ -113,4 +114,9 @@ Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(
     Route::get('fabric-type', [FetchController::class, 'fabric_type'])->name('fabric-type');
     
     Route::get('get-cutting-order/{id}', [CuttingTicketsController::class, 'get_cutting_order'])->name('cutting-order');
+});
+
+// ## Route for Fetch
+Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(function(){
+    Route::get('cutting-table', [FetchController::class, 'cutting_table'])->name('cutting-table');
 });
