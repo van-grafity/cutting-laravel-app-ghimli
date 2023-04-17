@@ -45,25 +45,25 @@ class UserRolePermissionsSeeder extends Seeder
         // create demo users
         $user = \App\Models\User::factory()->create([
             'name' => 'User Admin',
-            'email' => 'admin@gmail.com',
+            'email' => 'admin@ghimli.com',
         ]);
         $user->assignRole($role_super_admin);
         
         $user = \App\Models\User::factory()->create([
             'name' => 'User Planning',
-            'email' => 'planning@gmail.com',
+            'email' => 'planning@ghimli.com',
         ]);
         $user->assignRole($role_planning);
 
         $user = \App\Models\User::factory()->create([
             'name' => 'User Cutting',
-            'email' => 'cutting@gmail.com',
+            'email' => 'cutting@ghimli.com',
         ]);
         $user->assignRole($role_cutting);
 
         $user = \App\Models\User::factory()->create([
             'name' => 'User Ticket',
-            'email' => 'ticket@gmail.com',
+            'email' => 'ticket@ghimli.com',
         ]);
         $user->assignRole($role_ticket);
 

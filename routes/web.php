@@ -61,10 +61,10 @@ Route::group(['middleware' => ['auth']], function () {
 // ## Route for Master Data (Admin)
 Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::resource('user-management', UsersController::class);
-    Route::resource('buyer', BuyerController::class);
-    Route::resource('size', SizesController::class);
-    Route::resource('color', ColorsController::class);
-    Route::resource('remark', RemarksController::class);
+    // Route::resource('buyer', BuyerController::class);
+    // Route::resource('size', SizesController::class);
+    // Route::resource('color', ColorsController::class);
+    // Route::resource('remark', RemarksController::class);
     
     Route::put('user-management/reset/{id}', [UsersController::class,'reset'])->name('user-management.reset');
 });
@@ -77,6 +77,11 @@ Route::group(['middleware' => ['auth','can:clerk-cutting']], function () {
     Route::resource('fabric-cons', FabricConssController::class);
     Route::resource('fabric-type', FabricTypesController::class);
     Route::resource('fabric-usage', FabricUsagesController::class);
+
+    Route::resource('buyer', BuyerController::class);
+    Route::resource('size', SizesController::class);
+    Route::resource('color', ColorsController::class);
+    Route::resource('remark', RemarksController::class);
 });
 
 Route::group(['middleware' => ['auth','can:clerk']], function () {

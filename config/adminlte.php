@@ -315,7 +315,7 @@ return [
         [
             'text' => 'Master Data',
             'icon' => 'fas fa-fw fa-server',
-            'can'  => 'admin-only',
+            'can'  => 'clerk-cutting',
             'submenu' => [
                 [
                     'text' => 'User Management',
@@ -329,28 +329,28 @@ return [
                     'url'  => '/buyer',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-user',
-                    'can'  => 'admin-only', 
+                    'can'  => 'clerk-cutting', 
                 ],
                 [
                     'text' => 'Size',
                     'url'  => '/size',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-solid fa-ruler',
-                    'can'  => 'admin-only', 
+                    'can'  => 'clerk-cutting', 
                 ],
                 [
                     'text' => 'Color',
                     'url'  => '/color',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-solid fa-fill-drip',
-                    'can'  => 'admin-only', 
+                    'can'  => 'clerk-cutting', 
                 ],
                 [
                     'text' => 'Remarks',
                     'url'  => '/remark',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-solid fa-sticky-note',
-                    'can'  => 'admin-only', 
+                    'can'  => 'clerk-cutting', 
                 ],
                 
             ],
