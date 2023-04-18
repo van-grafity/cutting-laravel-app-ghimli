@@ -32,6 +32,11 @@ class LayingPlanningDetail extends Model
         return $this->hasOne(CuttingOrderRecord::class, 'laying_planning_detail_id', 'id');
     }
 
+    public function fabricRequisition()
+    {
+        return $this->hasOne(FabricRequisition::class, 'laying_planning_detail_id', 'id');
+    }
+
     public function layingPlanning()
     {
         return $this->belongsTo(LayingPlanning::class, 'laying_planning_id', 'id');

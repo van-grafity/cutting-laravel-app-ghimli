@@ -15,6 +15,7 @@ use App\Http\Controllers\BuyerController;
 use App\Http\Controllers\FetchController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RemarksController;
+use App\Http\Controllers\FabricRequisitionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +57,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/cutting-order-data', [CuttingOrdersController::class, 'dataCuttingOrder']);
     Route::get('/cutting-ticket-data', [CuttingTicketsController::class, 'dataCuttingTicket']);
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
+    Route::get('/fabric-requisition-data', [FabricRequisitionsController::class, 'dataFabricRequisition']);
 });
 
 // ## Route for Master Data (Admin)
@@ -108,6 +110,14 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
         Route::post('/generate', [CuttingTicketsController::class, 'generate_ticket'])->name('generate');
         Route::get('/print/{id}', [CuttingTicketsController::class, 'print_ticket'])->name('print');
     });
+});
+
+
+Route::group(['middleware' => ['auth','can:clerk']], function () {
+    Route::resource('fabric-requisition', FabricRequisitionsController::class);
+    Route::get('fabric-requisition-create/{id}', [FabricRequisitionsController::class,'createNota'])->name('fabric-requisition.createNota');
+    Route::get('fabric-requisition-print/{id}', [FabricRequisitionsController::class,'print_pdf'])->name('fabric-requisition.print');
+    Route::get('fabric-requisition-detail/{id}', [FabricRequisitionsController::class,'fabric_requisition_detail'])->name('fabric-requisition.detail');
 });
 
 // ## Route for Fetch Select2 Form

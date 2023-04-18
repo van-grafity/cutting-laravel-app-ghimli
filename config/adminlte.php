@@ -419,6 +419,12 @@ return [
             'can'  => 'clerk',
         ],
         [
+            'text' => 'Fabric Requisitoin',
+            'url'  => '/fabric-requisition',
+            'icon' => 'fas fa-fw fa fa-solid fa-file-alt',
+            'can'  => 'clerk',
+        ],
+        [
             'text' => 'Cutting Ticket',
             'icon' => 'fas fa-fw fa fa-solid fa-clipboard-list',
             'can'  => 'clerk',
