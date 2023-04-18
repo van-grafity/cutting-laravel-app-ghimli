@@ -154,25 +154,22 @@ class FabricRequisitionsController extends Controller
 
         $data = (object)[
             'serial_number' => $fabric_requisition->serial_number,
-            'style' => $fabric_requisition->layingPlanningDetail->layingPlanning->style->style,
             'gl_number' => $fabric_requisition->layingPlanningDetail->layingPlanning->gl->gl_number,
-            'no_laying_sheet' => $fabric_requisition->layingPlanningDetail->no_laying_sheet,
+            'style' => $fabric_requisition->layingPlanningDetail->layingPlanning->style->style,
             'fabric_po' => $fabric_requisition->layingPlanningDetail->layingPlanning->fabric_po,
-            'marker_code' => $fabric_requisition->layingPlanningDetail->marker_code,
-            'marker_length' => $fabric_requisition->layingPlanningDetail->marker_yard.' yd '.  $fabric_requisition->layingPlanningDetail->marker_inch.' inch',
+            'no_laying_sheet' => $fabric_requisition->layingPlanningDetail->no_laying_sheet,
             'fabric_type' => $fabric_requisition->layingPlanningDetail->layingPlanning->fabricType->name,   
-            'fabric_cons' => $fabric_requisition->layingPlanningDetail->layingPlanning->fabricCons->name,   
-            'table_number' => $fabric_requisition->layingPlanningDetail->table_number,   
-            'buyer' => $fabric_requisition->layingPlanningDetail->layingPlanning->buyer->name,   
-            'size_ratio' => $this->print_size_ratio($fabric_requisition->layingPlanningDetail),   
             'color' => $fabric_requisition->layingPlanningDetail->layingPlanning->color->color,
-            'layer' => $fabric_requisition->layingPlanningDetail->layer_qty,
+            'quantity_required' => $fabric_requisition->layingPlanningDetail->total_length . " yards",
+            'quantity_issued' => "-",
+            'difference' => "-",
+            'table_number' => $fabric_requisition->layingPlanningDetail->table_number,   
             'date' => Carbon::now()->format('d-m-Y'),
         ];
 
         // dd($data);
-        // return view('page.fabric_requisition.print', compact('data'));
-        $pdf = PDF::loadview('page.fabric_requisition.print', compact('data'))->setPaper('a4', 'landscape');
+        // return view('page.fabric-requisition.print', compact('data'));
+        $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper('a4', 'landscape');
         return $pdf->stream($filename);
     }
 
