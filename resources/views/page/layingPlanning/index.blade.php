@@ -12,6 +12,7 @@
                         <h3>Laying Planning List</h3>
                     </div>
                     <div class="d-flex justify-content-end mb-1">
+                        <a class="btn btn-danger mb-2 mr-2" id="btn_modal_report" data-toggle="modal" data-target="#modal_report">Report</a>
                         <a  href="{{ url('/laying-planning-create') }}" class="btn btn-success mb-2">Create</a>
                     </div>
                     <table class="table table-bordered table-hover" id="laying_planning_table">
@@ -30,6 +31,35 @@
                     
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_report" tabindex="-1" role="dialog" aria-labelledby="modal_report" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal_report">Report laying Planning</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="serial_number">Serial Number</label>
+                <select class="form-control" name="serial_number" id="serial_number">
+                    <option value="">-- Select Serial Number --</option>
+                    @foreach ($data as $item)
+                        <option value="{{ $item->serial_number }}">{{ $item->serial_number }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <a href="{{ route('layingReport', $item->serial_number) }}" class="btn btn-primary">Print</a>
+        </div>
         </div>
     </div>
 </div>
