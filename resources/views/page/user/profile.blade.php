@@ -11,7 +11,7 @@
             <div class="card card-teal card-outline">
                 <div class="card-body box-profile">
                     <div class="text-center">
-                        <img class="profile-user-img img-fluid img-circle" src="https://picsum.photos/300/300" alt="User profile picture">
+                        <img class="profile-user-img img-fluid img-circle" src="{{ asset('assets/img/user-profile-default.png') }}" alt="User profile picture">
                 </div>
 
                 <h3 class="profile-username text-center">{{ $user->name }}</h3>
