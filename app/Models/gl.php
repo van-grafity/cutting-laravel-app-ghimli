@@ -26,4 +26,8 @@ class Gl extends Model
     {
         return $this->hasMany(Style::class,'gl_id','id');
     }
+
+    public function layingPlanning(){
+        return $this->hasMany(LayingPlanning::class, 'gl_id', 'id');
+    }
 }

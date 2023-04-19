@@ -60,4 +60,8 @@ class LayingPlanning extends Model
         return $this->belongsTo(FabricCons::class, 'fabric_cons_id', 'id');
     }
 
+    public function layingPlanningDetail(){
+        return $this->hasMany(LayingPlanningDetail::class, 'laying_planning_id', 'id');
+    }
+
 }

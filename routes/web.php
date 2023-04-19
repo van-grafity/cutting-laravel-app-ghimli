@@ -16,6 +16,7 @@ use App\Http\Controllers\FetchController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RemarksController;
 use App\Http\Controllers\FabricRequisitionsController;
+use App\Http\Controllers\DailyCuttingReportsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -118,7 +119,13 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('fabric-requisition-create/{id}', [FabricRequisitionsController::class,'createNota'])->name('fabric-requisition.createNota');
     Route::get('fabric-requisition-print/{id}', [FabricRequisitionsController::class,'print_pdf'])->name('fabric-requisition.print');
     Route::get('fabric-requisition-detail/{id}', [FabricRequisitionsController::class,'fabric_requisition_detail'])->name('fabric-requisition.detail');
+
+
+    Route::resource('daily-cutting-report', DailyCuttingReportsController::class);
+
 });
+
+
 
 // ## Route for Fetch Select2 Form
 Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(function(){
