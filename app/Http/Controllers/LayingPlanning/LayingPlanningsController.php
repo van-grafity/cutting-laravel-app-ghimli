@@ -414,6 +414,53 @@ class LayingPlanningsController extends Controller
         }
     }
 
+    public function detail_duplicate(Request $request){
+
+        $layingPlanningDetail = LayingPlanningDetail::find($request->laying_planning_detail_id);
+        $duplicate_qty = $request->duplicate_qty;
+
+        $layingPlanningDetailSize = $layingPlanningDetail->layingPlanningDetailSize;
+
+        for ($i=0; $i < $duplicate_qty; $i++) { 
+            
+            $layingPlanning = $layingPlanningDetail->layingPlanning;
+            $getLastDetail = LayingPlanningDetail::where('laying_planning_id', $layingPlanning->id)->orderBy('table_number','desc')->first();
+            
+
+            $layingDetailData = [
+                'no_laying_sheet' => $this->generate_no_laying_sheet($layingPlanning),
+                'table_number' => $getLastDetail ? $getLastDetail->table_number + 1 : 1,
+                'laying_planning_id' => $layingPlanning->id,
+                'layer_qty' => $layingPlanningDetail->layer_qty,
+                'marker_code' => $layingPlanningDetail->marker_code,
+                'marker_yard' => $layingPlanningDetail->marker_yard,
+                'marker_inch' => $layingPlanningDetail->marker_inch,
+                'marker_length' => $layingPlanningDetail->marker_length,
+                'total_length' => $layingPlanningDetail->total_length,
+                'total_all_size' => $layingPlanningDetail->total_all_size,
+            ];
+
+            $insertLayingDetail = LayingPlanningDetail::create($layingDetailData);
+            
+            $ratio_size = $request->ratio_size;
+            $qty_size = $request->qty_size;
+            foreach ($layingPlanningDetailSize as $key => $detailSize) {
+                $laying_planning_detail_size = [
+                    'laying_planning_detail_id' => $insertLayingDetail->id,
+                    'size_id' => $detailSize->size_id,
+                    'ratio_per_size' => $detailSize->ratio_per_size,
+                    'qty_per_size' => $detailSize->qty_per_size,
+                ];
+                $insertPlanningDetailSize = LayingPlanningDetailSize::create($laying_planning_detail_size);
+            }
+
+        }
+
+        return redirect()->route('laying-planning.show',$layingPlanning->id)
+            ->with('success', 'Data Detail Laying Planning berhasil diduplicate sebanyak '. $duplicate_qty .' kali');
+
+    }
+
     function generate_no_laying_sheet($layingPlanning) {
         $getLastDetail = LayingPlanningDetail::where('laying_planning_id', $layingPlanning->id)->orderBy('table_number','desc')->first();
         $gl_number = explode('-', $layingPlanning->gl->gl_number)[0];

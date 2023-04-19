@@ -134,6 +134,8 @@
                                         <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
                                         <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
                                         <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}">Create COR</a>
+                                        <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
+                                        <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-dark" data-id="{{ $detail->id }}">Fabric Req</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -286,6 +288,97 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal Duplicate -->
+<div class="modal fade" id="modal_duplicate" tabindex="-1" role="dialog" aria-labelledby="modal_duplicateLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_duplicateLabel">Duplicate Cutting Table</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('laying-planning.detail-duplicate') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="duplicate_form">
+                @csrf
+                <input type="hidden" name="laying_planning_detail_id" id="laying_planning_detail_id" value="">
+
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="row mb-5">
+                            <div class="col-sm-6">
+                                <table class="text-left">
+                                    <tbody>
+                                        <tr>
+                                            <td>Table No.</td>
+                                            <td class="pl-3">:</td>
+                                            <td id="duplicate_table_no"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Marker Code</td>
+                                            <td class="pl-3">:</td>
+                                            <td id="duplicate_marker_code"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Marker Yard</td>
+                                            <td class="pl-3">:</td>
+                                            <td id="duplicate_marker_yard"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Marker Inch</td>
+                                            <td class="pl-3">:</td>
+                                            <td id="duplicate_marker_inch"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-sm-6">
+                                <table class="text-left">
+                                    <tbody>
+                                        <tr>
+                                            <td>Layer Qty</td>
+                                            <td class="pl-3">:</td>
+                                            <td id="duplicate_layer_qty"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ratio</td>
+                                            <td class="pl-3">:</td>
+                                            <td id="duplicate_size_ratio"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Each Size</td>
+                                            <td class="pl-3">:</td>
+                                            <td id="duplicate_each_size"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Qty All Size</td>
+                                            <td class="pl-3">:</td>
+                                            <td id="duplicate_total_all_size"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3">
+                                <div class="form-group">
+                                    <label for="duplicate_qty">Duplicate Qty</label>
+                                    <input type="number" class="form-control" id="duplicate_qty" name="duplicate_qty" min="0" placeholder="Enter Duplicate Qty">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END .card-body -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn_submit_duplicate">Duplicate Cutting Table</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('js')
@@ -293,9 +386,14 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
+    // ## Show Flash Message
+    let session = {!! json_encode(session()->all()) !!};
+    show_flash_message(session);
+
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const size_list = {!! json_encode($size_list) !!};
     const create_url = '{{ route("laying-planning.detail-create") }}';
+    const fetch_cutting_table_url = '{{ route("fetch.cutting-table") }}';
 
     $.ajaxSetup({
         headers: {
@@ -336,16 +434,16 @@ $(document).ready(function(){
             modal_show_edit(update_url, result.data)
             
         } else {
-            console.log(result.message);
-            alert("Terjadi Kesalahan");
+            swal_failed({ title: result.message });
+
         }
     });
 
     $('.btn-detail-delete').on('click', async function(e){
 
-        if(!confirm("Apakah anda yakin ingin menghapus detail laying planning ini?")) {
-            return false;
-        }
+        data = { title: "Are you sure?" };
+        let confirm_delete = await swal_delete_confirm(data);
+        if(!confirm_delete) { return false; };
 
         let url_delete = $(this).attr('data-url');
         const data_params = {
@@ -354,14 +452,36 @@ $(document).ready(function(){
 
         result = await delete_using_fetch(url_delete, data_params);
         if(result.status == "success"){
-            alert(result.message)
-            laying_planning_detail_id = $(this).attr('data-id');
-            location.reload();
+            swal_info({
+                title : result.message,
+                reload_option: true, 
+            });
         } else {
-            console.log(result.message);
-            alert("Terjadi Kesalahan");
+            swal_failed({ title: result.message });
         }
 
+    });
+
+    $('.btn-detail-duplicate').on('click', async function(e){
+        
+        $('#duplicate_form').find("input[type=text], input[type=number], textarea").val("");
+
+        laying_planning_detail_id = $(this).attr('data-id');
+        let data_params = { laying_planning_detail_id: laying_planning_detail_id };
+        cutting_table_result = await using_fetch(fetch_cutting_table_url, data_params, "GET");
+        
+        data = cutting_table_result.data;
+        $('#duplicate_table_no').text(data.table_number);
+        $('#duplicate_marker_code').text(data.marker_code);
+        $('#duplicate_marker_yard').text(data.marker_yard);
+        $('#duplicate_marker_inch').text(data.marker_inch);
+        $('#duplicate_layer_qty').text(data.layer_qty);
+        $('#duplicate_size_ratio').text(data.size_ratio);
+        $('#duplicate_each_size').text(data.each_size);
+        $('#duplicate_total_all_size').text(data.total_all_size);
+        $('#laying_planning_detail_id').val(data.id);
+
+        $('#modal_duplicate').modal('show');
     });
 })
 </script>

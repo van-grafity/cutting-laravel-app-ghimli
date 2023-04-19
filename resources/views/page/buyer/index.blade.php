@@ -55,7 +55,7 @@
                             <input type="text" class="form-control" id="buyer_address" name="address" placeholder="Enter address">
                         </div>
                         <div class="form-group">
-                            <label for="shipment_address">Shipement Address</label>
+                            <label for="shipment_address">Shipment Address</label>
                             <input type="text" class="form-control" id="shipment_address" name="shipment_address" placeholder="Enter address">
                         </div>
                         <div class="form-group">

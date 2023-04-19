@@ -15,6 +15,7 @@ use App\Http\Controllers\BuyerController;
 use App\Http\Controllers\FetchController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RemarksController;
+use App\Http\Controllers\FabricRequisitionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +57,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/cutting-order-data', [CuttingOrdersController::class, 'dataCuttingOrder']);
     Route::get('/cutting-ticket-data', [CuttingTicketsController::class, 'dataCuttingTicket']);
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
+    Route::get('/fabric-requisition-data', [FabricRequisitionsController::class, 'dataFabricRequisition']);
 });
 
 Route::get('/layingReport/{serial_number}', [LayingPlanningsController::class, 'layingReport'])->name('layingReport');
@@ -63,10 +65,10 @@ Route::get('/layingReport/{serial_number}', [LayingPlanningsController::class, '
 // ## Route for Master Data (Admin)
 Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::resource('user-management', UsersController::class);
-    Route::resource('buyer', BuyerController::class);
-    Route::resource('size', SizesController::class);
-    Route::resource('color', ColorsController::class);
-    Route::resource('remark', RemarksController::class);
+    // Route::resource('buyer', BuyerController::class);
+    // Route::resource('size', SizesController::class);
+    // Route::resource('color', ColorsController::class);
+    // Route::resource('remark', RemarksController::class);
     
     Route::put('user-management/reset/{id}', [UsersController::class,'reset'])->name('user-management.reset');
 });
@@ -79,6 +81,11 @@ Route::group(['middleware' => ['auth','can:clerk-cutting']], function () {
     Route::resource('fabric-cons', FabricConssController::class);
     Route::resource('fabric-type', FabricTypesController::class);
     Route::resource('fabric-usage', FabricUsagesController::class);
+
+    Route::resource('buyer', BuyerController::class);
+    Route::resource('size', SizesController::class);
+    Route::resource('color', ColorsController::class);
+    Route::resource('remark', RemarksController::class);
 });
 
 Route::group(['middleware' => ['auth','can:clerk']], function () {
@@ -92,6 +99,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
         route::put('/{id}', 'detail_update')->name('detail-update');
         route::delete('/{id}', 'detail_delete')->name('detail-delete');
         route::get('/{id}/edit', 'detail_edit')->name('detail-edit');
+        route::post('/detail-duplicate','detail_duplicate')->name('detail-duplicate');
     });
 
     Route::resource('cutting-order', CuttingOrdersController::class);
@@ -106,6 +114,14 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     });
 });
 
+
+Route::group(['middleware' => ['auth','can:clerk']], function () {
+    Route::resource('fabric-requisition', FabricRequisitionsController::class);
+    Route::get('fabric-requisition-create/{id}', [FabricRequisitionsController::class,'createNota'])->name('fabric-requisition.createNota');
+    Route::get('fabric-requisition-print/{id}', [FabricRequisitionsController::class,'print_pdf'])->name('fabric-requisition.print');
+    Route::get('fabric-requisition-detail/{id}', [FabricRequisitionsController::class,'fabric_requisition_detail'])->name('fabric-requisition.detail');
+});
+
 // ## Route for Fetch Select2 Form
 Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(function(){
     Route::get('/',[FetchController::class, 'index'])->name('index');
@@ -115,4 +131,9 @@ Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(
     Route::get('fabric-type', [FetchController::class, 'fabric_type'])->name('fabric-type');
     
     Route::get('get-cutting-order/{id}', [CuttingTicketsController::class, 'get_cutting_order'])->name('cutting-order');
+});
+
+// ## Route for Fetch
+Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(function(){
+    Route::get('cutting-table', [FetchController::class, 'cutting_table'])->name('cutting-table');
 });
