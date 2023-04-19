@@ -176,9 +176,15 @@ class LayingPlanningsController extends Controller
 
     public function layingReport($serial_number)
     {
-        $data = LayingPlanning::with(['layingPlanningSize', 'layingPlanningSize.size', 'gl', 'style', 'buyer', 'color', 'fabricType'])->where('serial_number', $serial_number)->first();
-        $details = LayingPlanningDetail::where('laying_planning_id', $data->id)->get();
-        $pdf = PDF::loadView('page.layingPlanning.report', compact('data'))->setPaper('a4', 'landscape');
+        $data = LayingPlanning::where('serial_number', $serial_number)->first();
+        $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($serial_number) {
+            $query->where('serial_number', $serial_number);
+        })->get();
+        // $data = LayingPlanning::with(['layingPlanningSize', 'layingPlanningSize.size', 'gl', 'style', 'buyer', 'color', 'fabricType'])->where('serial_number', $serial_number)->first();
+        // $details = LayingPlanningDetail::where('laying_planning_id', 1)->get();
+        // $pdf = PDF::loadView('page.layingPlanning.report', compact('data', 'details'))->setPaper('a4', 'landscape');
+        // return $pdf->stream();
+        $pdf = PDF::loadView('page.layingPlanning.report', compact('data', 'details'))->setPaper('a4', 'landscape');
         return $pdf->stream();
     }
 
