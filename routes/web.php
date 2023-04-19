@@ -61,6 +61,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/fabric-requisition-data', [FabricRequisitionsController::class, 'dataFabricRequisition']);
 });
 
+Route::get('/layingReport/{serial_number}', [LayingPlanningsController::class, 'layingReport'])->name('layingReport');
+
 // ## Route for Master Data (Admin)
 Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::resource('user-management', UsersController::class);

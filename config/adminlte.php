@@ -441,6 +441,42 @@ return [
                 ],
             ],
         ],
+        ['header' => 'Report'],
+        [
+            'text' => 'Cutting Ticket Report',
+            'url'  => '/cutting-ticket-report',
+            'icon' => 'fas fa-fw fa fa-solid fa-clipboard-list',
+            'can'  => 'clerk',
+        ],
+        [
+            'text' => 'Laying Planning Report',
+            'url'  => '/laying-planning-report',
+            'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
+            'can'  => 'clerk',
+        ],
+        [
+            'text' => 'Cutting Order Report',
+            'url'  => '/cutting-order-report',
+            'icon' => 'fas fa-fw fa fa-solid fa-cut',
+            'can'  => 'clerk',
+        ],
+        [
+            'text' => 'GL Report',
+            'url'  => '/gl-report',
+            'icon' => 'fas fa-fw fa fa-file-alt',
+            'can'  => 'clerk',
+        ],
+        ['header' => 'Account'],
+        [
+            'text' => 'Profile',
+            'url'  => '/profile',
+            'icon' => 'fas fa-fw fa fa-user',
+        ],
+        [
+            'text' => 'Logout',
+            'url'  => '/logout',
+            'icon' => 'fas fa-fw fa fa-sign-out-alt',
+        ],
     ],
 
     /*

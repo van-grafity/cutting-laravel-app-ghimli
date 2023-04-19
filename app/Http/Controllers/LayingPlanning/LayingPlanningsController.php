@@ -18,6 +18,8 @@ use Yajra\Datatables\Datatables;
 
 use Carbon\Carbon;
 
+use Barryvdh\DomPDF\Facade\PDF;
+
 class LayingPlanningsController extends Controller
 {
     /**
@@ -172,9 +174,17 @@ class LayingPlanningsController extends Controller
         return view('page.layingPlanning.detail', compact('data', 'details','size_list'))   ;
     }
 
+    public function layingReport($serial_number)
+    {
+        $data = LayingPlanning::with(['layingPlanningSize', 'layingPlanningSize.size', 'gl', 'style', 'buyer', 'color', 'fabricType'])->where('serial_number', $serial_number)->first();
+        $details = LayingPlanningDetail::where('laying_planning_id', $data->id)->get();
+        $pdf = PDF::loadView('page.layingPlanning.report', compact('data'))->setPaper('a4', 'landscape');
+        return $pdf->stream();
+    }
+
     public function layingQrcode($id)
     {
-        $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->where('id', $id)->first();
+        $data = LayingPlanning::with(['layingPlanningSize','gl', 'style', 'buyer', 'color', 'fabricType'])->where('id', $id)->first();
         $qrCode = 'https://chart.googleapis.com/chart?chs=400x400&cht=qr&chl='.$data->gl;
         return view('page.layingPlanning.qrcode', compact('data', 'qrCode'));
     }
