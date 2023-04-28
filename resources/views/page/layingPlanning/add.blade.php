@@ -228,7 +228,7 @@
                         <div class="row mt-10rem">
                             <div class="col-md-12 text-right">
                                 <a href="{{ url('/laying-planning') }}" class="btn btn-secondary shadow-sm">cancel</a>
-                                <button type="submit" class="btn btn-primary waves-effect waves-light shadow-sm" id="submit_form">Submit</button>
+                                <button type="submit" class="btn btn-primary waves-effect waves-light shadow-sm" id="submit_form">Save</button>
                             </div>
                         </div>
                     </form>

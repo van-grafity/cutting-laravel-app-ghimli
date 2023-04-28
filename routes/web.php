@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/cutting-ticket-data', [CuttingTicketsController::class, 'dataCuttingTicket']);
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
     Route::get('/fabric-requisition-data', [FabricRequisitionsController::class, 'dataFabricRequisition']);
+    Route::get('/daily-cutting-data', [DailyCuttingReportsController::class, 'dataDailyCutting']);
 });
 
 Route::get('/layingReport/{serial_number}', [LayingPlanningsController::class, 'layingReport'])->name('layingReport');

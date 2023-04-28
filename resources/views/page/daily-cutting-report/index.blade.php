@@ -9,16 +9,29 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-end mb-1">
-                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create" data-id='2'>Create</a>
+                    <div class="d-flex justify-content-between mb-1">
+                        <div class="form-group">
+                            <!-- <label for="filter_date" class="form-label">Filter Date</label> -->
+                            <div class="input-group date" id="filter_date" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#filter_date" name="filter_date" id="filter_date_input"/>
+                                <div class="input-group-append" data-target="#filter_date" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create" style="height: fit-content">Search</a>
                     </div>
-                    <table class="table table-bordered table-hover" id="color_table">
+                    <table class="table table-bordered table-hover" id="daily_cutting_table">
                         <thead class="">
                             <tr>
                                 <th scope="col" style="width: 70px;">#</th>
+                                <th scope="col" class="text-left">Buyer</th>
+                                <th scope="col" class="text-left">Style</th>
+                                <th scope="col" class="text-left">GL#</th>
                                 <th scope="col" class="text-left">Color</th>
-                                <th scope="col" class="text-left">Code</th>
-                                <th scope="col" class="text-left">Action</th>
+                                <th scope="col" class="text-left">MI Qty</th>
+                                <th scope="col" class="text-left">Total Qty Per Day</th>
                             </tr>
                         </thead>
                         <!-- <tbody>
@@ -43,16 +56,11 @@ $(document).ready(function(){
     show_flash_message(session);
 
     $('#btn_modal_create').click((e) => {
-        $('#modal_formLabel').text("Add Color")
-        $('#btn_submit').text("Add Color")
-        $('#color_form').attr('action', create_url);
-        $('#color_form').find("input[type=text], textarea").val("");
-        $('#color_form').find('input[name="_method"]').remove();
-        $('#modal_form').modal('show')
+        console.log($('#filter_date_input').val());
     })
 
-    $('#modal_form').on('hidden.bs.modal', function () {
-        $(this).find('.is-invalid').removeClass('is-invalid');
+    $('#filter_date').on('change.datetimepicker', function() {
+        // console.log($('#filter_date_input').val());
     });
 
 })
@@ -61,16 +69,32 @@ $(document).ready(function(){
 <script type="text/javascript">
 $(function (e) {
     
+    // ## Datepicker Initialize
+    $('#filter_date').datetimepicker({
+        format: 'DD/MM/yyyy',
+    });
+
+    $('#filter_date_input').val(moment().format('DD/MM/yyyy'));
+
     // ## Datatable Initialize
-    $('#color_table').DataTable({
+    $('#daily_cutting_table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ url('/color-data') }}",
+        ajax: {
+            url: "{{ url('/daily-cutting-data') }}",
+            type: 'GET',
+            data: {
+                'date': "2023-04-17"
+            }
+        },
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'buyer', name: 'buyer'},
+            {data: 'style', name: 'style'},
+            {data: 'gl_number', name: 'gl_number'},
             {data: 'color', name: 'color'},
-            {data: 'color_code', name: 'color_code'},
-            {data: 'action', name: 'action', orderable: false, searchable: false},
+            {data: 'mi_qty', name: 'mi_qty'},
+            {data: 'total_qty_per_day', name: 'total_qty_per_day'},
         ],
         lengthChange: true,
         searching: true,

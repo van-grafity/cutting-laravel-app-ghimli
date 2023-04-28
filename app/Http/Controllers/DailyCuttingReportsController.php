@@ -6,28 +6,51 @@ use Illuminate\Http\Request;
 
 use App\Models\LayingPlanning;
 use App\Models\Gl;
+use App\Models\CuttingOrderRecordDetail;
 
 use Carbon\Carbon;
+use Yajra\Datatables\Datatables;
 
 
 class DailyCuttingReportsController extends Controller
 {
     public function index()
     {
-        // $data = LayingPlanning::get();
-        $date_today = Carbon::now()->toDateTimeString();
-        // $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'layingPlanningDetail'])->get();
+
+        // dd($this->calculate_daily_cutting());
+
+        return view('page.daily-cutting-report.index');
+    }
+
+    public function dataDailyCutting(Request $request) {
+
+        $date_filter = $request->date ? $request->date : Carbon::now()->toDateString();
+
+        return Datatables::of($this->calculate_daily_cutting($date_filter))
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->make(true);
+    }
+
+    function calculate_daily_cutting($date_filter) {
         
+        $date_today = $date_filter;
+        $date_today_start = Carbon::createFromFormat('Y-m-d', $date_today)->startOfDay()->toDateTimeString();
+        $date_today_end = Carbon::createFromFormat('Y-m-d', $date_today)->endOfDay()->toDateTimeString();
+
         $data_result = [];
         $gls = Gl::get();
         foreach ($gls as $key => $gl) {
-            $data_gl = [
+            $data_gl[$key] = [
                 'gl_number' => $gl->gl_number,
                 'buyer' => $gl->buyer->name,
+                'laying_planning' => $gl->layingPlanning,
             ];
             $layingPlannings = $gl->layingPlanning;
-                foreach ($layingPlannings as $key => $layingPlanning) {
-                    $data_layingPlanning = [
+
+            foreach ($layingPlannings as $keyLayingPlanning => $layingPlanning) {
+
+                $data_layingPlanning[$keyLayingPlanning] = [
                     'style' => $layingPlanning->style->style,
                     'color' => $layingPlanning->color->color,
                     'mi_qty' => $layingPlanning->order_qty,
@@ -42,23 +65,29 @@ class DailyCuttingReportsController extends Controller
                 $total_actual_all_table_per_size = [];
 
                 foreach ($layingPlanningDetails as $key => $layingPlanningDetail) {
+                    
+                    // ## Skip cutting table (laying planning detail) kalau COR nya belum dibuat
+                    if(!$layingPlanningDetail->cuttingOrderRecord){ continue; }
 
-                    $cutting_table = $layingPlanningDetail->cuttingOrderRecord->cuttingOrderRecordDetail;
+                    // ## perulangan untuk setiap cutting table (laying planning detail)
+                    $cutting_table = $layingPlanningDetail->cuttingOrderRecord->cuttingOrderRecordDetail
+                                    ->where('created_at','>=', $date_today_start)
+                                    ->where('created_at','<=', $date_today_end);
                     $layingPlanningDetailSizes = $layingPlanningDetail->layingPlanningDetailsize;
                     
                     // ## $actual_cutting_layer Data from cutting table (record using android)
                     $actual_cutting_layer = $cutting_table->sum('layer');
 
                     $actual_all_size = []; 
-                    $total_actual_size = 0;
+                    $total_actuala_all_size = 0;
 
                     foreach ($layingPlanningDetailSizes as $key => $layingPlanningDetailSize) {
 
                         // ## jumlah layer yang ada di cutting table di kali dengan rasio per size
                         $actual_each_size = $actual_cutting_layer * $layingPlanningDetailSize->ratio_per_size;
 
-                        // ## hasil perkalian ($actual_each_size). di jumlahkan semua. sehingga $total_actual_size adalah total pcs baju dari semua size
-                        $total_actual_size += $actual_each_size;
+                        // ## hasil perkalian ($actual_each_size). di jumlahkan semua. sehingga $total_actuala_all_size adalah total pcs baju dari semua size
+                        $total_actuala_all_size += $actual_each_size;
                         
                         // ## melakukan penyimpanan untuk total pcs per size dalam bentuk array di dalam variable $sum_each_size dengan format 
                         /*
@@ -68,21 +97,25 @@ class DailyCuttingReportsController extends Controller
                                 dst
                             ] 
                         */
-
                         $sum_each_size[$layingPlanningDetailSize->size->size] = $actual_each_size;
                     }
+
                     $actual_size_each_cor[] = $sum_each_size;
-                    $total_actual_all_table_all_size += $total_actual_size;
+                    $total_actual_all_table_all_size += $total_actuala_all_size;
                 }
 
                 foreach ($size_list as $key => $size) {
+                    // dd(array_map(fn ($item) => $item[$size], $actual_size_each_cor), $size);
                     $total_actual_all_table_per_size[$size] = array_sum(array_map(fn ($item) => $item[$size], $actual_size_each_cor));
                 }
-                dd($total_actual_all_table_per_size, $total_actual_all_table_all_size);
+                // dd($total_actual_all_table_per_size, $total_actual_all_table_all_size);
+                $data_layingPlanning[$keyLayingPlanning]['total_qty_per_day'] = $total_actual_all_table_all_size;
+                $data_layingPlanning[$keyLayingPlanning]['gl_number'] = $gl->gl_number;
+                $data_layingPlanning[$keyLayingPlanning]['buyer'] = $gl->buyer->name;
+                
             }
             
         }
-
-        return view('page.daily-cutting-report.index');
+        return $data_layingPlanning;
     }
 }
