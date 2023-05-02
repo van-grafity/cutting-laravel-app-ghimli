@@ -207,7 +207,7 @@
                     <tr>
                         <td></td>
                         <td></td>
-                        @foreach ($detail->layingPlanning->layingPlanningSize as $item)
+                        @foreach ($data->layingPlanningSize as $item)
                         <td></td>
                         @endforeach
                         <td></td>
@@ -217,7 +217,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        @foreach ($detail->layingPlanning->layingPlanningSize as $item)
+                        @foreach ($data->layingPlanningSize as $item)
                         <td></td>
                         @endforeach
                         <td></td>
