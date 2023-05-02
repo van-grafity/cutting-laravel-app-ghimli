@@ -62,8 +62,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/daily-cutting-data', [DailyCuttingReportsController::class, 'dataDailyCutting']);
 });
 
-Route::get('/layingReport/{serial_number}', [LayingPlanningsController::class, 'layingReport'])->name('layingReport');
-
 // ## Route for Master Data (Admin)
 Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::resource('user-management', UsersController::class);
@@ -94,7 +92,8 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::resource('laying-planning',LayingPlanningsController::class);
     Route::get('/laying-planning-create', [LayingPlanningsController::class, 'layingCreate']);
     Route::get('/laying-planning-qrcode/{id}', [LayingPlanningsController::class, 'layingQrcode']);
-    
+    Route::get('/laying-planning-report/{serial_number}', [LayingPlanningsController::class, 'layingReport']);
+
     Route::controller(LayingPlanningsController::class)
     ->prefix('laying-planning-detail')->name('laying-planning.')->group(function(){
         route::post('/create', 'detail_create')->name('detail-create');

@@ -47,10 +47,10 @@
         <div class="modal-body">
             <div class="form-group">
                 <label for="serial_number">Serial Number</label>
-                <select class="form-control" name="serial_number" id="serial_number">
+                <select class="form-control" id="serial_number" name="serial_number">
                     <option value="">-- Select Serial Number --</option>
                     @foreach ($data as $item)
-                        <option value="{{ $item->serial_number }}">{{ $item->serial_number }}</option>
+                        <option value="<?= $item->serial_number ?>"><?= $item->serial_number ?></option>
                     @endforeach
                 </select>
             </div>
@@ -58,7 +58,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <a href="{{ route('layingReport', $item->serial_number) }}" class="btn btn-primary">Print</a>
+            <a href="{{ url('/laying-planning-report', $item->serial_number) }}" class="btn btn-primary">Report</a>
         </div>
         </div>
     </div>
