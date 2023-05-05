@@ -31,6 +31,7 @@
                                 <th scope="col" class="text-left">GL#</th>
                                 <th scope="col" class="text-left">Color</th>
                                 <th scope="col" class="text-left">MI Qty</th>
+                                <th scope="col" class="text-left">Previous Balance</th>
                                 <th scope="col" class="text-left">Total Qty Per Day</th>
                             </tr>
                         </thead>
@@ -78,6 +79,7 @@
             {data: 'gl_number', name: 'gl_number'},
             {data: 'color', name: 'color'},
             {data: 'mi_qty', name: 'mi_qty'},
+            {data: 'prev_total_qty_per_day', name: 'prev_total_qty_per_day'},
             {data: 'total_qty_per_day', name: 'total_qty_per_day'},
         ],
         lengthChange: true,
