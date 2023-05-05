@@ -47,27 +47,10 @@
 @endsection
 
 @push('js')
-<script type="text/javascript">
 
-$(document).ready(function(){
-
-    // ## Show Flash Message
-    let session = {!! json_encode(session()->all()) !!};
-    show_flash_message(session);
-
-    $('#btn_filter_search').click((e) => {
-        console.log($('#filter_date_input').val());
-    })
-
-    $('#filter_date').on('change.datetimepicker', function() {
-        // console.log($('#filter_date_input').val());
-    });
-
-})
-</script>
 
 <script type="text/javascript">
-$(function (e) {
+// $(function (e) {
     
     // ## Datepicker Initialize
     $('#filter_date').datetimepicker({
@@ -77,14 +60,15 @@ $(function (e) {
     $('#filter_date_input').val(moment().format('DD/MM/yyyy'));
 
     // ## Datatable Initialize
-    $('#daily_cutting_table').DataTable({
+    let table_cutting = $('#daily_cutting_table').DataTable({
         processing: true,
         serverSide: true,
         ajax: {
             url: "{{ url('/daily-cutting-data') }}",
             type: 'GET',
             data: {
-                'date': "2023-04-17"
+                // 'date': "2023-04-17",
+                'date': function() { return moment($('#filter_date_input').val(), "DD/MM/YYYY").format('YYYY-MM-DD') },
             }
         },
         columns: [
@@ -103,7 +87,27 @@ $(function (e) {
     });
 
 
-});
+// });
+</script>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+    // ## Show Flash Message
+    let session = {!! json_encode(session()->all()) !!};
+    show_flash_message(session);
+
+    $('#btn_filter_search').click((e) => {
+        table_cutting.ajax.reload();
+
+    })
+
+    $('#filter_date').on('change.datetimepicker', function() {
+        // console.log($('#filter_date_input').val());
+    });
+
+})
 </script>
 
 @endpush
