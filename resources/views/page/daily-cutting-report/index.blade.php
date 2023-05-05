@@ -25,14 +25,16 @@
                     <table class="table table-bordered table-hover" id="daily_cutting_table">
                         <thead class="">
                             <tr>
-                                <th scope="col" style="width: 70px;">#</th>
+                                <th scope="col" style="width: 20px;">#</th>
                                 <th scope="col" class="text-left">Buyer</th>
                                 <th scope="col" class="text-left">Style</th>
-                                <th scope="col" class="text-left">GL#</th>
+                                <th scope="col" class="text-left" style="width: 50px;">GL#</th>
                                 <th scope="col" class="text-left">Color</th>
                                 <th scope="col" class="text-left">MI Qty</th>
                                 <th scope="col" class="text-left">Previous Balance</th>
                                 <th scope="col" class="text-left">Total Qty Per Day</th>
+                                <th scope="col" class="text-left">Accumulation (pcs)</th>
+                                <th scope="col" class="text-left">Completed (%))</th>
                             </tr>
                         </thead>
                         <!-- <tbody>
@@ -79,8 +81,10 @@
             {data: 'gl_number', name: 'gl_number'},
             {data: 'color', name: 'color'},
             {data: 'mi_qty', name: 'mi_qty'},
-            {data: 'prev_total_qty_per_day', name: 'prev_total_qty_per_day'},
+            {data: 'previous_balance', name: 'previous_balance'},
             {data: 'total_qty_per_day', name: 'total_qty_per_day'},
+            {data: 'accumulation', name: 'accumulation'},
+            {data: 'completed', name: 'completed'},
         ],
         lengthChange: true,
         searching: true,

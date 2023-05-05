@@ -118,10 +118,17 @@ class DailyCuttingReportsController extends Controller
                     $total_actual_all_table_per_size[$size] = array_sum(array_map(fn ($item) => $item[$size], $actual_size_each_cor));
                 }
                 // dd($total_actual_all_table_per_size, $total_actual_all_table_all_size);
-                $data_layingPlanning[$keyLayingPlanning]['prev_total_qty_per_day'] = $prev_total_actual_all_table_all_size;
-                $data_layingPlanning[$keyLayingPlanning]['total_qty_per_day'] = $total_actual_all_table_all_size;
+
+                $previous_balance = $layingPlanning->order_qty - $prev_total_actual_all_table_all_size;
+                $accumulation = $total_actual_all_table_all_size + $prev_total_actual_all_table_all_size;
+                $completed = round($accumulation / $layingPlanning->order_qty * 100) . '%';
+
                 $data_layingPlanning[$keyLayingPlanning]['gl_number'] = $gl->gl_number;
                 $data_layingPlanning[$keyLayingPlanning]['buyer'] = $gl->buyer->name;
+                $data_layingPlanning[$keyLayingPlanning]['previous_balance'] = $previous_balance;
+                $data_layingPlanning[$keyLayingPlanning]['total_qty_per_day'] = $total_actual_all_table_all_size;
+                $data_layingPlanning[$keyLayingPlanning]['accumulation'] = $accumulation;
+                $data_layingPlanning[$keyLayingPlanning]['completed'] = $completed;
                 
             }
             
