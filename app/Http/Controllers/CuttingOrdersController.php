@@ -144,7 +144,9 @@ class CuttingOrdersController extends Controller
             $total_width += $detail->yardage;
             $total_weight += $detail->weight;
             $total_layer += $detail->layer;
+            $detail->cutting_date = Carbon::createFromFormat('Y-m-d H:i:s', $detail->created_at)->format('d-m-Y');
         }
+
         $cutting_order = Arr::add($cutting_order, 'total_width', $total_width);
         $cutting_order = Arr::add($cutting_order, 'total_weight', $total_weight);
         $cutting_order = Arr::add($cutting_order, 'total_layer', $total_layer);
@@ -206,6 +208,8 @@ class CuttingOrdersController extends Controller
 
         $cutting_order_record_detail = CuttingOrderRecordDetail::find($id);
         $cutting_order_record_detail->color = $cutting_order_record_detail->color->color;
+
+        $cutting_order_record_detail->cutting_date = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order_record_detail->created_at)->format('d-m-Y');
         return response()->json([
             'status' => 'success',
             'data' => $cutting_order_record_detail

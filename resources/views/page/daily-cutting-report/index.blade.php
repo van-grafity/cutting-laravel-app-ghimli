@@ -20,7 +20,7 @@
                             </div>
                             
                         </div>
-                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create" style="height: fit-content">Search</a>
+                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_filter_search" style="height: fit-content">Search</a>
                     </div>
                     <table class="table table-bordered table-hover" id="daily_cutting_table">
                         <thead class="">
@@ -55,7 +55,7 @@ $(document).ready(function(){
     let session = {!! json_encode(session()->all()) !!};
     show_flash_message(session);
 
-    $('#btn_modal_create').click((e) => {
+    $('#btn_filter_search').click((e) => {
         console.log($('#filter_date_input').val());
     })
 
