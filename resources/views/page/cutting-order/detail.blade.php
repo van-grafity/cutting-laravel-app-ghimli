@@ -127,6 +127,7 @@
                                 <th scope="col">Layer</th>
                                 <th scope="col">Balanced End</th>
                                 <th scope="col">Operator</th>
+                                <th scope="col">Cutting Date</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -140,6 +141,7 @@
                                 <td>{{ $detail->layer }}</td>
                                 <td>{{ $detail->balance_end }}</td>
                                 <td>{{ $detail->operator }}</td>
+                                <td>{{ $detail->cutting_date }}</td>
                                 <td>
                                     <a href="javascript:void(0);" class="btn btn-info btn-sm" onclick="show_detail({{ $detail->id }})">Detail</a>
                                 </td>
@@ -158,7 +160,7 @@
                                 <td>{{ $cutting_order->total_width }}</td>
                                 <td>{{ $cutting_order->total_weight }}</td>
                                 <td>{{ $cutting_order->total_layer }}</td>
-                                <td colspan="3"></td>
+                                <td colspan="4"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -251,6 +253,11 @@
                                         <td class="pl-4">:</td>
                                         <td id="operator"></td>
                                     </tr>
+                                    <tr>
+                                        <td>Cutting Date</td>
+                                        <td class="pl-4">:</td>
+                                        <td id="cutting_date"></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -311,6 +318,7 @@ $(document).ready(function(){
         $('#balance_end').text(result.data.balance_end)
         $('#remarks').text(result.data.remarks)
         $('#operator').text(result.data.operator)
+        $('#cutting_date').text(result.data.cutting_date)
 
         $('#modal_formLabel').text("Detail")
         $('#btn_submit').text("OK")

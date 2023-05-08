@@ -425,6 +425,12 @@ return [
             'can'  => 'clerk',
         ],
         [
+            'text' => 'Daily Cutting Report',
+            'url'  => '/daily-cutting-report',
+            'icon' => 'fas fa-fw fa fa-solid fa-file-alt',
+            'can'  => 'clerk',
+        ],
+        [
             'text' => 'Cutting Ticket',
             'icon' => 'fas fa-fw fa fa-solid fa-clipboard-list',
             'can'  => 'clerk',

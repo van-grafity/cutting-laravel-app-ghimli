@@ -60,13 +60,14 @@ class DailyCuttingReportsController extends Controller
 
                 // ## $total_actual_all_table_all_size adalah Total dari seluruh cutting table (laying planning detail) dalam laying planning yang sama. Ini untuk semua size.
                 $total_actual_all_table_all_size = 0;
+                $prev_total_actual_all_table_all_size = 0;
 
                 // ## $total_actual_all_table_per_size adalah Total dari seluruh cutting table (laying planning detail) dalam laying planning yang sama. dan di rinci untuk tiap size nya.
                 $total_actual_all_table_per_size = [];
 
                 foreach ($layingPlanningDetails as $key => $layingPlanningDetail) {
                     
-                    // ## Skip cutting table (laying planning detail) kalau COR nya belum dibuat
+                    // ## Skip cutting table (laying planning detail) kalau COR nya belum dibuat. artinya tidak ada yang perlu dihitung
                     if(!$layingPlanningDetail->cuttingOrderRecord){ continue; }
 
                     // ## perulangan untuk setiap cutting table (laying planning detail)
@@ -78,16 +79,23 @@ class DailyCuttingReportsController extends Controller
                     // ## $actual_cutting_layer Data from cutting table (record using android)
                     $actual_cutting_layer = $cutting_table->sum('layer');
 
+                    $previous_actual_cutting = $layingPlanningDetail->cuttingOrderRecord->cuttingOrderRecordDetail
+                                    ->where('created_at','<=', $date_today_start)->sum('layer');
+
+
                     $actual_all_size = []; 
                     $total_actuala_all_size = 0;
+                    $prev_total_actuala_all_size = 0;
 
                     foreach ($layingPlanningDetailSizes as $key => $layingPlanningDetailSize) {
 
                         // ## jumlah layer yang ada di cutting table di kali dengan rasio per size
                         $actual_each_size = $actual_cutting_layer * $layingPlanningDetailSize->ratio_per_size;
+                        $prev_actual_each_size = $previous_actual_cutting * $layingPlanningDetailSize->ratio_per_size;
 
                         // ## hasil perkalian ($actual_each_size). di jumlahkan semua. sehingga $total_actuala_all_size adalah total pcs baju dari semua size
                         $total_actuala_all_size += $actual_each_size;
+                        $prev_total_actuala_all_size += $prev_actual_each_size;
                         
                         // ## melakukan penyimpanan untuk total pcs per size dalam bentuk array di dalam variable $sum_each_size dengan format 
                         /*
@@ -102,6 +110,7 @@ class DailyCuttingReportsController extends Controller
 
                     $actual_size_each_cor[] = $sum_each_size;
                     $total_actual_all_table_all_size += $total_actuala_all_size;
+                    $prev_total_actual_all_table_all_size += $prev_total_actuala_all_size;
                 }
 
                 foreach ($size_list as $key => $size) {
@@ -109,9 +118,17 @@ class DailyCuttingReportsController extends Controller
                     $total_actual_all_table_per_size[$size] = array_sum(array_map(fn ($item) => $item[$size], $actual_size_each_cor));
                 }
                 // dd($total_actual_all_table_per_size, $total_actual_all_table_all_size);
-                $data_layingPlanning[$keyLayingPlanning]['total_qty_per_day'] = $total_actual_all_table_all_size;
+
+                $previous_balance = $layingPlanning->order_qty - $prev_total_actual_all_table_all_size;
+                $accumulation = $total_actual_all_table_all_size + $prev_total_actual_all_table_all_size;
+                $completed = round($accumulation / $layingPlanning->order_qty * 100) . '%';
+
                 $data_layingPlanning[$keyLayingPlanning]['gl_number'] = $gl->gl_number;
                 $data_layingPlanning[$keyLayingPlanning]['buyer'] = $gl->buyer->name;
+                $data_layingPlanning[$keyLayingPlanning]['previous_balance'] = $previous_balance;
+                $data_layingPlanning[$keyLayingPlanning]['total_qty_per_day'] = $total_actual_all_table_all_size;
+                $data_layingPlanning[$keyLayingPlanning]['accumulation'] = $accumulation;
+                $data_layingPlanning[$keyLayingPlanning]['completed'] = $completed;
                 
             }
             
