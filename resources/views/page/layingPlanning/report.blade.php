@@ -29,7 +29,6 @@
         .table tbody td {
             border: 1px solid;
             font-weight: bold;
-            height:25px;
             font-size:6pt;
         }
     </style>
@@ -58,43 +57,59 @@
                     <td></td>
                     <td></td>
                     <td width="14%">Fabric P/O</td>
-                    <td>XXXXX</td>
-                    <td width="14%"></td>
-                    <td></td>
+                    <td>{{ $data->fabric_po }}</td>
+                    <td width="14%">Delivery Date:</td>
+                    <td>{{ $data->delivery_date }}</td>
                 </tr>
 
                 <tr style="padding-top: 2px; padding-bottom: 2px;">
                     <td width="14%">Style</td>
-                    <td>XXXXX</td>
+                    <td>{{ $data->style->style }}</td>
                     <td width="14%">Order Qty</td>
-                    <td>XXXXX</td>
-                    <td width="14%">Fabric Cons</td>
-                    <td>XXXXX</td>
-                    <td width="14%"></td>
-                    <td>XXXXXX</td>
+                    <td>{{ $data->order_qty }}</td>
+                    <td width="14%">Fabric Type</td>
+                    <td>{{ $data->fabricType->description }}</td>
+                    <td width="14%">Plan Date:</td>
+                    <td>{{ $data->plan_date }}</td>
 
                 </tr style="padding-top: 2px; padding-bottom: 2px;">
                     <td width="14%">GL</td>
-                    <td>XXXXX</td>
+                    <td>{{ $data->gl->gl_number }}</td>
                     <td width="14%">Total Qty</td>
-                    <td>XXXXX</td>
+                    <td>{{ $data->order_qty }}</td>
+                    <td width="14%">Fabric Cons</td>
+                    <td>{{ $data->fabricCons->description }}</td>
                 </tr>
 
                 <tr style="padding-top: 2px; padding-bottom: 2px;">
                     <td width="14%">Color</td>
                     <td>XXXXX</td>
+                    <td width="14%"></td>
+                    <td></td>
+                    <td width="14%">Description</td>
+                    <td>xx</td>
                 </tr>
             </table>
             <br/>
             @php
                 $length = count($data->layingPlanningSize);
+                $total = 0;
+                foreach ($data->layingPlanningSize as $item)
+                {
+                    $total += $item->quantity;
+                }
+                $total_detail = 0;
+                foreach ($data->layingPlanningSize as $size)
+                {
+                    $total_detail += $size->quantity;
+                }
             @endphp
             <table class="table table-bordered" style="font-size: 14px;">
                 <thead>
                     <tr>
                         <th style="text-align: center; vertical-align: middle;">No</th>
                         <th style="text-align: center; vertical-align: middle;">Batch #</th>
-                        <th colspan="{{ $length }}">Size/Order</th>
+                        <th colspan="{{ $length }}" style="text-align: center; vertical-align: middle;">Size/Order</th>
                         <th style="text-align: center; vertical-align: middle;">Total</th>
                         <th style="text-align: center; vertical-align: middle;">Yds</th>
                         <th style="text-align: center; vertical-align: middle;">Marker</th>
@@ -136,15 +151,19 @@
                     <tr>
                         <th style="text-align: center; vertical-align: middle;">Sheet</th>
                         <th colspan="1"></th>
-                        <th colspan="{{ $length }}"></th>
+                        @foreach ($data->layingPlanningSize as $item)
+                        <th style="text-align: center; vertical-align: middle;">{{ $item->quantity }}</th>
+                        @endforeach
+                        <th colspan="1" style="text-align: center; vertical-align: middle;">{{ $total }}</th>
                         <th colspan="1"></th>
                         <th colspan="1"></th>
                         <th colspan="1"></th>
                         <th colspan="1"></th>
                         <th colspan="1"></th>
                         <th colspan="1"></th>
-                        <th colspan="1"></th>
-                        <th colspan="{{ $length }}"></th>
+                        @foreach ($data->layingPlanningSize as $item)
+                        <th style="text-align: center; vertical-align: middle;">{{ $item->quantity }}</th>
+                        @endforeach
                         <th colspan="1"></th>
                         <th colspan="1"></th>
                         <th colspan="1"></th>
@@ -162,8 +181,8 @@
                         @foreach ($detail->layingPlanning->layingPlanningSize as $item)
                         <td>{{ $item->quantity }}</td>
                         @endforeach
-                        <td>{{ $detail->total_length }}</td>
-                        <td>{{ $detail->layingPlanning->order_qty }}</td>
+                        <td>{{ $total_detail }}</td>
+                        <td>{{ $detail->marker_yard }}</td>
                         <td>{{ $detail->marker_code }}</td>
                         <td>{{ $detail->table_number }}</td>
                         <td>{{ $detail->marker_length }}</td>
