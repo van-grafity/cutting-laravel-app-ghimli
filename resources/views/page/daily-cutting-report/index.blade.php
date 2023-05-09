@@ -3,24 +3,42 @@
 @section('title', 'Daily Cutting Report')
 
 @section('content')
+<style>
+    .header-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    .date-filter {
+        justify-self: start;
+    }
 
+    .action-button-group {
+        justify-self: end;
+    }
+</style>
 <div class="container">
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between mb-1">
-                        <div class="form-group">
-                            <!-- <label for="filter_date" class="form-label">Filter Date</label> -->
-                            <div class="input-group date" id="filter_date" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" data-target="#filter_date" name="filter_date" id="filter_date_input"/>
-                                <div class="input-group-append" data-target="#filter_date" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    <div class="mb-1 header-wrapper">
+                        <div class="date-filter">
+                            <div class="form-group">
+                                <!-- <label for="filter_date" class="form-label">Filter Date</label> -->
+                                <div class="input-group date" id="filter_date" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" data-target="#filter_date" name="filter_date" id="filter_date_input"/>
+                                    <div class="input-group-append" data-target="#filter_date" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
                                 </div>
+                                
                             </div>
-                            
                         </div>
-                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_filter_search" style="height: fit-content">Search</a>
+                        <div class="action-button-group">
+                            <a href="javascript:void(0);" class="btn btn-primary mb-2" id="btn_print_report" style="height: fit-content">Print Report</a>
+                            <!-- <a href="" class="btn btn-primary mb-2" id="btn_print_report" style="height: fit-content" target="_blank">Print Report</a> -->
+                            <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_filter_search" style="height: fit-content">Search</a>
+                        </div>
                     </div>
                     <table class="table table-bordered table-hover" id="daily_cutting_table">
                         <thead class="">
@@ -140,6 +158,7 @@
 <script type="text/javascript">
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const url_daily_detail ='{{ route("daily-cutting.detail") }}';
+    const print_report_url ='{{ route("daily-cutting.print-report") }}';
 
     
     async function show_detail(id, fitler_date) {
@@ -154,7 +173,7 @@
 
         // console.log(data_params);
         // console.log(result);
-        
+
         let body_element = '';
         let total_element = '';
         let sum_total_pcs = 0;
@@ -210,6 +229,14 @@ $(document).ready(function(){
     $('#filter_date').on('change.datetimepicker', function() {
         // console.log($('#filter_date_input').val());
     });
+
+    $('#btn_print_report').on('click', function() {
+        filter_date = moment($('#filter_date_input').val(), "DD/MM/YYYY").format('YYYY-MM-DD');
+        let url_print_report = print_report_url + '?date=' + filter_date;
+        console.log(url_print_report);
+        // location.href = url_print_report;
+        window.open(url_print_report);
+    })
 
 })
 </script>

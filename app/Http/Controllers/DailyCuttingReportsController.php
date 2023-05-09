@@ -12,6 +12,8 @@ use App\Models\CuttingOrderRecordDetail;
 use Carbon\Carbon;
 use Yajra\Datatables\Datatables;
 
+use PDF;
+
 
 class DailyCuttingReportsController extends Controller
 {
@@ -58,6 +60,18 @@ class DailyCuttingReportsController extends Controller
             'message'=> 'Successfully Getting Data Daily Detail',
         ];
         return response()->json($date_return, 200);
+    }
+
+    public function dailyCuttingReport(Request $request) {
+        $date_filter = $request->date;
+        $data_daily_cutting = $this->calculate_daily_cutting($date_filter);
+        $filename = 'Daily Cutting Output Report';
+        // dd($data_daily_cutting);
+
+        // return view('page.daily-cutting-report.print', compact('data_daily_cutting'));
+        $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data_daily_cutting'))->setPaper('a4', 'landscape');
+        return $pdf->stream($filename);
+        return response()->json($data_daily_cutting);
     }
 
     function calculate_daily_cutting($date_filter) {
@@ -186,7 +200,7 @@ class DailyCuttingReportsController extends Controller
             if(!$cor) {
                 continue;
             }
-            
+
             $layer_per_operator = DB::table('cutting_order_record_details as cord')
                     ->join('cutting_order_records as cor', 'cor.id', '=', 'cord.cutting_order_record_id')
                     ->select('operator', DB::raw('sum(layer) as total_layer'))
