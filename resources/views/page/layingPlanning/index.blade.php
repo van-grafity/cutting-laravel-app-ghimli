@@ -50,7 +50,7 @@
                 <select class="form-control" id="serial_number" name="serial_number">
                     <option value="">-- Select Serial Number --</option>
                     @foreach ($data as $item)
-                        <option value="<?= $item->serial_number ?>"><?= $item->serial_number ?></option>
+                        <option value="{{ $item->serial_number }}">{{ $item->serial_number }}</option>
                     @endforeach
                 </select>
             </div>
@@ -58,7 +58,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <a href="{{ url('/laying-planning-report', $item->serial_number) }}" class="btn btn-primary">Report</a>
+            <a href="{{ url('/laying-planning-report', $item->serial_number) }}" class="btn btn-primary" id="btn_modal_report">Report</a>
         </div>
         </div>
     </div>
@@ -68,6 +68,30 @@
 
 @push('js')
 <script type="text/javascript">
+    function get_serial_number() {
+        let serial_number = document.getElementById('serial_number').value;
+        return serial_number;
+    }
+
+    function layingPlanningReport() {
+        let serial_number = document.getElementById('serial_number').value;
+        $.ajax({
+            url: "{{ url('/laying-planning-report') }}"+'/'+serial_number,
+            type: "GET",
+            dataType: "blob",
+            success: function (response) {
+                let blob = new Blob([response], { type: "application/pdf" });
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "Laying Planning Report.pdf";
+                link.click();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                swal_failed(xhr.responseJSON.message);
+            }
+        });
+    }
+    
     $(document).ready(function(){
         // ## Show Flash Message
         let session = {!! json_encode(session()->all()) !!};

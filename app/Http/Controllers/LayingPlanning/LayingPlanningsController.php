@@ -174,17 +174,16 @@ class LayingPlanningsController extends Controller
         return view('page.layingPlanning.detail', compact('data', 'details','size_list'))   ;
     }
 
-    public function layingReport($serial_number)
+    public function layingPlanningReport($serial_number)
     {
-        // $data = LayingPlanning::where('serial_number', $serial_number)->first();
-        // $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($serial_number) {
-        //     $query->where('serial_number', $serial_number);
-        // })->get();
-        $data = LayingPlanning::with(['layingPlanningSize', 'layingPlanningSize.size', 'gl', 'style', 'buyer', 'color', 'fabricType'])->where('serial_number', $serial_number)->first();
-        $details = LayingPlanningDetail::where('laying_planning_id', 1)->get();
-        // $pdf = PDF::loadView('page.layingPlanning.report', compact('data', 'details'))->setPaper('a4', 'landscape');
-        // return $pdf->stream();
+        $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('serial_number', "LP-62843-MHG")->first();
+        $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($serial_number) {
+            $query->where('serial_number', "LP-62843-MHG");
+        })->get();
+        // $data = LayingPlanning::with(['layingPlanningSize', 'layingPlanningSize.size', 'gl', 'style', 'buyer', 'color', 'fabricType'])->where('serial_number', $serial_number)->first();
+        // $details = LayingPlanningDetail::where('laying_planning_id', 1)->get();
         $pdf = PDF::loadView('page.layingPlanning.report', compact('data', 'details'))->setPaper('a4', 'landscape');
+        // return $pdf->stream();
         return $pdf->stream();
     }
 
