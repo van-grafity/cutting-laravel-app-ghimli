@@ -125,7 +125,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
 
 
     Route::resource('daily-cutting-report', DailyCuttingReportsController::class);
-
+    Route::get('daily-cutting-detail', [DailyCuttingReportsController::class,'dailyCuttingDetail'])->name('daily-cutting.detail');
 });
 
 
