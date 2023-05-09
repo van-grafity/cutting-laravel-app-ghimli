@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
     <style type="text/css">
+        * {
+            font-family: Calibri, san-serif;
+        }
         @page {
             margin-top: 1cm;
             margin-left: 1cm;
@@ -71,8 +74,8 @@
                     <td>{{ $data->fabricType->description }}</td>
                     <td width="14%">Plan Date:</td>
                     <td>{{ $data->plan_date }}</td>
-
-                </tr style="padding-top: 2px; padding-bottom: 2px;">
+                </tr>
+                <tr style="padding-top: 2px; padding-bottom: 2px;">
                     <td width="14%">GL</td>
                     <td>{{ $data->gl->gl_number }}</td>
                     <td width="14%">Total Qty</td>
