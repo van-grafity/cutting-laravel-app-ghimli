@@ -209,6 +209,33 @@ class CuttingTicketsController extends Controller
         return $pdf->stream($filename);
     }
 
+    // print multiple report cuttingOrderRecord by serial_number
+    public function print_multiple($id) {
+        $cutting_tickets = CuttingTicket::where('cutting_order_record_id', $id)->get();
+        $filename = $cutting_tickets[0]->cuttingOrderRecord->serial_number . '.pdf';
+
+        $data = [];
+        foreach ($cutting_tickets as $ticket) {
+            $layingPlanningDetail = $ticket->cuttingOrderRecord->layingPlanningDetail;
+            $data[] = (object)[
+                'serial_number' => $this->generate_ticket_number($ticket->id),
+                'buyer' => $layingPlanningDetail->layingPlanning->gl->buyer->name,
+                'size' => $ticket->size->size,
+                'color' => $layingPlanningDetail->layingPlanning->color->color,
+                'ticket_number' => Str::padLeft($ticket->ticket_number, 3, '0'),
+                'layer' => $ticket->layer,
+            ];
+        }
+
+        $customPaper = array(0,0,220.24, 352.00);
+        $pdf = PDF::loadview('page.cutting-ticket.print', compact('data'))->setPaper($customPaper, 'landscape')
+        ->setOption('margin-bottom', '10mm')
+        ->setOption('margin-top', '10mm')
+        ->setOption('margin-right', '10mm')
+        ->setOption('margin-left', '10mm');
+        return $pdf->stream($filename);
+    }
+
     // private function
     function generate_ticket_number($ticket_id) {
         $ticket = CuttingTicket::find($ticket_id);

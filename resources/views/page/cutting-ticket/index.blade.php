@@ -14,6 +14,7 @@
                     </div>
                     <div class="d-flex justify-content-end mb-1">
                         <a href="{{ route('cutting-ticket.create') }}" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
+                        <a href="{{ route('cutting-ticket.print-multiple', 1) }}" class="btn btn-primary mb-2" id="btn_modal_create">Print</a>
                     </div>
 
                     <table class="table table-bordered table-hover" id="cutting_ticket_table">

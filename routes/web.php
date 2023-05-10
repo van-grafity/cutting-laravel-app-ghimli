@@ -113,6 +113,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::prefix('cutting-ticket')->name('cutting-ticket.')->group(function(){
         Route::post('/generate', [CuttingTicketsController::class, 'generate_ticket'])->name('generate');
         Route::get('/print/{id}', [CuttingTicketsController::class, 'print_ticket'])->name('print');
+        Route::get('/print-multiple/{id}', [CuttingTicketsController::class, 'print_multiple'])->name('print-multiple');
     });
 });
 
