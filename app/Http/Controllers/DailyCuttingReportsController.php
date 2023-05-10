@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\LayingPlanning;
 use App\Models\Gl;
@@ -10,6 +11,8 @@ use App\Models\CuttingOrderRecordDetail;
 
 use Carbon\Carbon;
 use Yajra\Datatables\Datatables;
+
+use PDF;
 
 
 class DailyCuttingReportsController extends Controller
@@ -28,8 +31,47 @@ class DailyCuttingReportsController extends Controller
 
         return Datatables::of($this->calculate_daily_cutting($date_filter))
             ->addIndexColumn()
+            ->addColumn('action', function($data) use ($date_filter){
+                return '
+                    <a href="javascript:void(0);" class="btn btn-info btn-sm" onclick=show_detail('.$data['id'].',"'.$date_filter.'")>Detail</a>
+                ';
+            })
             ->escapeColumns([])
             ->make(true);
+    }
+
+    public function dailyCuttingDetail(Request $request) {
+        
+        $date_filter = $request->filter_date ? $request->filter_date : Carbon::now()->toDateString();
+        $layingPlanning = LayingPlanning::find($request->id);
+
+        $params = (object)[
+            'laying_planning' => $layingPlanning,
+            'gl' => $layingPlanning->gl_id,
+            'style' => $layingPlanning->style_id,
+            'color' => $layingPlanning->color_id,
+            'date' => $date_filter,
+            // 'date' => '2023-04-17',
+        ];
+        $daily_detail = $this->get_daily_detail($params);
+        $date_return = [
+            'status' => 'success',
+            'data'=> $daily_detail,
+            'message'=> 'Successfully Getting Data Daily Detail',
+        ];
+        return response()->json($date_return, 200);
+    }
+
+    public function dailyCuttingReport(Request $request) {
+        $date_filter = $request->date;
+        $data_daily_cutting = $this->calculate_daily_cutting($date_filter);
+        $filename = 'Daily Cutting Output Report';
+        // dd($data_daily_cutting);
+
+        // return view('page.daily-cutting-report.print', compact('data_daily_cutting'));
+        $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data_daily_cutting'))->setPaper('a4', 'landscape');
+        return $pdf->stream($filename);
+        return response()->json($data_daily_cutting);
     }
 
     function calculate_daily_cutting($date_filter) {
@@ -123,6 +165,7 @@ class DailyCuttingReportsController extends Controller
                 $accumulation = $total_actual_all_table_all_size + $prev_total_actual_all_table_all_size;
                 $completed = round($accumulation / $layingPlanning->order_qty * 100) . '%';
 
+                $data_layingPlanning[$keyLayingPlanning]['id'] = $layingPlanning->id;
                 $data_layingPlanning[$keyLayingPlanning]['gl_number'] = $gl->gl_number;
                 $data_layingPlanning[$keyLayingPlanning]['buyer'] = $gl->buyer->name;
                 $data_layingPlanning[$keyLayingPlanning]['previous_balance'] = $previous_balance;
@@ -134,5 +177,47 @@ class DailyCuttingReportsController extends Controller
             
         }
         return $data_layingPlanning;
+    }
+
+    function get_daily_detail($params) {
+        
+        $laying_planning = $params->laying_planning;
+        $filter_gl = $params->gl;
+        $filter_style = $params->style;
+        $filter_color = $params->color;
+        $filter_date = $params->date;
+        
+        $date_today_start = Carbon::createFromFormat('Y-m-d', $filter_date)->startOfDay()->toDateTimeString();
+        $date_today_end = Carbon::createFromFormat('Y-m-d', $filter_date)->endOfDay()->toDateTimeString();
+
+        $layingPlanningDetail = $laying_planning->layingPlanningDetail;
+        $daily_detail_all_operator = [];
+
+        foreach ($layingPlanningDetail as $key => $detail) {
+            $sum_ratio_all_size = $detail->layingPlanningDetailSize->sum('ratio_per_size');
+            $cor = $detail->cuttingOrderRecord;
+
+            if(!$cor) {
+                continue;
+            }
+
+            $layer_per_operator = DB::table('cutting_order_record_details as cord')
+                    ->join('cutting_order_records as cor', 'cor.id', '=', 'cord.cutting_order_record_id')
+                    ->select('operator', DB::raw('sum(layer) as total_layer'))
+                    ->where('cor.id', $cor->id)
+                    ->where('cord.created_at','>=', $date_today_start)
+                    ->where('cord.created_at','<=', $date_today_end)
+                    ->groupBy('operator')
+                    ->get();
+
+            foreach ($layer_per_operator as $operator) {
+                $daily_detail_operator['operator'] = $operator->operator;
+                $daily_detail_operator['total_qty'] = $operator->total_layer * $sum_ratio_all_size;
+                $daily_detail_all_operator[] = $daily_detail_operator;
+            }
+        }
+                            
+        $result = $daily_detail_all_operator;
+        return $result;
     }
 }

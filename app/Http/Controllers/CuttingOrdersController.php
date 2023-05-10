@@ -69,6 +69,7 @@ class CuttingOrdersController extends Controller
                 <a href="'.route('cutting-order.print', $data->id).'" class="btn btn-primary btn-sm" target="_blank">Print Nota</a>
                 <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'">Delete</a>
                 <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm">Detail</a>
+                <a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm" target="_blank">Print Report</a>
                 ';
             })
             ->make(true);
@@ -214,6 +215,83 @@ class CuttingOrdersController extends Controller
             'status' => 'success',
             'data' => $cutting_order_record_detail
         ], 200);
+    }
+
+    public function print_report_pdf($cutting_order_id) {
+
+        $cutting_order = CuttingOrderRecord::find($cutting_order_id);
+        $filename = $cutting_order->serial_number . '.pdf';
+
+        $cor_details = [];
+        $temp_cor_details = [];
+        $cutting_order_detail = $cutting_order->CuttingOrderRecordDetail;
+        
+        foreach ($cutting_order_detail as $key  => $detail) {
+            $data_detail = (object)[
+                'place_no' => $detail->fabric_roll,
+                'color' => $detail->color->color,
+                'yardage' => $detail->yardage,
+                'weight' => $detail->weight,
+                'layer' => $detail->layer,
+                'joint' => $detail->joint,
+                'balance_end' => $detail->balance_end,
+                'remarks' => $detail->remarks,
+            ];
+            $temp_cor_details[] = $data_detail;
+        }
+
+        // dd($temp_cor_details);
+
+
+        for ($i=0; $i < 10; $i++) {
+            if(array_key_exists($i, $temp_cor_details)) {
+                $data_detail = (object)[
+                    'place_no' => $temp_cor_details[$i]->place_no,
+                    'color' => $temp_cor_details[$i]->color,
+                    'yardage' => $temp_cor_details[$i]->yardage,
+                    'weight' => $temp_cor_details[$i]->weight,
+                    'layer' => $temp_cor_details[$i]->layer,
+                    'joint' => $temp_cor_details[$i]->joint,
+                    'balance_end' => $temp_cor_details[$i]->balance_end,
+                    'remarks' => $temp_cor_details[$i]->remarks,
+                ];
+                
+            } else {
+                $data_detail = (object)[
+                    'place_no' => '',
+                    'color' => '',
+                    'yardage' => '',
+                    'weight' => '',
+                    'layer' => '',
+                    'joint' => '',
+                    'balance_end' => '',
+                    'remarks' => '',
+                ];
+            }
+            $cor_details[] = $data_detail;
+        }
+
+        $data = (object)[
+            'serial_number' => $cutting_order->serial_number,
+            'style' => $cutting_order->layingPlanningDetail->layingPlanning->style->style,
+            'gl_number' => $cutting_order->layingPlanningDetail->layingPlanning->gl->gl_number,
+            'no_laying_sheet' => $cutting_order->layingPlanningDetail->no_laying_sheet,
+            'fabric_po' => $cutting_order->layingPlanningDetail->layingPlanning->fabric_po,
+            'marker_code' => $cutting_order->layingPlanningDetail->marker_code,
+            'marker_length' => $cutting_order->layingPlanningDetail->marker_yard.' yd '.  $cutting_order->layingPlanningDetail->marker_inch.' inch',
+            'fabric_type' => $cutting_order->layingPlanningDetail->layingPlanning->fabricType->name,   
+            'fabric_cons' => $cutting_order->layingPlanningDetail->layingPlanning->fabricCons->name,   
+            'table_number' => $cutting_order->layingPlanningDetail->table_number,   
+            'buyer' => $cutting_order->layingPlanningDetail->layingPlanning->buyer->name,   
+            'size_ratio' => $this->print_size_ratio($cutting_order->layingPlanningDetail),   
+            'color' => $cutting_order->layingPlanningDetail->layingPlanning->color->color,
+            'layer' => $cutting_order->layingPlanningDetail->layer_qty,
+            'date' => Carbon::now()->format('d-m-Y'),
+        ];
+
+        // return view('page.cutting-order.report', compact('data','cor_details'));
+        $pdf = PDF::loadview('page.cutting-order.report', compact('data','cor_details'))->setPaper('a4', 'landscape');
+        return $pdf->stream($filename);
     }
 
     function generate_serial_number($layingPlanningDetail){
