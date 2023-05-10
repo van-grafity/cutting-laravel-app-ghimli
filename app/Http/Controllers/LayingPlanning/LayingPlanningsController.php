@@ -58,7 +58,8 @@ class LayingPlanningsController extends Controller
                 return '
                 <a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm"">Edit</a>
                 <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_layingPlanning('.$data->id.')">Delete</a>
-                <a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1">Detail</a>';
+                <a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1">Detail</a>
+                <a href="'.route('laying-planning.report',$data->serial_number).'" class="btn btn-info btn-sm mt-1">Report</a>';
             })
             ->make(true);
     }
@@ -176,9 +177,9 @@ class LayingPlanningsController extends Controller
 
     public function layingPlanningReport($serial_number)
     {
-        $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('serial_number', "LP-62843-MHG")->first();
+        $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('serial_number', $serial_number)->first();
         $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($serial_number) {
-            $query->where('serial_number', "LP-62843-MHG");
+            $query->where('serial_number', $serial_number);
         })->get();
         // $data = LayingPlanning::with(['layingPlanningSize', 'layingPlanningSize.size', 'gl', 'style', 'buyer', 'color', 'fabricType'])->where('serial_number', $serial_number)->first();
         // $details = LayingPlanningDetail::where('laying_planning_id', 1)->get();

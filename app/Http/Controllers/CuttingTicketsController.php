@@ -204,7 +204,8 @@ class CuttingTicketsController extends Controller
         ];
 
         // return view('page.cutting-ticket.print',compact('data'));
-        $pdf = PDF::loadview('page.cutting-ticket.print', compact('data'))->setPaper('a4', 'portrait');
+        $customPaper = array(0,0,230.24, 362.00);
+        $pdf = PDF::loadview('page.cutting-ticket.print', compact('data'))->setPaper($customPaper, 'landscape');
         return $pdf->stream($filename);
     }
 

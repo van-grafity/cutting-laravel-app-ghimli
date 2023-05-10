@@ -92,7 +92,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::resource('laying-planning',LayingPlanningsController::class);
     Route::get('/laying-planning-create', [LayingPlanningsController::class, 'layingCreate']);
     Route::get('/laying-planning-qrcode/{id}', [LayingPlanningsController::class, 'layingQrcode']);
-    Route::get('/laying-planning-report/{serial_number}', [LayingPlanningsController::class, 'layingPlanningReport']);
+    Route::get('/laying-planning-report/{serial_number}', [LayingPlanningsController::class, 'layingPlanningReport'])->name('laying-planning.report');
 
     Route::controller(LayingPlanningsController::class)
     ->prefix('laying-planning-detail')->name('laying-planning.')->group(function(){
