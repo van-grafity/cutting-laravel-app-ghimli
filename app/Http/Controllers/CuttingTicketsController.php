@@ -204,7 +204,7 @@ class CuttingTicketsController extends Controller
         ];
 
         // return view('page.cutting-ticket.print',compact('data'));
-        $customPaper = array(0,0,230.24, 362.00);
+        $customPaper = array(0,0,210.24, 302.00);
         $pdf = PDF::loadview('page.cutting-ticket.print', compact('data'))->setPaper($customPaper, 'landscape');
         return $pdf->stream($filename);
     }
@@ -215,6 +215,7 @@ class CuttingTicketsController extends Controller
         
         // $data = [
         //     (object)[
+        //         "serial_number"=> "CT-62843-MHG-001-001",
         //         "buyer"=> "Aeropostale",
         //         "size"=> "XS",
         //         "color"=> "Med Heather Grey",
@@ -261,7 +262,7 @@ class CuttingTicketsController extends Controller
         }
 
         $customPaper = array(0,0,210.24, 302.00);
-        $pdf = PDF::loadview('page.cutting-ticket.print', compact('data'))->setPaper($customPaper, 'landscape');
+        $pdf = PDF::loadview('page.cutting-ticket.print-all', compact('data'))->setPaper($customPaper, 'landscape');
         return $pdf->stream($filename);
     }
 
@@ -270,7 +271,7 @@ class CuttingTicketsController extends Controller
         $ticket = CuttingTicket::find($ticket_id);
 
         $gl_number = $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->gl->gl_number;
-        $gl_number = explode('-', $gl_number)[0];
+        // $gl_number = explode('-', $gl_number)[0];
         
         $color_code = $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->color->color_code;
 

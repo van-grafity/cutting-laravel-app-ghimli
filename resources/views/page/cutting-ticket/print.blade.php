@@ -33,45 +33,43 @@
 <body>
     <table class="detail-ticket">
         <tbody>
-            @foreach ($data as $cutting_ticket)
-                <tr>
-                    <td rowspan="7" style="padding: 0px; margin: 0px;" width="100">
-                    
-                    <img src="https://chart.googleapis.com/chart?chs=125x125&cht=qr&chl={{ $cutting_ticket->serial_number }}&choe=UTF-8" title="Link to Google.com" />
-                        <div class="serial-number">{{ $cutting_ticket->serial_number }}</div>
-                    </td>
-                </tr>
-                <tr>
-                    <td width="14%" style="text-align: left;">Ticket Number </td>
-                    <td style="padding-left: 8px; padding-right: 8px;">: </td>
-                    <td style="text-align: left;">{{ $cutting_ticket->ticket_number }} </td>
-                </tr>
-                <tr>
-                    <td width="14%" style="text-align: left;">Buyer </td>
-                    <td style="padding-left: 8px; padding-right: 8px;">: </td>
-                    <td style="text-align: left;">{{ $cutting_ticket->buyer }} </td>
-                </tr>
-                <tr>
-                    <td width="14%" style="text-align: left;">Size </td>
-                    <td style="padding-left: 8px; padding-right: 8px;">: </td>
-                    <td style="text-align: left;">{{ $cutting_ticket->size }} </td>
-                </tr>
-                <tr>
-                    <td width="14%" style="text-align: left;">Color </td>
-                    <td style="padding-left: 8px; padding-right: 8px;">: </td>
-                    <td style="text-align: left;">{{ $cutting_ticket->color }} </td>
-                </tr>
-                <tr>
-                    <td width="14%" style="text-align: left;">Layer </td>
-                    <td style="padding-left: 8px; padding-right: 8px;">: </td>
-                    <td style="text-align: left;">{{ $cutting_ticket->layer }} </td>
-                </tr>
-                <tr>
-                    <td style="text-align: left;"></td>
-                    <td></td>
-                    <td style="text-align: left;"></td>
-                </tr>
-            @endforeach
+            <tr>
+                <td rowspan="7" style="padding: 0px; margin: 0px;" width="100">
+                
+                <img src="https://chart.googleapis.com/chart?chs=125x125&cht=qr&chl={{ $data->serial_number }}&choe=UTF-8" title="Link to Google.com" />
+                    <div class="serial-number">{{ $data->serial_number }}</div>
+                </td>
+            </tr>
+            <tr>
+                <td width="14%" style="text-align: left;">Ticket Number </td>
+                <td style="padding-left: 8px; padding-right: 8px;">: </td>
+                <td style="text-align: left;">{{ $data->ticket_number }} </td>
+            </tr>
+            <tr>
+                <td width="14%" style="text-align: left;">Buyer </td>
+                <td style="padding-left: 8px; padding-right: 8px;">: </td>
+                <td style="text-align: left;">{{ $data->buyer }} </td>
+            </tr>
+            <tr>
+                <td width="14%" style="text-align: left;">Size </td>
+                <td style="padding-left: 8px; padding-right: 8px;">: </td>
+                <td style="text-align: left;">{{ $data->size }} </td>
+            </tr>
+            <tr>
+                <td width="14%" style="text-align: left;">Color </td>
+                <td style="padding-left: 8px; padding-right: 8px;">: </td>
+                <td style="text-align: left;">{{ $data->color }} </td>
+            </tr>
+            <tr>
+                <td width="14%" style="text-align: left;">Layer </td>
+                <td style="padding-left: 8px; padding-right: 8px;">: </td>
+                <td style="text-align: left;">{{ $data->layer }} </td>
+            </tr>
+            <tr>
+                <td style="text-align: left;"></td>
+                <td></td>
+                <td style="text-align: left;"></td>
+            </tr>
         </tbody>
     </table>
 </body>
