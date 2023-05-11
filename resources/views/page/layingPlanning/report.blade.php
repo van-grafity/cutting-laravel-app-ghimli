@@ -48,7 +48,18 @@
                     <td width="6%">Style</td>
                     <td>{{ $data->style->style }}</td>
                     <td width="6%">Order Qty</td>
-                    <td>{{ $data->order_qty }}</td>
+                    <td><?php
+                            $total_all_size = 0;
+                            foreach ($details as $detail)
+                            {
+                                foreach ($detail->layingPlanningDetailSize as $size)
+                                {
+                                    $total_all_size += $size->qty_per_size;
+                                }
+                            }
+                            echo $total_all_size;
+                        ?> Pcs
+                    </td>
                     <td width="8%">Fabric Type</td>
                     <td>{{ $data->fabricType->description }}</td>
                     <td width="10%" style="text-align: right;">Plan Date:</td>
@@ -58,7 +69,18 @@
                     <td width="6%">GL</td>
                     <td>{{ $data->gl->gl_number }}</td>
                     <td width="6%">Total Qty</td>
-                    <td>{{ $data->order_qty }}</td>
+                    <td><?php
+                            $total_all_size = 0;
+                            foreach ($details as $detail)
+                            {
+                                foreach ($detail->layingPlanningDetailSize as $size)
+                                {
+                                    $total_all_size += $size->qty_per_size;
+                                }
+                            }
+                            echo $total_all_size;
+                        ?> Pcs
+                    </td>
                     <td width="8%">Fabric Cons</td>
                     <td>{{ $data->fabricCons->description }}</td>
                     <td></td>
@@ -84,79 +106,47 @@
                 {
                     $total += $item->quantity;
                 }
-                $total_detail = 0;
-                foreach ($data->layingPlanningSize as $size)
-                {
-                    $total_detail += $size->quantity;
-                }
+                
             @endphp
-            <table class="table">
+            <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Batch #</th>
+                        <th rowspan="3">No</br>Laying</br>Sheet</th>
+                        <th rowspan="3">Batch #</br>No.</th>
                         <th colspan="{{ $length }}">Size/Order</th>
-                        <th>Total</th>
-                        <th>Yds</th>
-                        <th>Marker</th>
-                        <th colspan="1"></th>
+                        <th rowspan="2">Total</th>
+                        <th rowspan="3">Yds</br>Qty</th>
+                        <th rowspan="3">Marker</br>Code</th>
+                        <th rowspan="3">LOT</th>
                         <th colspan="3">Marker</th>
                         <th colspan="{{ $length }}">Ratio</th>
-                        <th>Lay</th>
-                        <th>Cut</th>
-                        <th colspan="1"></th>
-                        <th>Layer</th>
-                        <th>Cutter</th>
-                        <th>Emb</th>
-                        <th>Sew</th>
+                        <th rowspan="3">Lay</br>Qty</th>
+                        <th rowspan="3">Cut</br>Qty</th>
+                        <th rowspan="3">Date</th>
+                        <th rowspan="3">Layer</th>
+                        <th rowspan="3">Cutter</th>
+                        <th rowspan="3">Emb</br>Print</th>
+                        <th rowspan="3">Sew</br>Line</th>
                     </tr>
                     <tr>
-                        <th>Laying</th>
-                        <th>No</th>
                         @foreach ($data->layingPlanningSize as $item)
                         <th>{{ $item->size->size }}</th>
                         @endforeach
-                        <th colspan="1"></th>
-                        <th>Qty</th>
-                        <th>Code</th>
-                        <th>LOT</th>
-                        <th>Length</th>
-                        <th>Yds</th>
-                        <th>Inch</th>
+                        <th rowspan="2">Length</th>
+                        <th rowspan="2">Yds</th>
+                        <th rowspan="2">Inch</th>
                         @foreach ($data->layingPlanningSize as $item)
                         <th>{{ $item->size->size }}</th>
                         @endforeach
-                        <th>Qty</th>
-                        <th>Qty</th>
-                        <th>Date</th>
-                        <th colspan="1"></th>
-                        <th colspan="1"></th>
-                        <th>Print</th>
-                        <th>Line</th>
                     </tr>
                     <tr>
-                        <th>Sheet</th>
-                        <th colspan="1"></th>
                         @foreach ($data->layingPlanningSize as $item)
                         <th>{{ $item->quantity }}</th>
                         @endforeach
                         <th colspan="1">{{ $total }}</th>
-                        <th colspan="1"></th>
-                        <th colspan="1"></th>
-                        <th colspan="1"></th>
-                        <th colspan="1"></th>
-                        <th colspan="1"></th>
-                        <th colspan="1"></th>
                         @foreach ($data->layingPlanningSize as $item)
                         <th>{{ $item->quantity }}</th>
                         @endforeach
-                        <th colspan="1"></th>
-                        <th colspan="1"></th>
-                        <th colspan="1"></th>
-                        <th colspan="1"></th>
-                        <th colspan="1"></th>
-                        <th colspan="1"></th>
-                        <th colspan="1"></th>
                 </thead>
 
                 <tbody>
@@ -164,18 +154,27 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td></td>
-                        @foreach ($detail->layingPlanning->layingPlanningSize as $item)
-                        <td>{{ $item->quantity }}</td>
+                        @foreach ($detail->layingPlanningDetailSize as $item)
+                        <td>{{ $item->qty_per_size }}</td>
                         @endforeach
-                        <td>{{ $total_detail }}</td>
-                        <td>{{ $detail->marker_yard }}</td>
+                        <td>
+                            <?php
+                            $total_qty_per_size = 0;
+                            foreach ($detail->layingPlanningDetailSize as $item)
+                            {
+                                $total_qty_per_size += $item->qty_per_size;
+                            }
+                            echo $total_qty_per_size;
+                            ?>
+                        </td>
+                        <td></td>
                         <td>{{ $detail->marker_code }}</td>
                         <td>{{ $detail->table_number }}</td>
                         <td>{{ $detail->marker_length }}</td>
                         <td>{{ $detail->marker_yard }}</td>
                         <td>{{ $detail->marker_inch }}</td>
-                        @foreach ($detail->layingPlanning->layingPlanningSize as $item)
-                        <td>{{ $item->quantity }}</td>
+                        @foreach ($detail->layingPlanningDetailSize as $item)
+                        <td>{{ $item->ratio_per_size }}</td>
                         @endforeach
                         <td>{{ $detail->layer_qty }}</td>
                         <td></td>
@@ -189,30 +188,28 @@
                     <tr>
                         <td colspan="2">?? PCS FOR SAMPLE</td>
                         @foreach ($data->layingPlanningSize as $item)
-                        <!-- total item quantity -->
                         <td><?php
                             $total_per_size = 0;
                             foreach ($details as $detail)
                             {
-                                foreach ($detail->layingPlanning->layingPlanningSize as $size)
+                                foreach ($detail->layingPlanningDetailSize as $size)
                                 {
                                     if ($size->size_id == $item->size_id)
                                     {
-                                        $total_per_size += $size->quantity;
+                                        $total_per_size += $size->qty_per_size;
                                     }
                                 }
                             }
                             echo $total_per_size;
                         ?></td>
                         @endforeach
-                        <!-- sum total qty -->
                         <td><?php
                             $total_all_size = 0;
                             foreach ($details as $detail)
                             {
-                                foreach ($detail->layingPlanning->layingPlanningSize as $size)
+                                foreach ($detail->layingPlanningDetailSize as $size)
                                 {
-                                    $total_all_size += $size->quantity;
+                                    $total_all_size += $size->qty_per_size;
                                 }
                             }
                             echo $total_all_size;
@@ -290,33 +287,39 @@
 </html>
 
 <style type="text/css">
-        * {
-            font-family: Calibri, san-serif;
-        }
-        @page {
-            margin-top: 1cm;
-            margin-left: 1cm;
-            margin-bottom: 0cm;
-        }
-        .table thead th {
-            border: 1px solid;
-            text-align: center;
-            vertical-align: middle;
-            font-size: 8px;
-            padding-top: 2 !important;
-            padding-bottom: 2 !important;
-            padding-left: 5 !important;
-            padding-right: 5 !important;
-        }
-        .table tbody td {
-            border: 1px solid;
-            text-align: center;
-            vertical-align: middle;
-            font-weight: bold;
-            font-size: 8px;
-            padding-top: 2 !important;
-            padding-bottom: 2 !important;
-            padding-left: 5 !important;
-            padding-right: 5 !important;
-        }
-    </style>
+    * {
+        font-family: Calibri, san-serif;
+    }
+    @page {
+        margin-top: 1cm;
+        margin-left: 1cm;
+        margin-bottom: 0cm;
+    }
+    table.table-bordered > thead > tr > th{
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+    }
+
+    .table thead th {
+        text-align: center;
+        vertical-align: middle;
+        font-size: 8px;
+        padding-top: 2 !important;
+        padding-bottom: 2 !important;
+        padding-left: 5 !important;
+        padding-right: 5 !important;
+    }
+    .table tbody td {
+        border: 1px solid;
+        text-align: center;
+        vertical-align: middle;
+        font-weight: bold;
+        font-size: 8px;
+        padding-top: 2 !important;
+        padding-bottom: 2 !important;
+        padding-left: 5 !important;
+        padding-right: 5 !important;
+    }
+</style>

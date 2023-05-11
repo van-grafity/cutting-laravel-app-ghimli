@@ -178,7 +178,7 @@ class LayingPlanningsController extends Controller
     public function layingPlanningReport($serial_number)
     {
         $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('serial_number', $serial_number)->first();
-        $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($serial_number) {
+        $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($serial_number) {
             $query->where('serial_number', $serial_number);
         })->get();
         // $data = LayingPlanning::with(['layingPlanningSize', 'layingPlanningSize.size', 'gl', 'style', 'buyer', 'color', 'fabricType'])->where('serial_number', $serial_number)->first();
