@@ -209,10 +209,43 @@ class CuttingTicketsController extends Controller
         return $pdf->stream($filename);
     }
 
-    // print multiple report cuttingOrderRecord by serial_number
     public function print_multiple($id) {
         $cutting_tickets = CuttingTicket::where('cutting_order_record_id', $id)->get();
         $filename = $cutting_tickets[0]->cuttingOrderRecord->serial_number . '.pdf';
+        
+        // $data = [
+        //     (object)[
+        //         "buyer"=> "Aeropostale",
+        //         "size"=> "XS",
+        //         "color"=> "Med Heather Grey",
+        //         "ticket_number"=> "001",
+        //         "layer"=> 11
+        //     ],
+        //     (object)[
+        //         "serial_number"=> "CT-62843-MHG-001-002",
+        //         "buyer"=> "Aeropostale",
+        //         "size"=> "XS",
+        //         "color"=> "Med Heather Grey",
+        //         "ticket_number"=> "002",
+        //         "layer"=> 10
+        //     ],
+        //     (object)[
+        //         "serial_number"=> "CT-62843-MHG-001-003",
+        //         "buyer"=> "Aeropostale",
+        //         "size"=> "XS",
+        //         "color"=> "Med Heather Grey",
+        //         "ticket_number"=> "003",
+        //         "layer"=> 10
+        //     ],
+        //     (object)[
+        //         "serial_number"=> "CT-62843-MHG-001-004",
+        //         "buyer"=> "Aeropostale",
+        //         "size"=> "XS",
+        //         "color"=> "Med Heather Grey",
+        //         "ticket_number"=> "004",
+        //         "layer"=> 13
+        //     ],
+        // ];
 
         $data = [];
         foreach ($cutting_tickets as $ticket) {
@@ -227,12 +260,8 @@ class CuttingTicketsController extends Controller
             ];
         }
 
-        $customPaper = array(0,0,220.24, 352.00);
-        $pdf = PDF::loadview('page.cutting-ticket.print', compact('data'))->setPaper($customPaper, 'landscape')
-        ->setOption('margin-bottom', '10mm')
-        ->setOption('margin-top', '10mm')
-        ->setOption('margin-right', '10mm')
-        ->setOption('margin-left', '10mm');
+        $customPaper = array(0,0,210.24, 302.00);
+        $pdf = PDF::loadview('page.cutting-ticket.print', compact('data'))->setPaper($customPaper, 'landscape');
         return $pdf->stream($filename);
     }
 
