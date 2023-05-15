@@ -19,7 +19,17 @@ class CuttingTicketsController extends Controller
 {
     public function index()
     {
-        $get_cutting_tickets = CuttingTicket::all();
+        return view('page.cutting-ticket.index');
+    }
+
+    public function ticketListByCOR($serial_number)
+    {
+        $get_cutting_tickets = CuttingTicket::with(['cuttingOrderRecord.layingPlanningDetail.layingPlanning.color', 'size'])
+            ->select('cutting_tickets.id','cutting_order_record_id','size_id','layer','ticket_number')
+            ->whereHas('cuttingOrderRecord', function($q) use ($serial_number){
+                $q->where('serial_number', $serial_number);
+            })
+            ->get();
 
         $tickets = [];
         foreach ($get_cutting_tickets as $key => $ticket) {
@@ -34,31 +44,58 @@ class CuttingTicketsController extends Controller
                 'layer' => $ticket->layer,
             ];
         }
-        return view('page.cutting-ticket.index',compact('tickets'));
+
+        return view('page.cutting-ticket.ticket-list-by-cor',compact('tickets', 'serial_number'));
     }
 
     public function dataCuttingTicket(){
+        $query = CuttingOrderRecord::with(['CuttingTicket', 'CuttingTicket.size'])
+        ->select('cutting_order_records.*')
+        ->whereHas('CuttingTicket')
+        ->get();
+            return Datatables::of($query)
+            ->escapeColumns([])
+            ->addColumn('ticket_number', function($data){
+                return $data->serial_number;
+            })
+            ->addColumn('table_number', function($data){
+                return $data->layingPlanningDetail->table_number;
+            })
+            ->addColumn('action', function($data){
+                return '
+                <a href="'.route('cutting-ticket.print-multiple', $data->serial_number).'" class="btn btn-primary btn-sm btn-print-ticket">Print</a>
+                <a href="'.route('cutting-ticket.detail', $data->serial_number).'" class="btn btn-info btn-sm">Detail</a>
+                ';
+            })
+            ->make(true);
+    }
+
+    public function dataCuttingTicketByCOR($serial_number){
         $query = CuttingTicket::with([])
-            ->select('cutting_tickets.id','cutting_order_record_id','size_id','layer','ticket_number')->get();
+            ->select('cutting_tickets.id','cutting_order_record_id','size_id','layer','ticket_number')
+            ->whereHas('cuttingOrderRecord', function($q) use ($serial_number){
+                $q->where('serial_number', $serial_number);
+            })
+            ->get();
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
-            ->addColumn('ticket_number', function ($data){
+            ->addColumn('ticket_number', function($data){
                 return $this->generate_ticket_number($data->id);
             })
-            ->addColumn('no_laying_sheet', function ($data){
+            ->addColumn('no_laying_sheet', function($data){
                 return $data->cuttingOrderRecord->layingPlanningDetail->no_laying_sheet;
             })
-            ->addColumn('table_number', function ($data){
-                return Str::padLeft($data->cuttingOrderRecord->layingPlanningDetail->table_number, 3, '0');
+            ->addColumn('table_number', function($data){
+                return $data->cuttingOrderRecord->layingPlanningDetail->table_number;
             })
-            ->addColumn('color', function ($data){
+            ->addColumn('color', function($data){
                 return $data->cuttingOrderRecord->layingPlanningDetail->layingPlanning->color->color;
             })
-            ->addColumn('size', function ($data){
+            ->addColumn('size', function($data){
                 return $data->size->size;
             })
-            ->addColumn('layer', function ($data){
+            ->addColumn('layer', function($data){
                 return $data->layer;
             })
             ->addColumn('action', function($data){
@@ -209,60 +246,61 @@ class CuttingTicketsController extends Controller
         return $pdf->stream($filename);
     }
 
-    public function print_multiple($id) {
-        // $cutting_tickets = CuttingTicket::where('cutting_order_record_id', $id)->get();
-        // $filename = $cutting_tickets[0]->cuttingOrderRecord->serial_number . '.pdf';
-        $data = [
-            (object)[
-                "serial_number"=> "CT-62843-MHG-001-001",
-                "buyer"=> "Aeropostale",
-                "size"=> "XS",
-                "color"=> "MHG",
-                "ticket_number"=> "001",
-                "layer"=> 11
-            ],
-            (object)[
-                "serial_number"=> "CT-62843-MHG-001-002",
-                "buyer"=> "Aeropostale",
-                "size"=> "XS",
-                "color"=> "MHG",
-                "ticket_number"=> "002",
-                "layer"=> 10
-            ],
-            (object)[
-                "serial_number"=> "CT-62843-MHG-001-003",
-                "buyer"=> "Aeropostale",
-                "size"=> "XS",
-                "color"=> "MHG",
-                "ticket_number"=> "003",
-                "layer"=> 10
-            ],
-            (object)[
-                "serial_number"=> "CT-62843-MHG-001-004",
-                "buyer"=> "Aeropostale",
-                "size"=> "XS",
-                "color"=> "MHG",
-                "ticket_number"=> "004",
-                "layer"=> 13
-            ],
-        ];
+    public function print_multiple($serial_number) {
+        $cutting_order_record = CuttingOrderRecord::where('serial_number', $serial_number)->first();
+        $cutting_tickets = CuttingTicket::where('cutting_order_record_id', $cutting_order_record->id)->get();
+        $filename = $cutting_tickets[0]->cuttingOrderRecord->serial_number . '.pdf';
+        // $data = [
+        //     (object)[
+        //         "serial_number"=> "CT-62843-MHG-001-001",
+        //         "buyer"=> "Aeropostale",
+        //         "size"=> "XS",
+        //         "color"=> "MHG",
+        //         "ticket_number"=> "001",
+        //         "layer"=> 11
+        //     ],
+        //     (object)[
+        //         "serial_number"=> "CT-62843-MHG-001-002",
+        //         "buyer"=> "Aeropostale",
+        //         "size"=> "XS",
+        //         "color"=> "MHG",
+        //         "ticket_number"=> "002",
+        //         "layer"=> 10
+        //     ],
+        //     (object)[
+        //         "serial_number"=> "CT-62843-MHG-001-003",
+        //         "buyer"=> "Aeropostale",
+        //         "size"=> "XS",
+        //         "color"=> "MHG",
+        //         "ticket_number"=> "003",
+        //         "layer"=> 10
+        //     ],
+        //     (object)[
+        //         "serial_number"=> "CT-62843-MHG-001-004",
+        //         "buyer"=> "Aeropostale",
+        //         "size"=> "XS",
+        //         "color"=> "MHG",
+        //         "ticket_number"=> "004",
+        //         "layer"=> 13
+        //     ],
+        // ];
 
-        // $data = [];
-        // foreach ($cutting_tickets as $ticket) {
-        //     $layingPlanningDetail = $ticket->cuttingOrderRecord->layingPlanningDetail;
-        //     $data[] = (object)[
-        //         'serial_number' => $this->generate_ticket_number($ticket->id),
-        //         'buyer' => $layingPlanningDetail->layingPlanning->gl->buyer->name,
-        //         'size' => $ticket->size->size,
-        //         'color' => $layingPlanningDetail->layingPlanning->color->color,
-        //         'ticket_number' => Str::padLeft($ticket->ticket_number, 3, '0'),
-        //         'layer' => $ticket->layer,
-        //     ];
-        // }
+        $data = [];
+        foreach ($cutting_tickets as $ticket) {
+            $layingPlanningDetail = $ticket->cuttingOrderRecord->layingPlanningDetail;
+            $data[] = (object)[
+                'serial_number' => $this->generate_ticket_number($ticket->id),
+                'buyer' => $layingPlanningDetail->layingPlanning->gl->buyer->name,
+                'size' => $ticket->size->size,
+                'color' => $layingPlanningDetail->layingPlanning->color->color,
+                'ticket_number' => Str::padLeft($ticket->ticket_number, 3, '0'),
+                'layer' => $ticket->layer,
+            ];
+        }
         
         $customPaper = array(0,0,180.00, 298.00);
         $pdf = PDF::loadview('page.cutting-ticket.print-all', compact('data'))->setPaper($customPaper, 'landscape');
-        return $pdf->stream('cutting-ticket.pdf');
+        return $pdf->stream($filename);
     }
 
     // private function
