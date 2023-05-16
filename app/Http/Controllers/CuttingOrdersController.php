@@ -66,10 +66,10 @@ class CuttingOrdersController extends Controller
             })
             ->addColumn('action', function($data){
                 return '
-                <a href="'.route('cutting-order.print', $data->id).'" class="btn btn-primary btn-sm" target="_blank">Print Nota</a>
-                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'">Delete</a>
-                <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm">Detail</a>
-                <a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm" target="_blank">Print Report</a>
+                <a href="'.route('cutting-order.print', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank">Print Nota</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'">Delete</a>
+                <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1">Detail</a>
+                <a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank">Print Report</a>
                 ';
             })
             ->make(true);

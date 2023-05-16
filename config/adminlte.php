@@ -419,18 +419,6 @@ return [
             'can'  => 'clerk',
         ],
         [
-            'text' => 'Fabric Requisitoin',
-            'url'  => '/fabric-requisition',
-            'icon' => 'fas fa-fw fa fa-solid fa-file-alt',
-            'can'  => 'clerk',
-        ],
-        [
-            'text' => 'Daily Cutting Report',
-            'url'  => '/daily-cutting-report',
-            'icon' => 'fas fa-fw fa fa-solid fa-file-alt',
-            'can'  => 'clerk',
-        ],
-        [
             'text' => 'Cutting Ticket',
             'icon' => 'fas fa-fw fa fa-solid fa-clipboard-list',
             'can'  => 'clerk',
@@ -447,7 +435,20 @@ return [
                 ],
             ],
         ],
-        // ['header' => 'Report'],
+        ['header' => 'Forms'],
+        [
+            'text' => 'Fabric Requisitoin',
+            'url'  => '/fabric-requisition',
+            'icon' => 'fas fa-fw fa fa-solid fa-file-alt',
+            'can'  => 'clerk',
+        ],
+        ['header' => 'Reports'],
+        [
+            'text' => 'Daily Cutting Report',
+            'url'  => '/daily-cutting-report',
+            'icon' => 'fas fa-fw fa fa-solid fa-file-alt',
+            'can'  => 'clerk',
+        ],
         // [
         //     'text' => 'Cutting Ticket Report',
         //     'url'  => '/cutting-ticket-report',
@@ -577,6 +578,21 @@ return [
                     'type' => 'css',
                     'asset' => true,
                     'location' => 'vendor/datatables-plugins/buttons/css/buttons.bootstrap4.min.css',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/datatables-plugins/responsive/css/responsive.bootstrap4.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/datatables-plugins/responsive/js/dataTables.responsive.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/datatables-plugins/responsive/js/responsive.bootstrap4.min.js',
                 ],
             ],
         ],
