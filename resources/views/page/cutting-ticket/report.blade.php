@@ -19,7 +19,7 @@
                 <th rowspan="2">Color</th>
                 <?php
                     $size = array();
-                    foreach($cutting_tickets as $ct){
+                    foreach($cutting_order_record->layingPlanningDetail->layingPlanningDetailSize as $ct){
                         $size[] = $ct->size->size;
                     }
                     $size = array_unique($size);
@@ -27,24 +27,27 @@
                         echo "<th>$s</th>";
                     }
                 ?>
-                <th scope="col">Quantity</th>
+                <th rowspan="2">Quantity</th>
             </tr>
             <tr>
                 <?php
-                $layer = array();
-                foreach($cutting_tickets as $ct){
-                    $layer[] = $ct->layer;
-                }
-                $layer = array_unique($layer);
-                foreach($layer as $l){
-                    echo "<th>$l</th>";
-                }
+                    foreach($cutting_order_record->layingPlanningDetail->layingPlanningDetailSize as $ct){
+                        echo "<th>$ct->ratio_per_size</th>";
+                    }
                 ?>
-                <th scope="col"> - </th>
             </tr>
         </thead>
         <tbody>
-            
+            <tr>
+                <td>1</td>
+                <td>{{ $cutting_order_record->layingPlanningDetail->layingPlanning->color->color }}</td>
+                <?php
+                    foreach($cutting_order_record->layingPlanningDetail->layingPlanningDetailSize as $ct){
+                        echo "<td>$ct->qty_per_size</td>";
+                    }
+                ?>
+                <td>{{ $cutting_order_record->layingPlanningDetail->total_all_size }}</td>
+            </tr>
         </tbody>
     </table>
 </body>
