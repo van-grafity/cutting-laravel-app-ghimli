@@ -386,7 +386,8 @@ class CuttingTicketsController extends Controller
     }
 
     public function print_report_pdf($serial_number) {
-        $cutting_order_record = CuttingOrderRecord::where('serial_number', $serial_number)->first();
+        $cutting_order_record = CuttingOrderRecord::with('layingPlanningDetail.layingPlanning.gl.buyer', 'layingPlanningDetail.layingPlanning.color', 'layingPlanningDetail.layingPlanning.style')
+        ->where('serial_number', $serial_number)->first();
         $cutting_tickets = CuttingTicket::with('size')
         ->where('cutting_order_record_id', $cutting_order_record->id)->get();
         $filename = $cutting_tickets[0]->cuttingOrderRecord->serial_number . '.pdf';
@@ -397,7 +398,7 @@ class CuttingTicketsController extends Controller
         
         $pdf = PDF::loadview('page.cutting-ticket.report', compact('cutting_order_record', 'cutting_tickets'))->setPaper('a4', 'portrait');
         // $data['array_size'][0]['size'];
-        return $pdf->stream($filename);
+        return $cutting_tickets;
     }
 
 
