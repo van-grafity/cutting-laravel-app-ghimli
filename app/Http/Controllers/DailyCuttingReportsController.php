@@ -157,7 +157,9 @@ class DailyCuttingReportsController extends Controller
 
                 foreach ($size_list as $key => $size) {
                     // dd(array_map(fn ($item) => $item[$size], $actual_size_each_cor), $size);
-                    $total_actual_all_table_per_size[$size] = array_sum(array_map(fn ($item) => $item[$size], $actual_size_each_cor));
+                    $total_actual_all_table_per_size[$size] = array_sum(
+                        array_map(fn ($item) => array_key_exists($size,$item) ? $item[$size] : 0, $actual_size_each_cor)
+                    );
                 }
                 // dd($total_actual_all_table_per_size, $total_actual_all_table_all_size);
 
