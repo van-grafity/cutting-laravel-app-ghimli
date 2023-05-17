@@ -390,8 +390,12 @@ class CuttingTicketsController extends Controller
         $cutting_tickets = CuttingTicket::with('size')
         ->where('cutting_order_record_id', $cutting_order_record->id)->get();
         $filename = $cutting_tickets[0]->cuttingOrderRecord->serial_number . '.pdf';
+        $data = [
+            'cutting_order_record' => $cutting_order_record,
+            'cutting_tickets' => $cutting_tickets,
+        ];
         
-        $pdf = PDF::loadview('page.cutting-ticket.report', compact('cutting_tickets'))->setPaper('a4', 'portrait');
+        $pdf = PDF::loadview('page.cutting-ticket.report', compact('cutting_order_record', 'cutting_tickets'))->setPaper('a4', 'portrait');
         // $data['array_size'][0]['size'];
         return $pdf->stream($filename);
     }

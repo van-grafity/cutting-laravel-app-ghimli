@@ -167,7 +167,17 @@
                             echo $total_qty_per_size;
                             ?>
                         </td>
-                        <td></td>
+                        <td>
+                            <?php
+                            $total_qty_per_size = 0;
+                            foreach ($detail->layingPlanningDetailSize as $item)
+                            {
+                                $total_qty_per_size += $item->qty_per_size;
+                            }
+                            $yds_qty = ($total_qty_per_size / 12) * 5.62;
+                            echo number_format((float)$yds_qty, 2, '.', '');
+                            ?>
+                        </td>
                         <td>{{ $detail->marker_code }}</td>
                         <td>{{ $detail->table_number }}</td>
                         <td>{{ $detail->marker_length }}</td>
@@ -214,7 +224,20 @@
                             }
                             echo $total_all_size;
                         ?></td>
-                        <td></td>
+                        <td>
+                            <?php
+                            $total_all_size = 0;
+                            foreach ($details as $detail)
+                            {
+                                foreach ($detail->layingPlanningDetailSize as $size)
+                                {
+                                    $total_all_size += $size->qty_per_size;
+                                }
+                            }
+                            $yds_qty = ($total_all_size / 12) * 5.62;
+                            echo number_format((float)$yds_qty, 2, '.', '');
+                            ?>
+                        </td>
                         <td></td>
                         <td></td>
                         <td></td>
