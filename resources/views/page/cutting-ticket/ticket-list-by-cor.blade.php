@@ -12,9 +12,9 @@
                     <div class="content-title text-center">
                         <h3>Cutting Ticket List</h3>
                     </div>
-                    <!-- <div class="d-flex justify-content-end mb-1">
+                    <div class="d-flex justify-content-end mb-1">
                         <a href="{{ route('cutting-ticket.report', $serial_number) }}" class="btn btn-sm btn-outline-secondary" target="_blank">Report</a>
-                    </div> -->
+                    </div>
 
                     <table class="table table-bordered table-hover" id="cutting_ticket_table">
                         <thead class="">

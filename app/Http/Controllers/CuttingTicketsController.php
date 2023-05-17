@@ -393,15 +393,39 @@ class CuttingTicketsController extends Controller
             'layingPlanningDetail.layingPlanningDetailSize', 
             'layingPlanningDetail.layingPlanningDetailSize.size'
         )->where('serial_number', $serial_number)->first();
-        $cutting_tickets = CuttingTicket::with('size')
+        $cutting_tickets = CuttingTicket::with('size', 'cuttingOrderRecord.layingPlanningDetail', 'cuttingOrderRecord.layingPlanningDetail.layingPlanning', 'cuttingOrderRecord.layingPlanningDetail.layingPlanning.color') // 'cuttingOrderRecord.layingPlanningDetail.layingPlanningDetailSize.size
         ->where('cutting_order_record_id', $cutting_order_record->id)->get();
         $filename = $cutting_tickets[0]->cuttingOrderRecord->serial_number . '.pdf';
+        $data = [];
+        foreach ($cutting_tickets as $ticket) {
+            $layingPlanningDetail = $ticket->cuttingOrderRecord->layingPlanningDetail;
+            $data[] = (object)[
+                'no' => $ticket->ticket_number,
+                'color' => $layingPlanningDetail->layingPlanning->color->color,
+                'ply' => $ticket->layer,
+                'size' => $ticket->size->size,
+                'qty' => $layingPlanningDetail->layingPlanning->order_qty,
+                'total' => $layingPlanningDetail->layingPlanning->order_qty * $ticket->layer,
+            ];
+        }
+        $merge = [];
+        foreach ($data as $key => $value) {
+            $merge[$value->size][] = $value;
+        }
+        $array_size = [];
+        foreach ($merge as $key => $value) {
+            $array_size[] = [
+                'size' => $key,
+                'data' => $value,
+            ];
+        }
+        // dd($array_size);
         $data = [
             'cutting_order_record' => $cutting_order_record,
-            'cutting_tickets' => $cutting_tickets,
+            'array_size' => $array_size,
         ];
         
-        $pdf = PDF::loadview('page.cutting-ticket.report', compact('cutting_order_record'))->setPaper('a4', 'portrait');
+        $pdf = PDF::loadview('page.cutting-ticket.report', compact('cutting_order_record', 'cutting_tickets', 'data'))->setPaper('a4', 'portrait');
         // $data['array_size'][0]['size'];
         return $pdf->stream($filename);
     }
