@@ -60,7 +60,7 @@
                     <td width="6%">Total Qty</td>
                     <td>{{ $data->order_qty }}</td>
                     <td width="8%">Fabric Cons</td>
-                    <td>{{ $data->fabricCons->description }}</td>
+                    <td>{{ $data->fabricCons->description }} {{ $data->fabric_cons_qty }}</td>
                     <td></td>
                     <td></td>
                 </tr>

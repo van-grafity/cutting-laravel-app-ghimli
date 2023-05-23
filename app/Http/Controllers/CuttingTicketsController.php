@@ -275,46 +275,38 @@ class CuttingTicketsController extends Controller
         return redirect()->route('cutting-ticket.index');
     }
 
-    // report data generate ticket
     public function print_report_pdf($serial_number) {
-        $cutting_order_record = CuttingOrderRecord::with('layingPlanningDetail.layingPlanningDetailSize.size')->where('serial_number', $serial_number)->get()->first();
-        $cutting_tickets = CuttingTicket::with('size', 'cuttingOrderRecord.cuttingOrderRecordDetail', 'cuttingOrderRecord.layingPlanningDetail', 'cuttingOrderRecord.layingPlanningDetail.layingPlanningDetailSize.size', 'cuttingOrderRecord.layingPlanningDetail.layingPlanning', 'cuttingOrderRecord.layingPlanningDetail.layingPlanning.color') // 'cuttingOrderRecord.layingPlanningDetail.layingPlanningDetailSize.size
-        ->where('cutting_order_record_id', $cutting_order_record->id)->get();
-        $size = $cutting_tickets->pluck('size.size')->toArray();
-        $cutting_order_record_detail = $cutting_order_record->cuttingOrderRecordDetail;
-        $filename = $cutting_tickets[0]->cuttingOrderRecord->serial_number . '.pdf';
-        $data = [];
-        foreach ($cutting_tickets as $ticket) {
-            $layingPlanningDetail = $ticket->cuttingOrderRecord->layingPlanningDetail;
-            $data[] = (object)[
-                'no' => $ticket->ticket_number,
-                'color' => $layingPlanningDetail->layingPlanning->color->color,
-                'ply' => $ticket->layer,
-                'size' => $ticket->size->size,
-                'qty' => $layingPlanningDetail->layingPlanning->order_qty,
-                'total' => $layingPlanningDetail->layingPlanning->order_qty * $ticket->layer,
-            ];
-        }
-        $merge = [];
-        foreach ($data as $key => $value) {
-            $merge[$value->size][] = $value;
-        }
-        $array_size = [];
-        foreach ($merge as $key => $value) {
-            $array_size[] = [
-                'size' => $key,
-                'data' => $value,
-            ];
-        }
-        // dd($array_size);
+        $cuttingOrderRecord = CuttingOrderRecord::with('layingPlanningDetail.layingPlanningDetailSize.size')
+        ->whereHas('cuttingTicket', function($q) use ($serial_number) {
+            $q->where('serial_number', $serial_number);
+        })->first();
+        $cuttingTickets = $cuttingOrderRecord->cuttingTicket;
+        $cuttingOrderRecordDetail = $cuttingOrderRecord->cuttingOrderRecordDetail;
+        $layingPlanningDetailSize = $cuttingOrderRecord->layingPlanningDetail->layingPlanningDetailSize;
+        $layingPlanningDetailSize = $layingPlanningDetailSize->toArray();
+        $layingPlanningDetailSize = Arr::sort($layingPlanningDetailSize, function ($value) {
+            return $value['size_id'];
+        });
+        $layingPlanningDetailSize = Arr::pluck($layingPlanningDetailSize, 'ratio_per_size', 'size_id');
+        $layingPlanningDetailSize = (object)$layingPlanningDetailSize;
+        $layingPlanningDetail = $cuttingOrderRecord->layingPlanningDetail;
+        $layingPlanning = $layingPlanningDetail->layingPlanning;
+        $gl = $layingPlanning->gl;
+        $style = $layingPlanning->style;
+        $color = $layingPlanning->color;
+        $buyer = $gl->buyer;
         $data = [
-            'cutting_order_record' => $cutting_order_record,
-            'array_size' => $array_size,
+            'cutting_order_record' => $cuttingOrderRecord,
+            'cutting_tickets' => $cuttingTickets,
+            'cutting_order_record_detail' => $cuttingOrderRecordDetail,
+            'laying_planning_detail_size' => $layingPlanningDetailSize,
+            'gl' => $gl,
+            'style' => $style,
+            'color' => $color,
+            'buyer' => $buyer,
         ];
-        
-        $pdf = PDF::loadview('page.cutting-ticket.report', compact('cutting_order_record', 'cutting_tickets', 'data', 'size'))->setPaper('a4', 'landscape');
-        // $data['array_size'][0]['size'];
-        return $pdf->stream($filename);
+        $pdf = PDF::loadview('page.cutting-ticket.report', compact('data'))->setPaper('a4', 'landscape');
+        return $pdf->stream();
     }
 
     public function print_ticket(Request $request, $ticket_id) {
