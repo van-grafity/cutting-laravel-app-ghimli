@@ -36,7 +36,7 @@
 
         .table-nota td, .table-nota th {
             padding: 0rem 0.25rem;
-			font-size: 11pt;
+			font-size: 8pt;
         }
 
         .header-main { 
@@ -46,12 +46,12 @@
         .company-name {
             text-align:center;
             font-weight: 700; 
-            font-size: 20px;
+            font-size: 12px;
         }
         
         .form-title {
             font-weight: normal;
-            font-size: 20px;
+            font-size: 12px;
         }
 
         .title-nota {
@@ -83,7 +83,7 @@
         .header-subtitle td {
             vertical-align: bottom;
             border-bottom: 1px solid;
-            font-size:14px;
+            font-size:12px;
         }
         .header-subtitle td.no-border {
             border: none;
@@ -104,17 +104,17 @@
         .table-nota tbody td {
             border: 1px solid;
             font-weight: bold;
-            height:25px;
+            height:20px;
             font-size:6pt;
         }
 
         .sparated-line {
             border: none;
-            height: 2px;
+            height: 1px;
             /* Set the hr color */
             color: #333;  /* old IE */
             background-color: #333;  /* Modern Browsers */
-            margin-top: 20px;
+            margin-top: 10px;
         }
         
 	</style>
@@ -139,9 +139,9 @@
             <thead>
                 <tr>
                     <td width="10" class="no-border">Dept</td>
-                    <td width="150" class="">: </td>
-                    <td width="500" class="no-border"></td>
-                    <td width="100" class="subtitle-right"> 
+                    <td width="100" class="">: </td>
+                    <td width="300" class="no-border"></td>
+                    <td width="80" class="subtitle-right"> 
                         No : {{ $data->no_laying_sheet}} <br> 
                         Date : {{ $data->date }} 
                     </td>
@@ -173,7 +173,7 @@
                         <th></th>
                     </tr>
                     <tr>
-                        <th>Quantity Issued / Jumlah dikelauarkan</th>
+                        <th>Quantity Issued / Jumlah dikeluarkan</th>
                         <th> {{ $data->quantity_issued }} </th>
                         <th></th>
                         <th></th>
@@ -188,17 +188,17 @@
             </table>    
         </div>
 
-        <table class="header-subtitle mt-5">
+        <table class="header-subtitle">
             <thead>
                 <tr>
                     <td width="60" class="no-border">Prepared by</td>
-                    <td width="120" class="">: </td>
-                    <td width="50" class="no-border"></td>
+                    <td width="100" class="">: </td>
+                    <td width="30" class="no-border"></td>
                     <td width="60" class="no-border">Authorized by</td>
-                    <td width="120" class="">: </td>
-                    <td width="50" class="no-border"></td>
+                    <td width="100" class="">: </td>
+                    <td width="30" class="no-border"></td>
                     <td width="60" class="no-border">Received by</td>
-                    <td width="120" class="">: </td>
+                    <td width="100" class="">: </td>
                 </tr>
             </thead>
         </table>
@@ -221,10 +221,10 @@
             <table class="table table-nota">
                 <thead class="">
                     <tr>
-                        <th width="150">ROLL No / Nomor Roll</th>
-                        <th width="150">WEIGHT / Berat</th>
-                        <th width="150">ROLL No / Nomor Roll</th>
-                        <th width="150">WEIGHT / Berat</th>
+                        <th>ROLL No / Nomor Roll</th>
+                        <th>WEIGHT / Berat</th>
+                        <th>ROLL No / Nomor Roll</th>
+                        <th>WEIGHT / Berat</th>
                     </tr>
                     <tr>
                         <th>&nbsp;</th>
@@ -278,17 +278,17 @@
             </table>    
         </div>
 
-        <table class="header-subtitle mt-5">
+        <table class="header-subtitle">
             <thead>
                 <tr>
                     <td width="60" class="no-border">Prepared by</td>
-                    <td width="120" class="">: </td>
-                    <td width="50" class="no-border"></td>
+                    <td width="100" class="">: </td>
+                    <td width="30" class="no-border"></td>
                     <td width="60" class="no-border">Authorized by</td>
-                    <td width="120" class="">: </td>
-                    <td width="50" class="no-border"></td>
+                    <td width="100" class="">: </td>
+                    <td width="30" class="no-border"></td>
                     <td width="60" class="no-border">Received by</td>
-                    <td width="120" class="">: </td>
+                    <td width="100" class="">: </td>
                 </tr>
             </thead>
         </table>
