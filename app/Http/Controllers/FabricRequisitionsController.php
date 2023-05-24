@@ -72,8 +72,8 @@ class FabricRequisitionsController extends Controller
             'fabric_po' => $layingPlanningDetail->layingPlanning->fabric_po,
             'fabric_type' => $layingPlanningDetail->layingPlanning->fabricType->name,
             'quantity_required' => $layingPlanningDetail->total_length,
-            'quantity_issued' => 'masih kosong',
-            'difference' => 'masih kosong',
+            'quantity_issued' => '-',
+            'difference' => '-',
         ];
 
         $data = (object)$data;
@@ -94,8 +94,8 @@ class FabricRequisitionsController extends Controller
             'fabric_po' => $layingPlanningDetail->layingPlanning->fabric_po,
             'fabric_type' => $layingPlanningDetail->layingPlanning->fabricType->name,
             'quantity_required' => $layingPlanningDetail->total_length . " yards",
-            'quantity_issued' => "masih kosong",
-            'difference' => "masih kosong",
+            'quantity_issued' => "-",
+            'difference' => "-",
         ];
 
         // $cutting_order_detail = $getCuttingOrder->cuttingOrderRecordDetail;
@@ -169,7 +169,10 @@ class FabricRequisitionsController extends Controller
 
         // dd($data);
         // return view('page.fabric-requisition.print', compact('data'));
-        $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper('a4', 'landscape');
+        // 1 inch = 72 point
+        // 1 inch = 2.54 cm
+        $customPaper = array(0,0,612.00,792.00);
+        $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
         return $pdf->stream($filename);
     }
 
