@@ -15,16 +15,11 @@
             margin-bottom: 0cm;
         }
 
-		table tr td,
-		table tr th{
-			font-size: 8pt;
-		}
-
-        .table-nota td, .table-nota th {
-            padding: 0.25rem 0.25rem;
-			font-size: 7pt;
-            /* text-align:center; */
-            vertical-align:middle;
+		table.table-bordered > thead > tr > th{
+            border-top: 1px dotted black;
+            border-bottom: 1px dotted black;
+            border-left: 1px dotted black;
+            border-right: 1px dotted black;
         }
 
         .header-main { 
@@ -37,52 +32,25 @@
             text-align: left;
             font-size: 12px;
         }
-        
-        .subtitle-nota {
-            font-weight: Normal;
-            font-size: 11px;
-        }
 
-        .serial-number-qr {
-            float:right;
-            text-align: right;
-            font-size: 12px;
-        }
-
-        .header-subtitle {
-            font-weight: bold;
-            width: 100%;
-            margin-bottom: .5rem;
-        }
-
-        .header-subtitle td {
-            vertical-align: bottom;
-            border-bottom: 1px solid;
-            font-size:12px;
-        }
-        .header-subtitle td.no-border {
-            border: none;
-        }
-
-        .subtitle-right {
-            /* text-align: right */
-        }
-
-        .table-nota {
-            border: dotted 1.5px #000000;
-        }
-
-        .table-nota thead th {
-            border: dotted 1.5px #000000;
+        .table thead th {
+            text-align: center;
             vertical-align: middle;
-            font-size: 9pt;
-            text-align: center;
+            font-size: 8px;
+            padding-top: 2 !important;
+            padding-bottom: 2 !important;
         }
-        .table-nota tbody td {
-            border: dotted 1.5px #000000;
-            font-weight: bold;
-            height:25px;
+        
+        .table tbody td {
+            border: 1px dotted black;
             text-align: center;
+            vertical-align: middle;
+            font-weight: bold;
+            font-size: 8px;
+            padding-top: 2 !important;
+            padding-bottom: 2 !important;
+            padding-left: 5 !important;
+            padding-right: 5 !important;
         }
         
 	</style>
@@ -91,7 +59,7 @@
     <div class="">
         <div class="header-main">
             <div class="company-name">
-                Ghim Li Holdings Co. Pte Ltd
+                Ghim Li Indonesia
                 <br>
                 Date: {{ date('d/m/Y') }}
                 <br>
@@ -110,15 +78,8 @@
             </div>
 
         </div>
-        <table class="header-subtitle">
-            <thead>
-                <tr>
-                    <td class="no-border"></td>
-                </tr>
-            </thead>
-        </table>
-        <div class="body-nota">
-            <table class="table table-nota">
+        <div>
+            <table class="table table-bordered">
                 <thead class="">
                     <tr>
                         <th rowspan="3">No</th>
@@ -150,11 +111,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- no, ticket_number -->
                     @foreach($data['array_size'] ?? [] as $cord)
                         @foreach($cord['data'] ?? [] as $item)
                         <tr>
-                            <!-- no column -->
                             <td>{{ $item->no }}</td>
                             <td>{{ $item->color }}</td>
                             <?php

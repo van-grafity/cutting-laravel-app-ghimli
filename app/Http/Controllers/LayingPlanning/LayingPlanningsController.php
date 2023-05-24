@@ -59,7 +59,7 @@ class LayingPlanningsController extends Controller
                 <a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm"">Edit</a>
                 <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_layingPlanning('.$data->id.')">Delete</a>
                 <a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1">Detail</a>
-                <a href="'.route('laying-planning.report',$data->serial_number).'" class="btn btn-info btn-sm mt-1">Report</a>';
+                <a href="'.route('laying-planning.report',$data->serial_number).'" target="_blank" class="btn btn-info btn-sm mt-1">Report</a>';
             })
             ->make(true);
     }

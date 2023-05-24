@@ -213,7 +213,7 @@
                                 <div class="form-group">
                                     <label for="marker_allowence">Allowence</label>
                                     <div class="input-group">
-                                        <input type="string" class="form-control" id="marker_allowence" name="marker_allowence" value="1.5" step="0.01" readonly>
+                                        <input type="string" class="form-control" id="marker_allowence" name="marker_allowence" value="1" step="0.01" readonly>
                                         <div class="input-group-append">
                                             <span class="input-group-text">Inch</span>
                                         </div>
@@ -498,7 +498,7 @@ $(document).ready(function(){
     const set_marker_length = () => {
         let marker_yard = $('#marker_yard').val() ? parseFloat($('#marker_yard').val()) : 0;
         let marker_inch = $('#marker_inch').val() ? parseFloat($('#marker_inch').val()) : 0;
-        let marker_length = (marker_yard + ((marker_inch+1.5)/36)).toFixed(2);
+        let marker_length = (marker_yard + ((marker_inch + parseFloat($('#marker_allowence').val())) / 36)).toFixed(2);
         $('#marker_length').val(marker_length);
         set_marker_total_length();
     };
