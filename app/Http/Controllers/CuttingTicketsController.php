@@ -300,10 +300,10 @@ class CuttingTicketsController extends Controller
             'cutting_tickets' => $cuttingTickets,
             'cutting_order_record_detail' => $cuttingOrderRecordDetail,
             'laying_planning_detail_size' => $layingPlanningDetailSize,
-            'gl' => $gl,
-            'style' => $style,
+            // 'gl' => $gl,
+            // 'style' => $style,
             'color' => $color,
-            'buyer' => $buyer,
+            // 'buyer' => $buyer,
         ];
         $pdf = PDF::loadview('page.cutting-ticket.report', compact('data'))->setPaper('a4', 'landscape');
         return $pdf->stream();

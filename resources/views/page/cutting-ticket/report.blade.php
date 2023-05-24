@@ -80,6 +80,27 @@
 
         </div>
         <div>
+            </br>
+            <table class="table table-bordered">
+                <thead class="">
+                <tr>
+                        <th>No</th>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th>Bundle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach($data['cutting_order_record']->cuttingTicket as $ct)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $data['color']->color }}</td>
+                        <td>{{ $ct->size->size }}</td>
+                        <td>{{ $ct->ticket_number }}</td>
+                    </tr>
+                @endforeach
+            </table>
+
             <table class="table table-bordered">
                 <thead class="">
                     <tr>
@@ -119,7 +140,36 @@
                     </tr>
                 </tbody>
             </table>
+
+            
         </div>
-    </div>
-</body>
+    </body>
 </html>
+
+<!-- <table class="table table-bordered">
+    <thead class="">
+        <tr>
+            <th rowspan="3">No</th>
+            <th rowspan="3">Color</th>
+            @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
+                <th colspan="2">{{ $ct->size->size }}</th>
+            @endforeach
+        </tr>
+        <tr>
+            <?php
+                foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize ?? [] as $ct){
+                    echo "<th colspan='2'>$ct->ratio_per_size</th>";
+                }
+            ?>
+        </tr>
+        <tr>
+            <?php
+                foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize ?? [] as $ct){
+                    echo "<th colspan='2'>Ticket/Qty</th>";
+                }
+            ?>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table> -->
