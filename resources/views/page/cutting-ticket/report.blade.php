@@ -55,6 +55,7 @@
         
 	</style>
 </head>
+
 <body>
     <div class="">
         <div class="header-main">
@@ -68,7 +69,7 @@
                 <br>
                 Style# : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->style->style }}
                 <br>
-                Job/PO# : {{ $cutting_order_record->layingPlanningDetail->layingPlanning->gl->gl_number }}
+                Job/PO# : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->gl->gl_number }}
             </div>
             <div>
                 <br>
@@ -79,54 +80,96 @@
 
         </div>
         <div>
+            </br>
             <table class="table table-bordered">
                 <thead class="">
-                    <tr>
-                        <th rowspan="3">No</th>
-                        <th rowspan="3">Color</th>
-                        <?php
-                            $size = array();
-                            foreach($cutting_order_record->layingPlanningDetail->layingPlanningDetailSize ?? [] as $ct){
-                                $size[] = $ct->size->size;
-                            }
-                            $size = array_unique($size);
-                            foreach($size as $s){
-                                echo "<th colspan='2'>$s</th>";
-                            }
-                        ?>
-                    </tr>
-                    <tr>
-                        <?php
-                            foreach($cutting_order_record->layingPlanningDetail->layingPlanningDetailSize ?? [] as $ct){
-                                echo "<th colspan='2'>$ct->ratio_per_size</th>";
-                            }
-                        ?>
-                    </tr>
-                    <tr>
-                        <?php
-                            foreach($cutting_order_record->layingPlanningDetail->layingPlanningDetailSize ?? [] as $ct){
-                                echo "<th colspan='2'>Bund/Qty</th>";
-                            }
-                        ?>
+                <tr>
+                        <th>No</th>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th>Bundle</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($data['array_size'] ?? [] as $cord)
-                        @foreach($cord['data'] ?? [] as $item)
-                        <tr>
-                            <td>{{ $item->no }}</td>
-                            <td>{{ $item->color }}</td>
-                            <?php
-                            foreach($cutting_order_record->layingPlanningDetail->layingPlanningDetailSize ?? [] as $ct){
-                                echo "<td>CT00$item->no</td>
-                                <td>$item->qty</td>";
-                            }
-                        ?>
-                        </tr>
-                        @endforeach
-                    @endforeach
+                @foreach($data['cutting_order_record']->cuttingTicket as $ct)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $data['color']->color }}</td>
+                        <td>{{ $ct->size->size }}</td>
+                        <td>{{ $ct->ticket_number }}</td>
+                    </tr>
+                @endforeach
             </table>
+
+            <table class="table table-bordered">
+                <thead class="">
+                    <tr>
+                        <th>Color</th>
+                        @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
+                            <th>{{ $ct->size->size }}</th>
+                        @endforeach
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->color->color }}</td>
+                        @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
+                            <td>{{ $ct->ratio_per_size * $ct->qty_per_size }}</td>
+                        @endforeach
+                        <td><?php 
+                            $total = 0;
+                            foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct){
+                                $total += $ct->ratio_per_size * $ct->qty_per_size;
+                            }
+                            echo $total;
+                        ?></td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
+                            <td>{{ $ct->ratio_per_size * $ct->qty_per_size }}</td>
+                        @endforeach
+                        <td><?php 
+                            $total = 0;
+                            foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct){
+                                $total += $ct->ratio_per_size * $ct->qty_per_size;
+                            }
+                            echo $total;
+                        ?></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            
         </div>
-    </div>
-</body>
+    </body>
 </html>
+
+<!-- <table class="table table-bordered">
+    <thead class="">
+        <tr>
+            <th rowspan="3">No</th>
+            <th rowspan="3">Color</th>
+            @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
+                <th colspan="2">{{ $ct->size->size }}</th>
+            @endforeach
+        </tr>
+        <tr>
+            <?php
+                foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize ?? [] as $ct){
+                    echo "<th colspan='2'>$ct->ratio_per_size</th>";
+                }
+            ?>
+        </tr>
+        <tr>
+            <?php
+                foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize ?? [] as $ct){
+                    echo "<th colspan='2'>Ticket/Qty</th>";
+                }
+            ?>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table> -->

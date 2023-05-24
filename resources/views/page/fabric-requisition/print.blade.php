@@ -221,10 +221,10 @@
             <table class="table table-nota">
                 <thead class="">
                     <tr>
-                        <th width="150">ROLL No / Nomor Roll</th>
-                        <th width="150">WEIGHT / Berat</th>
-                        <th width="150">ROLL No / Nomor Roll</th>
-                        <th width="150">WEIGHT / Berat</th>
+                        <th>ROLL No / Nomor Roll</th>
+                        <th>WEIGHT / Berat</th>
+                        <th>ROLL No / Nomor Roll</th>
+                        <th>WEIGHT / Berat</th>
                     </tr>
                     <tr>
                         <th>&nbsp;</th>
