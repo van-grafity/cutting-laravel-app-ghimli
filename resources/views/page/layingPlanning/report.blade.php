@@ -41,7 +41,9 @@
                     <td width="8%">Fabric P/O</td>
                     <td>{{ $data->fabric_po }}</td>
                     <td width="10%" style="text-align: right;">Delivery Date:</td>
-                    <td width="8%" style="text-align: right;">{{ $data->delivery_date }}</td>
+                    <td width="8%" style="text-align: right;">
+                        {{ date('d-M-Y', strtotime($data->delivery_date)) }}
+                    </td>
                 </tr>
 
                 <tr>
@@ -52,7 +54,9 @@
                     <td width="8%">Fabric Type</td>
                     <td>{{ $data->fabricType->description }}</td>
                     <td width="10%" style="text-align: right;">Plan Date:</td>
-                    <td width="8%" style="text-align: right;">{{ $data->plan_date }}</td>
+                    <td width="8%" style="text-align: right;">
+                        {{ date('d-M-Y', strtotime($data->plan_date)) }}
+                    </td>
                 </tr>
                 <tr>
                     <td width="6%">GL</td>
