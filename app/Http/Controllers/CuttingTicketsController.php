@@ -160,7 +160,9 @@ class CuttingTicketsController extends Controller
     }
 
     public function create() {
-        $cutting_order_records = CuttingOrderRecord::select('id','serial_number')->get();
+        $cutting_order_records = CuttingOrderRecord::select('id','serial_number')->with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('cuttingOrderRecordDetail', function($q){
+            $q->where('layer', '>', 0);
+        })->get();
         return view('page.cutting-ticket.add', compact('cutting_order_records'));
     }
 
