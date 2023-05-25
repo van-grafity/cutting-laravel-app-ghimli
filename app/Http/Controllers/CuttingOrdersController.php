@@ -72,8 +72,10 @@ class CuttingOrdersController extends Controller
                 }
                 if ($sum_layer == $data->layingPlanningDetail->layer_qty) {
                     $status = '<span class="badge badge-success">Complete</span>';
+                } else if ($sum_layer > $data->layingPlanningDetail->layer_qty) {
+                    $status = '<span class="badge badge-danger">Over Cut</span>';
                 } else {
-                    $status = '<span class="badge badge-danger">Not Complete</span>';
+                    $status = '<span class="badge badge-warning">Not Complete</span>';
                 }
                 return $status;
             })
