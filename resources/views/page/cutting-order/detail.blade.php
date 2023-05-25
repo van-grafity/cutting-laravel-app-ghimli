@@ -159,12 +159,15 @@
                                 <td colspan="2">Total</td>
                                 <td>{{ $cutting_order->total_width }}</td>
                                 <td>{{ $cutting_order->total_weight }}</td>
-                                <td>{{ $cutting_order->total_layer }}</td>
+                                <td class="bi bi-table" data-toggle="tooltip" data-placement="top" title="Total layer {{ $cutting_order->total_layer }} harus sama dengan layer actual planning">
+                                    {{ $cutting_order->total_layer }}
+                                    <span class="glyphicon glyphicon-magnet"></span>
+                                </td>
                                 <td colspan="4"></td>
                             </tr>
                         </tbody>
                     </table>
-                    
+
                     <div class="row mt-10rem">
                         <div class="col-md-12 text-right">
                             <a href="{{ url('/cutting-order') }}" class="btn btn-secondary shadow-sm">back</a>
@@ -176,7 +179,11 @@
         </div>
     </div>
 </div>
-
+<style>
+    .glyphicon-magnet:before {
+        content: "\e134";
+    }
+</style>
 
 <!-- Modal Section -->
 <div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="modal_formLabel" aria-hidden="true">
