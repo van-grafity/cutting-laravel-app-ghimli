@@ -115,7 +115,7 @@ class CuttingTicketsController extends Controller
             })
             ->addColumn('action', function($data){
                 return '
-                <a href="'.route('cutting-ticket.print-multiple', $data->serial_number).'" class="btn btn-primary btn-sm btn-print-ticket">Print</a>
+                <a href="'.route('cutting-ticket.print-multiple', $data->serial_number).'"  target="_blank"class="btn btn-primary btn-sm btn-print-ticket">Print</a>
                 <a href="'.route('cutting-ticket.detail', $data->serial_number).'" class="btn btn-info btn-sm">Detail</a>
                 ';
             })
