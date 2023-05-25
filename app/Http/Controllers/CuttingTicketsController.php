@@ -160,9 +160,20 @@ class CuttingTicketsController extends Controller
     }
 
     public function create() {
-        $cutting_order_records = CuttingOrderRecord::select('id','serial_number')->with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('cuttingOrderRecordDetail', function($q){
-            $q->where('layer', '>', 0);
-        })->get();
+        $data = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])
+            ->select('cutting_order_records.id','laying_planning_detail_id','serial_number')->get();
+        $cutting_order_records = [];
+        foreach ($data as $key => $value) {
+            $sum_layer = 0;
+            foreach ($value->cuttingOrderRecordDetail as $detail) {
+                $sum_layer += $detail->layer;
+            }
+            if ($sum_layer == $value->layingPlanningDetail->layer_qty) {
+                $cutting_order_records[] = $value;
+            } else if ($sum_layer > $value->layingPlanningDetail->layer_qty) {
+                $cutting_order_records[] = $value;
+            }
+        }
         return view('page.cutting-ticket.add', compact('cutting_order_records'));
     }
 
@@ -242,7 +253,7 @@ class CuttingTicketsController extends Controller
 
         try {
 
-            $get_last_ticket = CuttingTicket::orderBy('ticket_number', 'desc')->first();
+            $get_last_ticket = CuttingTicket::orderBy('ticket_number', 'asc')->first();
             $next_ticket_number = $get_last_ticket ? $get_last_ticket->ticket_number + 1 : 1;
             $cuttingOrderRecord = CuttingOrderRecord::find($request->cutting_order_id);
             $layingPlanningDetail = $cuttingOrderRecord->layingPlanningDetail;
