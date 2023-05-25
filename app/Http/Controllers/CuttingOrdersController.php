@@ -44,7 +44,7 @@ class CuttingOrdersController extends Controller
     }
 
     public function dataCuttingOrder(){
-        $query = CuttingOrderRecord::with(['layingPlanningDetail'])
+        $query = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])
             ->select('cutting_order_records.id','laying_planning_detail_id','serial_number')->get();
             return Datatables::of($query)
             ->addIndexColumn()
@@ -63,6 +63,19 @@ class CuttingOrdersController extends Controller
             })
             ->addColumn('table_number', function ($data){
                 return $data->layingPlanningDetail->table_number;
+            })
+            ->addColumn('status', function($data){
+                $sum_layer = 0;
+                $status = '';
+                foreach ($data->cuttingOrderRecordDetail as $detail) {
+                    $sum_layer += $detail->layer;
+                }
+                if ($sum_layer == $data->layingPlanningDetail->layer_qty) {
+                    $status = '<span class="badge badge-success">Complete</span>';
+                } else {
+                    $status = '<span class="badge badge-danger">Not Complete</span>';
+                }
+                return $status;
             })
             ->addColumn('action', function($data){
                 return '
