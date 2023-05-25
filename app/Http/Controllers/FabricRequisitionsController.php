@@ -167,10 +167,8 @@ class FabricRequisitionsController extends Controller
             'date' => Carbon::now()->format('d-m-Y'),
         ];
 
-        // dd($data);
-        // return view('page.fabric-requisition.print', compact('data'));
-        // 1 inch = 72 point
-        // 1 inch = 2.54 cm
+        // // 21.6 cm x 14 cm
+        // $customPaper = array(0,0,612.00,380.00);
         $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
         return $pdf->stream($filename);
