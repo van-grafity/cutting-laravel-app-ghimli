@@ -8,6 +8,9 @@ use App\Models\CuttingOrderRecord;
 use App\Models\CuttingOrderRecordDetail;
 use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanningDetailSize;
+use App\Models\User;
+use App\Models\UserGroups;
+use App\Models\Groups;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -286,6 +289,11 @@ class CuttingOrdersController extends Controller
             $cor_details[] = $data_detail;
         }
 
+        // User id = Users user_id get Group group_name
+        // $name = $cutting_order_detail[0]->operator;
+        // $user = User::find($name);
+        
+
         $data = (object)[
             'serial_number' => $cutting_order->serial_number,
             'style' => $cutting_order->layingPlanningDetail->layingPlanning->style->style,
@@ -301,6 +309,7 @@ class CuttingOrdersController extends Controller
             'size_ratio' => $this->print_size_ratio($cutting_order->layingPlanningDetail),   
             'color' => $cutting_order->layingPlanningDetail->layingPlanning->color->color,
             'layer' => $cutting_order->layingPlanningDetail->layer_qty,
+            'group' => $cutting_order_detail[0]->operator,
             'date' => Carbon::now()->format('d-m-Y'),
         ];
 
