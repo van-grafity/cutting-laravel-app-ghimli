@@ -12,25 +12,25 @@
 </head>
 <body>
     <div>
-        <div class="header-main">
-            <div style="float: left; text-align: left; font-weight: bold; font-size: 14px;">
-                PT. GHIM LI INDONESIA
-            </div>
-            <div style="float: right; text-align: right; font-size: 10px;">
-                RP-GLA-CUT-002-00<br>
-                Rev 00<br>
-            </div>
-            <br>
-            <br>
-            <div style="clear:left; text-align: center; font-weight: bold; font-size: 14px;">
-            LAYING PLANNING & CUTTING REPORT
-                <br>
-                <div style="font-size: 10px;">{{ $data->serial_number }}</div>
-            </div>
-
-        </div>
+        <table width="100%">
+            <tr>
+                <td width="50%" style="font-weight: bold; font-size: 14px;">
+                    PT. GHIM LI INDONESIA
+                </td>
+                <td width="50%" style="text-align: right; font-size: 10px;">
+                    RP-GLA-CUT-002-00<br>
+                    Rev 00<br>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center; font-weight: bold; font-size: 14px;">
+                    LAYING PLANNING & CUTTING REPORT
+                    <br>
+                    <div style="font-size: 10px;">{{ $data->serial_number }}</div>
+                </td>
+            </tr>
+        </table>
         <br/>
-
         <table width="100%">
             <table width="100%" style="font-size: 10px; font-weight: bold; padding-top: 2 !important; padding-bottom: 2 !important; padding-left: 4 !important; padding-right: 4 !important;">
                 <tr>
