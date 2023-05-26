@@ -66,7 +66,29 @@ class UserRolePermissionsSeeder extends Seeder
             'email' => 'ticket@ghimli.com',
         ]);
         $user->assignRole($role_ticket);
-
         
+        $user = \App\Models\User::factory()->create([
+            'name' => 'Yenti Cutting',
+            'email' => 'yenti@ghimli.com',
+        ]);
+        $user->assignRole($role_cutting);
+
+        $user = \App\Models\User::factory()->create([
+            'name' => 'Bela Cutting',
+            'email' => 'bela@ghimli.com',
+        ]);
+        $user->assignRole($role_cutting);
+
+        $user = \App\Models\User::factory()->create([
+            'name' => 'Laras Cutting',
+            'email' => 'laras@ghimli.com',
+        ]);
+        $user->assignRole($role_cutting);
+
+        $user = \App\Models\User::factory()->create([
+            'name' => 'Masri Cutting',
+            'email' => 'masri@ghimli.com',
+        ]);
+        $user->assignRole($role_cutting);
     }
 }
