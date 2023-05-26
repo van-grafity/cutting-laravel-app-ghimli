@@ -485,7 +485,7 @@ class LayingPlanningsController extends Controller
             return 0;
         }
         $gl = Gl::find($gl_id);
-        $gl_number = explode('-', $gl->gl_number)[0];
+        $gl_number = $gl->gl_number;
         $color = Color::find($color_id);
 
         $getDuplicateSN = LayingPlanning::select('gl_id','color_id')
