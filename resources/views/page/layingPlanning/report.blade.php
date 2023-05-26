@@ -317,7 +317,7 @@
     @page {
         margin-top: 1cm;
         margin-left: 1cm;
-        margin-bottom: 1cm;
+        margin-bottom: 1.3cm;
     }
     table.table-bordered > thead > tr > th{
         border-top: 1px solid black;
