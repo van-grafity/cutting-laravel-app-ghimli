@@ -13,25 +13,25 @@
 <body>
     <div>
         <table width="100%">
-            <tr>
-                <td width="50%" style="font-weight: bold; font-size: 14px;">
-                    PT. GHIM LI INDONESIA
-                </td>
-                <td width="50%" style="text-align: right; font-size: 10px;">
-                    RP-GLA-CUT-002-00<br>
-                    Rev 00<br>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" style="text-align: center; font-weight: bold; font-size: 14px;">
-                    LAYING PLANNING & CUTTING REPORT
-                    <br>
-                    <div style="font-size: 10px;">{{ $data->serial_number }}</div>
-                </td>
-            </tr>
-        </table>
-        <br/>
-        <table width="100%">
+            <table width="100%">
+                <tr>
+                    <td width="50%" style="font-weight: bold; font-size: 14px;">
+                        PT. GHIM LI INDONESIA
+                    </td>
+                    <td width="50%" style="text-align: right; font-size: 10px;">
+                        RP-GLA-CUT-002-00<br>
+                        Rev 00<br>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center; font-weight: bold; font-size: 14px;">
+                        LAYING PLANNING & CUTTING REPORT
+                        <br>
+                        <div style="font-size: 10px;">{{ $data->serial_number }}</div>
+                    </td>
+                </tr>
+            </table>
+            <br/>
             <table width="100%" style="font-size: 10px; font-weight: bold; padding-top: 2 !important; padding-bottom: 2 !important; padding-left: 4 !important; padding-right: 4 !important;">
                 <tr>
                     <td width="6%">Buyer</td>
@@ -317,7 +317,7 @@
     @page {
         margin-top: 1cm;
         margin-left: 1cm;
-        margin-bottom: 0cm;
+        margin-bottom: 1cm;
     }
     table.table-bordered > thead > tr > th{
         border-top: 1px solid black;
