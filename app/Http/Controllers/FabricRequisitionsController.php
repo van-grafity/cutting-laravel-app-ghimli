@@ -167,15 +167,13 @@ class FabricRequisitionsController extends Controller
             'date' => Carbon::now()->format('d-m-Y'),
         ];
 
-        // customPaper a4 portrait
-        // $customPaper = array(0,0,595.28, 841.89);
+        // // 21.6 cm x 14 cm
+        // $customPaper = array(0,0,595.00, 421.00);
         // $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
 
-        // // 21.6 cm x 14 cm
-        $customPaper = array(0,0,595.00, 421.00);
-        $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
-
-        
+        // customPaper portrait to landscape
+        $customPaper = array(0,0,421.00, 595.00);
+        $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'landscape');
         return $pdf->stream($filename);
     }
 
