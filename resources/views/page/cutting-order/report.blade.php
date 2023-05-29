@@ -363,7 +363,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td rowspan="2" colspan="4" style="border:none; font-size:12px;">Group :</td>
+                        <td rowspan="2" colspan="4" style="border:none; font-size:12px;">Group : {{ $data->group }}</td>
                     </tr>
                     <tr>
                         <td style="font-size:10pt"> 14 |</td>
