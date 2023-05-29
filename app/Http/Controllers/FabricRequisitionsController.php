@@ -119,7 +119,12 @@ class FabricRequisitionsController extends Controller
 
     public function store(Request $request)
     {
+        $fabricRequisition = FabricRequisition::where('laying_planning_detail_id', $request->laying_planning_detail_id)->first();
         $layingPlanningDetail = LayingPlanningDetail::find($request->laying_planning_detail_id);
+        if($fabricRequisition){
+            return redirect()->route('fabric-requisition.index')->with('error', 'Fabric Requisition already exist.');
+        }
+        
         $dataFabricRequisition = [
             'serial_number' => $this->generate_serial_number($layingPlanningDetail),
             'laying_planning_detail_id' => $request->laying_planning_detail_id
