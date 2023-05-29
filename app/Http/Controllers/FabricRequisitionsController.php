@@ -168,9 +168,8 @@ class FabricRequisitionsController extends Controller
         ];
 
         // // 21.6 cm x 14 cm
-        // $customPaper = array(0,0,612.00,380.00);
-        $customPaper = array(0,0,612.00,792.00);
-        $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
+        $customPaper = array(0,0,612.00, 432.00);
+        $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, ';landscape');
         return $pdf->stream($filename);
     }
 

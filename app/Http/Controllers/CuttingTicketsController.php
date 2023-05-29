@@ -397,6 +397,7 @@ class CuttingTicketsController extends Controller
             ];
         }
         
+        // 10.1 cm x 6.3 cm
         $customPaper = array(0,0,180.00, 298.00);
         $pdf = PDF::loadview('page.cutting-ticket.print-all', compact('data'))->setPaper($customPaper, 'landscape');
         return $pdf->stream($filename);
