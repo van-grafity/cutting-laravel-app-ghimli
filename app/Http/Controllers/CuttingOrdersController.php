@@ -289,10 +289,27 @@ class CuttingOrdersController extends Controller
             $cor_details[] = $data_detail;
         }
 
-        // User id = Users user_id get Group group_name
-        // $name = $cutting_order_detail[0]->operator;
-        // $user = User::find($name);
-        
+        $name = $cutting_order_detail[0]->operator;
+        if($name == null){
+            $name = 'Name Team not found';
+        } else {
+            $user = User::where('name', $name)->first();
+            if($user == null){
+                $name = 'Name Team not found';
+            } else {
+                $user_group = UserGroups::where('user_id', $user->id)->first();
+                if($user_group == null){
+                    $name = 'Name Team not found';
+                } else {
+                    $group = Groups::where('id', $user_group->group_id)->first();
+                    if($group == null){
+                        $name = 'Name Team not found';
+                    } else {
+                        $name = $group->group_name;
+                    }
+                }
+            }
+        }
 
         $data = (object)[
             'serial_number' => $cutting_order->serial_number,
@@ -309,7 +326,7 @@ class CuttingOrdersController extends Controller
             'size_ratio' => $this->print_size_ratio($cutting_order->layingPlanningDetail),   
             'color' => $cutting_order->layingPlanningDetail->layingPlanning->color->color,
             'layer' => $cutting_order->layingPlanningDetail->layer_qty,
-            'group' => $cutting_order_detail[0]->operator,
+            'group' => $name,
             'date' => Carbon::now()->format('d-m-Y'),
         ];
 
