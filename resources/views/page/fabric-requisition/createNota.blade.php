@@ -17,7 +17,7 @@
                         <div>Cutting Table No : {{ $data->table_number }}</div>
                     </div>
                     <!-- START FORM -->
-                    <form action="{{ route('fabric-requisition.store') }}" method="POST" class="custom-validation" enctype="multipart/form-data">
+                    <form action="{{ route('fabric-requisition.store') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="fabric_requisition_form">
                         @csrf
                         @method('POST')
                         <input type="hidden" name="laying_planning_detail_id" value="{{ $data->laying_planning_detail_id }}">
@@ -86,14 +86,21 @@
                             </div>
                         </div>
 
-                        <div class="row mt-10rem">
+                        <!-- <div class="row mt-10rem">
                             <div class="col-md-12 text-right">
                                 <a href="{{ url('/laying-planning',$data->laying_planning_id) }}" class="btn btn-secondary shadow-sm">cancel</a>
-                                <button type="submit" class="btn btn-primary waves-effect waves-light shadow-sm">Create Fabric Requisition</button>
+                                <button type="submit" class="btn btn-primary waves-effect waves-light shadow-sm" onclick="createFabricRequisition()">Submit</button>
                             </div>
-                        </div>
+                        </div> -->
                     </form>
                     <!-- END FORM -->
+                    <!-- submit -->
+                    <div class="row mt-10rem">
+                        <div class="col-md-12 text-right">
+                            <a href="{{ url('/laying-planning',$data->laying_planning_id) }}" class="btn btn-secondary shadow-sm">cancel</a>
+                            <button type="submit" class="btn btn-primary waves-effect waves-light shadow-sm" onclick="createFabricRequisition()">Submit</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -103,6 +110,20 @@
 @endsection
 @push('js')
 <script type="text/javascript">
-
+    // sweet alert  success or error
+    function createFabricRequisition() {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to create this fabric requisition?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#fabric_requisition_form').submit();
+            }
+        })
+    }
 </script>
 @endpush

@@ -10,6 +10,8 @@
 
     <style type="text/css">
         @page {
+            /* 21.6 cm x 14 cm */
+            size: 21.6cm 14cm;
             margin-top: 0.3cm;
             margin-bottom: 0cm;
         }
