@@ -402,13 +402,13 @@ return [
             'submenu' => [
                 [
                     'classes'   => 'ml-3',
-                    'text' => 'Laying Planning List',
-                    'url' => '/laying-planning',
+                    'text' => 'Create Laying Planning',
+                    'url' => '/laying-planning-create',
                 ],
                 [
                     'classes'   => 'ml-3',
-                    'text' => 'Create Laying Planning',
-                    'url' => '/laying-planning-create',
+                    'text' => 'Laying Planning List',
+                    'url' => '/laying-planning',
                 ],
             ],
         ],
