@@ -90,7 +90,7 @@
                 }
                 
             @endphp
-            <table class="table table-bordered">
+            <table class="table table-bordered" style="padding: 0 !important; margin: 0 !important;">
                 <thead>
                     <tr>
                         <th rowspan="3">No</br>Laying</br>Sheet</th>
@@ -222,7 +222,21 @@
                         @foreach ($data->layingPlanningSize as $item)
                         <td></td>
                         @endforeach
-                        <td></td>
+                        <td><?php
+                            $total = 0;
+                            foreach ($details as $detail)
+                            {
+                                try
+                                {
+                                    $total += $detail->layer_qty;
+                                }
+                                catch (Exception $e)
+                                {
+                                    $total += 0;
+                                }
+                            }
+                            echo $total;
+                        ?></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -296,6 +310,34 @@
                     </tr>
                 </tbody>
             </table>
+
+            <table width="100%" style="font-size: 10px; font-weight: bold;">
+                <tr>
+                    <td width="20%">Total Layer Qty base on Marker Code</td>
+                    <td width="60%" colspan="7">: <?php
+                        $marker_code = [];
+                        $total_layer = 0;
+                        foreach ($details as $detail)
+                        {
+                            array_push($marker_code, $detail->marker_code);
+                        }
+                        $marker_code = array_unique($marker_code);
+                        $marker_code = array_values($marker_code);
+                        foreach ($marker_code as $code)
+                        {
+                            foreach ($details as $detail)
+                            {
+                                if ($code == $detail->marker_code)
+                                {
+                                    $total_layer += $detail->layer_qty;
+                                }
+                            }
+                            echo $code . ' = ' . $total_layer . ' ';
+                            $total_layer = 0;
+                        }
+                    ?></td>
+                </tr>
+            </table>
             <br>
             <table width="100%" style="margin-top: 20px; font-size: 12px; font-family: Times New Roman, Times, serif">
                 <tr>
@@ -350,10 +392,11 @@
         text-align: center;
         vertical-align: middle;
         font-weight: bold;
-        font-size: 8px;
+        font-size: 9.2px;
         padding-top: 2 !important;
         padding-bottom: 2 !important;
         padding-left: 5 !important;
         padding-right: 5 !important;
+        margin-bottom: 0px !important;
     }
 </style>
