@@ -204,7 +204,17 @@
                             }
                             echo $total_length;
                         ?></td>
-                        <td></td>
+                        <td><?php
+                            $marker_code = [];
+                            foreach ($details as $detail)
+                            {
+                                array_push($marker_code, $detail->marker_code);
+                            }
+                            $marker_code = array_unique($marker_code);
+                            $marker_code = array_values($marker_code);
+                            $total_marker_code = count($marker_code);
+                            echo $total_marker_code;
+                        ?></td>
                         <td></td>
                         <td></td>
                         <td></td>
