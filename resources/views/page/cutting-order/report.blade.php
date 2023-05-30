@@ -312,6 +312,7 @@
                         <br>
                         <br>
                         <br>
+                        <br>
                         Balance End Total : {{ $string_to_double }}
                         </td>
                     </tr>
