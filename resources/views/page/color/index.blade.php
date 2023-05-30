@@ -58,7 +58,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="btn_submit">Add Color</button>
+                    <button type="submit" class="btn btn-primary" id="btn_submit" onclick="submit_form()">Add Color</button>
                 </div>
             </form>
         </div>
@@ -181,6 +181,28 @@ $(function (e) {
         let url_delete = delete_url.replace(':id',color_id);
         let data_params = { token };
         result = await delete_using_fetch(url_delete, data_params)
+
+        if(result.status == "success"){
+            swal_info({
+                title : result.message,
+                reload_option: true, 
+            });
+        } else {
+            swal_failed({ title: result.message });
+        }
+    }
+
+    async function submit_form() {
+        let form = $('#color_form');
+        let url = form.attr('action');
+        let data_params = form.serialize();
+        let method = form.find('input[name="_method"]').val();
+
+        if(method == "PUT"){
+            result = await put_using_fetch(url, data_params);
+        } else {
+            result = await post_using_fetch(url, data_params);
+        }
 
         if(result.status == "success"){
             swal_info({

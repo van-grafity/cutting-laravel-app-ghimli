@@ -59,6 +59,11 @@ class FabricRequisitionsController extends Controller
 
     public function createNota($laying_planning_detail_id){
         $layingPlanningDetail = LayingPlanningDetail::find($laying_planning_detail_id);
+        $fabricRequisition = FabricRequisition::where('laying_planning_detail_id', $laying_planning_detail_id)->first();
+
+        if($fabricRequisition){
+            return back()->with('error', 'Fabric Requisition already exist.');
+        }
 
         $data = [
             'serial_number' => $this->generate_serial_number($layingPlanningDetail),
@@ -119,11 +124,18 @@ class FabricRequisitionsController extends Controller
 
     public function store(Request $request)
     {
+        $fabricRequisition = FabricRequisition::where('laying_planning_detail_id', $request->laying_planning_detail_id)->first();
         $layingPlanningDetail = LayingPlanningDetail::find($request->laying_planning_detail_id);
+
+        if($fabricRequisition){
+            return back()->with('error', 'Fabric Requisition already exist.');
+        }
+        
         $dataFabricRequisition = [
             'serial_number' => $this->generate_serial_number($layingPlanningDetail),
             'laying_planning_detail_id' => $request->laying_planning_detail_id
         ];
+        
         $insertFabricRequisition = FabricRequisition::create($dataFabricRequisition);
         return redirect()->route('fabric-requisition.index')->with('success', 'Fabric Requisition created successfully.');
     }
@@ -172,8 +184,12 @@ class FabricRequisitionsController extends Controller
         // $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
 
         // customPaper portrait to landscape
-        $customPaper = array(0,0,421.00, 595.00);
-        $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'landscape');
+        // $customPaper = array(0,0,421.00, 595.00);
+        // $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'landscape');
+
+        // customPaper a4
+        $customPaper = array(0,0,595.00, 842.00);
+        $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
         return $pdf->stream($filename);
     }
 
