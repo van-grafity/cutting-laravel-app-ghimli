@@ -336,7 +336,7 @@ class CuttingOrdersController extends Controller
     }
 
     function generate_serial_number($layingPlanningDetail){
-        $gl_number = explode('-', $layingPlanningDetail->layingPlanning->gl->gl_number)[0];
+        $gl_number = $layingPlanningDetail->layingPlanning->gl->gl_number;
         $color_code = $layingPlanningDetail->layingPlanning->color->color_code;
         $table_number = Str::padLeft($layingPlanningDetail->table_number, 3, '0');
         
