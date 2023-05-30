@@ -302,18 +302,17 @@
                         <td style="font-size:8pt"> {{ $cor_details[6]->joint }} </td>
                         <td style="font-size:8pt"> {{ $cor_details[6]->balance_end }} </td>
                         <td style="font-size:8pt"> {{ $cor_details[6]->remarks }} </td>
-                        <td rowspan="6" colspan="4" style="border:none">Remarks
+                        <td rowspan="6" colspan="4" style="border:none">
                         <?php
                             $string_to_double = 0;
                             foreach($cor_details as $cor_detail){
                                 $string_to_double += (double)$cor_detail->balance_end;
                             }
                         ?>
+                        Balance End Total : {{ $string_to_double }} Yards
                         <br>
                         <br>
-                        <br>
-                        <br>
-                        Balance End Total : {{ $string_to_double }}
+                        Remarks
                         </td>
                     </tr>
                     <tr>
