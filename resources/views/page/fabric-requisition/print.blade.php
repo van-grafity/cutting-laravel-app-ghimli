@@ -10,7 +10,7 @@
 
     <style type="text/css">
         @page {
-            size: 21.6cm 14cm;
+            /* size: 21.6cm 14cm; */
             margin-top: 0.3cm;
             margin-bottom: 0cm;
         }

@@ -39,6 +39,9 @@ class LayingPlanningsController extends Controller
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
+            // ->addColumn('serial_number', function ($data){
+            //     return '<a href="'.route('laying-planning.show',$data->id).'">'.$data->serial_number.'</a>';
+            // })
             ->addColumn('gl_number', function ($data){
                 return $data->gl->gl_number;
             })
@@ -55,11 +58,16 @@ class LayingPlanningsController extends Controller
                 return $data->fabricType->description;
             })
             ->addColumn('action', function($data){
-                return '
-                <a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm"">Edit</a>
+                $action = '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm"">Edit</a>
                 <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_layingPlanning('.$data->id.')">Delete</a>
                 <a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1">Detail</a>
                 <a href="'.route('laying-planning.report',$data->serial_number).'" target="_blank" class="btn btn-info btn-sm mt-1">Report</a>';
+
+                // $action = '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm""><i class="fas fa-edit"></i></a>
+                // <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_layingPlanning('.$data->id.')"><i class="fas fa-trash"></i></a>
+                // <a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1"><i class="fas fa-eye"></i></a>
+                // <a href="'.route('laying-planning.report',$data->serial_number).'" target="_blank" class="btn btn-info btn-sm mt-1"><i class="fas fa-print"></i></a>';
+                return $action;
             })
             ->make(true);
     }
@@ -172,7 +180,7 @@ class LayingPlanningsController extends Controller
         foreach ($get_size_list as $key => $size) {
             $size_list[] = $size->size;
         }
-        return view('page.layingPlanning.detail', compact('data', 'details','size_list'))   ;
+        return view('page.layingPlanning.detail', compact('data', 'details','size_list'));
     }
 
     public function layingPlanningReport($serial_number)

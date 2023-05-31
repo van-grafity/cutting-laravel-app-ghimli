@@ -196,14 +196,14 @@
                     @endfor
 
                     <tr>
-                        <td style="font-size:10pt"> 1  | {{ $cor_details[0]->place_no }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[0]->color }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[0]->yardage }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[0]->weight }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[0]->layer }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[0]->joint }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[0]->balance_end }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[0]->remarks }} </td>
+                        <td style="font-size:8pt"> 1  | {{ $cor_details[0]->place_no }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[0]->color }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[0]->yardage }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[0]->weight }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[0]->layer }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[0]->joint }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[0]->balance_end }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[0]->remarks }} </td>
                         <td rowspan="2" style="vertical-align:middle;">1 Layer</td>
                         <td rowspan="2" style="vertical-align:middle;" width="50">: 
                             &nbsp;&nbsp;&nbsp;&nbsp;
@@ -216,24 +216,24 @@
                         <td rowspan="3" colspan="2"></td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 2 | {{ $cor_details[1]->place_no }}</td>
-                        <td style="font-size:10pt"> {{ $cor_details[1]->color }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[1]->yardage }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[1]->weight }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[1]->layer }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[1]->joint }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[1]->balance_end }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[1]->remarks }} </td>
+                        <td style="font-size:8pt"> 2 | {{ $cor_details[1]->place_no }}</td>
+                        <td style="font-size:8pt"> {{ $cor_details[1]->color }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[1]->yardage }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[1]->weight }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[1]->layer }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[1]->joint }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[1]->balance_end }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[1]->remarks }} </td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 3 | {{ $cor_details[2]->place_no }}</td>
-                        <td style="font-size:10pt"> {{ $cor_details[2]->color }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[2]->yardage }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[2]->weight }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[2]->layer }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[2]->joint }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[2]->balance_end }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[2]->remarks }} </td>
+                        <td style="font-size:8pt"> 3 | {{ $cor_details[2]->place_no }}</td>
+                        <td style="font-size:8pt"> {{ $cor_details[2]->color }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[2]->yardage }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[2]->weight }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[2]->layer }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[2]->joint }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[2]->balance_end }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[2]->remarks }} </td>
                         <td>Replacement</td>
                         <td rowspan="1" style="vertical-align:middle;">: 
                             &nbsp;&nbsp;&nbsp;&nbsp;
@@ -245,14 +245,14 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 4 | {{ $cor_details[3]->place_no }}</td>
-                        <td style="font-size:10pt"> {{ $cor_details[3]->color }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[3]->yardage }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[3]->weight }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[3]->layer }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[3]->joint }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[3]->balance_end }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[3]->remarks }} </td>
+                        <td style="font-size:8pt"> 4 | {{ $cor_details[3]->place_no }}</td>
+                        <td style="font-size:8pt"> {{ $cor_details[3]->color }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[3]->yardage }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[3]->weight }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[3]->layer }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[3]->joint }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[3]->balance_end }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[3]->remarks }} </td>
                         <td>Shortend</td>
                         <td rowspan="1" style="vertical-align:middle;">: 
                             &nbsp;&nbsp;&nbsp;&nbsp;
@@ -265,14 +265,14 @@
                         <td rowspan="3" colspan="2" style="vertical-align:bottom; text-align:center">Supervisor:</td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 5 | {{ $cor_details[4]->place_no }}</td>
-                        <td style="font-size:10pt"> {{ $cor_details[4]->color }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[4]->yardage }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[4]->weight }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[4]->layer }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[4]->joint }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[4]->balance_end }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[4]->remarks }} </td>
+                        <td style="font-size:8pt"> 5 | {{ $cor_details[4]->place_no }}</td>
+                        <td style="font-size:8pt"> {{ $cor_details[4]->color }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[4]->yardage }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[4]->weight }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[4]->layer }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[4]->joint }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[4]->balance_end }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[4]->remarks }} </td>
                         <td rowspan="2" style="vertical-align:middle;" >Ball Roll</td>
                         <td rowspan="2" style="vertical-align:middle;">: 
                             &nbsp;&nbsp;&nbsp;&nbsp;
@@ -284,68 +284,69 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 6 | {{ $cor_details[5]->place_no }}</td>
-                        <td style="font-size:10pt"> {{ $cor_details[5]->color }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[5]->yardage }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[5]->weight }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[5]->layer }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[5]->joint }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[5]->balance_end }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[5]->remarks }} </td>
+                        <td style="font-size:8pt"> 6 | {{ $cor_details[5]->place_no }}</td>
+                        <td style="font-size:8pt"> {{ $cor_details[5]->color }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[5]->yardage }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[5]->weight }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[5]->layer }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[5]->joint }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[5]->balance_end }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[5]->remarks }} </td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 7 | {{ $cor_details[6]->place_no }}</td>
-                        <td style="font-size:10pt"> {{ $cor_details[6]->color }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[6]->yardage }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[6]->weight }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[6]->layer }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[6]->joint }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[6]->balance_end }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[6]->remarks }} </td>
-                        <td rowspan="6" colspan="4" style="border:none">Remarks</td>
+                        <td style="font-size:8pt"> 7 | {{ $cor_details[6]->place_no }}</td>
+                        <td style="font-size:8pt"> {{ $cor_details[6]->color }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[6]->yardage }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[6]->weight }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[6]->layer }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[6]->joint }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[6]->balance_end }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[6]->remarks }} </td>
+                        <td rowspan="6" colspan="4" style="border:none">
+                        <?php
+                            $string_to_double = 0;
+                            foreach($cor_details as $cor_detail){
+                                $string_to_double += (double)$cor_detail->balance_end;
+                            }
+                        ?>
+                        Balance End Total : {{ $string_to_double }} Yards
+                        <br>
+                        <br>
+                        Remarks
+                        </td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 8 | {{ $cor_details[7]->place_no }}</td>
-                        <td style="font-size:10pt"> {{ $cor_details[7]->color }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[7]->yardage }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[7]->weight }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[7]->layer }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[7]->joint }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[7]->balance_end }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[7]->remarks }} </td>
+                        <td style="font-size:8pt"> 8 | {{ $cor_details[7]->place_no }}</td>
+                        <td style="font-size:8pt"> {{ $cor_details[7]->color }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[7]->yardage }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[7]->weight }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[7]->layer }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[7]->joint }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[7]->balance_end }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[7]->remarks }} </td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 9 | {{ $cor_details[8]->place_no }}</td>
-                        <td style="font-size:10pt"> {{ $cor_details[8]->color }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[8]->yardage }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[8]->weight }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[8]->layer }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[8]->joint }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[8]->balance_end }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[8]->remarks }} </td>
+                        <td style="font-size:8pt"> 9 | {{ $cor_details[8]->place_no }}</td>
+                        <td style="font-size:8pt"> {{ $cor_details[8]->color }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[8]->yardage }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[8]->weight }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[8]->layer }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[8]->joint }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[8]->balance_end }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[8]->remarks }} </td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 10 | {{ $cor_details[9]->place_no }}</td>
-                        <td style="font-size:10pt"> {{ $cor_details[9]->color }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[9]->yardage }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[9]->weight }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[9]->layer }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[9]->joint }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[9]->balance_end }} </td>
-                        <td style="font-size:10pt"> {{ $cor_details[9]->remarks }} </td>
+                        <td style="font-size:8pt"> 10 | {{ $cor_details[9]->place_no }}</td>
+                        <td style="font-size:8pt"> {{ $cor_details[9]->color }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[9]->yardage }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[9]->weight }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[9]->layer }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[9]->joint }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[9]->balance_end }} </td>
+                        <td style="font-size:8pt"> {{ $cor_details[9]->remarks }} </td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 11 |</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td style="font-size:10pt"> 12 |</td>
+                        <td style="font-size:8pt"> 11 |</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -355,7 +356,17 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 13 |</td>
+                        <td style="font-size:8pt"> 12 |</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:8pt"> 13 |</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -366,7 +377,7 @@
                         <td rowspan="2" colspan="4" style="border:none; font-size:12px;">Group : {{ $data->group }}</td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 14 |</td>
+                        <td style="font-size:8pt"> 14 |</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -376,7 +387,7 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 15 |</td>
+                        <td style="font-size:8pt"> 15 |</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -390,7 +401,7 @@
                         <td>Manpower : <br> <i style="font-weight: 500;">Tenaga Kerja</i></td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 16 |</td>
+                        <td style="font-size:8pt"> 16 |</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -404,7 +415,7 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 17 |</td>
+                        <td style="font-size:8pt"> 17 |</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -418,7 +429,7 @@
                         <td>Manpower : <br> <i style="font-weight: 500;">Tenaga Kerja</i></td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 18 |</td>
+                        <td style="font-size:8pt"> 18 |</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -432,7 +443,7 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 19 |</td>
+                        <td style="font-size:8pt"> 19 |</td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -446,7 +457,7 @@
                         <td>Manpower : <br> <i style="font-weight: 500;">Tenaga Kerja</i></td>
                     </tr>
                     <tr>
-                        <td style="font-size:10pt"> 20 |</td>
+                        <td style="font-size:8pt"> 20 |</td>
                         <td></td>
                         <td></td>
                         <td></td>
