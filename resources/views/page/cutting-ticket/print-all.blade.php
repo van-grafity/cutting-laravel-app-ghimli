@@ -16,7 +16,7 @@
             margin-top: 1cm;
             margin-bottom: 1cm;
         }
-        .main-ct {
+        body {
             width: 100%;
             height: 100%;
             font-family: Arial, Helvetica, sans-serif;
@@ -24,50 +24,44 @@
             font-size: 14px;
         }
 
-        .serial-number {
-            font-size: 14pt;
-            font-weight: 700;
-        }
-
-        .table tbody td {
-            border: 1px solid;
+        table tbody tr {
+            width: 100%;
             text-align: center;
             vertical-align: middle;
         }
 	</style>
 </head>
 
-<body>
-    <div class="main-ct">
-        @foreach ($data as $cutting_ticket)
-            <table>
-                <tbody>
-                    <tr>
-                        <td rowspan="4">
-                            <img src="https://chart.googleapis.com/chart?chs=135x135&cht=qr&chl={{ $cutting_ticket->serial_number }}&choe=UTF-8" title="Link to Google.com" style="width: 150px; height: 150px;">
-                        </td>
-                        <td width="20%" style="text-align: left;">Ticket No. </td>
-                        <td>: </td>
-                        <td style="text-align: left;">{{ $cutting_ticket->ticket_number }} </td>
-                    </tr>
-                    <tr>
-                        <td width="20%" style="text-align: left;">Buyer </td>
-                        <td>: </td>
-                        <td style="text-align: left;">{{ $cutting_ticket->buyer }} </td>
-                    </tr>
-                    <tr>
-                        <td width="20%" style="text-align: left;">Size </td>
-                        <td>: </td>
-                        <td style="text-align: left;">{{ $cutting_ticket->size }} </td>
-                    </tr>
-                    <tr>
-                        <td width="20%" style="text-align: left;">Color </td>
-                        <td>: </td>
-                        <td style="text-align: left;">{{ $cutting_ticket->color }} </td>
-                    </tr>
-                </tbody>
-            </table>
-        @endforeach
-    </div>
+<body width="100%" height="100%">
+    @foreach ($data as $cutting_ticket)
+        <table>
+            <tbody>
+                <tr>
+                    <td rowspan="4">
+                        <img src="https://chart.googleapis.com/chart?chs=135x135&cht=qr&chl={{ $cutting_ticket->serial_number }}&choe=UTF-8" title="Link to Google.com" style="width: 150px; height: 150px;">
+                    </td>
+                    <td width="20%" style="text-align: left;">Ticket No. </td>
+                    <td>: </td>
+                    <td style="text-align: left;">{{ $cutting_ticket->ticket_number }} </td>
+                </tr>
+                <tr>
+                    <td width="20%" style="text-align: left;">Buyer </td>
+                    <td>: </td>
+                    <td style="text-align: left;">{{ $cutting_ticket->buyer }} </td>
+                </tr>
+                <tr>
+                    <td width="20%" style="text-align: left;">Size </td>
+                    <td>: </td>
+                    <td style="text-align: left;">{{ $cutting_ticket->size }} </td>
+                </tr>
+                <tr>
+                    <td width="20%" style="text-align: left;">Color </td>
+                    <td>: </td>
+                    <td style="text-align: left;">{{ $cutting_ticket->color }} </td>
+                </tr>
+            </tbody>
+        </table>
+    @endforeach
 </body>
+
 </html>
