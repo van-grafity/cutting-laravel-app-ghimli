@@ -8,6 +8,9 @@ use App\Models\CuttingOrderRecord;
 use App\Models\CuttingOrderRecordDetail;
 use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanningDetailSize;
+use App\Models\User;
+use App\Models\UserGroups;
+use App\Models\Groups;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -44,7 +47,7 @@ class CuttingOrdersController extends Controller
     }
 
     public function dataCuttingOrder(){
-        $query = CuttingOrderRecord::with(['layingPlanningDetail'])
+        $query = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])
             ->select('cutting_order_records.id','laying_planning_detail_id','serial_number')->get();
             return Datatables::of($query)
             ->addIndexColumn()
@@ -64,13 +67,28 @@ class CuttingOrdersController extends Controller
             ->addColumn('table_number', function ($data){
                 return $data->layingPlanningDetail->table_number;
             })
+            ->addColumn('status', function($data){
+                $sum_layer = 0;
+                $status = '';
+                foreach ($data->cuttingOrderRecordDetail as $detail) {
+                    $sum_layer += $detail->layer;
+                }
+                if ($sum_layer == $data->layingPlanningDetail->layer_qty) {
+                    $status = '<span class="badge badge-success">Complete</span>';
+                } else if ($sum_layer > $data->layingPlanningDetail->layer_qty) {
+                    $status = '<span class="badge badge-danger">Over Cut</span>';
+                } else {
+                    $status = '<span class="badge badge-warning">Not Complete</span>';
+                }
+                return $status;
+            })
             ->addColumn('action', function($data){
-                return '
+                $action = '
                 <a href="'.route('cutting-order.print', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank">Print Nota</a>
                 <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'">Delete</a>
-                <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1">Detail</a>
-                <a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank">Print Report</a>
-                ';
+                <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1">Detail</a>';
+                $action .= $data->cuttingOrderRecordDetail->isEmpty() ? '' : '<a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank">Print Report</a>';
+                return $action;
             })
             ->make(true);
     }
@@ -271,6 +289,28 @@ class CuttingOrdersController extends Controller
             $cor_details[] = $data_detail;
         }
 
+        $name = $cutting_order_detail[0]->operator;
+        if($name == null){
+            $name = 'Name Team not found';
+        } else {
+            $user = User::where('name', $name)->first();
+            if($user == null){
+                $name = 'Name Team not found';
+            } else {
+                $user_group = UserGroups::where('user_id', $user->id)->first();
+                if($user_group == null){
+                    $name = 'Name Team not found';
+                } else {
+                    $group = Groups::where('id', $user_group->group_id)->first();
+                    if($group == null){
+                        $name = 'Name Team not found';
+                    } else {
+                        $name = $group->group_name;
+                    }
+                }
+            }
+        }
+
         $data = (object)[
             'serial_number' => $cutting_order->serial_number,
             'style' => $cutting_order->layingPlanningDetail->layingPlanning->style->style,
@@ -286,6 +326,7 @@ class CuttingOrdersController extends Controller
             'size_ratio' => $this->print_size_ratio($cutting_order->layingPlanningDetail),   
             'color' => $cutting_order->layingPlanningDetail->layingPlanning->color->color,
             'layer' => $cutting_order->layingPlanningDetail->layer_qty,
+            'group' => $name,
             'date' => Carbon::now()->format('d-m-Y'),
         ];
 
@@ -295,7 +336,7 @@ class CuttingOrdersController extends Controller
     }
 
     function generate_serial_number($layingPlanningDetail){
-        $gl_number = explode('-', $layingPlanningDetail->layingPlanning->gl->gl_number)[0];
+        $gl_number = $layingPlanningDetail->layingPlanning->gl->gl_number;
         $color_code = $layingPlanningDetail->layingPlanning->color->color_code;
         $table_number = Str::padLeft($layingPlanningDetail->table_number, 3, '0');
         

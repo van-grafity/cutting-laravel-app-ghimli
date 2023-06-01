@@ -59,6 +59,11 @@ class FabricRequisitionsController extends Controller
 
     public function createNota($laying_planning_detail_id){
         $layingPlanningDetail = LayingPlanningDetail::find($laying_planning_detail_id);
+        $fabricRequisition = FabricRequisition::where('laying_planning_detail_id', $laying_planning_detail_id)->first();
+
+        if($fabricRequisition){
+            return back()->with('error', 'Fabric Requisition already exist.');
+        }
 
         $data = [
             'serial_number' => $this->generate_serial_number($layingPlanningDetail),
@@ -119,11 +124,18 @@ class FabricRequisitionsController extends Controller
 
     public function store(Request $request)
     {
+        $fabricRequisition = FabricRequisition::where('laying_planning_detail_id', $request->laying_planning_detail_id)->first();
         $layingPlanningDetail = LayingPlanningDetail::find($request->laying_planning_detail_id);
+
+        if($fabricRequisition){
+            return back()->with('error', 'Fabric Requisition already exist.');
+        }
+        
         $dataFabricRequisition = [
             'serial_number' => $this->generate_serial_number($layingPlanningDetail),
             'laying_planning_detail_id' => $request->laying_planning_detail_id
         ];
+        
         $insertFabricRequisition = FabricRequisition::create($dataFabricRequisition);
         return redirect()->route('fabric-requisition.index')->with('success', 'Fabric Requisition created successfully.');
     }
@@ -166,11 +178,9 @@ class FabricRequisitionsController extends Controller
             'table_number' => $fabric_requisition->layingPlanningDetail->table_number,   
             'date' => Carbon::now()->format('d-m-Y'),
         ];
-
-        // dd($data);
-        // return view('page.fabric-requisition.print', compact('data'));
-        // 1 inch = 72 point
-        // 1 inch = 2.54 cm
+        
+        // 21.6 cm x 14 cm
+        // $customPaper = array(0,0,612.00,380.00);
         $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
         return $pdf->stream($filename);
@@ -187,7 +197,7 @@ class FabricRequisitionsController extends Controller
     }
 
     function generate_serial_number($layingPlanningDetail){
-        $gl_number = explode('-', $layingPlanningDetail->layingPlanning->gl->gl_number)[0];
+        $gl_number = $layingPlanningDetail->layingPlanning->gl->gl_number;
         $color_code = $layingPlanningDetail->layingPlanning->color->color_code;
         $table_number = Str::padLeft($layingPlanningDetail->table_number, 3, '0');
         

@@ -23,6 +23,8 @@ use Database\Seeders\CuttingOrderRecordDetailsTableSeeder;
 use Database\Seeders\CuttingTicketsTableSeeder;
 use Database\Seeders\UserRolePermissionsSeeder;
 use Database\Seeders\RemarkTableSeeder;
+use Database\Seeders\GroupsTableSeeder;
+use Database\Seeders\UserGroupsTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -52,6 +54,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CuttingOrderRecordDetailsTableSeeder::class);
         // $this->call(CuttingTicketsTableSeeder::class);
         $this->call(RemarkTableSeeder::class);
+        $this->call(GroupsTableSeeder::class);
+        $this->call(UserGroupsTableSeeder::class);
 
     }
 }

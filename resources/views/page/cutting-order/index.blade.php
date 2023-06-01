@@ -24,6 +24,7 @@
                                 <th scope="col" class="">No Laying Sheet</th>
                                 <th scope="col" class="">Color</th>
                                 <th scope="col" class="">Table No</th>
+                                <th scope="col" class="">Status</th>
                                 <th scope="col" class="">Action</th>
                             </tr>
                         </thead>
@@ -77,6 +78,7 @@
                 {data: 'no_laying_sheet', name: 'no_laying_sheet'},
                 {data: 'color', name: 'color'},
                 {data: 'table_number', name: 'table_number'},
+                {data: 'status', name: 'status'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
             lengthChange: true,

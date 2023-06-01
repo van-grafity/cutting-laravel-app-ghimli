@@ -10,7 +10,6 @@
 
     <style type="text/css">
         @page {
-            /* size: 21.6cm 14cm; */
             margin-top: 0.3cm;
             margin-bottom: 0cm;
         }
@@ -21,7 +20,7 @@
 		}
 
         .table-nota td, .table-nota th {
-            padding: 0px 2px;
+            padding: 0rem 0.25rem;
 			font-size: 8pt;
         }
 
@@ -53,12 +52,13 @@
         .serial-number-qr {
             float:right;
             text-align: right;
+            /* font-size: 12px; */
         }
 
         .header-subtitle {
             font-weight: bold;
             width: 100%;
-            margin-bottom: 3px;
+            margin-bottom: .3rem;
         }
 
         .header-subtitle td {
@@ -98,45 +98,40 @@
         
 	</style>
 </head>
-
 <body>
     <div class="">
+        <div>
+            <div class="serial-number">{{ $data->serial_number }}</div>
 
-        <table width="100%" style="margin: 0px 0px 0px 0px; !important; padding: 0px 0px 0px 0px; !important;">
-            <tr>
-                <td width="50%" style="font-weight: bold; font-size: 14px;">
-                    <div style="font-size: 10px;">{{ $data->serial_number }}</div>
-                </td>
-                <td width="50%" style="text-align: right; font-size: 10px;">
-                    RP-GLA-CUT-002-00<br>
-                    Rev 00<br>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" style="text-align: center; font-weight: bold; font-size: 14px;">
-                    PT. GHIM LI INDONESIA
-                    <br>
-                    FABRIC REQUISITION
-                </td>
-            </tr>
-        </table>
-        
-        <table width="100%" style="font-size: 10px; font-weight: bold; padding-top: 2 !important; padding-bottom: 2 !important;">
+            <div class="serial-number-qr">
+                <div class="qr-wrapper" style="margin-top: -15px; margin-right: -15px;">
+                    <img src="https://chart.googleapis.com/chart?chs=70x70&cht=qr&chl={{ $data->serial_number }}" alt="">
+                </div>
+            </div>
+            <div class="title-nota">
+                <div class="company-name">PT. GHIM LI INDONESIA</div>
+                <div class="form-title">Fabric Requisition</div>
+            </div>
+
+        </div>
+        <table class="header-subtitle">
+            <thead>
                 <tr>
                     <td width="10" class="no-border">Dept</td>
-                    <td width="100" class="">: <hr class="sparated-line" style="margin: 0px 0px 0px 0px;"></td>
+                    <td width="100" class="">: </td>
                     <td width="300" class="no-border"></td>
                     <td width="80" class="subtitle-right"> 
                         No : {{ $data->no_laying_sheet}} <br> 
                         Date : {{ $data->date }} 
                     </td>
                 </tr>
+            </thead>
         </table>
 
         <table class="table table-nota">
             <thead class="">
                 <tr>
-                    <th>GL  NO: {{ $data->gl_number }}</th>
+                    <th width="250">GL  NO: {{ $data->gl_number }}</th>
                     <th>Style No: {{ $data->style }}</th>
                     <th>P/O No: {{ $data->fabric_po }}</th>
                     <th>Lay No: {{ $data->no_laying_sheet }}</th>
@@ -175,10 +170,10 @@
             <thead>
                 <tr>
                     <td width="60" class="no-border">Prepared by</td>
-                    <td width="100" class="">: Melda (58734)</td>
+                    <td width="100" class="">: </td>
                     <td width="30" class="no-border"></td>
                     <td width="60" class="no-border">Authorized by</td>
-                    <td width="100" class="">: Zondra (30950)</td>
+                    <td width="100" class="">: </td>
                     <td width="30" class="no-border"></td>
                     <td width="60" class="no-border">Received by</td>
                     <td width="100" class="">: </td>
