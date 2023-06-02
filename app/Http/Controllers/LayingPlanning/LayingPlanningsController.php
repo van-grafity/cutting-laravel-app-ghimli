@@ -60,10 +60,11 @@ class LayingPlanningsController extends Controller
                 return $data->fabricType->description;
             })
             ->addColumn('action', function($data){
+                $serial_number = str_replace(['/', ' '], ['yyy', 'xxx'], $data->serial_number);
                 $action = '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm"">Edit</a>
                 <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_layingPlanning('.$data->id.')">Delete</a>
                 <a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1">Detail</a>
-                <a href="'.route('laying-planning.report',$data->serial_number).'" target="_blank" class="btn btn-info btn-sm mt-1">Report</a>';
+                <a href="'.route('laying-planning.report',$serial_number).'" target="_blank" class="btn btn-info btn-sm mt-1">Report</a>';
 
                 // $action = '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm""><i class="fas fa-edit"></i></a>
                 // <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_layingPlanning('.$data->id.')"><i class="fas fa-trash"></i></a>
@@ -187,9 +188,10 @@ class LayingPlanningsController extends Controller
 
     public function layingPlanningReport($serial_number)
     {
-        $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('serial_number', $serial_number)->first();
-        $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($serial_number) {
-            $query->where('serial_number', $serial_number);
+        $sNumb = str_replace(['yyy', 'xxx'], ['/', ' '], $serial_number);
+        $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('serial_number', $sNumb)->first();
+        $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($sNumb) {
+            $query->where('serial_number', $sNumb);
         })->get();
         // $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($serial_number) {
         //     $query->whereHas('layingPlanning', function($query) use ($serial_number) {
