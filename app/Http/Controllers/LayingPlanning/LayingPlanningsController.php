@@ -9,6 +9,8 @@ use App\Models\LayingPlanning;
 use App\Models\LayingPlanningSize;
 use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanningDetailSize;
+use App\Models\CuttingOrderRecord;
+use App\Models\CuttingOrderRecordDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -189,11 +191,14 @@ class LayingPlanningsController extends Controller
         $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($serial_number) {
             $query->where('serial_number', $serial_number);
         })->get();
-        // $data = LayingPlanning::with(['layingPlanningSize', 'layingPlanningSize.size', 'gl', 'style', 'buyer', 'color', 'fabricType'])->where('serial_number', $serial_number)->first();
-        // $details = LayingPlanningDetail::where('laying_planning_id', 1)->get();
+        // $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($serial_number) {
+        //     $query->whereHas('layingPlanning', function($query) use ($serial_number) {
+        //         $query->where('serial_number', $serial_number);
+        //     });
+        // })->get();
         $pdf = PDF::loadView('page.layingPlanning.report', compact('data', 'details'))->setPaper('a4', 'landscape');
         // return $pdf->stream();
-        return $pdf->stream();
+        return $pdf->stream('laying-planning-report.pdf');
     }
 
     public function layingQrcode($id)
