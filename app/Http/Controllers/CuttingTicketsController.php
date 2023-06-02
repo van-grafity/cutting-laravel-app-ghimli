@@ -9,6 +9,7 @@ use App\Models\CuttingOrderRecord;
 use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanningDetailSize;
 
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 
@@ -357,22 +358,6 @@ class CuttingTicketsController extends Controller
         //         "color"=> "MHG",
         //         "ticket_number"=> "001",
         //         "layer"=> 11
-        //     ],
-        //     (object)[
-        //         "serial_number"=> "CT-62843-MHG-001-002",
-        //         "buyer"=> "Aeropostale",
-        //         "size"=> "XS",
-        //         "color"=> "MHG",
-        //         "ticket_number"=> "002",
-        //         "layer"=> 10
-        //     ],
-        //     (object)[
-        //         "serial_number"=> "CT-62843-MHG-001-003",
-        //         "buyer"=> "Aeropostale",
-        //         "size"=> "XS",
-        //         "color"=> "MHG",
-        //         "ticket_number"=> "003",
-        //         "layer"=> 10
         //     ],
         //     (object)[
         //         "serial_number"=> "CT-62843-MHG-001-004",
