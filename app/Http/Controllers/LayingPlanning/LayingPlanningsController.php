@@ -231,7 +231,7 @@ class LayingPlanningsController extends Controller
         // $layingPlanning->delivery_date = date('d/m/Y', strtotime($layingPlanning->delivery_date));
         $layingPlanning->plan_date = date('m/d/Y', strtotime($layingPlanning->plan_date));
         
-        $layingPlanningSizes = LayingPlanningSize::where('laying_planning_id', $layingPlanning->id)->orderBy('size_id')->get();
+        $layingPlanningSizes = LayingPlanningSize::where('laying_planning_id', $layingPlanning->id)->get();
 
         return view('page.layingPlanning.edit', compact('gls', 'styles', 'colors', 'fabricTypes', 'fabricCons', 'sizes','layingPlanning','layingPlanningSizes'));
     }   
