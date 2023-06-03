@@ -36,7 +36,7 @@ class LayingPlanningController extends BaseController
         if ($getCuttingOrder == null) return $this->onError(404, 'Cutting Order Record not found.');
         $layingPlanningDetail = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.color'])->find($getCuttingOrder->layingPlanningDetail->id);
         if ($layingPlanningDetail->layingPlanning->color == null || $layingPlanningDetail->layingPlanning->color->id == null) return $this->onError(404, 'Color not found.');
-        if ($layingPlanningDetail->marker_yard == null) return $this->onError(404, 'Marker Yard not found.');
+        // if ($layingPlanningDetail->marker_yard == null) return $layingPlanningDetail->marker_yard = 0;
         $data = collect(
             [
                 // 'cutting_order_record' => $getCuttingOrder,
