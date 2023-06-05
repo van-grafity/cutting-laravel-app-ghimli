@@ -90,7 +90,7 @@
                 }
                 
             @endphp
-            <table class="table table-bordered" style="padding: 0 !important; margin: 0 !important;">
+            <table class="table table-bordered" style="padding: 0 !important; margin: 0 !important; width:100%; table-layout:fixed; font-size: 10px; font-weight: bold;">
                 <thead>
                     <tr>
                         <th rowspan="3">No</br>Laying</br>Sheet</th>
@@ -368,7 +368,8 @@
     }
     @page {
         margin-top: 1cm;
-        margin-left: 1cm;
+        margin-left: 0.2cm;
+        margin-right: 0.2cm;
         margin-bottom: 1.3cm;
     }
     table.table-bordered > thead > tr > th{
@@ -382,10 +383,10 @@
         text-align: center;
         vertical-align: middle;
         font-size: 8px;
-        padding-top: 2 !important;
-        padding-bottom: 2 !important;
-        padding-left: 5 !important;
-        padding-right: 5 !important;
+        /* padding-top: 1 !important;
+        padding-bottom: 1 !important;
+        padding-left: 3 !important;
+        padding-right: 3 !important; */
     }
     .table tbody td {
         border: 1px solid;
@@ -393,10 +394,10 @@
         vertical-align: middle;
         font-weight: bold;
         font-size: 9.2px;
-        padding-top: 2 !important;
-        padding-bottom: 2 !important;
-        padding-left: 5 !important;
-        padding-right: 5 !important;
+        padding-top: 1.5 !important;
+        padding-bottom: 1.5 !important;
+        padding-left: 3 !important;
+        padding-right: 3 !important;
         margin-bottom: 0px !important;
     }
 </style>
