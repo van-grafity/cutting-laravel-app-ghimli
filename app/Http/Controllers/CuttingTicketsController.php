@@ -319,7 +319,7 @@ class CuttingTicketsController extends Controller
             'color' => $color,
             // 'buyer' => $buyer,
         ];
-        $pdf = PDF::loadview('page.cutting-ticket.report', compact('data'))->setPaper('a4', 'landscape');
+        $pdf = PDF::loadview('page.cutting-ticket.report', compact('data'))->setPaper('a4', 'portrait');
         return $pdf->stream();
     }
 
