@@ -295,6 +295,9 @@ class CuttingTicketsController extends Controller
             $q->where('serial_number', $serial_number);
         })->first();
         $cuttingTickets = $cuttingOrderRecord->cuttingTicket;
+        foreach ($cuttingTickets as $ticket) {
+            $ticket->ticket_number = $this->generate_ticket_number($ticket->id);
+        }
         $cuttingOrderRecordDetail = $cuttingOrderRecord->cuttingOrderRecordDetail;
         $layingPlanningDetailSize = $cuttingOrderRecord->layingPlanningDetail->layingPlanningDetailSize;
         $layingPlanningDetailSize = $layingPlanningDetailSize->toArray();
