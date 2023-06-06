@@ -779,16 +779,30 @@
                     </table>
                 </div>
             </div>
+
+            @php
+                $size = $data['cutting_order_record']->cuttingTicket->pluck('size_id')->unique();
+                $color = $data['cutting_order_record']->cuttingTicket->pluck('color_id')->unique();
+                $ticket = $data['cutting_order_record']->cuttingTicket->pluck('ticket_number')->unique();
+            @endphp
             
-            <!-- X   S   M  -->
-            <!-- 2   10  18 -->
-            <!-- 3   11  19 -->
-            <!-- 4   12  20 -->
-            <!-- 5   13  21 -->
-            <!-- 6   14  22 -->
-            <!-- 7   15  23 -->
-            <!-- 8   16  24 -->
-            <!-- 9   17  25 -->
+            @php
+                $table = [];
+                foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $cord){
+                    $table[$cord->color_id] = [];
+                    foreach($size as $sz){
+                        $table[$cord->color_id][$sz] = [];
+                        foreach($ticket as $tk){
+                            foreach($data['cutting_order_record']->cuttingTicket as $ct){
+                                if($ct->size_id == $sz && $ct->cuttingOrderRecordDetail->color_id == $cord->color_id && $ct->ticket_number == $tk){
+                                    $table[$cord->color_id][$sz][$tk] = $ct->ticket_number;
+                                }
+                            }
+                        }
+                    }
+                }
+            @endphp
+            
             <div class="row">
                 <div class="col-md-12">
                     <table class="table table-bordered">
@@ -815,13 +829,53 @@
                     </table>
                 </div>
             </div>
-            
+
+            <!-- get data ticket berdasarkan  size dan cuttingOrderRecordDetails.lenght-->
+            @php
+                $ticket = [];
+                foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $cord){
+                    $ticket[$cord->color_id] = [];
+                    foreach($size as $sz){
+                        $ticket[$cord->color_id][$sz] = [];
+                        foreach($data['cutting_order_record']->cuttingTicket as $ct){
+                            if($ct->size_id == $sz && $ct->cuttingOrderRecordDetail->color_id == $cord->color_id){
+                                $ticket[$cord->color_id][$sz][] = $ct->ticket_number;
+                            }
+                        }
+                    }
+                }
+            @endphp
+
             <table class="table table-bordered">
                 <thead class="">
                     <tr>
                         <th>Color</th>
-                        @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
-                            <th>{{ $ct->size->size }}</th>
+                        @foreach($size as $sz)
+                            <th>{{ $sz }}</th>
+                        @endforeach
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($ticket as $tk)
+                        <tr>
+                          <td
+                            @foreach($tk as $t)
+                                <td>
+                                    @foreach($t as $tt)
+                                        {{ $tt }}
+                                    @endforeach
+                                </td>
+                            @endforeach
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            <table class="table table-bordered">
+                <thead class="">
+                    <tr>
+                        <th>Color</th>
+                        @foreach($data['laying_planning_detail_size'] as $ct)
+                            <th>{{ $ct }}</th>
                         @endforeach
                         <th>Total</th>
                     </tr>
