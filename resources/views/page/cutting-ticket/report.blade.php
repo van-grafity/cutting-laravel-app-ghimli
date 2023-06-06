@@ -58,45 +58,63 @@
 
 <body>
     <div class="">
-        <div class="header-main">
-            <div class="company-name">
-                Ghim Li Indonesia
-                <br>
-                Date: {{ date('d/m/Y') }}
-                <br>
-                </br>
-                PAKING LIST
-                <br>
-                Style# : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->style->style }}
-                <br>
-                Job/PO# : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->gl->gl_number }}
-            </div>
-            <div>
-                <br>
-                <br>
-                <br>
-                <br>
-            </div>
-
-        </div>
+        <table width="100%" style="margin-bottom: 0px !important; padding-bottom: 0px !important;">
+            <tr>
+              <td width="50%" style="font-size: 12px;">Ghim Li Indonesia</td>
+              <td width="50%" style="font-size: 12px;"></td>
+              <td width="50%" style="font-size: 12px;"></td>
+            </tr>
+            <tr>
+              <td width="50%" style="font-size: 12px;">Date: {{ date('d/m/Y') }}</td>
+              <td width="50%" style="font-size: 12px;"></td>
+              <td width="50%" style="font-size: 12px;"></td>
+            </tr>
+            <tr>
+              <td width="50%" height="10px" style="font-size: 12px;"></td>
+              <td width="50%" height="10px" style="font-size: 12px;"></td>
+              <td width="50%" height="10px" style="font-size: 12px;"></td>
+            </tr>
+            <tr>
+              <td width="50%" style="font-size: 12px;">PAKING LIST</td>
+              <td width="50%" style="font-size: 12px;"></td>
+              <td width="50%" style="font-size: 12px;"></td>
+            </tr>
+            <tr>
+              <td width="50%" style="font-size: 12px;">Style# : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->style->style }}</td>
+              <td width="50%" style="font-size: 12px;">Pieces :
+                <?php 
+                    $total = 0;
+                    foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct){
+                        $total += $ct->ratio_per_size * $ct->qty_per_size;
+                    }
+                    echo $total;
+                ?>
+              </td>
+              <td width="50%" style="font-size: 12px;">Color : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->color->color }}</td>
+            </tr>
+            <tr>
+              <td width="50%" style="font-size: 12px;">Job/PO# : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->gl->gl_number }}</td>
+              <td width="50%" style="font-size: 12px;">Bundles : {{ $data['cutting_order_record']->cuttingTicket->count() }}</td>
+              <td width="50%" style="font-size: 12px;">Roll# : {{ $data['cutting_order_record']->cuttingOrderRecordDetail->count() }}</td>
+            </tr>
+        </table>
         <div>
-            </br>
             <table class="table table-bordered">
                 <thead class="">
                 <tr>
                         <th>No</th>
-                        <th>Color</th>
-                        <th>Size</th>
                         <th>Bundle</th>
+                        <th>Size</th>
+                        <th>Qty</th>
                     </tr>
                 </thead>
                 <tbody>
                 @foreach($data['cutting_order_record']->cuttingTicket as $ct)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $data['color']->color }}</td>
-                        <td>{{ $ct->size->size }}</td>
                         <td>{{ $ct->ticket_number }}</td>
+                        <td>{{ $ct->size->size }}</td>
+                        <td>{{ $ct->layer }}</td>
                     </tr>
                 @endforeach
             </table>
@@ -135,7 +153,8 @@
                             foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct){
                                 $total += $ct->ratio_per_size * $ct->qty_per_size;
                             }
-                            echo $total;
+                            // add pcs
+                            echo $total.' pcs';
                         ?></td>
                     </tr>
                 </tbody>
