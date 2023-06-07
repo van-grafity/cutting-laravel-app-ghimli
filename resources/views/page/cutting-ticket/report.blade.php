@@ -717,40 +717,9 @@
             </br>
             @php
                 $size = $data['cutting_order_record']->cuttingTicket->pluck('size_id')->unique();
-                $color = $data['cutting_order_record']->cuttingTicket->pluck('color_id')->unique();
                 $ticket = $data['cutting_order_record']->cuttingTicket->pluck('ticket_number')->unique();
             @endphp
             
-            @php
-                $table = [];
-                foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $cord){
-                    $table[$cord->color_id] = [];
-                    foreach($size as $sz){
-                        $table[$cord->color_id][$sz] = [];
-                        foreach($ticket as $tk){
-                            foreach($data['cutting_order_record']->cuttingTicket as $ct){
-                                if($ct->size_id == $sz && $ct->cuttingOrderRecordDetail->color_id == $cord->color_id && $ct->ticket_number == $tk){
-                                    $table[$cord->color_id][$sz][$tk] = $ct->ticket_number;
-                                }
-                            }
-                        }
-                    }
-                }
-            @endphp
-
-            <!-- X   S   M -->
-            <!-- 2          -->
-            <!-- 3          -->
-            <!-- 4          -->
-            <!-- 5          -->
-            <!--    6       -->
-            <!--    7       -->
-            <!--    8       -->
-            <!--    9       -->
-            <!--        10  -->
-            <!--        11  -->
-            <!--        12  -->
-            <!--        13  -->
             <div class="row">
                 <div class="col-md-12">
                     <table class="table table-bordered">
@@ -779,29 +748,6 @@
                     </table>
                 </div>
             </div>
-
-            @php
-                $size = $data['cutting_order_record']->cuttingTicket->pluck('size_id')->unique();
-                $color = $data['cutting_order_record']->cuttingTicket->pluck('color_id')->unique();
-                $ticket = $data['cutting_order_record']->cuttingTicket->pluck('ticket_number')->unique();
-            @endphp
-            
-            @php
-                $table = [];
-                foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $cord){
-                    $table[$cord->color_id] = [];
-                    foreach($size as $sz){
-                        $table[$cord->color_id][$sz] = [];
-                        foreach($ticket as $tk){
-                            foreach($data['cutting_order_record']->cuttingTicket as $ct){
-                                if($ct->size_id == $sz && $ct->cuttingOrderRecordDetail->color_id == $cord->color_id && $ct->ticket_number == $tk){
-                                    $table[$cord->color_id][$sz][$tk] = $ct->ticket_number;
-                                }
-                            }
-                        }
-                    }
-                }
-            @endphp
             
             <div class="row">
                 <div class="col-md-12">
@@ -830,7 +776,6 @@
                 </div>
             </div>
 
-            <!-- get data ticket berdasarkan  size dan cuttingOrderRecordDetails.lenght-->
             @php
                 $ticket = [];
                 foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $cord){
@@ -849,7 +794,6 @@
             <table class="table table-bordered">
                 <thead class="">
                     <tr>
-                        <th>Color</th>
                         @foreach($size as $sz)
                             <th>{{ $sz }}</th>
                         @endforeach
@@ -858,7 +802,6 @@
                 <tbody>
                     @foreach($ticket as $tk)
                         <tr>
-                          <td
                             @foreach($tk as $t)
                                 <td>
                                     @foreach($t as $tt)
