@@ -748,26 +748,30 @@
                     </table>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-md-12">
                     <table class="table table-bordered">
+                        <thead class="">
+                            <tr>
+                                <th>Color</th>
+                                @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
+                                    @for($i = 0; $i < $ct->ratio_per_size; $i++)
+                                        <th>{{ $ct->size->size }}</th>
+                                    @endfor
+                                @endforeach
+                            </tr>
+                        </thead>
                         <tbody>
-                            @php
-                                $penggabungan = [];
-                                foreach($size as $sz){
-                                    $penggabungan[$sz] = [];
-                                    foreach($data['cutting_order_record']->cuttingTicket as $ct){
-                                        if($ct->size_id == $sz){
-                                            $penggabungan[$sz][] = $ct->ticket_number;
-                                        }
-                                    }
-                                }
-                            @endphp
-                            @foreach($penggabungan as $pg)
+                            @foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $ct)
                                 <tr>
-                                    @foreach($pg as $pgg)
-                                        <td>{{ $pgg }}</td>
+                                    <td>{{ $ct->fabric_roll }}</td>
+                                    @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $sz)
+                                            @foreach($data['cutting_order_record']->cuttingTicket as $ctt)
+                                                @if($ctt->size_id == $sz->size_id && $ctt->cutting_order_record_detail_id == $ct->id)
+                                                <td> {{ $ctt->ticket_number }} </td>
+                                                @endif
+                                            @endforeach
                                     @endforeach
                                 </tr>
                             @endforeach
@@ -776,49 +780,12 @@
                 </div>
             </div>
 
-            @php
-                $ticket = [];
-                foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $cord){
-                    $ticket[$cord->color_id] = [];
-                    foreach($size as $sz){
-                        $ticket[$cord->color_id][$sz] = [];
-                        foreach($data['cutting_order_record']->cuttingTicket as $ct){
-                            if($ct->size_id == $sz && $ct->cuttingOrderRecordDetail->color_id == $cord->color_id){
-                                $ticket[$cord->color_id][$sz][] = $ct->ticket_number;
-                            }
-                        }
-                    }
-                }
-            @endphp
-
-            <table class="table table-bordered">
-                <thead class="">
-                    <tr>
-                        @foreach($size as $sz)
-                            <th>{{ $sz }}</th>
-                        @endforeach
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($ticket as $tk)
-                        <tr>
-                            @foreach($tk as $t)
-                                <td>
-                                    @foreach($t as $tt)
-                                        {{ $tt }}
-                                    @endforeach
-                                </td>
-                            @endforeach
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
             <table class="table table-bordered">
                 <thead class="">
                     <tr>
                         <th>Color</th>
-                        @foreach($data['laying_planning_detail_size'] as $ct)
-                            <th>{{ $ct }}</th>
+                        @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
+                            <th>{{ $ct->size->size }}</th>
                         @endforeach
                         <th>Total</th>
                     </tr>
@@ -852,8 +819,6 @@
                     </tr>
                 </tbody>
             </table>
-
-            
         </div>
     </body>
 </html>
