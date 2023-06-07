@@ -90,7 +90,7 @@
                 }
                 
             @endphp
-            <table class="table table-bordered" style="width:100%; font-size: 10px; font-weight: bold;">
+            <table class="table table-bordered" style="width:100%; font-size: 10px; font-weight: bold; margin-bottom: 0 !important; padding-bottom: 0 !important;">
                 <thead>
                     <tr>
                         <th rowspan="3">No</br>Laying</br>Sheet</th>
@@ -338,8 +338,8 @@
                     ?></td>
                 </tr>
             </table>
-            <br>
-            <table width="100%" style="margin-top: 20px; font-size: 12px; font-family: Times New Roman, Times, serif">
+            
+            <table width="100%" style="font-size: 12px; font-family: Times New Roman, Times, serif; font-weight: bold;">
                 <tr>
                     <td width="50%" style="text-align: center;">
                         <p>Prepared by:</p>
@@ -370,7 +370,7 @@
         margin-top: 1cm;
         margin-left: 0.4cm;
         margin-right: 0.4cm;
-        margin-bottom: 1.3cm;
+        margin-bottom: 1cm;
     }
     table.table-bordered > thead > tr > th{
         border-top: 1px solid black;
