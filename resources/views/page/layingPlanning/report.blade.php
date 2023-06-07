@@ -90,7 +90,7 @@
                 }
                 
             @endphp
-            <table class="table table-bordered" style="padding: 0 !important; margin: 0 !important; width:100%; table-layout:fixed; font-size: 10px; font-weight: bold;">
+            <table class="table table-bordered" style="width:100%; font-size: 10px; font-weight: bold;">
                 <thead>
                     <tr>
                         <th rowspan="3">No</br>Laying</br>Sheet</th>
@@ -168,7 +168,7 @@
                     </tr>
                     @endforeach
                     <tr>
-                        <td colspan="2">?? PCS FOR SAMPLE</td>
+                        <td colspan="2">Pcs FOR SAMPLE</td>
                         @foreach ($data->layingPlanningSize as $item)
                         <td><?php
                             $total_per_size = 0;
@@ -368,8 +368,8 @@
     }
     @page {
         margin-top: 1cm;
-        margin-left: 0.2cm;
-        margin-right: 0.2cm;
+        margin-left: 0.4cm;
+        margin-right: 0.4cm;
         margin-bottom: 1.3cm;
     }
     table.table-bordered > thead > tr > th{
@@ -383,10 +383,10 @@
         text-align: center;
         vertical-align: middle;
         font-size: 8px;
-        /* padding-top: 1 !important;
+        padding-top: 1 !important;
         padding-bottom: 1 !important;
-        padding-left: 3 !important;
-        padding-right: 3 !important; */
+        padding-left: 0.3 !important;
+        padding-right: 0.3 !important;
     }
     .table tbody td {
         border: 1px solid;
@@ -396,8 +396,8 @@
         font-size: 9.2px;
         padding-top: 1.5 !important;
         padding-bottom: 1.5 !important;
-        padding-left: 3 !important;
-        padding-right: 3 !important;
+        padding-left: 0.3 !important;
+        padding-right: 0.3 !important;
         margin-bottom: 0px !important;
     }
 </style>
