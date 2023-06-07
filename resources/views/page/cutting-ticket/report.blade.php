@@ -748,71 +748,77 @@
                     </table>
                 </div>
             </div>
-            
-            <div class="row">
-                <div class="col-md-12">
-                    <table class="table table-bordered">
-                        <tbody>
-                            @php
-                                $penggabungan = [];
-                                foreach($size as $sz){
-                                    $penggabungan[$sz] = [];
-                                    foreach($data['cutting_order_record']->cuttingTicket as $ct){
-                                        if($ct->size_id == $sz){
-                                            $penggabungan[$sz][] = $ct->ticket_number;
-                                        }
-                                    }
-                                }
-                            @endphp
-                            @foreach($penggabungan as $pg)
-                                <tr>
-                                    @foreach($pg as $pgg)
-                                        <td>{{ $pgg }}</td>
-                                    @endforeach
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
 
             @php
-                $ticket = [];
-                foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $cord){
-                    $ticket[$cord->color_id] = [];
-                    foreach($size as $sz){
-                        $ticket[$cord->color_id][$sz] = [];
-                        foreach($data['cutting_order_record']->cuttingTicket as $ct){
-                            if($ct->size_id == $sz && $ct->cuttingOrderRecordDetail->color_id == $cord->color_id){
-                                $ticket[$cord->color_id][$sz][] = $ct->ticket_number;
-                            }
-                        }
-                    }
-                }
+                $length = count($data['cutting_order_record']->cuttingOrderRecordDetail);
+                $size = count($data['cutting_order_record']->cuttingTicket) / $length;
             @endphp
-
             <table class="table table-bordered">
-                <thead class="">
+                <tbody>
                     <tr>
-                        @foreach($size as $sz)
-                            <th>{{ $sz }}</th>
+                        <td rowspan="{{ $length }}">Size</td>
+                        @foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $ct)
+                            <td>{{ $ct->layer }}</td>
                         @endforeach
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach($ticket as $tk)
-                        <tr>
-                            @foreach($tk as $t)
-                                <td>
-                                    @foreach($t as $tt)
-                                        {{ $tt }}
-                                    @endforeach
-                                </td>
-                            @endforeach
-                        </tr>
-                    @endforeach
+                    <tr>
+                        <td rowspan="{{ $length }}">Layer</td>
+                        @foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $ct)
+                            <td>{{ $ct->layer }}</td>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <td rowspan="{{ $length }}">Roll</td>
+                        @foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $ct)
+                            <td>{{ $ct->fabric_roll }}</td>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <td rowspan="{{ $length }}">Batch</td>
+                        @foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $ct)
+                            <td>{{ $ct->fabric_batch }}</td>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <td rowspan="{{ $length }}">Yardage</td>
+                        @foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $ct)
+                            <td>{{ $ct->yardage }}</td>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <td rowspan="{{ $length }}">Weight</td>
+                        @foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $ct)
+                            <td>{{ $ct->weight }}</td>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <td rowspan="{{ $length }}">Joint</td>
+                        @foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $ct)
+                            <td>{{ $ct->joint }}</td>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <td rowspan="{{ $length }}">Balance End</td>
+                        @foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $ct)
+                            <td>{{ $ct->balance_end }}</td>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <td rowspan="{{ $length }}">Remarks</td>
+                        @foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $ct)
+                            <td>{{ $ct->remarks }}</td>
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <td rowspan="{{ $length }}">Operator</td>
+                        @foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $ct)
+                            <td>{{ $ct->operator }}</td>
+                        @endforeach
+                    </tr>
                 </tbody>
             </table>
+
+
             <table class="table table-bordered">
                 <thead class="">
                     <tr>
