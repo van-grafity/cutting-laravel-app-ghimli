@@ -11,29 +11,17 @@
     <style type="text/css">
         @page {
             margin-top: 1cm;
-            margin-left: 1cm;
-            margin-bottom: 0cm;
+            margin-left: 1.5cm;
+            margin-right: 1.5cm;
+            margin-bottom: 1cm;
         }
 
-		table.table-bordered > thead > tr > th{
-            border-top: 1px dotted black;
-            border-bottom: 1px dotted black;
-            border-left: 1px dotted black;
-            border-right: 1px dotted black;
-        }
-
-        .header-main { 
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-        }
-
-        .company-name {
-            float: left;
-            text-align: left;
-            font-size: 12px;
+		  table > thead > tr > th{
+            border : 1px dashed black;
         }
 
         .table thead th {
+            border: 1px dashed black;
             text-align: center;
             vertical-align: middle;
             font-size: 8px;
@@ -42,8 +30,7 @@
         }
         
         .table tbody td {
-            border: 1px dotted black;
-            text-align: center;
+            border: 1px dashed black;
             vertical-align: middle;
             font-weight: bold;
             font-size: 8px;
@@ -55,33 +42,32 @@
         
 	</style>
 </head>
-
 <body>
-    <div class="">
-        <table width="100%" style="margin-bottom: 0px !important; padding-bottom: 0px !important;">
+  <div>
+    <table width="100%" style="margin-bottom: 0px !important; padding-bottom: 0px !important; font-weight: bold;">
             <tr>
-              <td width="50%" style="font-size: 12px;">Ghim Li Indonesia</td>
-              <td width="50%" style="font-size: 12px;"></td>
-              <td width="50%" style="font-size: 12px;"></td>
+              <td width="50%" style="font-size: 11px;">Ghim Li Indonesia</td>
+              <td width="50%" style="font-size: 11px;"></td>
+              <td width="50%" style="font-size: 11px;"></td>
             </tr>
             <tr>
-              <td width="50%" style="font-size: 12px;">Date: {{ date('d/m/Y') }}</td>
-              <td width="50%" style="font-size: 12px;"></td>
-              <td width="50%" style="font-size: 12px;"></td>
+              <td width="50%" style="font-size: 11px;">Date: {{ date('d/m/Y') }}</td>
+              <td width="50%" style="font-size: 11px;"></td>
+              <td width="50%" style="font-size: 11px;"></td>
             </tr>
             <tr>
-              <td width="50%" height="10px" style="font-size: 12px;"></td>
-              <td width="50%" height="10px" style="font-size: 12px;"></td>
-              <td width="50%" height="10px" style="font-size: 12px;"></td>
+              <td width="50%" height="11px" style="font-size: 11px;"></td>
+              <td width="50%" height="11px" style="font-size: 11px;"></td>
+              <td width="50%" height="11px" style="font-size: 11px;"></td>
             </tr>
             <tr>
-              <td width="50%" style="font-size: 12px;">PAKING LIST</td>
-              <td width="50%" style="font-size: 12px;"></td>
-              <td width="50%" style="font-size: 12px;"></td>
+              <td width="50%" style="font-size: 11px;">PACKING LIST</td>
+              <td width="50%" style="font-size: 11px;"></td>
+              <td width="50%" style="font-size: 11px;"></td>
             </tr>
             <tr>
-              <td width="50%" style="font-size: 12px;">Style# : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->style->style }}</td>
-              <td width="50%" style="font-size: 12px;">Pieces :
+              <td width="50%" style="font-size: 11px;">Style# : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->style->style }}</td>
+              <td width="50%" style="font-size: 11px;">Pieces :
                 <?php 
                     $total = 0;
                     foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct){
@@ -90,105 +76,100 @@
                     echo $total;
                 ?>
               </td>
-              <td width="50%" style="font-size: 12px;">Color : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->color->color }}</td>
+              <td width="50%" style="font-size: 11px;">Color : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->color->color }}</td>
             </tr>
             <tr>
-              <td width="50%" style="font-size: 12px;">Job/PO# : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->gl->gl_number }}</td>
-              <td width="50%" style="font-size: 12px;">Bundles : {{ $data['cutting_order_record']->cuttingTicket->count() }}</td>
-              <td width="50%" style="font-size: 12px;">Roll# : {{ $data['cutting_order_record']->cuttingOrderRecordDetail->count() }}</td>
+              <td width="50%" style="font-size: 11px;">Job/PO# : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->gl->gl_number }}</td>
+              <td width="50%" style="font-size: 11px;">Bundles : {{ $data['cutting_order_record']->cuttingTicket->count() }}</td>
+              <td width="50%" style="font-size: 11px;">Roll# : {{ $data['cutting_order_record']->cuttingOrderRecordDetail->count() }}</td>
             </tr>
         </table>
-        <div>
-            <table class="table table-bordered">
-                <thead class="">
+        <div style="margin-top: 3px !important; margin-bottom: 3px !important;"></div>
+                <table class="table">
+                    <thead class="">
+                        <tr>
+                            <th rowspan="2">Roll</th>
+                            @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
+                                @for($i = 0; $i < $ct->ratio_per_size; $i++)
+                                    <th colspan="2">{{ $ct->size->size }}</th>
+                                @endfor
+                            @endforeach
+                        </tr>
+                        <tr>
+                            @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
+                                @for($i = 0; $i < $ct->ratio_per_size; $i++)
+                                    <th>Bundle</th>
+                                    <th>Qty</th>
+                                @endfor
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody style="text-align: center;">
+                        @foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $ct)
+                            <tr>
+                                <td>{{ $ct->fabric_roll }}</td>
+                                @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $sz)
+                                        @foreach($data['cutting_order_record']->cuttingTicket as $ctt)
+                                            @if($ctt->size_id == $sz->size_id && $ctt->cutting_order_record_detail_id == $ct->id)
+                                            <td> {{ $ctt->ticket_number }} </td>
+                                            <td> {{ $ctt->layer }} </td>
+                                            @endif
+                                        @endforeach
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+
+                <table class="table">
+                  <thead class="">
+                      <tr>
+                          <th>Color</th>
+                          @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
+                              <th>{{ $ct->size->size }}</th>
+                          @endforeach
+                          <th>Total</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td>{{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->color->color }}</td>
+                          @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
+                              <td style="text-align: center;">{{ $ct->ratio_per_size * $ct->qty_per_size }}</td>
+                          @endforeach
+                          <td style="text-align: center;"><?php 
+                              $total = 0;
+                              foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct){
+                                  $total += $ct->ratio_per_size * $ct->qty_per_size;
+                              }
+                              echo $total;
+                          ?></td>
+                      </tr>
+                      <tr>
+                          <td>Total</td>
+                          @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
+                              <td style="text-align: center;">{{ $ct->ratio_per_size * $ct->qty_per_size }}</td>
+                          @endforeach
+                          <td style="text-align: center;"><?php 
+                              $total = 0;
+                              foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct){
+                                  $total += $ct->ratio_per_size * $ct->qty_per_size;
+                              }
+                              echo $total;
+                          ?></td>
+                      </tr>
+                  </tbody>
+              </table>
+
+              <br>
+              <table width="100%" style="margin-bottom: 0px !important; padding-bottom: 0px !important;">
                 <tr>
-                        <th>No</th>
-                        <th>Bundle</th>
-                        <th>Size</th>
-                        <th>Qty</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @foreach($data['cutting_order_record']->cuttingTicket as $ct)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $ct->ticket_number }}</td>
-                        <td>{{ $ct->size->size }}</td>
-                        <td>{{ $ct->layer }}</td>
-                    </tr>
-                @endforeach
+                  <td style="font-size: 10px;">Checked By</td>
+                  <td style="text-align: left; !important; float: left;">_________________________</td>
+                  <td style="font-size: 10px;">Cutting Supervisor</td>
+                  <td style="text-align: left; !important; float: left;">_________________________</td>
+                </tr>
             </table>
-
-            <table class="table table-bordered">
-                <thead class="">
-                    <tr>
-                        <th>Color</th>
-                        @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
-                            <th>{{ $ct->size->size }}</th>
-                        @endforeach
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->color->color }}</td>
-                        @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
-                            <td>{{ $ct->ratio_per_size * $ct->qty_per_size }}</td>
-                        @endforeach
-                        <td><?php 
-                            $total = 0;
-                            foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct){
-                                $total += $ct->ratio_per_size * $ct->qty_per_size;
-                            }
-                            echo $total;
-                        ?></td>
-                    </tr>
-                    <tr>
-                        <td>Total</td>
-                        @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
-                            <td>{{ $ct->ratio_per_size * $ct->qty_per_size }}</td>
-                        @endforeach
-                        <td><?php 
-                            $total = 0;
-                            foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct){
-                                $total += $ct->ratio_per_size * $ct->qty_per_size;
-                            }
-                            // add pcs
-                            echo $total.' pcs';
-                        ?></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            
-        </div>
-    </body>
+    </div>
+</body>
 </html>
-
-<!-- <table class="table table-bordered">
-    <thead class="">
-        <tr>
-            <th rowspan="3">No</th>
-            <th rowspan="3">Color</th>
-            @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
-                <th colspan="2">{{ $ct->size->size }}</th>
-            @endforeach
-        </tr>
-        <tr>
-            <?php
-                foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize ?? [] as $ct){
-                    echo "<th colspan='2'>$ct->ratio_per_size</th>";
-                }
-            ?>
-        </tr>
-        <tr>
-            <?php
-                foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize ?? [] as $ct){
-                    echo "<th colspan='2'>Ticket/Qty</th>";
-                }
-            ?>
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table> -->
