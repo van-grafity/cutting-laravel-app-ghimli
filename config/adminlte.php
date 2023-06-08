@@ -437,7 +437,7 @@ return [
         ],
         ['header' => 'Forms'],
         [
-            'text' => 'Fabric Requisitoin',
+            'text' => 'Fabric Requisition',
             'url'  => '/fabric-requisition',
             'icon' => 'fas fa-fw fa fa-solid fa-file-alt',
             'can'  => 'clerk',
