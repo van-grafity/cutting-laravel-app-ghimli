@@ -372,4 +372,35 @@ class CuttingOrdersController extends Controller
         return $size_ratio;
     }
 
+    public function chartCuttingOrder() {
+        $cor = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])
+            ->select('cutting_order_records.id','laying_planning_detail_id','serial_number')->get();
+        
+        $cor_group = $cor->groupBy(function($item) {
+            $sum_layer = 0;
+            foreach ($item->cuttingOrderRecordDetail as $detail) {
+                $sum_layer += $detail->layer;
+            }
+            if ($sum_layer == $item->layingPlanningDetail->layer_qty) {
+                return 'complete';
+            } else if ($sum_layer > $item->layingPlanningDetail->layer_qty) {
+                return 'over cut';
+            } else {
+                return 'not complete';
+            }
+        });
+        
+        $cor_count = $cor_group->map(function ($item, $key) {
+            return count($item);
+        });
+        
+        $data = [
+            'complete' => $cor_count['complete'],
+            'over cut' => $cor_count['over cut'],
+            'not complete' => $cor_count['not complete'],
+        ];
+        
+        return view('home', compact('data'));
+    }
+        
 }
