@@ -253,6 +253,15 @@ $(function (e) {
             form.submit();
         }
     });
+
+    $('#gl_number').on('keyup', function(e){
+        if($(this).val().length == 5){
+            $(this).val($(this).val()+'-');
+        }
+        if($(this).val().length > 8){
+            $(this).val($(this).val().slice(0,8));
+        }
+    });
 });
 </script>
 

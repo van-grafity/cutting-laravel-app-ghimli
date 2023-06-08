@@ -425,13 +425,13 @@ return [
             'submenu' => [
                 [
                     'classes'=> 'ml-3',
-                    'text' => 'Cutting Ticket List',
-                    'url' => '/cutting-ticket',
+                    'text' => 'Create Cutting Ticket',
+                    'url' => '/cutting-ticket/create',
                 ],
                 [
                     'classes'=> 'ml-3',
-                    'text' => 'Create Cutting Ticket',
-                    'url' => '/cutting-ticket/create',
+                    'text' => 'Cutting Ticket List',
+                    'url' => '/cutting-ticket',
                 ],
             ],
         ],

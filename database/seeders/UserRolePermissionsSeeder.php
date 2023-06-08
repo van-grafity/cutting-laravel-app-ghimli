@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
+use Illuminate\Support\Facades\Hash;
 
 class UserRolePermissionsSeeder extends Seeder
 {
@@ -46,48 +47,56 @@ class UserRolePermissionsSeeder extends Seeder
         $user = \App\Models\User::factory()->create([
             'name' => 'User Admin',
             'email' => 'admin@ghimli.com',
+            'password' => Hash::make('ghimli@2024'),
         ]);
         $user->assignRole($role_super_admin);
         
         $user = \App\Models\User::factory()->create([
             'name' => 'User Planning',
             'email' => 'planning@ghimli.com',
+            'password' => Hash::make('123456789'),
         ]);
         $user->assignRole($role_planning);
 
         $user = \App\Models\User::factory()->create([
             'name' => 'User Cutting',
             'email' => 'cutting@ghimli.com',
+            'password' => Hash::make('123456789'),
         ]);
         $user->assignRole($role_cutting);
 
         $user = \App\Models\User::factory()->create([
             'name' => 'User Ticket',
             'email' => 'ticket@ghimli.com',
+            'password' => Hash::make('123456789'),
         ]);
         $user->assignRole($role_ticket);
         
         $user = \App\Models\User::factory()->create([
             'name' => 'Yenti Cutting',
             'email' => 'yenti@ghimli.com',
+            'password' => Hash::make('123456789'),
         ]);
         $user->assignRole($role_cutting);
 
         $user = \App\Models\User::factory()->create([
             'name' => 'Bela Cutting',
             'email' => 'bela@ghimli.com',
+            'password' => Hash::make('123456789'),
         ]);
         $user->assignRole($role_cutting);
 
         $user = \App\Models\User::factory()->create([
             'name' => 'Laras Cutting',
             'email' => 'laras@ghimli.com',
+            'password' => Hash::make('123456789'),
         ]);
         $user->assignRole($role_cutting);
 
         $user = \App\Models\User::factory()->create([
             'name' => 'Masri Cutting',
             'email' => 'masri@ghimli.com',
+            'password' => Hash::make('123456789'),
         ]);
         $user->assignRole($role_cutting);
     }
