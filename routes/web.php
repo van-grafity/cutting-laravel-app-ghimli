@@ -56,6 +56,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/style-data', [StylesController::class, 'dataStyle']);
     Route::get('/laying-planning-data', [LayingPlanningsController::class, 'dataLayingPlanning']);
     Route::get('/cutting-order-data', [CuttingOrdersController::class, 'dataCuttingOrder']);
+    Route::get('/cutting-order-chart', [CuttingOrdersController::class, 'chartCuttingOrder']);
     Route::get('/cutting-ticket-data', [CuttingTicketsController::class, 'dataCuttingTicket']);
     Route::get('/cutting-ticket-detail-data/{serial_number}', [CuttingTicketsController::class, 'dataCuttingTicketByCOR'])->name('cutting-ticket-detail-data'); // http://localhost/cutting-ticket-app/public/cutting-ticket-detail-data/COR-62843-MHG-001
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
