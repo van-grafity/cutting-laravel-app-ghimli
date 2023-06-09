@@ -51,7 +51,7 @@
                         </div>
                         <div class="form-group">
                             <label for="color_code">Code</label>
-                            <input type="text" class="form-control" id="color_code" name="color_code" placeholder="Enter code">
+                            <input type="text" class="form-control" id="color_code" name="color_code" placeholder="Enter code" readonly>
                         </div>
                     </div>
                     <!-- END .card-body -->
@@ -70,6 +70,22 @@
 <script type="text/javascript">
 
 $(document).ready(function(){
+    $('#color_name').on('keyup', function() {
+        let color_name = $(this).val();
+        if(color_name == "" || color_name == null || color_name == " "){
+            $('#color_code').val("");
+            return false;
+        }
+        let color_code = color_name.match(/\b(\w)/g).join('').toUpperCase();
+        if(color_code.length > 2){
+            color_code = color_code.substring(0,8);
+        }
+        let color_code_length = 8 - color_code.length;
+        for (let index = 0; index < color_code_length; index++) {
+            color_code += String.fromCharCode(Math.floor(Math.random() * 26) + 97).toUpperCase();
+        }
+        $('#color_code').val(color_code);
+    });
 
     // ## Show Flash Message
     let session = {!! json_encode(session()->all()) !!};
