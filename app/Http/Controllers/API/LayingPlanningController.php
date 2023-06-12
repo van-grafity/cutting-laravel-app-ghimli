@@ -30,9 +30,11 @@ class LayingPlanningController extends BaseController
         return $this->onSuccess($data, 'Laying Planning Detail retrieved successfully.');
     }
 
-    public function show($serial_number)
+    public function show(Request $request)
     {
-        $getCuttingOrder = CuttingOrderRecord::with(['CuttingOrderRecordDetail', 'CuttingOrderRecordDetail.color'])->where('serial_number', $serial_number)->latest()->first();
+        $input = $request->all();
+
+        $getCuttingOrder = CuttingOrderRecord::with(['CuttingOrderRecordDetail', 'CuttingOrderRecordDetail.color'])->where('serial_number', $input['serial_number'])->latest()->first();
         if ($getCuttingOrder == null) return $this->onError(404, 'Cutting Order Record not found.');
         $layingPlanningDetail = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.color'])->find($getCuttingOrder->layingPlanningDetail->id);
         if ($layingPlanningDetail->layingPlanning->color == null || $layingPlanningDetail->layingPlanning->color->id == null) return $this->onError(404, 'Color not found.');
