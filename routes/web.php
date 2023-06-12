@@ -58,7 +58,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/cutting-order-data', [CuttingOrdersController::class, 'dataCuttingOrder']);
     Route::get('/cutting-order-chart', [CuttingOrdersController::class, 'chartCuttingOrder']);
     Route::get('/cutting-ticket-data', [CuttingTicketsController::class, 'dataCuttingTicket']);
-    Route::get('/cutting-ticket-detail-data/{serial_number}', [CuttingTicketsController::class, 'dataCuttingTicketByCOR'])->name('cutting-ticket-detail-data'); // http://localhost/cutting-ticket-app/public/cutting-ticket-detail-data/COR-62843-MHG-001
+    Route::get('/cutting-ticket-detail-data/{id}', [CuttingTicketsController::class, 'dataCuttingTicketByCOR'])->name('cutting-ticket-detail-data'); // http://localhost/cutting-ticket-app/public/cutting-ticket-detail-data/COR-62843-MHG-001
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
     Route::get('/fabric-requisition-data', [FabricRequisitionsController::class, 'dataFabricRequisition']);
     Route::get('/daily-cutting-data', [DailyCuttingReportsController::class, 'dataDailyCutting']);
@@ -94,7 +94,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::resource('laying-planning',LayingPlanningsController::class);
     Route::get('/laying-planning-create', [LayingPlanningsController::class, 'layingCreate']);
     Route::get('/laying-planning-qrcode/{id}', [LayingPlanningsController::class, 'layingQrcode']);
-    Route::get('/laying-planning-report/{serial_number}', [LayingPlanningsController::class, 'layingPlanningReport'])->name('laying-planning.report');
+    Route::get('/laying-planning-report/{id}', [LayingPlanningsController::class, 'layingPlanningReport'])->name('laying-planning.report');
 
     Route::controller(LayingPlanningsController::class)
     ->prefix('laying-planning-detail')->name('laying-planning.')->group(function(){
@@ -115,8 +115,8 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::prefix('cutting-ticket')->name('cutting-ticket.')->group(function(){
         Route::post('/generate', [CuttingTicketsController::class, 'generate_ticket'])->name('generate');
         Route::get('/print/{id}', [CuttingTicketsController::class, 'print_ticket'])->name('print');
-        Route::get('/print-multiple/{serial_number}', [CuttingTicketsController::class, 'print_multiple'])->name('print-multiple');
-        Route::get('/detail/{serial_number}', [CuttingTicketsController::class, 'ticketListByCOR'])->name('detail');
+        Route::get('/print-multiple/{id}', [CuttingTicketsController::class, 'print_multiple'])->name('print-multiple');
+        Route::get('/detail/{id}', [CuttingTicketsController::class, 'ticketListByCOR'])->name('detail');
 
         Route::get('/report/{serial_number}', [CuttingTicketsController::class, 'print_report_pdf'])->name('report');
     });

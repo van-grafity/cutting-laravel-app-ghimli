@@ -44,7 +44,7 @@
         $('#cutting_ticket_table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('cutting-ticket-detail-data', $serial_number) }}",
+            ajax: "{{ route('cutting-ticket-detail-data', $id) }}",
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'ticket_number', name: 'ticket_number'},
