@@ -112,7 +112,6 @@ class CuttingOrdersController extends BaseController
         return $this->onSuccess($cuttingOrderRecordDetail, 'Cutting Order Record Detail updated successfully.');
     }
 
-    // get cutting order record by table gl id cutting_order->layingPlanningDetail->layingPlanning->gl->gl_number
     public function getCuttingOrderRecordByGlId($id)
     {
         $data = CuttingOrderRecord::whereHas('layingPlanningDetail', function ($query) use ($id) {
@@ -122,6 +121,17 @@ class CuttingOrdersController extends BaseController
                 });
             });
         })->get();
+        $data = collect(
+            [
+                'cutting_order_record' => $data
+            ]
+        );
+        return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
+    }
+
+    public function getLayingPlanningDetailByCuttingOrderRecordId($id)
+    {
+        $data = CuttingOrderRecord::with('layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.gl')->where('id', $id)->get();
         $data = collect(
             [
                 'cutting_order_record' => $data

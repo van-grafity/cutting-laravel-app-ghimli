@@ -36,6 +36,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('laying-planning', [LayingPlanningController::class, 'index']);
     Route::get('laying-planning/{serial_number}', [LayingPlanningController::class, 'show']);
     
+
     Route::get('cutting-orders', [CuttingOrdersController::class, 'index']);
     Route::get('cutting-orders/{serial_number}', [CuttingOrdersController::class, 'show']);
     Route::post('cutting-orders', [CuttingOrdersController::class, 'store']);
@@ -43,6 +44,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('cutting-orders/{id}', [CuttingOrdersController::class, 'destroy']);
     Route::get('cutting-record-remark', [RemarksController::class, 'index']);
     Route::get('cutting-orders/gl/{id}', [CuttingOrdersController::class, 'getCuttingOrderRecordByGlId']);
+    Route::get('cutting-orders/cor/{id}', [CuttingOrdersController::class, 'getLayingPlanningDetailByCuttingOrderRecordId']);
 
     Route::get('cutting-tickets', [CuttingTicketsController::class, 'index']);
     Route::get('cutting-tickets/{id}', [CuttingTicketsController::class, 'show']);
