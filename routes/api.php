@@ -30,18 +30,24 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/users', [AuthController::class, 'index']);
+
+    Route::get('/colors', [ColorController::class, 'index']);
+
     Route::get('laying-planning', [LayingPlanningController::class, 'index']);
     Route::get('laying-planning/{serial_number}', [LayingPlanningController::class, 'show']);
-    Route::get('/colors', [ColorController::class, 'index']);
+    
     Route::get('cutting-orders', [CuttingOrdersController::class, 'index']);
     Route::get('cutting-orders/{serial_number}', [CuttingOrdersController::class, 'show']);
     Route::post('cutting-orders', [CuttingOrdersController::class, 'store']);
     Route::put('cutting-orders/{id}', [CuttingOrdersController::class, 'update']);
     Route::delete('cutting-orders/{id}', [CuttingOrdersController::class, 'destroy']);
+    Route::get('cutting-record-remark', [RemarksController::class, 'index']);
+    Route::get('cutting-orders/gl/{id}', [CuttingOrdersController::class, 'getCuttingOrderRecordByGlId']);
+
     Route::get('cutting-tickets', [CuttingTicketsController::class, 'index']);
     Route::get('cutting-tickets/{id}', [CuttingTicketsController::class, 'show']);
     
 
-    Route::get('cutting-record-remark', [RemarksController::class, 'index']);
+    
 
 });
