@@ -45,6 +45,17 @@ class CuttingOrdersController extends BaseController
         );
         return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
     }
+
+    // public function show($serial_number)
+    // {
+    //     $getCuttingOrderRecordDetail = CuttingOrderRecord::where('serial_number', $serial_number)->with('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->get();
+    //     $data = collect(
+    //         [
+    //             'cutting_order_record' => $getCuttingOrderRecordDetail
+    //         ]
+    //     );
+    //     return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
+    // }
     
     public function store(Request $request)
     {
