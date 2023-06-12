@@ -18,69 +18,17 @@ use PDF;
 
 class CuttingTicketsController extends Controller
 {
-    // public function index()
-    // {
-    //     $get_cutting_tickets = CuttingTicket::all();
-
-    //     $tickets = [];
-    //     foreach ($get_cutting_tickets as $key => $ticket) {
-    //         $tickets[] = (object)[
-    //             'id' => $ticket->id,
-    //             'no' => Str::padleft($key + 1,2, '0', true),
-    //             'ticket_number' => $this->generate_ticket_number($ticket->id),
-    //             'no_laying_sheet' => $ticket->cuttingOrderRecord->layingPlanningDetail->no_laying_sheet,
-    //             'table_number' => Str::padLeft($ticket->cuttingOrderRecord->layingPlanningDetail->table_number, 3, '0'),
-    //             'color' => $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->color->color,
-    //             'size' => $ticket->size->size,
-    //             'layer' => $ticket->layer,
-    //         ];
-    //     }
-    //     return view('page.cutting-ticket.index',compact('tickets'));
-    // }
-
-    // public function dataCuttingTicket(){
-    //     $query = CuttingTicket::with([])
-    //         ->select('cutting_tickets.id','cutting_order_record_id','size_id','layer','ticket_number')->get();
-    //         return Datatables::of($query)
-    //         ->addIndexColumn()
-    //         ->escapeColumns([])
-    //         ->addColumn('ticket_number', function ($data){
-    //             return $this->generate_ticket_number($data->id);
-    //         })
-    //         ->addColumn('no_laying_sheet', function ($data){
-    //             return $data->cuttingOrderRecord->layingPlanningDetail->no_laying_sheet;
-    //         })
-    //         ->addColumn('table_number', function ($data){
-    //             return Str::padLeft($data->cuttingOrderRecord->layingPlanningDetail->table_number, 3, '0');
-    //         })
-    //         ->addColumn('color', function ($data){
-    //             return $data->cuttingOrderRecord->layingPlanningDetail->layingPlanning->color->color;
-    //         })
-    //         ->addColumn('size', function ($data){
-    //             return $data->size->size;
-    //         })
-    //         ->addColumn('layer', function ($data){
-    //             return $data->layer;
-    //         })
-    //         ->addColumn('action', function($data){
-    //             return '
-    //             <a href="'.route('cutting-ticket.print', $data->id).'" target="_blank" class="btn btn-primary btn-sm btn-print-ticket">Print</a>
-    //             <a href="javascript:void(0)" class="btn btn-info btn-sm" onclick="show_detail_ticket('. $data->id .')">Detail</a>
-    //             ';
-    //         })
-    //         ->make(true);
-    // }
     public function index()
     {
         return view('page.cutting-ticket.index');
     }
 
-    public function ticketListByCOR($serial_number)
+    public function ticketListByCOR($id)
     {
         $get_cutting_tickets = CuttingTicket::with(['cuttingOrderRecord.layingPlanningDetail.layingPlanning.color', 'size'])
             ->select('cutting_tickets.id','cutting_order_record_id','size_id','layer','ticket_number')
-            ->whereHas('cuttingOrderRecord', function($q) use ($serial_number){
-                $q->where('serial_number', $serial_number);
+            ->whereHas('cuttingOrderRecord', function($q) use ($id){
+                $q->where('id', $id);
             })
             ->get();
 
@@ -98,7 +46,9 @@ class CuttingTicketsController extends Controller
             ];
         }
 
-        return view('page.cutting-ticket.ticket-list-by-cor',compact('tickets', 'serial_number'));
+        $serial_number = $get_cutting_tickets[0]->cuttingOrderRecord->serial_number;
+
+        return view('page.cutting-ticket.ticket-list-by-cor',compact('tickets', 'serial_number', 'id'));
     }
 
     public function dataCuttingTicket(){
@@ -116,18 +66,18 @@ class CuttingTicketsController extends Controller
             })
             ->addColumn('action', function($data){
                 return '
-                <a href="'.route('cutting-ticket.print-multiple', $data->serial_number).'"  target="_blank"class="btn btn-primary btn-sm btn-print-ticket">Print</a>
-                <a href="'.route('cutting-ticket.detail', $data->serial_number).'" class="btn btn-info btn-sm">Detail</a>
+                <a href="'.route('cutting-ticket.print-multiple', $data->id).'"  target="_blank"class="btn btn-primary btn-sm btn-print-ticket">Print</a>
+                <a href="'.route('cutting-ticket.detail', $data->id).'" class="btn btn-info btn-sm">Detail</a>
                 ';
             })
             ->make(true);
     }
 
-    public function dataCuttingTicketByCOR($serial_number){
+    public function dataCuttingTicketByCOR($id){
         $query = CuttingTicket::with([])
             ->select('cutting_tickets.id','cutting_order_record_id','size_id','layer','ticket_number')
-            ->whereHas('cuttingOrderRecord', function($q) use ($serial_number){
-                $q->where('serial_number', $serial_number);
+            ->whereHas('cuttingOrderRecord', function($q) use ($id){
+                $q->where('id', $id);
             })
             ->get();
             return Datatables::of($query)
@@ -350,8 +300,8 @@ class CuttingTicketsController extends Controller
         return $pdf->stream($filename);
     }
 
-    public function print_multiple($serial_number) {
-        $cutting_order_record = CuttingOrderRecord::where('serial_number', $serial_number)->first();
+    public function print_multiple($id) {
+        $cutting_order_record = CuttingOrderRecord::where('id', $id)->first();
         $cutting_tickets = CuttingTicket::where('cutting_order_record_id', $cutting_order_record->id)->get();
         $filename = $cutting_tickets[0]->cuttingOrderRecord->serial_number . '.pdf';
         // $data = [

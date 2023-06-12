@@ -51,7 +51,7 @@
                         </div>
                         <div class="form-group">
                             <label for="color_code">Code</label>
-                            <input type="text" class="form-control" id="color_code" name="color_code" placeholder="Enter code" readonly>
+                            <input type="text" class="form-control" id="color_code" name="color_code" placeholder="Color code" readonly>
                         </div>
                     </div>
                     <!-- END .card-body -->
