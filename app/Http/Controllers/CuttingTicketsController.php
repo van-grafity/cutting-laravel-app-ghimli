@@ -18,58 +18,6 @@ use PDF;
 
 class CuttingTicketsController extends Controller
 {
-    // public function index()
-    // {
-    //     $get_cutting_tickets = CuttingTicket::all();
-
-    //     $tickets = [];
-    //     foreach ($get_cutting_tickets as $key => $ticket) {
-    //         $tickets[] = (object)[
-    //             'id' => $ticket->id,
-    //             'no' => Str::padleft($key + 1,2, '0', true),
-    //             'ticket_number' => $this->generate_ticket_number($ticket->id),
-    //             'no_laying_sheet' => $ticket->cuttingOrderRecord->layingPlanningDetail->no_laying_sheet,
-    //             'table_number' => Str::padLeft($ticket->cuttingOrderRecord->layingPlanningDetail->table_number, 3, '0'),
-    //             'color' => $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->color->color,
-    //             'size' => $ticket->size->size,
-    //             'layer' => $ticket->layer,
-    //         ];
-    //     }
-    //     return view('page.cutting-ticket.index',compact('tickets'));
-    // }
-
-    // public function dataCuttingTicket(){
-    //     $query = CuttingTicket::with([])
-    //         ->select('cutting_tickets.id','cutting_order_record_id','size_id','layer','ticket_number')->get();
-    //         return Datatables::of($query)
-    //         ->addIndexColumn()
-    //         ->escapeColumns([])
-    //         ->addColumn('ticket_number', function ($data){
-    //             return $this->generate_ticket_number($data->id);
-    //         })
-    //         ->addColumn('no_laying_sheet', function ($data){
-    //             return $data->cuttingOrderRecord->layingPlanningDetail->no_laying_sheet;
-    //         })
-    //         ->addColumn('table_number', function ($data){
-    //             return Str::padLeft($data->cuttingOrderRecord->layingPlanningDetail->table_number, 3, '0');
-    //         })
-    //         ->addColumn('color', function ($data){
-    //             return $data->cuttingOrderRecord->layingPlanningDetail->layingPlanning->color->color;
-    //         })
-    //         ->addColumn('size', function ($data){
-    //             return $data->size->size;
-    //         })
-    //         ->addColumn('layer', function ($data){
-    //             return $data->layer;
-    //         })
-    //         ->addColumn('action', function($data){
-    //             return '
-    //             <a href="'.route('cutting-ticket.print', $data->id).'" target="_blank" class="btn btn-primary btn-sm btn-print-ticket">Print</a>
-    //             <a href="javascript:void(0)" class="btn btn-info btn-sm" onclick="show_detail_ticket('. $data->id .')">Detail</a>
-    //             ';
-    //         })
-    //         ->make(true);
-    // }
     public function index()
     {
         return view('page.cutting-ticket.index');
