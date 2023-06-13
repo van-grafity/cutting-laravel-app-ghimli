@@ -34,7 +34,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/colors', [ColorController::class, 'index']);
 
     Route::get('laying-planning', [LayingPlanningController::class, 'index']);
-    Route::post('laying-planning-show', [LayingPlanningController::class, 'show']);
+    Route::get('laying-planning/{serial_number}', [LayingPlanningController::class, 'show']);
     
 
     Route::get('cutting-orders', [CuttingOrdersController::class, 'index']);
