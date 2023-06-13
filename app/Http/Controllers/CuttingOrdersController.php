@@ -323,10 +323,16 @@ class CuttingOrdersController extends Controller
             'fabric_cons' => $cutting_order->layingPlanningDetail->layingPlanning->fabricCons->name,   
             'table_number' => $cutting_order->layingPlanningDetail->table_number,   
             'buyer' => $cutting_order->layingPlanningDetail->layingPlanning->buyer->name,   
-            'size_ratio' => $this->print_size_ratio($cutting_order->layingPlanningDetail),   
+            'size_ratio' => $this->print_size_ratio($cutting_order->layingPlanningDetail),
+            'total_size_ratio' => $this->print_total_size_ratio($cutting_order->layingPlanningDetail),
             'color' => $cutting_order->layingPlanningDetail->layingPlanning->color->color,
             'layer' => $cutting_order->layingPlanningDetail->layer_qty,
+            'total_size_ratio_layer' => $this->print_total_size_ratio($cutting_order->layingPlanningDetail) * $cutting_order->layingPlanningDetail->layer_qty,
+            'total_layer' => $this->print_total_layer($cutting_order_detail),
+            'total_yardage' => $this->print_total_yardage($cutting_order_detail),
             'group' => $name,
+            'manpower' => count($this->manpower($name)),
+            'progress' => $this->duration($cutting_order_id),
             'date' => Carbon::now()->format('d-m-Y'),
         ];
 
@@ -370,6 +376,54 @@ class CuttingOrdersController extends Controller
         }
         $size_ratio = Arr::join($size_ratio, ' | ');
         return $size_ratio;
+    }
+
+    public function print_total_size_ratio($layingPlanningDetail) {
+        $get_size_ratio = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
+        $total_size_ratio = 0;
+        foreach( $get_size_ratio as $key => $size ) {
+            $total_size_ratio += $size->ratio_per_size;
+        }
+        return $total_size_ratio;
+    }
+
+    public function print_total_layer($cutting_order_detail) {
+        $total_layer = 0;
+        foreach( $cutting_order_detail as $key => $detail ) {
+            $total_layer += $detail->layer;
+        }
+        return $total_layer;
+    }
+
+    public function print_total_yardage($cutting_order_detail) {
+        $total_yardage = 0;
+        foreach( $cutting_order_detail as $key => $detail ) {
+            $total_yardage += $detail->yardage;
+        }
+        return $total_yardage;
+    }
+
+    public function manpower($name) {
+        $group = Groups::all();
+        $manpower = [];
+        foreach ($group as $key => $value) {
+            $user_group = UserGroups::where('group_id', $value->id)->get();
+            $manpower[] = [
+                'group_name' => $value->group_name,
+                'manpower' => count($user_group)
+            ];
+        }
+        return $manpower;
+    }
+
+    public function duration($cutting_order_id) {
+        $cutting_order = CuttingOrderRecord::find($cutting_order_id);
+        $cutting_order_detail = $cutting_order->cuttingOrderRecordDetail;
+        $start = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order_detail[0]->created_at);
+        $end = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order_detail[count($cutting_order_detail) - 1]->created_at);
+        $duration = $start->diffInSeconds($end);
+        $duration = $duration / 60;
+        return $duration . " minutes";
     }
 
     public function chartCuttingOrder() {

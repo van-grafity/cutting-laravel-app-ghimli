@@ -157,7 +157,7 @@
                         <th rowspan="2">Buyer </th>
                         <th rowspan="2"> {{ $data->buyer }} </th>
                         <th rowspan="2">Width <br> <i style="font-weight: 500;">Lebar</i></th>
-                        <th rowspan="2" colspan="2"> {{ $data->size_ratio }} </th>
+                        <th rowspan="2" colspan="2"> {{ $data->size_ratio }} ( {{ $data->total_size_ratio }} )</th>
                         <th colspan="2">Colour / <i style="font-weight: 500;">Warna</i></th>
                         <th colspan="3"> {{ $data->color }} </th>
                         <th rowspan="2">Laid By <br> <i style="font-weight: 500;">Dibentang Oleh</i></th>
@@ -165,7 +165,7 @@
                     </tr>
                     <tr>
                         <th colspan="2">Layer / <i style="font-weight: 500;">Lapisan</i></th>
-                        <th colspan="3">{{ $data->layer }}</th>
+                        <th colspan="3">{{ $data->layer }} </th>
                     </tr>
                     <tr>
                         <th> Place No. </th>
@@ -396,9 +396,9 @@
                         <td></td>
                         <td></td>
                         <td>Colour <br> <i style="font-weight: 500;">Warna</i></td>
-                        <td></td>
+                        <td> {{ $data->color }} </td>
                         <td>Spread Time <br> <i style="font-weight: 500;">Waktu Bentang</i></td>
-                        <td>Manpower : <br> <i style="font-weight: 500;">Tenaga Kerja</i></td>
+                        <td>Manpower : {{$data->manpower}} <br> <i style="font-weight: 500;">Tenaga Kerja</i></td>
                     </tr>
                     <tr>
                         <td style="font-size:8pt"> 16 |</td>
@@ -410,7 +410,7 @@
                         <td></td>
                         <td></td>
                         <td>Layer <br> <i style="font-weight: 500;">Lapisan</i></td>
-                        <td></td>
+                        <td style="text-align: center; vertical-align: middle;"> {{ $data->total_layer }} </td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -424,9 +424,9 @@
                         <td></td>
                         <td></td>
                         <td>Cut Qty <br> <i style="font-weight: 500;">Jumlah dipotong</i></td>
-                        <td></td>
+                        <td style="text-align: center; vertical-align: middle;"> {{$data->total_size_ratio_layer }} </td>
                         <td>Cutting Time <br> <i style="font-weight: 500;">Waktu Pemotongan</i></td>
-                        <td>Manpower : <br> <i style="font-weight: 500;">Tenaga Kerja</i></td>
+                        <td>Manpower : {{$data->manpower}} <br> <i style="font-weight: 500;">Tenaga Kerja</i></td>
                     </tr>
                     <tr>
                         <td style="font-size:8pt"> 18 |</td>
@@ -438,8 +438,8 @@
                         <td></td>
                         <td></td>
                         <td>Qty Used <br> <i style="font-weight: 500;">Jumlah dipakai</i></td>
-                        <td></td>
-                        <td></td>
+                        <td style="text-align: center; vertical-align: middle;"> {{ $data->total_yardage }} </td>
+                        <td style="text-align: center; vertical-align: middle;"> {{$data->progress}} </td>
                         <td></td>
                     </tr>
                     <tr>
@@ -454,7 +454,7 @@
                         <td>Sub Fabric <br> <i style="font-weight: 500;">Subtitusi Kain</i></td>
                         <td></td>
                         <td>Bundle Time <br> <i style="font-weight: 500;">Waktu Ikat</i></td>
-                        <td>Manpower : <br> <i style="font-weight: 500;">Tenaga Kerja</i></td>
+                        <td>Manpower : {{$data->manpower}} <br> <i style="font-weight: 500;">Tenaga Kerja</i></td>
                     </tr>
                     <tr>
                         <td style="font-size:8pt"> 20 |</td>
