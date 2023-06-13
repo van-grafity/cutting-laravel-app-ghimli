@@ -45,6 +45,17 @@ class CuttingOrdersController extends BaseController
         );
         return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
     }
+
+    // public function show($serial_number)
+    // {
+    //     $getCuttingOrderRecordDetail = CuttingOrderRecord::where('serial_number', $serial_number)->with('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->get();
+    //     $data = collect(
+    //         [
+    //             'cutting_order_record' => $getCuttingOrderRecordDetail
+    //         ]
+    //     );
+    //     return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
+    // }
     
     public function store(Request $request)
     {
@@ -112,6 +123,34 @@ class CuttingOrdersController extends BaseController
         return $this->onSuccess($cuttingOrderRecordDetail, 'Cutting Order Record Detail updated successfully.');
     }
 
+    public function getCuttingOrderRecordByGlId($id)
+    {
+        $data = CuttingOrderRecord::whereHas('layingPlanningDetail', function ($query) use ($id) {
+            $query->whereHas('layingPlanning', function ($query) use ($id) {
+                $query->whereHas('gl', function ($query) use ($id) {
+                    $query->where('id', $id);
+                });
+            });
+        })->get();
+        $data = collect(
+            [
+                'cutting_order_record' => $data
+            ]
+        );
+        return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
+    }
+
+    public function getLayingPlanningDetailByCuttingOrderRecordId($id)
+    {
+        $data = CuttingOrderRecord::with('layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.gl')->where('id', $id)->get();
+        $data = collect(
+            [
+                'cutting_order_record' => $data
+            ]
+        );
+        return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
+    }
+    
     public function destroy($id)
     {
         $cuttingOrderRecordDetail = CuttingOrderRecordDetail::find($id);
