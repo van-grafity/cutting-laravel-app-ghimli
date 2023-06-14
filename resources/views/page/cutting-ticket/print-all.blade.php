@@ -59,7 +59,7 @@
                 <td style="text-align: left; font-size: 10px;">{{ $cutting_ticket->size }} </td>
             </tr>
             <tr>
-                <td width="14%" style="text-align: left; font-size: 10px;">Color </td>
+                <td width="14%" style="text-align: left; font-size: 8px;">Color </td>
                 <td style="padding-left: 8px; padding-right: 8px; font-size: 10px;">: </td>
                 <td style="text-align: left; font-size: 10px;">{{ $cutting_ticket->color }} </td>
             </tr>
