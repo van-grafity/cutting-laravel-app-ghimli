@@ -119,7 +119,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
         Route::get('/print-multiple/{id}', [CuttingTicketsController::class, 'print_multiple'])->name('print-multiple');
         Route::get('/detail/{id}', [CuttingTicketsController::class, 'ticketListByCOR'])->name('detail');
 
-        Route::get('/report/{serial_number}', [CuttingTicketsController::class, 'print_report_pdf'])->name('report');
+        Route::get('/report/{id}', [CuttingTicketsController::class, 'print_report_pdf'])->name('report');
     });
 });
 
