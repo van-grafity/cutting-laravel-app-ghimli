@@ -48,25 +48,25 @@
             <tr>
               <td width="50%" style="font-size: 11px;">Ghim Li Indonesia</td>
               <td width="50%" style="font-size: 11px;"></td>
-              <td width="50%" style="font-size: 11px;"></td>
+              <td width="60%" style="font-size: 11px;"></td>
               <td width="50%" style="font-size: 11px;"></td>
             </tr>
             <tr>
               <td width="50%" style="font-size: 11px;">Date: {{ date('d/m/Y') }}</td>
               <td width="50%" style="font-size: 11px;"></td>
-              <td width="50%" style="font-size: 11px;"></td>
+              <td width="60%" style="font-size: 11px;"></td>
             <td width="50%" style="font-size: 11px;"></td>
             </tr>
             <tr>
               <td width="50%" height="11px" style="font-size: 11px;"></td>
               <td width="50%" height="11px" style="font-size: 11px;"></td>
-              <td width="50%" height="11px" style="font-size: 11px;"></td>
+              <td width="60%" height="11px" style="font-size: 11px;"></td>
                 <td width="50%" height="11px" style="font-size: 11px;"></td>
             </tr>
             <tr>
               <td width="50%" style="font-size: 11px;">PACKING LIST</td>
               <td width="50%" style="font-size: 11px;"></td>
-              <td width="50%" style="font-size: 11px;"></td>
+              <td width="60%" style="font-size: 11px;"></td>
               <td width="50%" style="font-size: 11px;">Table No. : {{ $data['cutting_order_record']->layingPlanningDetail->table_number }}</td>
             </tr>
             <tr>
@@ -84,13 +84,13 @@
                     echo $total;
                 ?>
               </td>
-              <td width="50%" style="font-size: 11px;">Color : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->color->color }}</td>
+              <td width="60%" style="font-size: 11px;">Color : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->color->color }}</td>
               <td width="50%" style="font-size: 11px;">Date : {{ date('d/m/Y') }}</td>
             </tr>
             <tr>
               <td width="50%" style="font-size: 11px;">Job/PO# : {{ $data['cutting_order_record']->layingPlanningDetail->layingPlanning->gl->gl_number }}</td>
               <td width="50%" style="font-size: 11px;">Bundles : {{ $data['cutting_order_record']->cuttingTicket->count() }}</td>
-              <td width="50%" style="font-size: 11px;">Roll# : {{ $data['cutting_order_record']->cuttingOrderRecordDetail->count() }}</td>
+              <td width="60%" style="font-size: 11px;">Roll# : {{ $data['cutting_order_record']->cuttingOrderRecordDetail->count() }}</td>
                 <td width="50%" style="font-size: 11px;">Page : 1 of 1</td>
             </tr>
         </table>
