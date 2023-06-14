@@ -28,6 +28,11 @@ class CuttingOrderRecord extends Model
     {
         return $this->hasMany(CuttingTicket::class, 'cutting_order_record_id', 'id');
     }
+    
+    public function statusLayer()
+    {
+        return $this->belongsTo(StatusLayer::class, 'id_status_layer_cut', 'id');
+    }
 
     
 }

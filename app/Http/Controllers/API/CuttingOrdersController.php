@@ -9,6 +9,7 @@ use App\Models\CuttingOrderRecordDetail;
 use App\Models\LayingPlanningDetail;
 use App\Models\Color;
 use App\Models\Remark;
+use App\Models\StatusLayer;
 use App\Http\Traits\ApiHelpers;
 
 class CuttingOrdersController extends BaseController
@@ -59,9 +60,25 @@ class CuttingOrdersController extends BaseController
     
     public function store(Request $request)
     {
+
+        // foreach ($data->cuttingOrderRecordDetail as $detail) {
+        //     $sum_layer += $detail->layer;
+        // }
+        // if ($sum_layer == $data->layingPlanningDetail->layer_qty) {
+        //     $status = '<span class="badge badge-success">Complete</span>';
+        // } else if ($sum_layer > $data->layingPlanningDetail->layer_qty) {
+        //     $status = '<span class="badge badge-danger">Over Cut</span>';
+        // } else {
+        //     $status = '<span class="badge badge-warning">Not Complete</span>';
+        // }
         $input = $request->all();
-        $cuttingOrderRecord = CuttingOrderRecord::where('serial_number', $input['serial_number'])->first();
+        $cuttingOrderRecord = CuttingOrderRecord::with('CuttingOrderRecordDetail')->where('serial_number', $input['serial_number'])->first();
+        $sum_layer = 0;
+        foreach ($cuttingOrderRecord->cuttingOrderRecordDetail as $detail) {
+            $sum_layer += $detail->layer;
+        }
         $cuttingOrderRecordDetail = new CuttingOrderRecordDetail;
+        
         $cuttingOrderRecordDetail->cutting_order_record_id = $cuttingOrderRecord->id;
         $cuttingOrderRecordDetail->fabric_roll = $input['fabric_roll'];
         $cuttingOrderRecordDetail->fabric_batch = $input['fabric_batch'];
@@ -82,8 +99,24 @@ class CuttingOrdersController extends BaseController
 
         $cuttingOrderRecordDetail->remarks = $input['remarks'];
         $cuttingOrderRecordDetail->operator = $input['operator'];
-        $cuttingOrderRecordDetail->save();
 
+        $sum_layer += $input['layer'];
+        if ($sum_layer == $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
+            $status = StatusLayer::where('name', 'completed')->first();
+            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
+            $cuttingOrderRecord->id_status_layer_cut = $status->id;
+        } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
+            $status = StatusLayer::where('name', 'over cut')->first();
+            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
+            $cuttingOrderRecord->id_status_layer_cut = $status->id;
+        } else {
+            $status = StatusLayer::where('name', 'not completed')->first();
+            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
+            $cuttingOrderRecord->id_status_layer_cut = $status->id;
+        }
+        
+        $cuttingOrderRecordDetail->save();
+        $cuttingOrderRecord->save();
         $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('cuttingOrderRecordDetail')
             ->get();
         $data = collect(

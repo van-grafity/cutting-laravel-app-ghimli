@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Database\Seeders\RolessTableSeeder;
 use Database\Seeders\UsersTableSeeder;
 use Database\Seeders\ColorsTableSeeder;
+use Database\Seeders\StatusLayerTableSeeder;
 use Database\Seeders\SizesTableSeeder;
 use Database\Seeders\BuyersTableSeeder;
 use Database\Seeders\GlsTableSeeder;
@@ -40,6 +41,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserRolePermissionsSeeder::class);
         $this->call(ColorsTableSeeder::class);
         $this->call(SizesTableSeeder::class);
+        $this->call(StatusLayerTableSeeder::class);
         $this->call(BuyersTableSeeder::class);
         $this->call(GlsTableSeeder::class);
         $this->call(StylesTableSeeder::class);

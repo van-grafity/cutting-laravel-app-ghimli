@@ -11,6 +11,7 @@ use App\Models\LayingPlanningDetailSize;
 use App\Models\User;
 use App\Models\UserGroups;
 use App\Models\Groups;
+use App\Models\StatusLayer;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -47,7 +48,7 @@ class CuttingOrdersController extends Controller
     }
 
     public function dataCuttingOrder(){
-        $query = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])
+        $query = CuttingOrderRecord::with(['statusLayer', 'layingPlanningDetail', 'cuttingOrderRecordDetail'])
             ->select('cutting_order_records.id','laying_planning_detail_id','serial_number')->get();
             return Datatables::of($query)
             ->addIndexColumn()
