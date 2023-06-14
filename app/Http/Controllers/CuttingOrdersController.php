@@ -341,6 +341,26 @@ class CuttingOrdersController extends Controller
         return $pdf->stream($filename);
     }
 
+    function getDataCompleteCuttingOrder(Request $request) {
+        $input = $request->all();
+        // $date_filter = $request->filter_date ? $request->filter_date : Carbon::now()->toDateString();
+        $cuttingOrderRecord = CuttingOrderRecord::with(['layingPlanningDetail', 'layingPlanningDetail.layingPlanningDetailSize.size', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color', 'cuttingTicket', 'cuttingTicket.cuttingOrderRecordDetail', 'cuttingTicket.cuttingOrderRecordDetail.color', 'cuttingTicket.size', 'cuttingTicket.size.size', 'cuttingTicket.size.ratio_per_size'])
+            ->whereHas('layingPlanningDetail', function($query) use ($input) {
+                $query->whereHas('layingPlanning', function($query) use ($input) {
+                    $query->where('gl_id', 12);
+                    // $query->where('color_id', $input['color_id']);
+                });
+            })
+            // ->whereHas('cuttingOrderRecordDetail', function($query) use ($input) {
+            //     $query->where('layer', $query->sum('layer'));
+            // })
+            ->where('created_at', 'like', '2023-04-17')
+            ->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $cuttingOrderRecord
+        ], 200);
+    }
     function generate_serial_number($layingPlanningDetail){
         $gl_number = $layingPlanningDetail->layingPlanning->gl->gl_number;
         $color_code = $layingPlanningDetail->layingPlanning->color->color_code;
