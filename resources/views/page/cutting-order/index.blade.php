@@ -24,8 +24,8 @@
                                 <th width="11%" scope="col" class="">No Lay Sheet</th>
                                 <th scope="col" class="">Color</th>
                                 <th width="8%" scope="col" class="">Table No</th>
-                                <th scope="col" class="">Status</th>
                                 <th scope="col" class="">Status Lay</th>
+                                <th hidden scope="col" class=""></th>
                                 <th scope="col" class="">Status Cut</th>
                                 <th width="22%" scope="col" class="">Action</th>
                             </tr>
@@ -81,7 +81,7 @@
                 {data: 'color', name: 'color'},
                 {data: 'table_number', name: 'table_number'},
                 {data: 'status', name: 'status'},
-                {data: 'status_lay', name: 'status_layer'},
+                {data: 'status_lay', name: 'status_layer', visible: false},
                 {data: 'status_cut', name: 'status_cut'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
