@@ -68,6 +68,21 @@ class CuttingOrdersController extends Controller
             ->addColumn('table_number', function ($data){
                 return $data->layingPlanningDetail->table_number;
             })
+            ->addColumn('status', function($data){
+                $sum_layer = 0;
+                $status = '';
+                foreach ($data->cuttingOrderRecordDetail as $detail) {
+                    $sum_layer += $detail->layer;
+                }
+                if ($sum_layer == $data->layingPlanningDetail->layer_qty) {
+                    $status = '<span class="badge badge-success">Complete</span>';
+                } else if ($sum_layer > $data->layingPlanningDetail->layer_qty) {
+                    $status = '<span class="badge badge-danger">Over Cut</span>';
+                } else {
+                    $status = '<span class="badge badge-warning">Not Complete</span>';
+                }
+                return $status;
+            })
             ->addColumn('status_lay', function($data){
                 $status = '';
                 if ($data->statusLayer->name == 'completed') {
