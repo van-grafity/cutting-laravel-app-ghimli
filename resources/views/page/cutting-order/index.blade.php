@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -21,11 +21,12 @@
                             <tr>
                                 <th scope="col" class="">No. </th>
                                 <th scope="col" class="">Serial Number</th>
-                                <th scope="col" class="">No Laying Sheet</th>
+                                <th width="11%" scope="col" class="">No Lay Sheet</th>
                                 <th scope="col" class="">Color</th>
-                                <th scope="col" class="">Table No</th>
-                                <th scope="col" class="">Status</th>
-                                <th scope="col" class="">Action</th>
+                                <th width="8%" scope="col" class="">Table No</th>
+                                <th scope="col" class="">Status Lay</th>
+                                <th scope="col" class="">Status Cut</th>
+                                <th width="22%" scope="col" class="">Action</th>
                             </tr>
                         </thead>
                         <!-- <tbody>
@@ -78,7 +79,8 @@
                 {data: 'no_laying_sheet', name: 'no_laying_sheet'},
                 {data: 'color', name: 'color'},
                 {data: 'table_number', name: 'table_number'},
-                {data: 'status', name: 'status'},
+                {data: 'status_lay', name: 'status_layer'},
+                {data: 'status_cut', name: 'status_cut'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
             lengthChange: true,

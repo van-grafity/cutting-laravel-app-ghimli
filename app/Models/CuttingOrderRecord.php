@@ -31,7 +31,12 @@ class CuttingOrderRecord extends Model
     
     public function statusLayer()
     {
-        return $this->belongsTo(StatusLayer::class, 'id_status_layer_cut', 'id');
+        return $this->belongsTo(StatusLayer::class, 'id_status_layer', 'id');
+    }
+    
+    public function statusCut()
+    {
+        return $this->belongsTo(StatusCut::class, 'id_status_cut', 'id');
     }
 
     

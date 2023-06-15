@@ -104,20 +104,20 @@ class CuttingOrdersController extends BaseController
         if ($sum_layer == $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
             $status = StatusLayer::where('name', 'completed')->first();
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
-            $cuttingOrderRecord->id_status_layer_cut = $status->id;
+            $cuttingOrderRecord->id_status_layer = $status->id;
         } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
             $status = StatusLayer::where('name', 'over cut')->first();
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
-            $cuttingOrderRecord->id_status_layer_cut = $status->id;
+            $cuttingOrderRecord->id_status_layer = $status->id;
         } else {
             $status = StatusLayer::where('name', 'not completed')->first();
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
-            $cuttingOrderRecord->id_status_layer_cut = $status->id;
+            $cuttingOrderRecord->id_status_layer = $status->id;
         }
         
         $cuttingOrderRecordDetail->save();
         $cuttingOrderRecord->save();
-        $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('cuttingOrderRecordDetail')
+        $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('statusLayer', 'cuttingOrderRecordDetail')
             ->get();
         $data = collect(
             [

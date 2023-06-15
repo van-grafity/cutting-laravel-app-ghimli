@@ -49,7 +49,7 @@ class CuttingOrdersController extends Controller
 
     public function dataCuttingOrder(){
         $query = CuttingOrderRecord::with(['statusLayer', 'layingPlanningDetail', 'cuttingOrderRecordDetail'])
-            ->select('cutting_order_records.id','laying_planning_detail_id','serial_number')->get();
+            ->select('cutting_order_records.id','laying_planning_detail_id','serial_number', 'id_status_layer')->get();
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
@@ -68,18 +68,23 @@ class CuttingOrdersController extends Controller
             ->addColumn('table_number', function ($data){
                 return $data->layingPlanningDetail->table_number;
             })
-            ->addColumn('status', function($data){
-                $sum_layer = 0;
+            ->addColumn('status_lay', function($data){
                 $status = '';
-                foreach ($data->cuttingOrderRecordDetail as $detail) {
-                    $sum_layer += $detail->layer;
-                }
-                if ($sum_layer == $data->layingPlanningDetail->layer_qty) {
-                    $status = '<span class="badge badge-success">Complete</span>';
-                } else if ($sum_layer > $data->layingPlanningDetail->layer_qty) {
-                    $status = '<span class="badge badge-danger">Over Cut</span>';
+                if ($data->statusLayer->name == 'completed') {
+                    $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
+                } else if ($data->statusLayer->name == 'over cut') {
+                    $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
                 } else {
-                    $status = '<span class="badge badge-warning">Not Complete</span>';
+                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
+                }
+                return $status;
+            })
+            ->addColumn('status_cut', function($data){
+                $status = '';
+                if ($data->cuttingOrderRecordDetail->isEmpty()) {
+                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Potong</span>';
+                } else {
+                    $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Sudah Potong</span>';
                 }
                 return $status;
             })
@@ -176,15 +181,15 @@ class CuttingOrdersController extends Controller
         if ($this->print_total_layer($cutting_order_detail) == $layingPlanningDetail->layer_qty) {
             $status = StatusLayer::where('name', 'completed')->first();
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
-            $getCuttingOrder->id_status_layer_cut = $status->id;
+            $getCuttingOrder->id_status_layer = $status->id;
         } else if ($this->print_total_layer($cutting_order_detail) > $layingPlanningDetail->layer_qty) {
             $status = StatusLayer::where('name', 'over cut')->first();
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
-            $getCuttingOrder->id_status_layer_cut = $status->id;
+            $getCuttingOrder->id_status_layer = $status->id;
         } else {
             $status = StatusLayer::where('name', 'not completed')->first();
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
-            $getCuttingOrder->id_status_layer_cut = $status->id;
+            $getCuttingOrder->id_status_layer = $status->id;
         }
         $getCuttingOrder->save();
         return view('page.cutting-order.detail', compact('cutting_order','cutting_order_detail'));
