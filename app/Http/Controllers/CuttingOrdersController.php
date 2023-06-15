@@ -92,7 +92,7 @@ class CuttingOrdersController extends Controller
                 return $action;
             })
             ->make(true);
-    }
+        }
 
     public function createNota($laying_planning_detail_id) {
         $layingPlanningDetail = LayingPlanningDetail::find($laying_planning_detail_id);
@@ -173,6 +173,20 @@ class CuttingOrdersController extends Controller
 
         $cutting_order = (object)$cutting_order;
 
+        if ($this->print_total_layer($cutting_order_detail) == $layingPlanningDetail->layer_qty) {
+            $status = StatusLayer::where('name', 'completed')->first();
+            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
+            $getCuttingOrder->id_status_layer_cut = $status->id;
+        } else if ($this->print_total_layer($cutting_order_detail) > $layingPlanningDetail->layer_qty) {
+            $status = StatusLayer::where('name', 'over cut')->first();
+            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
+            $getCuttingOrder->id_status_layer_cut = $status->id;
+        } else {
+            $status = StatusLayer::where('name', 'not completed')->first();
+            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
+            $getCuttingOrder->id_status_layer_cut = $status->id;
+        }
+        $getCuttingOrder->save();
         return view('page.cutting-order.detail', compact('cutting_order','cutting_order_detail'));
     }
 
