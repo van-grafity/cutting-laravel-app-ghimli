@@ -33,17 +33,36 @@ class LayingPlanningController extends BaseController
     public function show(Request $request)
     {
         $input = $request->all();
-        $getCuttingOrder = CuttingOrderRecord::with(['CuttingOrderRecordDetail', 'CuttingOrderRecordDetail.color'])->where('serial_number', $input['serial_number'])->latest()->first();
-        if ($getCuttingOrder == null) return $this->onError(404, 'Cutting Order Record not found.');
+        $getCuttingOrder = CuttingOrderRecord::with(['layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.color', 'CuttingOrderRecordDetail', 'CuttingOrderRecordDetail.color'])->where('serial_number', $input['serial_number'])->latest()->first();
+        if ($getCuttingOrder == null) return $this->onSuccess(null, 'Cutting Order not found.');
         $layingPlanningDetail = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.color'])->find($getCuttingOrder->layingPlanningDetail->id);
         if ($layingPlanningDetail->layingPlanning->color == null || $layingPlanningDetail->layingPlanning->color->id == null) return $this->onError(404, 'Color not found.');
         // if ($layingPlanningDetail->marker_yard == null) return $layingPlanningDetail->marker_yard = 0;
+        // foreach ($data->cuttingOrderRecordDetail as $detail) {
+        //     $sum_layer += $detail->layer;
+        // }
+        // if ($sum_layer == $data->layingPlanningDetail->layer_qty) {
+        //     $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
+        // } else if ($sum_layer > $data->layingPlanningDetail->layer_qty) {
+        //     $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
+        // } else {
+        //     $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
+        // }
+        $status = $getCuttingOrder->statusLayer->name ?? 'not completed';
         $data = collect(
             [
-                // 'cutting_order_record' => $getCuttingOrder,
-                'laying_planning_detail' => $layingPlanningDetail,
+                'laying_planning_detail' => $getCuttingOrder->layingPlanningDetail->load('layingPlanning', 'layingPlanning.color', 'cuttingOrderRecord', 'cuttingOrderRecord.statusLayer', 'cuttingOrderRecord.cuttingOrderRecordDetail', 'cuttingOrderRecord.cuttingOrderRecordDetail.color'),
+                // 'laying_planning_detail' => $getCuttingOrder->load('layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.color', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color'),
+                'status' => $status
             ]
         );
-        return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
+
+        if ($status == 'completed') {
+            return $this->onSuccess($data, 'completed');
+        } else if ($status == 'over layer') {
+            return $this->onSuccess($data, 'over layer');
+        } else {
+            return $this->onSuccess($data, 'not completed');
+        }
     }
 }

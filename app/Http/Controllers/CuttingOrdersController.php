@@ -87,7 +87,7 @@ class CuttingOrdersController extends Controller
                 $status = '';
                 if ($data->statusLayer->name == 'completed') {
                     $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
-                } else if ($data->statusLayer->name == 'over cut') {
+                } else if ($data->statusLayer->name == 'over layer') {
                     $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
                 } else {
                     $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
@@ -195,15 +195,27 @@ class CuttingOrdersController extends Controller
 
         if ($this->print_total_layer($cutting_order_detail) == $layingPlanningDetail->layer_qty) {
             $status = StatusLayer::where('name', 'completed')->first();
-            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
+            if ($status == null) {
+                $status = StatusLayer::create([
+                    'name' => 'completed'
+                ]);
+            }
             $getCuttingOrder->id_status_layer = $status->id;
         } else if ($this->print_total_layer($cutting_order_detail) > $layingPlanningDetail->layer_qty) {
-            $status = StatusLayer::where('name', 'over cut')->first();
-            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
+            $status = StatusLayer::where('name', 'over Layer')->first();
+            if ($status == null) {
+                $status = StatusLayer::create([
+                    'name' => 'over Layer'
+                ]);
+            }
             $getCuttingOrder->id_status_layer = $status->id;
         } else {
             $status = StatusLayer::where('name', 'not completed')->first();
-            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
+            if ($status == null) {
+                $status = StatusLayer::create([
+                    'name' => 'not completed'
+                ]);
+            }
             $getCuttingOrder->id_status_layer = $status->id;
         }
         $getCuttingOrder->save();
@@ -493,7 +505,7 @@ class CuttingOrdersController extends Controller
             if ($sum_layer == $item->layingPlanningDetail->layer_qty) {
                 return 'complete';
             } else if ($sum_layer > $item->layingPlanningDetail->layer_qty) {
-                return 'over cut';
+                return 'over layer';
             } else {
                 return 'not complete';
             }
@@ -505,7 +517,7 @@ class CuttingOrdersController extends Controller
         
         $data = [
             'complete' => $cor_count['complete'],
-            'over cut' => $cor_count['over cut'],
+            'over layer' => $cor_count['over layer'],
             'not complete' => $cor_count['not complete'],
         ];
         
