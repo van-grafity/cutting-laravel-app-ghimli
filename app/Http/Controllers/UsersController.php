@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserGroups;
+use App\Models\Groups;
 use App\Models\Role;
 use Yajra\Datatables\Datatables;
 
@@ -18,12 +20,14 @@ class UsersController extends Controller
     {
         $users = User::all();
         $roles = Role::all();
-        return view('page.user.index', compact('users','roles'));
+        $groups = Groups::all();
+        return view('page.user.index', compact('users','roles','groups'));
     }
-
+    
     public function dataUser()
     {
-        $query = User::get();
+        $userGroups = UserGroups::all();
+        $query = User::with('roles')->get();
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
@@ -35,6 +39,10 @@ class UsersController extends Controller
             })
             ->addColumn('role', function($data){
                 return $data->roles->isNotEmpty() ? $data->roles[0]->name : 'Not Assigned';
+            })
+            ->addColumn('group', function($data) use ($userGroups){
+                $group = $userGroups->where('user_id', $data->id)->first();
+                return $group ? $group->groups->group_name : '-';
             })
             ->make(true);
     }
@@ -77,6 +85,13 @@ class UsersController extends Controller
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
             ]);
+
+            // group userGroup
+            // $userGroup = UserGroups::firstOrCreate([
+            //     'user_id' => $user->id,
+            //     'group_id' => $request->group,
+            // ]);
+
             $user->save();
             $user->assignRole($request->role);
 

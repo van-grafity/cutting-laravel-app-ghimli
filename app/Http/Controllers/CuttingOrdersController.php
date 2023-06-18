@@ -388,6 +388,18 @@ class CuttingOrdersController extends Controller
         return $pdf->stream($filename);
     }
 
+    public function getCuttingOrderRecordByDate($date)
+    {
+        $data = CuttingOrderRecord::whereDate('created_at', $date)->with('layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.gl', 'layingPlanningDetail.layingPlanning.color', 'statusLayer', 'statusCut', 'cuttingOrderRecordDetail')
+            ->get();
+        $data = collect(
+            [
+                'cutting_order_record' => $data
+            ]
+        );
+        return $data;
+    }
+
     function getDataCompleteCuttingOrder(Request $request) {
         $input = $request->all();
         // $date_filter = $request->filter_date ? $request->filter_date : Carbon::now()->toDateString();

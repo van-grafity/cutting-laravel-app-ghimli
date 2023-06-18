@@ -12,6 +12,8 @@ class CuttingOrderRecord extends Model
     protected $fillable = [
         'serial_number',
         'laying_planning_detail_id',
+        'id_status_layer',
+        'id_status_cut',
     ];
 
     public function layingPlanningDetail()
