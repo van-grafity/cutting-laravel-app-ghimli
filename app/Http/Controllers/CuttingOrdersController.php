@@ -98,9 +98,9 @@ class CuttingOrdersController extends Controller
             ->addColumn('status_cut', function($data){
                 $status = '';
                 if ($data->statusCut->name == 'sudah') {
-                    $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Sudah</span>';
+                    $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Sudah Potong</span>';
                 } else {
-                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum</span>';
+                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Potong</span>';
                 }
                 return $status;
             })
