@@ -87,18 +87,19 @@ class UsersController extends Controller
             ]);
 
             // group userGroup
-            // $userGroup = UserGroups::firstOrCreate([
-            //     'user_id' => $user->id,
-            //     'group_id' => $request->group,
-            // ]);
+            $userGroup = UserGroups::firstOrCreate([
+                'user_id' => $user->id,
+                'group_id' => $request->group,
+            ]);
 
             $user->save();
             $user->assignRole($request->role);
+            $userGroup->save();
 
             return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Added!');
             
         } catch (\Throwable $th){
-            return redirect('/user-management')->with('error', $ex->getMessage());
+            return redirect('/user-management')->with('error', $th->getMessage());
         }
 
         try {

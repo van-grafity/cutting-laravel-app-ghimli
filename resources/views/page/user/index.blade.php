@@ -70,7 +70,7 @@
                             <select class="form-control select2" id="group" name="group" style="width: 100%;" data-placeholder="Choose Group">
                                 <option value="">Choose Group</option>
                                 @foreach ($groups as $group)
-                                    <option value="{{ $group->group_name }}">{{ $group->group_name }}</option>
+                                    <option value="{{ $group->id }}">{{ $group->group_name }}</option>
                                 @endforeach
                             </select>
                         </div>
