@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\UserGroups;
 use App\Models\Groups;
 use App\Models\StatusLayer;
+use App\Models\StatusCut;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -48,8 +49,8 @@ class CuttingOrdersController extends Controller
     }
 
     public function dataCuttingOrder(){
-        $query = CuttingOrderRecord::with(['statusLayer', 'layingPlanningDetail', 'cuttingOrderRecordDetail'])
-            ->select('cutting_order_records.id','laying_planning_detail_id','serial_number', 'id_status_layer')->get();
+        $query = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'layingPlanningDetail', 'cuttingOrderRecordDetail'])
+            ->select('cutting_order_records.id','laying_planning_detail_id','serial_number', 'id_status_layer', 'id_status_cut')->get();
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
@@ -96,10 +97,10 @@ class CuttingOrdersController extends Controller
             })
             ->addColumn('status_cut', function($data){
                 $status = '';
-                if ($data->cuttingOrderRecordDetail->isEmpty()) {
-                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Potong</span>';
+                if ($data->statusCut->name == 'sudah') {
+                    $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Sudah</span>';
                 } else {
-                    $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Sudah Potong</span>';
+                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum</span>';
                 }
                 return $status;
             })
