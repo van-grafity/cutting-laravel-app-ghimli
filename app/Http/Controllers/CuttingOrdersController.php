@@ -13,6 +13,7 @@ use App\Models\UserGroups;
 use App\Models\Groups;
 use App\Models\StatusLayer;
 use App\Models\StatusCut;
+use App\Models\LayingPlanning;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -391,14 +392,12 @@ class CuttingOrdersController extends Controller
 
     public function getCuttingOrderRecordByDate($date)
     {
-        $data = CuttingOrderRecord::whereDate('created_at', $date)->with('layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.gl', 'layingPlanningDetail.layingPlanning.color', 'statusLayer', 'statusCut', 'cuttingOrderRecordDetail')
-            ->get();
-        $data = collect(
-            [
-                'cutting_order_record' => $data
-            ]
-        );
-        return $data;
+        $data = CuttingOrderRecord::all();
+        $data = $data->filter(function($item) use ($date) {
+            return Carbon::parse($item->created_at)->format('Y-m-d') == $date;
+        });
+        $pdf = PDF::loadView('page.cutting-order.daily-cutting-output-report', compact('data'))->setPaper('a4', 'landscape');
+        return $pdf->stream('Daily Cutting Output Report.pdf');
     }
 
     function getDataCompleteCuttingOrder(Request $request) {
