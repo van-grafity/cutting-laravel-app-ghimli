@@ -66,7 +66,7 @@
                         </div>
                         <!-- group -->
                         <div class="form-group">
-                            <label for="gl" class="form-label">Group</label>
+                            <label for="group" class="form-label">Group</label>
                             <select class="form-control select2" id="group" name="group" style="width: 100%;" data-placeholder="Choose Group">
                                 <option value="">Choose Group</option>
                                 @foreach ($groups as $group)
@@ -216,6 +216,7 @@ $(function (e) {
         form.find('#role').val(result.roles[0].name).trigger('change');
         form.find('input[name="name"]').val(result.name);
         form.find('input[name="email"]').val(result.email);
+        form.find('#group').val(result.group).trigger('change');
     }
 
     async function delete_user(user_id) {

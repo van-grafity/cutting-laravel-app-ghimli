@@ -55,8 +55,13 @@ class UsersController extends Controller
 
     public function show($id){
         try {
+            $userGroups = UserGroups::all();
             $data = User::with('roles')->find($id);
-            return response()->json($data, 200);
+            $group = Groups::all();
+            $userGroup = $userGroups->where('user_id', $id)->first();
+            $data->group = $userGroup ? $userGroup->group_id : null;
+            $data->group_name = $userGroup ? $userGroup->groups->group_name : null;
+            return response()->json($data,200);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
