@@ -21,24 +21,8 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="mb-1 header-wrapper">
-                        <div class="date-filter">
-                            <div class="form-group">
-                                <!-- <label for="filter_date" class="form-label">Filter Date</label> -->
-                                <div class="input-group date" id="filter_date" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" data-target="#filter_date" name="filter_date" id="filter_date_input"/>
-                                    <div class="input-group-append" data-target="#filter_date" data-toggle="datetimepicker">
-                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                        </div>
-                        <div class="action-button-group">
-                            <!-- onClick date -->
-                            <a href="{{ route('cutting-order.date', ['date' => date('2023-05-31')]) }}" class="btn btn-primary mb-2" id="btn_print_report" style="height: fit-content" target="_blank">Print Report</a>
-                            <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_filter_search" style="height: fit-content">Search</a>
-                        </div>
+                    <div class="content-title text-center">
+                        <h3>Cutting Order Record List</h3>
                     </div>
                     <div class="d-flex justify-content-end mb-1">
                         <a href="javascript:void(0);" class="btn btn-success mb-2 d-none" id="btn_modal_create">Create</a>

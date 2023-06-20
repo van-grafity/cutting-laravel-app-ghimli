@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\LayingPlanning;
+use App\Models\LayingPlanningDetailSize;
 use App\Models\Gl;
 use App\Models\CuttingOrderRecordDetail;
+use App\Models\CuttingOrderRecord;
 
 use Carbon\Carbon;
 use Yajra\Datatables\Datatables;
@@ -64,14 +66,19 @@ class DailyCuttingReportsController extends Controller
 
     public function dailyCuttingReport(Request $request) {
         $date_filter = $request->date;
-        $data_daily_cutting = $this->calculate_daily_cutting($date_filter);
+        // where('created_at','>=', Carbon::createFromFormat('Y-m-d', $date_filter)->startOfDay()->toDateTimeString())->where('created_at','<=', Carbon::createFromFormat('Y-m-d', $date_filter)->endOfDay()->toDateTimeString()
+        $data_daily_cutting = CuttingOrderRecord::with(['layingPlanningDetail', 'layingPlanningDetail.layingPlanningDetailSize.size', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.gl', 'layingPlanningDetail.layingPlanning.color', 'layingPlanningDetail.layingPlanning.gl.buyer', 'layingPlanningDetail.layingPlanning.style', 'layingPlanningDetail.layingPlanning.color', 'CuttingOrderRecordDetail', 'CuttingOrderRecordDetail.color'])
+        ->whereHas('cuttingOrderRecordDetail', function($query) {
+            $query->whereNotNull('cutting_order_record_id');
+        })
+        ->whereHas('cuttingOrderRecordDetail', function($query) use ($date_filter) {
+            $query->whereDate('created_at', $date_filter);
+        })
+        ->get();
         $filename = 'Daily Cutting Output Report';
-        // dd($data_daily_cutting);
-
-        // return view('page.daily-cutting-report.print', compact('data_daily_cutting'));
-        $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data_daily_cutting'))->setPaper('a4', 'landscape');
+        $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data_daily_cutting', 'date_filter'))->setPaper('a4', 'landscape');
         return $pdf->stream($filename);
-        return response()->json($data_daily_cutting);
+        return response()->json($data_daily_cutting, 200);
     }
 
     function calculate_daily_cutting($date_filter) {
@@ -221,5 +228,14 @@ class DailyCuttingReportsController extends Controller
                             
         $result = $daily_detail_all_operator;
         return $result;
+    }
+
+    public function print_total_size_ratio($layingPlanningDetail) {
+        $get_size_ratio = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
+        $total_size_ratio = 0;
+        foreach( $get_size_ratio as $key => $size ) {
+            $total_size_ratio += $size->ratio_per_size;
+        }
+        return $total_size_ratio;
     }
 }

@@ -35,7 +35,6 @@
                             </div>
                         </div>
                         <div class="action-button-group">
-                            <a href="{{ route('cutting-order.data-complete') }}" class="btn btn-primary mb-2" id="btn_print_report" style="height: fit-content" target="_blank">Print Report</a>
                             <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_filter_search" style="height: fit-content">Search</a>
                         </div>
                     </div>
