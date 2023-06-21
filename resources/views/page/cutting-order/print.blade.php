@@ -77,7 +77,7 @@
         .header-subtitle td {
             vertical-align: bottom;
             border-bottom: 1px solid;
-            font-size:12px;
+            font-size:11px;
         }
         .header-subtitle td.no-border {
             border: none;
@@ -132,7 +132,7 @@
                     <td width="110" class="" >: {{ $data->gl_number}} </td>
                     <td width="100" class="no-border text-right">Portion</td>
                     <td width="100" class="">: {{ $data->fabric_cons }} </td>
-                    <td width="100" class="no-border"></td>
+                    <td width="25" class="no-border"></td>
                     <td width="80" class="subtitle-right"> 
                         No : {{ $data->no_laying_sheet}} <br> 
                         Date : {{ $data->date }} 
