@@ -125,7 +125,7 @@
                             </div>
                         </div>
                         <hr>
-                        <h5 style="font-weight:700">Fabric Consumpition</h5>
+                        <h5 style="font-weight:700">Fabric Consumption</h5>
                         <div class="row">
                             <div class="col-md-4 col-sm-6">
                                 <div class="form-group">

@@ -10,6 +10,7 @@ use App\Models\LayingPlanningDetail;
 use App\Models\Color;
 use App\Models\Remark;
 use App\Models\StatusLayer;
+use App\Models\StatusCut;
 use App\Http\Traits\ApiHelpers;
 
 class CuttingOrdersController extends BaseController
@@ -60,17 +61,6 @@ class CuttingOrdersController extends BaseController
     
     public function store(Request $request)
     {
-
-        // foreach ($data->cuttingOrderRecordDetail as $detail) {
-        //     $sum_layer += $detail->layer;
-        // }
-        // if ($sum_layer == $data->layingPlanningDetail->layer_qty) {
-        //     $status = '<span class="badge badge-success">Complete</span>';
-        // } else if ($sum_layer > $data->layingPlanningDetail->layer_qty) {
-        //     $status = '<span class="badge badge-danger">Over Cut</span>';
-        // } else {
-        //     $status = '<span class="badge badge-warning">Not Complete</span>';
-        // }
         $input = $request->all();
         $cuttingOrderRecord = CuttingOrderRecord::with('CuttingOrderRecordDetail')->where('serial_number', $input['serial_number'])->first();
         $sum_layer = 0;
@@ -106,7 +96,7 @@ class CuttingOrdersController extends BaseController
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
             $cuttingOrderRecord->id_status_layer = $status->id;
         } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
-            $status = StatusLayer::where('name', 'over cut')->first();
+            $status = StatusLayer::where('name', 'over layer')->first();
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
             $cuttingOrderRecord->id_status_layer = $status->id;
         } else {
@@ -182,6 +172,24 @@ class CuttingOrdersController extends BaseController
             ]
         );
         return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
+    }
+
+    public function postStatusCut(Request $request)
+    {
+        $input = $request->all();
+        $cuttingOrderRecord = CuttingOrderRecord::where('serial_number', $input['serial_number'])->first();
+        $statusCut = StatusCut::where('name', $input['name'])->first();
+        if ($statusCut == null) return $this->onError(404, 'Status Cut not found.'); // not relation
+        $cuttingOrderRecord->id_status_cut = $statusCut->id;
+        $cuttingOrderRecord->save();
+        $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('statusCut')
+            ->get();
+        $data = collect(
+            [
+                'cutting_order_record' => $data
+            ]
+        );
+        return $this->onSuccess($data, 'Cutting Order Record updated successfully.');
     }
     
     public function destroy($id)

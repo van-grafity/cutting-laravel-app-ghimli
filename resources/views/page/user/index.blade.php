@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -19,6 +19,7 @@
                                 <th scope="col" class="text-left">User</th>
                                 <th scope="col" class="text-left">Email</th>
                                 <th scope="col" class="text-left">Role</th>
+                                <th scope="col" class="text-left">Group</th>
                                 <th scope="col" class="text-left">Action</th>
                             </tr>
                         </thead>
@@ -60,6 +61,16 @@
                                 <option value="">Choose Role</option>
                                 @foreach ($roles as $role)
                                     <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <!-- group -->
+                        <div class="form-group">
+                            <label for="group" class="form-label">Group</label>
+                            <select class="form-control select2" id="group" name="group" style="width: 100%;" data-placeholder="Choose Group">
+                                <option value="">Choose Group</option>
+                                @foreach ($groups as $group)
+                                    <option value="{{ $group->id }}">{{ $group->group_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -117,6 +128,7 @@ $(function (e) {
             {data: 'name', name: 'name'},
             {data: 'email', name: 'email'},
             {data: 'role', name: 'role'},
+            {data: 'group', name: 'group'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ],
         lengthChange: true,
@@ -204,6 +216,7 @@ $(function (e) {
         form.find('#role').val(result.roles[0].name).trigger('change');
         form.find('input[name="name"]').val(result.name);
         form.find('input[name="email"]').val(result.email);
+        form.find('#group').val(result.group).trigger('change');
     }
 
     async function delete_user(user_id) {

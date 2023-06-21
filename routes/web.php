@@ -110,7 +110,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('cutting-order-print/{id}', [CuttingOrdersController::class,'print_pdf'])->name('cutting-order.print');
     Route::get('cutting-order-report/{id}', [CuttingOrdersController::class,'print_report_pdf'])->name('cutting-order.report');
     Route::get('cutting-order-detail/{id}', [CuttingOrdersController::class,'cutting_order_detail'])->name('cutting-order.detail');
-    Route::get('cutting-order-data-complete', [CuttingOrdersController::class,'getDataCompleteCuttingOrder'])->name('cutting-order.data-complete');
+    Route::get('cutting-order-record/{date}', [CuttingOrdersController::class,'getCuttingOrderRecordByDate'])->name('cutting-order.date');
 
     Route::resource('cutting-ticket', CuttingTicketsController::class);
     Route::prefix('cutting-ticket')->name('cutting-ticket.')->group(function(){

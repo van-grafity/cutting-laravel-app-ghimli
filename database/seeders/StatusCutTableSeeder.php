@@ -19,13 +19,13 @@ class StatusCutTableSeeder extends Seeder
         StatusCut::insert([
             [
                 'id' => 1,
-                'name' => 'Belum Potong',
+                'name' => 'belum',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
             ], 
             [
                 'id' => 2,
-                'name' => 'Sudah Potong',
+                'name' => 'sudah',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')
                 

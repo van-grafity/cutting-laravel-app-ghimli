@@ -3,7 +3,19 @@
 @section('title', 'Cutting Order Record')
 
 @section('content')
+<style>
+    .header-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    .date-filter {
+        justify-self: start;
+    }
 
+    .action-button-group {
+        justify-self: end;
+    }
+</style>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -98,10 +110,17 @@
 </script>
 
 <script type="text/javascript">
+    $('#filter_date').datetimepicker({
+        format: 'DD/MM/yyyy',
+    });
+
+    $('#filter_date_input').val(moment().format('DD/MM/yyyy'));
     
-$(document).ready(function() {
+    $(document).ready(function() {
+        $('#filter_date').on('change.datetimepicker', function() {
+            // console.log($('#filter_date_input').val());
+        });
 
-
-});
+    });
 </script>
 @endpush
