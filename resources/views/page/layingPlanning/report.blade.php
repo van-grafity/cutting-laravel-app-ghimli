@@ -344,17 +344,26 @@
                     <td width="50%" style="text-align: center;">
                         <p>Prepared by:</p>
                         <p></p>
-                        <p>____________________</p>
+                        <div style="display:inline-block; text-align:center;">
+                            <span>MELDA (58734)</span>
+                            <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 90px;">
+                        </div>
                     </td>
                     <td width="50%" style="text-align: center;">
                         <p>Authorized by:</p>
                         <p></p>
-                        <p>____________________</p>
+                        <div style="display:inline-block; text-align:center;">
+                            <span>ROBERT (36120)</span>
+                            <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 90px;">
+                        </div>
                     </td>
                     <td width="50%" style="text-align: center;">
                         <p>Approved by:</p>
                         <p></p>
-                        <p>____________________</p>
+                        <div style="display:inline-block; text-align:center;">
+                            <span>ZONDRA (30950)</span>
+                            <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 90px;">
+                        </div>
                     </td>
                 </tr>
             </table>
@@ -393,7 +402,7 @@
         text-align: center;
         vertical-align: middle;
         font-weight: bold;
-        font-size: 9.2px;
+        font-size: 10px;
         padding-top: 1.5 !important;
         padding-bottom: 1.5 !important;
         padding-left: 0.3 !important;
