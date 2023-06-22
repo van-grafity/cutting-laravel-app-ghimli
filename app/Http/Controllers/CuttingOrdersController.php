@@ -423,9 +423,12 @@ class CuttingOrdersController extends Controller
     function generate_serial_number($layingPlanningDetail){
         $gl_number = $layingPlanningDetail->layingPlanning->gl->gl_number;
         $color_code = $layingPlanningDetail->layingPlanning->color->color_code;
+        $fabric_type = $layingPlanningDetail->layingPlanning->fabricType->name;
+        $fabric_type = Str::substr($fabric_type, 0, 4) . Str::substr(Carbon::now()->format('s'), 0, 2);
+        $fabric_type = Str::upper(Str::replaceArray(' ', [''], $fabric_type));
         $table_number = Str::padLeft($layingPlanningDetail->table_number, 3, '0');
         
-        $serial_number = "COR-{$gl_number}-{$color_code}-{$table_number}";
+        $serial_number = "COR-{$gl_number}-{$color_code}-{$fabric_type}-{$table_number}";
         return $serial_number;
     }
 
