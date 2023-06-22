@@ -156,7 +156,11 @@
                         <td>{{ $detail->marker_yard }}</td>
                         <td>{{ $detail->marker_inch }}</td>
                         @foreach ($detail->layingPlanningDetailSize as $item)
-                        <td>{{ $item->ratio_per_size }}</td>
+                            @if ($item->qty_per_size == 0)
+                                <td>-</td>
+                            @else
+                                <td>{{ $item->ratio_per_size }}</td>
+                            @endif
                         @endforeach
                         <td>{{ $detail->layer_qty }}</td>
                         <td></td>
