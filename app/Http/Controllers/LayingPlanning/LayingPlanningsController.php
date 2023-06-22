@@ -11,6 +11,7 @@ use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanningDetailSize;
 use App\Models\CuttingOrderRecord;
 use App\Models\CuttingOrderRecordDetail;
+use App\Models\FabricType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -108,6 +109,7 @@ class LayingPlanningsController extends Controller
 
         $validator = Validator::make($request->all(), $rules, $messages = [
             'required' => 'The :attribute field is required.',
+            'unique' => 'The :attribute field is duplicate.',
         ]);
 
         if ($validator->fails()) {
@@ -116,37 +118,42 @@ class LayingPlanningsController extends Controller
                         ->withInput();
         }
 
-        $serial_number = $this->generate_serial_number($request->gl,$request->color);
-        $layingData = [
-            'serial_number' => $serial_number,
-            'gl_id' => $request->gl,
-            'style_id' => $request->style,
-            'buyer_id' => $request->buyer,
-            'color_id' => $request->color,
-            'order_qty' => $request->order_qty,
-            'delivery_date' => Carbon::createFromFormat('d/m/Y', $request->delivery_date)->format('y-m-d'),
-            'plan_date' => Carbon::createFromFormat('d/m/Y', $request->plan_date)->format('y-m-d'),
-            'fabric_po' => $request->fabric_po,
-            'fabric_cons_id' => $request->fabric_cons,
-            'fabric_type_id' => $request->fabric_type,
-            'fabric_cons_qty' => $request->fabric_cons_qty,
-            'fabric_cons_desc' => $request->fabric_cons_desc,
-        ];
-        $insertLayingData = LayingPlanning::create($layingData);
-
-        $selected_sizes = $request->laying_planning_size_id;
-        $selected_sizes_qty = $request->laying_planning_size_qty;
-        foreach ($selected_sizes as $key => $size_id) {
-            $laying_planning_size = [
-                'size_id' => $size_id,
-                'quantity' => $selected_sizes_qty[$key],
-                'laying_planning_id' => $insertLayingData->id,
+        try {
+            $serial_number = $this->generate_serial_number($request->gl,$request->color, $request->fabric_type);
+            $layingData = [
+                'serial_number' => $serial_number,
+                'gl_id' => $request->gl,
+                'style_id' => $request->style,
+                'buyer_id' => $request->buyer,
+                'color_id' => $request->color,
+                'order_qty' => $request->order_qty,
+                'delivery_date' => Carbon::createFromFormat('d/m/Y', $request->delivery_date)->format('y-m-d'),
+                'plan_date' => Carbon::createFromFormat('d/m/Y', $request->plan_date)->format('y-m-d'),
+                'fabric_po' => $request->fabric_po,
+                'fabric_cons_id' => $request->fabric_cons,
+                'fabric_type_id' => $request->fabric_type,
+                'fabric_cons_qty' => $request->fabric_cons_qty,
+                'fabric_cons_desc' => $request->fabric_cons_desc,
             ];
-            $insertLayingSize = LayingPlanningSize::create($laying_planning_size);
-        }
+            $insertLayingData = LayingPlanning::create($layingData);
 
-        return redirect()->route('laying-planning.index')
-            ->with('success', 'Laying Planning successfully Added!');
+            $selected_sizes = $request->laying_planning_size_id;
+            $selected_sizes_qty = $request->laying_planning_size_qty;
+            foreach ($selected_sizes as $key => $size_id) {
+                $laying_planning_size = [
+                    'size_id' => $size_id,
+                    'quantity' => $selected_sizes_qty[$key],
+                    'laying_planning_id' => $insertLayingData->id,
+                ];
+                $insertLayingSize = LayingPlanningSize::create($laying_planning_size);
+            }
+
+            return redirect()->route('laying-planning.index')
+                ->with('success', 'Laying Planning successfully Added!');
+        } catch (\Throwable $th) {
+            return redirect()->route('laying-planning.index')
+                ->with('error', $th->getMessage());
+        }
     }
 
     public function show($id)
@@ -488,27 +495,21 @@ class LayingPlanningsController extends Controller
         return $no_laying_sheet;
     }
 
-    function generate_serial_number($gl_id = null, $color_id = null) {
-        if (!$gl_id || !$color_id) {
+    function generate_serial_number($gl_id = null, $color_id = null, $fabric_type_id = null) {
+        if (!$gl_id || !$color_id || !$fabric_type_id) {
             return 0;
         }
         $gl = Gl::find($gl_id);
         $gl_number = $gl->gl_number;
         $color = Color::find($color_id);
+        $fabric_type = FabricType::find($fabric_type_id);
+        $fabric_type_serial = $fabric_type->name;
+        $length_object = strlen($fabric_type_serial);
+        $fabric_type_serial = substr($fabric_type_serial, 0, 2).substr($fabric_type_serial, $length_object-2, $length_object);
 
-        $getDuplicateSN = LayingPlanning::select('gl_id','color_id')
-                            ->where('gl_id', $gl_id)
-                            ->where('color_id', $color_id)
-                            ->get();
-        $count_duplicate = $getDuplicateSN->count();
+        $fabric_type_serial = Str::upper($fabric_type_serial);
 
-        if ($count_duplicate <= 0) {
-            $serial_number = "LP-{$gl_number}-{$color->color_code}";
-            return $serial_number;
-        } else {
-            $count_duplicate++;
-            $serial_number = "LP-{$gl_number}-{$color->color_code}.{$count_duplicate}";
-            return $serial_number;
-        }
+        $serial_number = "LP-{$gl_number}-{$color->color_code}{$fabric_type_serial}";
+        return $serial_number;
     }
 }
