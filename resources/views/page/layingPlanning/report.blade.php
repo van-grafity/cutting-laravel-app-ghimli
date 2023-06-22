@@ -129,6 +129,7 @@
                         @foreach ($data->layingPlanningSize as $item)
                         <th>{{ $item->quantity }}</th>
                         @endforeach
+                    </tr>
                 </thead>
 
                 <tbody>
