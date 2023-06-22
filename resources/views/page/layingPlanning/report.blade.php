@@ -171,6 +171,42 @@
                         <td></td>
                         <td></td>
                     </tr>
+                    @if($loop->iteration < $details->count() && $detail->marker_code != $details[$loop->iteration]->marker_code || $loop->iteration == $details->count())
+                    <tr>
+                            <td></td>
+                            <td></td>
+                            @foreach ($data->layingPlanningSize as $item)
+                            <td></td>
+                            @endforeach
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            @foreach ($data->layingPlanningSize as $item)
+                            <td></td>
+                            @endforeach
+                            <td><strong><?php
+                            $total_layer = 0;
+                            foreach ($details as $detail)
+                            {
+                                if ($detail->marker_code == $details[$loop->iteration - 1]->marker_code)
+                                {
+                                    $total_layer += $detail->layer_qty;
+                                }
+                            }
+                            echo $total_layer;
+                            ?></strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td width="15px !important" height="15px !important"></td>
+                        </tr>
+                    @endif
                     @endforeach
                     <tr>
                         <td colspan="2">Pcs FOR SAMPLE</td>
