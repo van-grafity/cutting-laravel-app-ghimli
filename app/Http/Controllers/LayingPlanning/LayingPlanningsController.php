@@ -438,7 +438,7 @@ class LayingPlanningsController extends Controller
     public function detail_duplicate(Request $request){
 
         $layingPlanningDetail = LayingPlanningDetail::find($request->laying_planning_detail_id);
-        $duplicate_qty = $request->duplicate_qty;
+        $duplicate_qty = 1;
 
         $layingPlanningDetailSize = $layingPlanningDetail->layingPlanningDetailSize;
 
@@ -484,7 +484,7 @@ class LayingPlanningsController extends Controller
 
     function generate_no_laying_sheet($layingPlanning) {
         $getLastDetail = LayingPlanningDetail::where('laying_planning_id', $layingPlanning->id)->orderBy('table_number','desc')->first();
-        $gl_number = explode('-', $layingPlanning->gl->gl_number)[0];
+        $gl_number = $layingPlanning->gl->gl_number;
         
         if(!$getLastDetail){
             $no_laying_sheet = $gl_number. "-" . Str::padLeft('1', 3, '0');

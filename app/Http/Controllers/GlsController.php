@@ -30,8 +30,8 @@ class GlsController extends Controller
             })
             ->addColumn('action', function($data){
                 return '
-                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="edit_gl('.$data->id.')">Edit</a>
-                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_gl('.$data->id.')">Delete</a>';
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="edit_gl('.$data->id.')" hidden>Edit</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_gl('.$data->id.')" hidden>Delete</a>';
             })
             ->make(true);
     }

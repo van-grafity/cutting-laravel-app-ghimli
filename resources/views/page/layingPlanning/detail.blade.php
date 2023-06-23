@@ -363,8 +363,8 @@
                         <div class="row">
                             <div class="col-sm-6 col-md-3">
                                 <div class="form-group">
-                                    <label for="duplicate_qty">Duplicate Qty</label>
-                                    <input type="number" class="form-control" id="duplicate_qty" name="duplicate_qty" min="0" placeholder="Enter Duplicate Qty">
+                                    <label for="duplicate_qty">Jumlah Data Duplicate</label>
+                                    <input type="number" class="form-control" id="duplicate_qty" name="duplicate_qty" min="0" placeholder="Enter jumlah">
                                 </div>
                             </div>
                         </div>
