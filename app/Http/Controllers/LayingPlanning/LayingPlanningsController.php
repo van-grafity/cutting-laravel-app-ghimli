@@ -506,10 +506,19 @@ class LayingPlanningsController extends Controller
         $fabric_type_serial = $fabric_type->name;
         $length_object = strlen($fabric_type_serial);
         $fabric_type_serial = substr($fabric_type_serial, 0, 2).substr($fabric_type_serial, $length_object-2, $length_object);
-
         $fabric_type_serial = Str::upper($fabric_type_serial);
 
+        $getDuplicateSN = LayingPlanning::select('gl_id','color_id')
+                            ->where('gl_id', $gl_id)
+                            ->where('color_id', $color_id)
+                            ->get();
+        $count_duplicate = $getDuplicateSN->count();
+
+        if ($count_duplicate <= 0) {
         $serial_number = "LP-{$gl_number}-{$color->color_code}{$fabric_type_serial}";
+        } else {
+        $serial_number = "LP-{$gl_number}-{$color->color_code}{$fabric_type_serial}-".Str::padLeft($count_duplicate+1, 2, '0');
+        }
         return $serial_number;
     }
 }
