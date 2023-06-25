@@ -20,7 +20,7 @@
                                 <th scope="col" class="text-left">Email</th>
                                 <th scope="col" class="text-left">Role</th>
                                 <th scope="col" class="text-left">Group</th>
-                                <th scope="col" class="text-left">Action</th>
+                                <th scope="col" style="width: 20%;"class="text-left">Action</th>
                             </tr>
                         </thead>
                         <!-- <tbody>
