@@ -9,7 +9,7 @@
     }
 </style>
 
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -25,7 +25,7 @@
                                 <th scope="col" class="text-left">Buyer</th>
                                 <th scope="col" class="text-left">Season</th>
                                 <th scope="col" class="text-left">Size Order</th>
-                                <th scope="col" class="text-left">Action</th>
+                                <th scope="col" style="width: 10%;" class="text-left">Action</th>
                             </tr>
                         </thead>
                         <!-- <tbody>
