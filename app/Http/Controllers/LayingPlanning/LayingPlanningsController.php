@@ -438,7 +438,7 @@ class LayingPlanningsController extends Controller
     public function detail_duplicate(Request $request){
 
         $layingPlanningDetail = LayingPlanningDetail::find($request->laying_planning_detail_id);
-        $duplicate_qty = 1;
+        $duplicate_qty = $request->duplicate_qty;
 
         $layingPlanningDetailSize = $layingPlanningDetail->layingPlanningDetailSize;
 
