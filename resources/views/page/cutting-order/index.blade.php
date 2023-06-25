@@ -39,7 +39,7 @@
                                 <th scope="col" class="">Status Lay</th>
                                 <th hidden scope="col" class="">Status Lay</th>
                                 <th scope="col" class="">Status Cut</th>
-                                <th width="22%" scope="col" class="">Action</th>
+                                <th width="21.5%" scope="col" class="">Action</th>
                             </tr>
                         </thead>
                         <!-- <tbody>

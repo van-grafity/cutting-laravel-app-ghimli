@@ -171,7 +171,8 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    @if($loop->iteration < $details->count() && $detail->marker_code != $details[$loop->iteration]->marker_code || $loop->iteration == $details->count())
+                    <!-- || $loop->iteration == $details->count() -->
+                    @if($loop->iteration < $details->count() && $detail->marker_code != $details[$loop->iteration]->marker_code)
                     <tr>
                             <td></td>
                             <td></td>
@@ -352,7 +353,10 @@
                 </tbody>
             </table>
 
-            <table width="100%" style="font-size: 10px; font-weight: bold;">
+            <br>
+            <br>
+
+            <table width="100%" style="font-size: 10px; font-weight: bold;" hidden>
                 <tr>
                     <td width="20%">Total Layer Qty base on Marker Code</td>
                     <td width="60%" colspan="7">: <?php
