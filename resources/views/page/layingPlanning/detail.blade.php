@@ -401,6 +401,22 @@ $(document).ready(function(){
         }
     });
 
+    $('#duplicate_qty').on('keyup', function(e) {
+        let duplicate_qty = $(this).val();
+        if(duplicate_qty > 8){
+            $(this).val(8);
+        }
+    });
+
+    $('#duplicate_qty').tooltip({
+        title: "Duplikat data maximal 8",
+        placement: "top",
+        trigger: "focus"
+    });
+    
+    $('#duplicate_qty').tooltip('show');
+    
+
     $('#btn_modal_create').click((e) => {
         $('#modal_formLabel').text("Add Cutting Table")
         $('#btn_submit').text("Add Cutting Table")
