@@ -20,13 +20,13 @@
                         <thead class="">
                             <tr>
                                 <th scope="col">No. </th>
-                                <th scope="col" width="130">Ticket Number</th>
+                                <th scope="col" style="width: 20%;">Ticket Number</th>
                                 <th scope="col">No. Laying Sheet</th>
                                 <th scope="col">Table No.</th>
                                 <th scope="col">Color</th>
                                 <th scope="col">Size</th>
                                 <th scope="col">Layer</th>
-                                <th scope="col" width="120">Action</th>
+                                <th scope="col" style="width: 10%;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
