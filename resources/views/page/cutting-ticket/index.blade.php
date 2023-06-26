@@ -19,9 +19,9 @@
                     <table class="table table-bordered table-hover" id="cutting_ticket_table">
                         <thead class="">
                             <tr>
-                                <th scope="col" width="130">Serial Number</th>
+                                <th scope="col" style="width: 20%;">Serial Number</th>
                                 <th scope="col">Table No.</th>
-                                <th scope="col" width="120">Action</th>
+                                <th scope="col" style="width: 10%;">Action</th>
                             </tr>
                         </thead>
                         <!-- <tbody>
