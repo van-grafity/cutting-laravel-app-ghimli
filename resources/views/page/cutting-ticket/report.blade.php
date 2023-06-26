@@ -95,10 +95,11 @@
             </tr>
         </table>
         <div style="margin-top: 3px !important; margin-bottom: 3px !important;"></div>
-                <table class="table">
+                <table class="table" style="table-layout:fixed;">
                     <thead class="">
                         <tr>
                             <th rowspan="2">Roll</th>
+                            <th rowspan="2">Ply</th>
                             @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $ct)
                                 @for($i = 0; $i < $ct->ratio_per_size; $i++)
                                     <th colspan="2">{{ $ct->size->size }}</th>
@@ -117,12 +118,14 @@
                     <tbody style="text-align: center;">
                         @foreach($data['cutting_order_record']->cuttingOrderRecordDetail as $ct)
                             <tr>
-                                <td>{{ $ct->fabric_roll }}</td>
+                                <td style="width: 2.2%;">{{ $ct->fabric_roll }}</td>
+                                <!-- ctt->layer -->
+                                <td style="width: 2%;">{{ $ct->layer }}</td>
                                 @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $sz)
                                         @foreach($data['cutting_order_record']->cuttingTicket as $ctt)
                                             @if($ctt->size_id == $sz->size_id && $ctt->cutting_order_record_detail_id == $ct->id)
                                             <td> {{ $ctt->ticket_number }} </td>
-                                            <td> {{ $ctt->layer }} </td>
+                                            <td style="width: 2%;"> {{ $ctt->layer }} </td>
                                             @endif
                                         @endforeach
                                 @endforeach
