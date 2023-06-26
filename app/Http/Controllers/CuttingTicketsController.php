@@ -273,7 +273,7 @@ class CuttingTicketsController extends Controller
             // 'buyer' => $buyer,
         ];
         $customPaper = array(0,0,794.00, 612.00);
-        $pdf = PDF::loadview('page.cutting-ticket.report', compact('data'))->setPaper($customPaper, 'landscape');
+        $pdf = PDF::loadview('page.cutting-ticket.report', compact('data'))->setPaper($customPaper, 'portrait');
         return $pdf->stream('PackingList' . '.pdf');
     }
 
