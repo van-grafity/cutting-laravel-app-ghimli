@@ -68,6 +68,7 @@ class CuttingTicketsController extends Controller
                 return '
                 <a href="'.route('cutting-ticket.print-multiple', $data->id).'"  target="_blank"class="btn btn-primary btn-sm btn-print-ticket">Print</a>
                 <a href="'.route('cutting-ticket.detail', $data->id).'" class="btn btn-info btn-sm">Detail</a>
+                <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="delete_ticket('. $data->id .')">Delete</a>
                 ';
             })
             ->make(true);
@@ -370,5 +371,26 @@ class CuttingTicketsController extends Controller
         }
         $size_ratio = Arr::join($size_ratio, ' | ');
         return $size_ratio;
+    }
+
+    public function delete_ticket($id) {
+        try {
+            $cuttingOrderRecord = CuttingOrderRecord::find($id);
+            $cuttingTickets = $cuttingOrderRecord->cuttingTicket;
+            foreach ($cuttingTickets as $ticket) {
+                $ticket->delete();
+            }
+            $date_return = [
+                'status' => 'success',
+                'data'=> $cuttingOrderRecord,
+                'message'=> 'Data Laying Sheet berhasil di hapus',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 }
