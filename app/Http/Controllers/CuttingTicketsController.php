@@ -66,9 +66,10 @@ class CuttingTicketsController extends Controller
             })
             ->addColumn('action', function($data){
                 return '
-                <a href="'.route('cutting-ticket.print-multiple', $data->id).'"  target="_blank"class="btn btn-primary btn-sm btn-print-ticket">Print</a>
+                <a href="'.route('cutting-ticket.print-multiple', $data->id).'"  target="_blank"class="btn btn-primary btn-sm btn-print-ticket">Print Ticket</a>
                 <a href="'.route('cutting-ticket.detail', $data->id).'" class="btn btn-info btn-sm">Detail</a>
                 <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="delete_ticket('. $data->id .')">Delete</a>
+                <a href="javascript:void(0)" class="btn btn-warning btn-sm" onclick="refresh_ticket('. $data->id .')">Refresh</a>
                 ';
             })
             ->make(true);
@@ -384,6 +385,72 @@ class CuttingTicketsController extends Controller
                 'status' => 'success',
                 'data'=> $cuttingOrderRecord,
                 'message'=> 'Data Laying Sheet berhasil di hapus',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
+    // refresh_generate_ticket
+    public function refresh_generate_ticket($cutting_order_record_id) {
+        try {
+            $get_last_ticket = CuttingTicket::orderBy('ticket_number', 'asc')->first();
+            $next_ticket_number = $get_last_ticket ? $get_last_ticket->ticket_number + 1 : 1;
+            $cuttingOrderRecord = CuttingOrderRecord::find($cutting_order_record_id);
+            $layingPlanningDetail = $cuttingOrderRecord->layingPlanningDetail;
+            
+            $planning_size_list = $layingPlanningDetail->layingPlanningDetailSize;
+            $cutting_order_details = $layingPlanningDetail->cuttingOrderRecord->cuttingOrderRecordDetail;
+    
+            foreach ($planning_size_list as $planning_size) {
+                $ratio_per_size = $planning_size->ratio_per_size;
+                for ($i=0; $i < $ratio_per_size; $i++) { 
+                    foreach($cutting_order_details as $cutting_order_detail) {
+                        $data_ticket = [
+                            'ticket_number' => $next_ticket_number,
+                            'size_id'=> $planning_size->size_id,
+                            'layer'=> $cutting_order_detail->layer,
+                            'cutting_order_record_id'=> $cutting_order_detail->cuttingOrderRecord->id,
+                            'cutting_order_record_detail_id'=> $cutting_order_detail->id,
+                            'table_number'=> $cutting_order_detail->cuttingOrderRecord->layingPlanningDetail->table_number,
+                            'fabric_roll'=> $cutting_order_detail->fabric_roll,
+                        ];
+                        $insertCuttingTicket = CuttingTicket::create($data_ticket);
+                        $next_ticket_number++;
+                    }
+                }
+            }
+            $date_return = [
+                'status' => 'success',
+                'data'=> $cuttingOrderRecord,
+                'message'=> 'Data Laying Sheet berhasil di hapus',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
+        
+    }
+
+    public function refresh_ticket($id) {
+        try {
+            $cuttingOrderRecord = CuttingOrderRecord::find($id);
+            $cuttingTickets = $cuttingOrderRecord->cuttingTicket;
+            foreach ($cuttingTickets as $ticket) {
+                $ticket->delete();
+            }
+            $this->refresh_generate_ticket($cuttingOrderRecord->id);
+            $date_return = [
+                'status' => 'success',
+                'data'=> $cuttingOrderRecord,
+                'message'=> 'Data Cutting Ticket berhasil di refresh',
             ];
             return response()->json($date_return, 200);
         } catch (\Throwable $th) {
