@@ -209,4 +209,52 @@ $(document).ready(function() {
 
 });
 </script>
+
+<script type="text/javascript">
+    function delete_ticket(id){
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this ticket!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ url('/cutting-ticket/delete') }}"+'/'+id,
+                    type: 'DELETE',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: id
+                    },
+                    success: function(data) {
+                        if (data.status == 'success') {
+                            Swal.fire(
+                                'Deleted!',
+                                data.message,
+                                'success'
+                            )
+                            $('#cutting_ticket_table').DataTable().ajax.reload();
+                        } else {
+                            Swal.fire(
+                                'Failed!',
+                                data.message,
+                                'error'
+                            )
+                        }
+                    },
+                    error: function(data) {
+                        Swal.fire(
+                            'Failed!',
+                            'Something wrong',
+                            'error'
+                        )
+                    }
+                });
+            }
+        })
+    }
+</script>
 @endpush
