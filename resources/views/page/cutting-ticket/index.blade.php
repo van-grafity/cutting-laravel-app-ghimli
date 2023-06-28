@@ -21,7 +21,7 @@
                             <tr>
                                 <th scope="col" style="width: 20%;">Serial Number</th>
                                 <th scope="col">Table No.</th>
-                                <th scope="col" style="width: 10%;">Action</th>
+                                <th scope="col" style="width: 20%;">Action</th>
                             </tr>
                         </thead>
                         <!-- <tbody>
@@ -256,5 +256,58 @@ $(document).ready(function() {
             }
         })
     }
+
+    function refresh_ticket(id){
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Refresh Ticket will delete all existing ticket and recreate it",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, refresh it!',
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ url('/cutting-ticket/refresh-ticket') }}"+'/'+id,
+                    type: 'GET',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: id
+                    },
+                    success: function(data) {
+                        if (data.status == 'success') {
+                            Swal.fire(
+                                'Refreshed!',
+                                data.message,
+                                'success'
+                            )
+                            $('#cutting_ticket_table').DataTable().ajax.reload();
+                        } else {
+                            Swal.fire(
+                                'Failed!',
+                                data.message,
+                                'error'
+                            )
+                        }
+                    },
+                    error: function(data) {
+                        Swal.fire(
+                            'Failed!',
+                            'Something wrong',
+                            'error'
+                        )
+                    }
+                });
+            }
+        })
+    }
+
+    // loading swall after Yes, refresh it! button clicked
+    // Swal.showLoading();
+
 </script>
 @endpush

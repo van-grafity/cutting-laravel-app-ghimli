@@ -121,6 +121,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
 
         Route::get('/report/{id}', [CuttingTicketsController::class, 'print_report_pdf'])->name('report');
         Route::delete('/delete/{id}', [CuttingTicketsController::class, 'delete_ticket'])->name('delete-ticket');
+        Route::get('/refresh-ticket/{id}', [CuttingTicketsController::class, 'refresh_ticket'])->name('refresh-ticket');
     });
 });
 
