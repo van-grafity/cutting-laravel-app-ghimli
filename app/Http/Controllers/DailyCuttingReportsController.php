@@ -67,7 +67,7 @@ class DailyCuttingReportsController extends Controller
     public function dailyCuttingReport(Request $request) {
         $date_filter = $request->date;
         // where('created_at','>=', Carbon::createFromFormat('Y-m-d', $date_filter)->startOfDay()->toDateTimeString())->where('created_at','<=', Carbon::createFromFormat('Y-m-d', $date_filter)->endOfDay()->toDateTimeString()
-        $data_daily_cutting = CuttingOrderRecord::with('layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'CuttingOrderRecordDetail', 'CuttingOrderRecordDetail.color')
+        $cuttingOrderRecord = CuttingOrderRecord::with('layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'CuttingOrderRecordDetail', 'CuttingOrderRecordDetail.color')
         
         ->whereHas('cuttingOrderRecordDetail', function($query) use ($date_filter) {
             $query->whereDate('created_at', $date_filter);
@@ -75,59 +75,48 @@ class DailyCuttingReportsController extends Controller
         ->get();
         
         $data = [];
-        $color = $data_daily_cutting->pluck('cuttingOrderRecordDetail')->flatten()->pluck('color')->flatten()->unique('id')->values()->all();
-        $gl = $data_daily_cutting->pluck('layingPlanningDetail')->flatten()->pluck('layingPlanning')->flatten()->pluck('gl')->flatten()->unique('id')->values()->all();
-        $cuttingOrderRecord = $data_daily_cutting->pluck('cuttingOrderRecordDetail')->flatten()->pluck('cuttingOrderRecord')->flatten()->unique('id')->values()->all();
-        $cuttingOrderRecordDetails = $data_daily_cutting->pluck('cuttingOrderRecordDetail')->flatten()->unique('id')->values()->all();
+        // $color = $cuttingOrderRecord->pluck('cuttingOrderRecordDetail')->flatten()->pluck('color')->flatten()->unique('id')->values()->all();
+        $gl_datas = $cuttingOrderRecord->pluck('layingPlanningDetail')->flatten()->pluck('layingPlanning')->flatten()->pluck('gl')->flatten()->unique('id')->values()->sortBy('gl_number')->all();
+        
 
-        foreach ($gl as $key => $value) {
+        foreach ($gl_datas as $key => $value) {
             $layingPlannings = $value->layingPlanning;
-            // jika nama buyer sama maka string kosong hanya ditampilkan 1 dari nama buyer yang sama
-            // buyer = ['GIII', 'CHICO'S']
-            $buyer = '';
             foreach ($layingPlannings as $keyLayingPlanning => $layingPlanning) {
-                if($buyer == $layingPlanning->gl->buyer->name) {
-                    $layingPlanning->gl->buyer->name = '';
-                } else {
-                    $buyer = $layingPlanning->gl->buyer->name;
-                }
                 $data['laying_planning'][$keyLayingPlanning] = [
                     'gl_number' => $layingPlanning->gl->gl_number,
-                    'buyer' => $buyer,
+                    'buyer' => $layingPlanning->gl->buyer->name,
                     'style' => $layingPlanning->style->style,
                     'color' => $layingPlanning->color->color,
-                    'mi_qty' => $layingPlanning->order_qty,
-                    'cutting_order_record' => $cuttingOrderRecord,
-                    'cutting_order_record_detail' => $cuttingOrderRecordDetails,
+                    'order_qty' => $layingPlanning->order_qty,
+                    'previous_balance' => '',
+                    'total_qty_per_day' => $layingPlanning,
+                    'completed' => '',
+                    'accumulation' => '',
+                    'laying_planning_detail' => $layingPlanning->layingPlanningDetail,
                 ];
             }
-            // urutkan berdasarkan gl_number
-            ksort($data['laying_planning']);
-            
-            
+            // ksort($data['laying_planning']);
         }
+
+        // foreach ($cuttingOrderRecord as $key => $data_daily) {
+        //     $data['laying_planning'][$key] = [
+        //         'gl_number' => $data_daily->layingPlanningDetail->layingPlanning->gl->gl_number,
+        //         'buyer' => $data_daily->layingPlanningDetail->layingPlanning->gl->buyer->name,
+        //         'style' => $data_daily->layingPlanningDetail->layingPlanning->style->style,
+        //         'color' => $data_daily->layingPlanningDetail->layingPlanning->color->color,
+        //         'table_number' => $data_daily->layingPlanningDetail->table_number,
+        //         'order_qty' => $data_daily->layingPlanningDetail->layingPlanning->order_qty,
+        //         'total_qty_per_day' => $data_daily->cuttingOrderRecordDetail->sum('layer'),
+        //         'accumulation' => $data_daily->cuttingOrderRecordDetail->sum('layer'),
+        //         'completed' => round($data_daily->cuttingOrderRecordDetail->sum('layer') / $data_daily->layingPlanningDetail->layingPlanning->order_qty * 100) . '%',
+        //     ];
+        // }
+
         $filename = 'Daily Cutting Output Report';
         $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data', 'date_filter'))->setPaper('a4', 'landscape');
         return $pdf->stream($filename);
-        return response()->json($data, 200);
+        // return $data;
     }
-
-    // public function dailyCuttingReport(Request $request) {
-    //     $date_filter = $request->date;
-    //     // where('created_at','>=', Carbon::createFromFormat('Y-m-d', $date_filter)->startOfDay()->toDateTimeString())->where('created_at','<=', Carbon::createFromFormat('Y-m-d', $date_filter)->endOfDay()->toDateTimeString()
-    //     $data_daily_cutting = CuttingOrderRecord::with(['layingPlanningDetail', 'layingPlanningDetail.layingPlanningDetailSize.size', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.gl', 'layingPlanningDetail.layingPlanning.color', 'layingPlanningDetail.layingPlanning.gl.buyer', 'layingPlanningDetail.layingPlanning.style', 'layingPlanningDetail.layingPlanning.color', 'CuttingOrderRecordDetail', 'CuttingOrderRecordDetail.color'])
-    //     ->whereHas('cuttingOrderRecordDetail', function($query) {
-    //         $query->whereNotNull('cutting_order_record_id');
-    //     })
-    //     ->whereHas('cuttingOrderRecordDetail', function($query) use ($date_filter) {
-    //         $query->whereDate('created_at', $date_filter);
-    //     })
-    //     ->get();
-    //     $filename = 'Daily Cutting Output Report';
-    //     $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data_daily_cutting', 'date_filter'))->setPaper('a4', 'landscape');
-    //     return $pdf->stream($filename);
-    //     return response()->json($data_daily_cutting, 200);
-    // }
 
     function calculate_daily_cutting($date_filter) {
         
