@@ -47,6 +47,7 @@ class DailyCuttingReportsController extends Controller
         $data = [];
         // $color = $cuttingOrderRecord->pluck('cuttingOrderRecordDetail')->flatten()->pluck('color')->flatten()->unique('id')->values()->all();
         $gl_datas = $cuttingOrderRecord->pluck('layingPlanningDetail')->flatten()->pluck('layingPlanning')->flatten()->pluck('gl')->flatten()->unique('id')->values()->sortBy('gl_number')->all();
+        $cor_datas = $cuttingOrderRecord->pluck('layingPlanningDetail')->flatten()->pluck('layingPlanning')->flatten()->pluck('cuttingOrderRecord')->flatten()->unique('id')->values()->all();
         $cuttingOrderRecordDetails = $cuttingOrderRecord->pluck('cuttingOrderRecordDetail')->flatten()->unique('id')->values()->all();
         $cuttingOrderRecordDetailsPrevious = $cuttingOrderRecordPrevious->pluck('cuttingOrderRecordDetail')->flatten()->unique('id')->values()->all();
 
@@ -75,12 +76,19 @@ class DailyCuttingReportsController extends Controller
             }
         }
 
+        foreach ($cor_datas as $key => $value) {
+            $data['cutting_order_record'][$key] = $value;
+        }
+
         // cutting_order_record_detail.cutting_order_record_id == cutting_order_record.id (get user.id)
         // $user_ids = $data['cutting_order_record_detail']->pluck('user')->flatten()->pluck('id')->flatten()->unique('id')->values()->all();
         // $users = User::whereIn('id', $user_ids)->get();
         // $data['users'] = $users;
+
+        // cutting order record -> total ratio
         
         $data = [
+            'cutting_order_record' => $cuttingOrderRecord,
             'cutting_order_record_detail' => $data['cutting_order_record_detail'] ?? [],
             'cutting_order_record_detail_previous' => $data['cutting_order_record_detail_previous'] ?? [],
             'laying_planning' => $data['laying_planning'] ?? [],

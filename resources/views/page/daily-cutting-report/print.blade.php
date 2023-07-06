@@ -166,18 +166,24 @@
                                         $total_ratio_layer = 0;
                                         $isCuttingOrderRecordDetail = 'false';
                                         foreach ($layingPlanning->layingPlanningDetail as $keyLayingPlanningDetail => $layingPlanningDetail) {
-                                            foreach ($layingPlanningDetail->layingPlanningDetailSize as $keyLayingPlanningDetailSize => $layingPlanningDetailSize) {
-                                                foreach ($data['cutting_order_record_detail'] as $keyCuttingOrderRecordDetail => $cuttingOrderRecordDetail) {
-                                                    foreach ($cuttingOrderRecordDetail->cuttingOrderRecord as $keyCuttingOrderRecord => $cuttingOrderRecord) {
-                                                        if ($layingPlanning->color_id == $cuttingOrderRecordDetail->color_id && $group->id == $cuttingOrderRecordDetail->user_group->id) {
-                                                                $total_ratio_layer += $layingPlanningDetailSize->ratio_per_size * $cuttingOrderRecordDetail->layer;
-                                                                $isCuttingOrderRecordDetail = 'true';
-                                                        } 
-                                                    }
+                                            if ($layingPlanningDetail->layingPlanningDetailSize->count() > 0) {
+                                                foreach ($layingPlanningDetail->layingPlanningDetailSize as $keyLayingPlanningDetailSize => $layingPlanningDetailSize) {
+                                                    if ($layingPlanningDetailSize->laying_planning_detail_id == $layingPlanningDetail->id) {
+                                                        foreach ($data['cutting_order_record'] as $keyCuttingOrderRecord => $cuttingOrderRecord) {
+                                                            foreach ($cuttingOrderRecord->cuttingOrderRecordDetail as $keyCuttingOrderRecordDetail => $cuttingOrderRecordDetail) {
+                                                                if ($layingPlanning->color_id == $cuttingOrderRecordDetail->color_id && $cuttingOrderRecordDetail->cutting_order_record_id == $cuttingOrderRecord->id) {
+                                                                    if ($group->id == $cuttingOrderRecordDetail->user_group->id) {
+                                                                        $total_ratio_layer += $layingPlanningDetailSize->ratio_per_size * $cuttingOrderRecordDetail->layer;
+                                                                        $isCuttingOrderRecordDetail = 'true';
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }                                              
                                                 }
                                             }
                                         }
-                                        echo $isCuttingOrderRecordDetail;
+                                        echo $total_ratio_layer;
                                     ?></td>
                                 @endforeach
                                 <td><?php
@@ -251,7 +257,7 @@
                                                 }
                                             }
                                         }
-                                        echo $isCuttingOrderRecordDetail;
+                                        echo $total_ratio_layer;
                                     ?></td>
                                 @endforeach
                                 <td><?php
