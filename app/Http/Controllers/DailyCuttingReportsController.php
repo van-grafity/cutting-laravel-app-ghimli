@@ -41,19 +41,27 @@ class DailyCuttingReportsController extends Controller
             $query->whereDate('created_at', Carbon::parse($date_filter)->subDays(1));
         })
         ->get();
+
+        $group_ids = Groups::get();
         
         $data = [];
         // $color = $cuttingOrderRecord->pluck('cuttingOrderRecordDetail')->flatten()->pluck('color')->flatten()->unique('id')->values()->all();
         $gl_datas = $cuttingOrderRecord->pluck('layingPlanningDetail')->flatten()->pluck('layingPlanning')->flatten()->pluck('gl')->flatten()->unique('id')->values()->sortBy('gl_number')->all();
         $cuttingOrderRecordDetails = $cuttingOrderRecord->pluck('cuttingOrderRecordDetail')->flatten()->unique('id')->values()->all();
         $cuttingOrderRecordDetailsPrevious = $cuttingOrderRecordPrevious->pluck('cuttingOrderRecordDetail')->flatten()->unique('id')->values()->all();
-        
+
         foreach ($cuttingOrderRecordDetails as $key => $value) {
             $data['cutting_order_record_detail'][$key] = $value;
             $name = $value->operator;
             $user = User::where('name', $name)->first();
             $data['cutting_order_record_detail'][$key]['user'] = $user;
             $group = UserGroups::where('user_id', $user->id)->first();
+            if ($group) {
+                $group = Groups::where('id', $group->group_id)->first();
+            } else {
+                $group = Groups::where('id', 1)->first();
+            }
+            $data['cutting_order_record_detail'][$key]['user_group'] = $group;
         }
 
         foreach ($cuttingOrderRecordDetailsPrevious as $key => $value) {
@@ -66,18 +74,24 @@ class DailyCuttingReportsController extends Controller
                 $data['laying_planning'][$keyLayingPlanning] = $layingPlanning;
             }
         }
+
+        // cutting_order_record_detail.cutting_order_record_id == cutting_order_record.id (get user.id)
+        // $user_ids = $data['cutting_order_record_detail']->pluck('user')->flatten()->pluck('id')->flatten()->unique('id')->values()->all();
+        // $users = User::whereIn('id', $user_ids)->get();
+        // $data['users'] = $users;
         
         $data = [
             'cutting_order_record_detail' => $data['cutting_order_record_detail'] ?? [],
             'cutting_order_record_detail_previous' => $data['cutting_order_record_detail_previous'] ?? [],
             'laying_planning' => $data['laying_planning'] ?? [],
+            'group' => $group_ids ?? [],
         ];
         
         // SELECT * FROM `cutting_order_records` WHERE id IN (SELECT cutting_order_record_id FROM `cutting_order_record_details` WHERE created_at LIKE '2021-08-31%')
         
-        // $filename = 'Daily Cutting Output Report';
-        // $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data', 'date_filter'))->setPaper('a4', 'landscape');
-        // return $pdf->stream($filename);
-        return $data;
+        $filename = 'Daily Cutting Output Report';
+        $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data', 'date_filter'))->setPaper('a4', 'landscape');
+        return $pdf->stream($filename);
+        // return $data;
     }
 }
