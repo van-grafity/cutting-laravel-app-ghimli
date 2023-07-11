@@ -114,9 +114,10 @@
                             <tr>
                                 <th scope="col">No. </th>
                                 <th scope="col">Table No</th>
+                                <th scope="col">Marker Code</th>
+                                <th scope="col">Marker Length</th>
                                 <th scope="col">Total Pcs</th>
                                 <th scope="col">Total Yds Qty</th>
-                                <th scope="col">Marker Length</th>
                                 <th scope="col">Layer Qty</th>
                                 <th scope="col">Action</th>
                             </tr>
@@ -126,9 +127,10 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $detail->table_number }}</td>
+                                    <td>{{ $detail->marker_code }}</td>
+                                    <td>{{ $detail->marker_length }}</td>
                                     <td>{{ $detail->total_all_size }}</td>
                                     <td>{{ $detail->total_length }}</td>
-                                    <td>{{ $detail->marker_length }}</td>
                                     <td>{{ $detail->layer_qty }}</td>
                                     <td>
                                         <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
