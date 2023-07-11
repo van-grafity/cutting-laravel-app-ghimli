@@ -122,12 +122,16 @@
                             <tr>
                                 <th scope="col">No. </th>
                                 <th scope="col">Place No</th>
-                                <th scope="col">Width</th>
+                                <th scope="col">
+                                    <span>
+                                        Fabric Sticker (yard)
+                                    </span>
+                                </th>
                                 <th scope="col">Weight</th>
                                 <th scope="col">Layer</th>
                                 <th scope="col">
                                 <span>
-                                    Balance End (inch)
+                                    Balance End (yard)
                                 </span>
                                 </th>
                                 <th scope="col">Operator</th>
