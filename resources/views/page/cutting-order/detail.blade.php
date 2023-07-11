@@ -125,7 +125,11 @@
                                 <th scope="col">Width</th>
                                 <th scope="col">Weight</th>
                                 <th scope="col">Layer</th>
-                                <th scope="col">Balanced End</th>
+                                <th scope="col">
+                                <span>
+                                    Balance End (inch)
+                                </span>
+                                </th>
                                 <th scope="col">Operator</th>
                                 <th scope="col">Cutting Date</th>
                                 <th scope="col">Action</th>

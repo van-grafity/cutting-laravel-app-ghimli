@@ -113,7 +113,11 @@ class CuttingTicketsController extends Controller
     }
 
     public function create() {
-        $data = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])
+        $data = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'layingPlanningDetail', 'cuttingOrderRecordDetail'])
+            ->where('id_status_cut', 2)
+            ->whereNotIn('id', function($query) {
+                $query->select('cutting_order_record_id')->from('cutting_tickets');
+            })
             ->select('cutting_order_records.id','laying_planning_detail_id','serial_number')->get();
         $cutting_order_records = [];
         foreach ($data as $key => $value) {
@@ -193,27 +197,23 @@ class CuttingTicketsController extends Controller
         }
     }
 
-    public function generate_ticket(Request $request)
-    {
-        // ***************************************************************
+    // ***************************************************************
         /*  1. Ambil Semua Size yang ada di cutting order record ini
             2. Lalu ambil nilai rasio tiap masing masing size
             3. Ambil data detail di Cutting Order Record ini. karena setiap detail di input berdasarkan fabric roll
             4. Tikcet digunakan untuk menandakan atau mengikat kain dari tiap tiap roll.
             5. Ticket di generate berdasarkam Cutting Order Recordnya
         */
-        // ***************************************************************
-
+    // ***************************************************************
+    public function generate_ticket(Request $request)
+    {
         try {
-
-            $get_last_ticket = CuttingTicket::orderBy('ticket_number', 'asc')->first();
-            $next_ticket_number = $get_last_ticket ? $get_last_ticket->ticket_number + 1 : 1;
+            $next_ticket_number = 1;
             $cuttingOrderRecord = CuttingOrderRecord::find($request->cutting_order_id);
             $layingPlanningDetail = $cuttingOrderRecord->layingPlanningDetail;
-            
             $planning_size_list = $layingPlanningDetail->layingPlanningDetailSize;
             $cutting_order_details = $layingPlanningDetail->cuttingOrderRecord->cuttingOrderRecordDetail;
-    
+
             foreach ($planning_size_list as $planning_size) {
                 $ratio_per_size = $planning_size->ratio_per_size;
                 for ($i=0; $i < $ratio_per_size; $i++) { 
@@ -395,11 +395,9 @@ class CuttingTicketsController extends Controller
         }
     }
 
-    // refresh_generate_ticket
     public function refresh_generate_ticket($cutting_order_record_id) {
         try {
-            $get_last_ticket = CuttingTicket::orderBy('ticket_number', 'asc')->first();
-            $next_ticket_number = $get_last_ticket ? $get_last_ticket->ticket_number + 1 : 1;
+            $next_ticket_number = 1;
             $cuttingOrderRecord = CuttingOrderRecord::find($cutting_order_record_id);
             $layingPlanningDetail = $cuttingOrderRecord->layingPlanningDetail;
             
