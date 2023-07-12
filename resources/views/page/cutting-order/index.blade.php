@@ -37,11 +37,7 @@
                                 <th scope="col" class="">Color</th>
                                 <th width="8%" scope="col" class="">Table No</th>
                                 <th scope="col" class="">Status Lay</th>
-<<<<<<< HEAD
                                 <th hidden scope="col" class=""></th>
-=======
-                                <th hidden scope="col" class="">Status Lay</th>
->>>>>>> dev
                                 <th scope="col" class="">Status Cut</th>
                                 <th width="21.5%" scope="col" class="">Action</th>
                             </tr>
