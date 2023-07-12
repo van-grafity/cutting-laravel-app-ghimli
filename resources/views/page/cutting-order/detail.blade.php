@@ -177,7 +177,7 @@
                                     {{ $cutting_order->total_layer }}
                                     <span class="glyphicon glyphicon-magnet"></span>
                                 </td>
-                                <td colspan="4"></td>
+                                <td colspan="5"></td>
                             </tr>
                         </tbody>
                     </table>
