@@ -184,16 +184,19 @@ class CuttingOrdersController extends Controller
         $total_width = 0;
         $total_weight = 0;
         $total_layer = 0;
+        $total_balance_end = 0;
         foreach( $cutting_order_detail as $key => $detail ){
             $total_width += $detail->yardage;
             $total_weight += $detail->weight;
             $total_layer += $detail->layer;
+            $total_balance_end += $detail->balance_end;
             $detail->cutting_date = Carbon::createFromFormat('Y-m-d H:i:s', $detail->created_at)->format('d-m-Y');
         }
 
         $cutting_order = Arr::add($cutting_order, 'total_width', $total_width);
         $cutting_order = Arr::add($cutting_order, 'total_weight', $total_weight);
         $cutting_order = Arr::add($cutting_order, 'total_layer', $total_layer);
+        $cutting_order = Arr::add($cutting_order, 'total_balance_end', $total_balance_end);
 
         $cutting_order = (object)$cutting_order;
 

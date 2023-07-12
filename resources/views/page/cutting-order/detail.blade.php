@@ -124,12 +124,12 @@
                                 <th scope="col">Place No</th>
                                 <th scope="col">
                                     <span>
-                                        Fabric Sticker (yard)
+                                        Fabric Length Sticker (yard)
                                     </span>
                                 </th>
                                 <th scope="col">Weight</th>
                                 <th scope="col">Layer</th>
-                                <th scope="col">Actual (yard)</th>
+                                <th scope="col">Actual length (yard)</th>
                                 <th scope="col">
                                 <span>
                                     Balance End (yard)
@@ -167,17 +167,21 @@
                             @endforeach
                             <tr class="spacer" style="height:5px;">
                                 <td colspan="8"></td>
-                                <!-- <td colspan="2"></td> -->
                             </tr>
                             <tr class="bg-dark mt-2">
-                                <td colspan="2">Total</td>
-                                <td>{{ $cutting_order->total_width }}</td>
+                                <td colspan="2" class="text-right">Total</td>
+                                <td>{{ $cutting_order->total_width }} Yard</td>
                                 <td>{{ $cutting_order->total_weight }}</td>
                                 <td class="bi bi-table" data-toggle="tooltip" data-placement="top" title="Total layer {{ $cutting_order->total_layer }} harus sama dengan layer actual planning">
                                     {{ $cutting_order->total_layer }}
                                     <span class="glyphicon glyphicon-magnet"></span>
                                 </td>
-                                <td colspan="5"></td>
+                                <td><?php
+                                    $total_actual = $cutting_order->total_layer * ($cutting_order->marker_yards + ($cutting_order->marker_inches / 36));
+                                    $total_actual = number_format($total_actual, 2, '.', '');
+                                    echo $total_actual . " Yard";
+                                ?></td>
+                                <td colspan="4">{{ $cutting_order->total_balance_end }} Yard</td>
                             </tr>
                         </tbody>
                     </table>

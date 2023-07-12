@@ -366,7 +366,7 @@
                             <div class="col-sm-6 col-md-3">
                                 <div class="form-group">
                                 <label for="duplicate_qty">Duplicate Qty</label>
-                                    <input type="number" class="form-control" id="duplicate_qty" name="duplicate_qty" min="0" placeholder="Enter Duplicate Qty">
+                                    <input type="number" class="form-control" id="duplicate_qty" name="duplicate_qty" min="0" max="15" placeholder="Enter Duplicate Qty" required>
                                 </div>
                             </div>
                         </div>
@@ -403,21 +403,18 @@ $(document).ready(function(){
         }
     });
 
-    $('#duplicate_qty').on('keyup', function(e) {
-        let duplicate_qty = $(this).val();
-        if(duplicate_qty > 8){
-            $(this).val(8);
-        }
-    });
+    // $('#duplicate_qty').on('keyup', function(e) {
+    //     let duplicate_qty = $(this).val();
+    //     if(duplicate_qty > 8){
+    //         $(this).val(8);
+    //     }
+    // });
 
     $('#duplicate_qty').tooltip({
-        title: "Duplikat data maximal 8",
+        title: "Duplikat data maximal 15",
         placement: "top",
         trigger: "focus"
     });
-    
-    $('#duplicate_qty').tooltip('show');
-    
 
     $('#btn_modal_create').click((e) => {
         $('#modal_formLabel').text("Add Cutting Table")
