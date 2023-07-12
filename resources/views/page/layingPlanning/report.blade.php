@@ -137,7 +137,11 @@
                     <td>{{ $loop->iteration }}</td>
                     <td></td>
                     @foreach ($detail->layingPlanningDetailSize as $item)
+                    @if ($item->qty_per_size == 0)
+                    <td>-</td>
+                    @else
                     <td>{{ $item->qty_per_size }}</td>
+                    @endif
                     @endforeach
                     <td>
                         <?php
