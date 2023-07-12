@@ -84,6 +84,10 @@ $(document).ready(function(){
         for (let index = 0; index < color_code_length; index++) {
             color_code += String.fromCharCode(Math.floor(Math.random() * 26) + 97).toUpperCase();
         }
+        // let color_code = color_name.substring(0, 4).toUpperCase() + Math.floor(Math.random() * 1000);
+        // if(color_code.length > 8){
+        //     color_code = color_code.substring(0, 8);
+        // }
         $('#color_code').val(color_code);
     });
 
