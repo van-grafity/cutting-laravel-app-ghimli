@@ -12,4 +12,8 @@ class Color extends Model
         'color',
         'color_code',
     ];
+
+    public function layingPlanning(){
+        return $this->hasMany(LayingPlanning::class, 'color_id', 'id');
+    }
 }
