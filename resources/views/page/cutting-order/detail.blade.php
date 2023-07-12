@@ -129,6 +129,7 @@
                                 </th>
                                 <th scope="col">Weight</th>
                                 <th scope="col">Layer</th>
+                                <th scope="col">Actual (yard)</th>
                                 <th scope="col">
                                 <span>
                                     Balance End (yard)
@@ -147,6 +148,11 @@
                                 <td>{{ $detail->yardage }}</td>
                                 <td>{{ $detail->weight }}</td>
                                 <td>{{ $detail->layer }}</td>
+                                <td><?php
+                                    $actual = $detail->layer * ($cutting_order->marker_yards + ($cutting_order->marker_inches / 36));
+                                    $actual = number_format($actual, 2, '.', '');
+                                    echo $actual;
+                                ?></td>
                                 <td>{{ $detail->balance_end }}</td>
                                 <td>{{ $detail->operator }}</td>
                                 <td>{{ $detail->cutting_date }}</td>
