@@ -171,6 +171,8 @@ class CuttingOrdersController extends Controller
             'fabric_type' => $layingPlanningDetail->layingPlanning->fabricType->name,
             'fabric_cons' => $layingPlanningDetail->layingPlanning->fabricCons->name,
             'marker_length' => $layingPlanningDetail->marker_yard ." yd ". $layingPlanningDetail->marker_inch. " inch",
+            'marker_inches' => $layingPlanningDetail->marker_inch,
+            'marker_yards' => $layingPlanningDetail->marker_yard,
             'layer' => $layingPlanningDetail->layer_qty,
         ];
 
@@ -427,8 +429,11 @@ class CuttingOrdersController extends Controller
         $fabric_type = Str::substr($fabric_type, 0, 4);
         $fabric_type = Str::upper($fabric_type);
         $table_number = Str::padLeft($layingPlanningDetail->table_number, 3, '0');
+        $getDuplicateSN = CuttingOrderRecord::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
+        $duplicateSN = count($getDuplicateSN) + 1;
+        $duplicateSN = Str::padLeft($duplicateSN, 2, '0');
+        $serial_number = "COR-{$gl_number}-{$color_code}{$fabric_type}-{$table_number}-{$duplicateSN}";
         
-        $serial_number = "COR-{$gl_number}-{$color_code}{$fabric_type}-{$table_number}";
         return $serial_number;
     }
 

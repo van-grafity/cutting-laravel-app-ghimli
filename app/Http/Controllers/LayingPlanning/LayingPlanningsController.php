@@ -12,6 +12,7 @@ use App\Models\LayingPlanningDetailSize;
 use App\Models\CuttingOrderRecord;
 use App\Models\CuttingOrderRecordDetail;
 use App\Models\FabricType;
+use App\Models\FabricRequisition;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -159,7 +160,10 @@ class LayingPlanningsController extends Controller
     public function show($id)
     {
         $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->find($id);
-        $details = LayingPlanningDetail::where('laying_planning_id', $id)->get();
+        $details = LayingPlanningDetail::with(['fabricRequisition'])->where('laying_planning_id', $id)->get();
+        $fabric_requisition = FabricRequisition::with(['layingPlanningDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
+            $query->where('laying_planning_id', $id);
+        })->get();
         $total_order_qty = LayingPlanning::where('gl_id', $data->gl_id)->sum('order_qty');
         $data->total_order_qty = $total_order_qty;
         $total_pcs_all_table = 0;
@@ -172,6 +176,8 @@ class LayingPlanningsController extends Controller
 
         foreach($details as $key => $value) {
             $details[$key]->cor_status = $value->cuttingOrderRecord ? 'disabled' : '';
+            // faric requisition disable
+            $details[$key]->fr_status = $value->fabricRequisition ? 'disabled' : '';
             $total_pcs_all_table = $total_pcs_all_table + $value->total_all_size;
             $total_length_all_table = $total_length_all_table + $value->total_length;
         }
