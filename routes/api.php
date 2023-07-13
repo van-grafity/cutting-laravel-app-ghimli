@@ -46,6 +46,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('cutting-orders/gl/{id}', [CuttingOrdersController::class, 'getCuttingOrderRecordByGlId']);
     Route::get('cutting-orders/cor/{id}', [CuttingOrdersController::class, 'getLayingPlanningDetailByCuttingOrderRecordId']);
     Route::post('cutting-orders/status-cut', [CuttingOrdersController::class, 'postStatusCut']);
+    Route::post('cutting-orders/search', [CuttingOrdersController::class, 'search']);
 
     Route::get('cutting-tickets', [CuttingTicketsController::class, 'index']);
     Route::get('cutting-tickets/{id}', [CuttingTicketsController::class, 'show']);

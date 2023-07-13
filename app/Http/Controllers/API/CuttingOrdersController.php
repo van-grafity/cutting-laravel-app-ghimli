@@ -117,6 +117,21 @@ class CuttingOrdersController extends BaseController
         return $this->onSuccess($data, 'Cutting Order Record Detail created successfully.');
     }
 
+    public function search(Request $request)
+    {
+        $input = $request->all();
+        $cuttingOrderRecord = CuttingOrderRecord::with('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')
+        ->where('serial_number', 'like', '%' . $input['serial_number'] . '%')
+        ->paginate(10);
+        
+        $data = collect(
+            [
+                'cutting_order_record' => $cuttingOrderRecord
+            ]
+        );
+        return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
+    }
+
     public function color()
     {
         $data = Color::all();
