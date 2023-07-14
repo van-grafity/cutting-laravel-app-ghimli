@@ -428,7 +428,7 @@
         margin-top: 1cm;
         margin-left: 0.4cm;
         margin-right: 0.4cm;
-        margin-bottom: 2cm;
+        margin-bottom: 3.5cm;
     }
     
     table.table-bordered > thead > tr > th{
