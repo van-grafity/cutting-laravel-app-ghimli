@@ -30,8 +30,8 @@ class GlsController extends Controller
             })
             ->addColumn('action', function($data){
                 return '
-                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="edit_gl('.$data->id.')" hidden>Edit</a>
-                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_gl('.$data->id.')" hidden>Delete</a>';
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="edit_gl('.$data->id.')">Edit</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_gl('.$data->id.')">Delete</a>';
             })
             ->make(true);
     }
@@ -117,8 +117,6 @@ class GlsController extends Controller
         $gl->buyer_id = $request->buyer_id;
         $gl->save();
 
-        Style::where('gl_id', $gl->id)->delete();
-
         $styles = $request->style;
         $styles_desc = $request->style_desc;
         foreach ($styles as $key => $style) {
@@ -128,7 +126,12 @@ class GlsController extends Controller
                     'description' => $styles_desc[$key],
                     'gl_id' => $gl->id,
                 ];
-                $insertStyle = Style::create($style);
+                $existingStyle = Style::where('gl_id', $gl->id)->where('style', $style['style'])->first();
+                if ($existingStyle) {
+                    $existingStyle->update($style);
+                } else {
+                    Style::create($style);
+                }
             }
         }
 
