@@ -39,6 +39,9 @@ class LayingPlanningsController extends Controller
 
     public function dataLayingPlanning (){
         $query = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])
+            ->whereHas('style', function($query) {
+                $query->whereNull('deleted_at');
+            })
             ->select('laying_plannings.id','laying_plannings.serial_number','laying_plannings.gl_id','laying_plannings.style_id','laying_plannings.buyer_id','laying_plannings.color_id','laying_plannings.fabric_type_id')->get();
             return Datatables::of($query)
             ->addIndexColumn()

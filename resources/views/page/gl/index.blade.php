@@ -93,6 +93,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
+                                            <input type="hidden" name="style_ids[]" value="">
                                             <td width="150">
                                                 <div class="form-group">
                                                     <input type="text" class="form-control" id="style" name="style[]">
@@ -357,10 +358,12 @@ $(function (e) {
             `;
         }
 
+        let style_ids = data ? data.id : '';
         let style = data ? data.style : '';
         let style_desc = data ? data.description : '';
         let element = `
         <tr>
+            <input type="hidden" name="style_id[]" value="${style_ids}">
             <td width="150">
                 <div class="form-group">
                     <input type="text" class="form-control" name="style[]" value="${style}">
