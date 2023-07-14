@@ -131,7 +131,7 @@ class GlsController extends Controller
                         'gl_id' => $gl->id,
                     ];
                     $updateStyle = Style::where('id', $style_ids[$key])->update($style);
-                    $deleteStyle = Style::where('gl_id', $gl->id)->whereNotIn('id', $style_ids)->delete();
+
                 }else{
                     $style = [
                         'style' => $style,
@@ -142,6 +142,7 @@ class GlsController extends Controller
                 }
             }
         }
+        $deleteStyle = Style::where('gl_id', $gl->id)->whereNotIn('id', $style_ids)->delete();
         return redirect('/gl')->with('success', 'Gl '.$gl->gl_number.' Successfully Updated!');
     }
         
