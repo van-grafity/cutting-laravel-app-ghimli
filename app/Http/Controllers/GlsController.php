@@ -109,34 +109,42 @@ class GlsController extends Controller
             'gl_number' => 'required',
             'buyer_id' => 'required',
         ]);
-
+        
         $gl = Gl::find($id);
-        $gl->gl_number = $request->gl_number;
-        $gl->season = $request->season;
-        $gl->size_order = $request->size_order;
-        $gl->buyer_id = $request->buyer_id;
-        $gl->save();
-
+        
+        $gl->update([
+            'gl_number' => $request->gl_number,
+            'season' => $request->season,
+            'size_order' => $request->size_order,
+            'buyer_id' => $request->buyer_id,
+        ]);
+        $styles = Style::where('gl_id', $id)->get();
         $styles = $request->style;
         $styles_desc = $request->style_desc;
+        $style_ids = $request->style_id;
         foreach ($styles as $key => $style) {
             if($style && $styles_desc[$key]){
-                $style = [
-                    'style' => $style,
-                    'description' => $styles_desc[$key],
-                    'gl_id' => $gl->id,
-                ];
-                $existingStyle = Style::where('gl_id', $gl->id)->where('style', $style['style'])->first();
-                if ($existingStyle) {
-                    $existingStyle->update($style);
-                } else {
-                    Style::create($style);
+                if($style_ids[$key]){
+                    $style = [
+                        'style' => $style,
+                        'description' => $styles_desc[$key],
+                        'gl_id' => $gl->id,
+                    ];
+                    $updateStyle = Style::where('id', $style_ids[$key])->update($style);
+                    $deleteStyle = Style::where('gl_id', $gl->id)->whereNotIn('id', $style_ids)->delete();
+                }else{
+                    $style = [
+                        'style' => $style,
+                        'description' => $styles_desc[$key],
+                        'gl_id' => $gl->id,
+                    ];
+                    $insertStyle = Style::create($style);
                 }
             }
         }
-
         return redirect('/gl')->with('success', 'Gl '.$gl->gl_number.' Successfully Updated!');
     }
+        
 
     public function detail(Request $request, $gl_id) {
 
