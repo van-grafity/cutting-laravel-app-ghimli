@@ -122,7 +122,7 @@ class CuttingOrdersController extends BaseController
         $input = $request->all();
         $cuttingOrderRecord = CuttingOrderRecord::with('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')
         ->where('serial_number', 'like', '%' . $input['serial_number'] . '%')
-        ->paginate(10);
+        ->get();
         
         $data = collect(
             [
