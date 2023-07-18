@@ -429,13 +429,15 @@ class CuttingOrdersController extends Controller
         $gl_number = $layingPlanningDetail->layingPlanning->gl->gl_number;
         $color_code = $layingPlanningDetail->layingPlanning->color->color_code;
         $fabric_type = $layingPlanningDetail->layingPlanning->fabricType->name;
+        $style = $layingPlanningDetail->layingPlanning->style->id;
         $fabric_type = Str::substr($fabric_type, 0, 4);
         $fabric_type = Str::upper($fabric_type);
+        $fabric_type = preg_replace('/[^A-Za-z0-9\-]/', '', $fabric_type);
         $table_number = Str::padLeft($layingPlanningDetail->table_number, 3, '0');
         $getDuplicateSN = CuttingOrderRecord::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
         $duplicateSN = count($getDuplicateSN) + 1;
         $duplicateSN = Str::padLeft($duplicateSN, 2, '0');
-        $serial_number = "COR-{$gl_number}-{$color_code}{$fabric_type}-{$table_number}-{$duplicateSN}";
+        $serial_number = "COR-{$gl_number}-{$color_code}{$fabric_type}-S{$style}-{$duplicateSN}-{$table_number}";
         
         return $serial_number;
     }
