@@ -74,9 +74,13 @@
                                 </div>
                             </div>
                         </div>
-                        <h1 class="chart-title">Monthly Cutting Order</h1>
-                        <div class="chart-container">
-                            <canvas id="myChart"></canvas>
+                        <div class="card">
+                            <div class="card-body">
+                                <h1 class="chart-title">Monthly Cutting Order</h1>
+                                <div class="chart-container">
+                                    <canvas id="myChart"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
