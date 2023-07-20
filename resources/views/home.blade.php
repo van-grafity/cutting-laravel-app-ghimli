@@ -24,7 +24,6 @@
                                     <div class="icon">
                                         <i class="ion ion-bag"></i>
                                     </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                                 </div>
                                 <div class="small-box mb-3 bg-warning">
                                     <div class="inner">
@@ -34,7 +33,6 @@
                                     <div class="icon">
                                         <i class="ion ion-bag"></i>
                                     </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                                 </div>
                                 <div class="small-box mb-3 bg-danger">
                                     <div class="inner">
@@ -44,7 +42,6 @@
                                     <div class="icon">
                                         <i class="ion ion-bag"></i>
                                     </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                                 </div>
 
                                 <div class="col-md-12 mb-4">
@@ -59,7 +56,6 @@
                                     <div class="icon">
                                         <i class="ion ion-bag"></i>
                                     </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                                 </div>
                                 <div class="small-box mb-3 bg-danger">
                                     <div class="inner">
@@ -69,28 +65,18 @@
                                     <div class="icon">
                                         <i class="ion ion-bag"></i>
                                     </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                             <div class="col-md-8">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h1 class="chart-title">Monthly Cutting Order</h1>
-                                        <div class="chart-container-pie">
-                                            <canvas id="myPieChart"></canvas>
-                                        </div>
-                                    </div>
+                                <h1 class="chart-title">Monthly Cutting Order</h1>
+                                <div class="chart-container-pie">
+                                    <canvas id="myPieChart"></canvas>
                                 </div>
-                            </div>
                             </div>
                         </div>
-                        <div class="card">
-                            <div class="card-body">
-                                <h1 class="chart-title">Monthly Cutting Order</h1>
-                                <div class="chart-container">
-                                    <canvas id="myChart"></canvas>
-                                </div>
-                            </div>
+                        <h1 class="chart-title">Monthly Cutting Order</h1>
+                        <div class="chart-container">
+                            <canvas id="myChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -101,16 +87,22 @@
     <style>
         .chart-container-pie {
             margin: auto;
-            width: 80%;
-            height: 80%;
+            width: 100%;
+            height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+        
         .chart-title {
             text-align: center;
         }
         .chart-container {
             margin: auto;
             width: 100%;
-            height: 80%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
         }
     </style>
 @endsection
@@ -159,6 +151,8 @@
                 'rgb(54, 162, 235)',
             ],
             data: usersPie,
+            hoverOffset: 4
+
         }]
     };
 
