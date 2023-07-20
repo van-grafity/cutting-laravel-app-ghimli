@@ -135,13 +135,13 @@
                     <td width="25" class="no-border"></td>
                     <td width="80" class="subtitle-right"> 
                         No : {{ $data->no_laying_sheet}} <br> 
-                        Date : {{ $data->date }} 
+                        Date : {{ $data->created_at }} 
                     </td>
                 </tr>
             </thead>
         </table>
         <div class="body-nota">
-            <table class="table table-nota">
+            <table class="table table-nota" style="margin-bottom: 0px !important">
                 <thead class="">
                     <tr>
                         <th width="40">Fabric P/O No. </th>
@@ -472,6 +472,9 @@
                     </tr>
                 </tbody>
             </table>    
+            <div style="font-size: 10px; margin-top: 0">
+                Date Printed : {{ $data->date }} 
+            </div>
         </div>
     </div>
 </body>
