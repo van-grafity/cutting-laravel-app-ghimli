@@ -202,12 +202,18 @@ class LayingPlanningsController extends Controller
         $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($id) {
             $query->where('id', $id);
         })->get();
+        $details->load('cuttingOrderRecord', 'cuttingOrderRecord.cuttingOrderRecordDetail', 'cuttingOrderRecord.cuttingOrderRecordDetail.color');
+        $cuttingOrderRecord = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
+            $query->whereHas('layingPlanning', function($query) use ($id) {
+                $query->where('id', $id);
+            });
+        })->get();
         // $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($serial_number) {
         //     $query->whereHas('layingPlanning', function($query) use ($serial_number) {
         //         $query->where('serial_number', $serial_number);
         //     });
         // })->get();
-        $pdf = PDF::loadView('page.layingPlanning.report', compact('data', 'details'))->setPaper('a4', 'landscape');
+        $pdf = PDF::loadView('page.layingPlanning.report', compact('data', 'details', 'cuttingOrderRecord'))->setPaper('a4', 'landscape');
         // return $pdf->stream();
         return $pdf->stream('laying-planning-report.pdf');
     }

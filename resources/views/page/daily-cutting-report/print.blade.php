@@ -299,11 +299,12 @@
                         @endif
                         @if ($loop->iteration == count($data['laying_planning'])|| $layingPlanning->buyer->name != $data['laying_planning'][$loop->iteration]->buyer->name)
                             <tr style="background-color: #d3d3d3;">
-                                <td colspan="5" style="text-align: right; padding-right: 6px !important;">Sub Total</td>
+                                <td colspan="4" style="text-align: right; padding-right: 6px !important;">Sub Total</td>
                                 <td></td>
                                 @foreach ($data['group'] as $key => $group)
                                     <td></td>
                                 @endforeach
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
