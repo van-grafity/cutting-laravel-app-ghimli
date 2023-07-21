@@ -94,7 +94,7 @@
 
         <div class="body-nota">
             <table class="table table-nota">
-            <thead class="">
+                <thead class="">
                     <tr>
                         <th rowspan="2" style="width: 5%;">Buyer</th>
                         <th rowspan="2" style="width: 7%;">Style</th>
@@ -102,7 +102,7 @@
                         <th rowspan="2" style="width: 10%;">COLOR</th>
                         <th rowspan="2" style="width: 3%;">MI QTY</th>
                         <th rowspan="1">{{ $date_filter }}</th>
-                        <th colspan="{{ $data['group']->count() }}">Cutting Output</th>
+                        <th colspan="2">Cutting Output</th>
                         <th rowspan="2">Total Qty </br> per day</th>
                         <th rowspan="2">Acumulation </br> (pcs)</th>
                         <th rowspan="2">Completed (%)</th>
@@ -110,207 +110,31 @@
                     </tr>
                     <tr>
                         <th rowspan="1">Previous Balance</th>
-                        @foreach ($data['group'] as $key => $group)
-                            <th rowspan="1">{{ $group->group_name }}</th>
-                        @endforeach
+                        <th rowspan="1" colspan="2">Group</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @foreach ($data['laying_planning'] as $key => $layingPlanning)
-                        @php
-                            $total = 0;
-                            foreach ($layingPlanning->layingPlanningDetail as $keyLayingPlanningDetail => $layingPlanningDetail) {
-                                foreach ($layingPlanningDetail->layingPlanningDetailSize as $keyLayingPlanningDetailSize => $layingPlanningDetailSize) {
-                                    foreach ($data['cutting_order_record_detail'] as $keyCuttingOrderRecordDetail => $cuttingOrderRecordDetail) {
-                                        foreach ($cuttingOrderRecordDetail->cuttingOrderRecord as $keyCuttingOrderRecord => $cuttingOrderRecord) {
-                                            if ($layingPlanningDetailSize->size_id == $cuttingOrderRecordDetail->size_id && $layingPlanningDetail->layer_qty == $cuttingOrderRecordDetail->layer) {
-                                                $total += $layingPlanningDetailSize->ratio_per_size * $cuttingOrderRecordDetail->layer;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        @endphp
-                        @php
-                        $previous_balance = 0;
-                            foreach ($layingPlanning->layingPlanningDetail as $keyLayingPlanningDetail => $layingPlanningDetail) {
-                                foreach ($layingPlanningDetail->layingPlanningDetailSize as $keyLayingPlanningDetailSize => $layingPlanningDetailSize) {
-                                    foreach ($data['cutting_order_record_detail_previous'] as $keyCuttingOrderRecordDetail => $cuttingOrderRecordDetail) {
-                                        foreach ($cuttingOrderRecordDetail->cuttingOrderRecord as $keyCuttingOrderRecord => $cuttingOrderRecord) {
-                                                $previous_balance += $layingPlanningDetailSize->ratio_per_size * $cuttingOrderRecordDetail->layer;
-                                        }
-                                    }
-                                }
-                            }
-                        @endphp
-                        @if ($loop->iteration == 1 || $layingPlanning->buyer->name != $data['laying_planning'][$key-1]->buyer->name)
-                            @php
-                                $count_buyer = 0;
-                                foreach ($data['laying_planning'] as $key2 => $layingPlanning2) {
-                                    if ($layingPlanning->buyer->name == $layingPlanning2->buyer->name) {
-                                        $count_buyer++;
-                                    }
-                                }
-                            @endphp
-                            
+                    @foreach ($data as $key => $item)
+                    @php $count_lp = count($item->laying_plannings); @endphp
+                        @foreach($item->laying_plannings as $key_lp => $laying_planning)
                             <tr>
-                                <td rowspan="{{ $count_buyer }}">{{ $layingPlanning->buyer->name }}</td>
-                                <td rowspan="{{ $count_buyer }}">{{ $layingPlanning->style->style }}</td>
-                                <td rowspan="{{ $count_buyer }}">{{ $layingPlanning->gl->gl_number }}</td>
-                                <td style="text-align: left;">{{ $layingPlanning->color->color }}</td>
-                                <td>{{ $layingPlanning->order_qty }}</td>
-                                <td>{{ $previous_balance }}</td>
-                                @foreach ($data['group'] as $key => $group)
-                                    <td><?php
-                                        $total_ratio_layer = 0;
-                                        $isCuttingOrderRecordDetail = 'false';
-                                        foreach ($layingPlanning->layingPlanningDetail as $keyLayingPlanningDetail => $layingPlanningDetail) {
-                                            if ($layingPlanningDetail->layingPlanningDetailSize->count() > 0) {
-                                                foreach ($layingPlanningDetail->layingPlanningDetailSize as $keyLayingPlanningDetailSize => $layingPlanningDetailSize) {
-                                                    if ($layingPlanningDetailSize->laying_planning_detail_id == $layingPlanningDetail->id) {
-                                                        foreach ($data['cutting_order_record'] as $keyCuttingOrderRecord => $cuttingOrderRecord) {
-                                                            foreach ($cuttingOrderRecord->cuttingOrderRecordDetail as $keyCuttingOrderRecordDetail => $cuttingOrderRecordDetail) {
-                                                                if ($layingPlanning->color_id == $cuttingOrderRecordDetail->color_id && $cuttingOrderRecordDetail->cutting_order_record_id == $cuttingOrderRecord->id) {
-                                                                    if ($group->id == $cuttingOrderRecordDetail->user_group->id) {
-                                                                        $total_ratio_layer += $layingPlanningDetailSize->ratio_per_size * $cuttingOrderRecordDetail->layer;
-                                                                        $isCuttingOrderRecordDetail = 'true';
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }                                              
-                                                }
-                                            }
-                                        }
-                                        echo $total_ratio_layer;
-                                    ?></td>
-                                @endforeach
-                                <td><?php
-                                    $qty = 0;
-                                    $isTrue = 'false';
-                                    foreach ($layingPlanning->layingPlanningDetail as $keyLayingPlanningDetail => $layingPlanningDetail) {
-                                        if ($layingPlanningDetail->layingPlanningDetailSize->count() > 0) {
-                                            $isTrue = 'true';
-                                            foreach ($layingPlanningDetail->layingPlanningDetailSize as $keyLayingPlanningDetailSize => $layingPlanningDetailSize) {
-                                                $qty += $layingPlanningDetailSize->ratio_per_size * $layingPlanningDetail->layer_qty;
-                                            }
-                                        }
-                                    }
-                                    echo $qty;
-                                ?></td>
-                                <td><?php
-                                    $accumulation = 0;
-                                    foreach ($layingPlanning->layingPlanningDetail as $keyLayingPlanningDetail => $layingPlanningDetail) {
-                                        foreach ($data['cutting_order_record_detail'] as $keyCuttingOrderRecordDetail => $cuttingOrderRecordDetail) {
-                                            foreach ($cuttingOrderRecordDetail->cuttingOrderRecord as $keyCuttingOrderRecord => $cuttingOrderRecord) {
-                                                $accumulation += $cuttingOrderRecordDetail->layer;
-                                            }
-                                        }
-                                    }
-                                    echo $accumulation;
-                                ?></td>
-                                <td><?php
-                                    foreach ($layingPlanning->layingPlanningDetail as $keyLayingPlanningDetail => $layingPlanningDetail) {
-                                        foreach ($data['cutting_order_record_detail'] as $keyCuttingOrderRecordDetail => $cuttingOrderRecordDetail) {
-                                            foreach ($cuttingOrderRecordDetail->cuttingOrderRecord as $keyCuttingOrderRecord => $cuttingOrderRecord) {
-                                                $accumulation += $cuttingOrderRecordDetail->layer;
-                                            }
-                                        }
-                                    }
-                                    echo $accumulation / $layingPlanning->order_qty * 100;
-                                ?>%</td>
-                                <td></td>
+                                @if ($key_lp == 0)
+                                    <td rowspan="{{$count_lp}}">{{ $item->buyer }}</td>
+                                @endif
+                                <td>{{ $laying_planning->style }}</td>
+                                <td>{{ $laying_planning->gl_number }}</td>
+                                <td>{{ $laying_planning->color }}</td>
+                                <td>{{ $laying_planning->order_qty }}</td>
+                                <td>{{ $laying_planning->previous_balance }}</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>{{ $laying_planning->total_qty_per_day}}</td>
+                                <td>{{ $laying_planning->accumulation}}</td>
+                                <td>{{ $laying_planning->completed}}</td>
+                                <td>0</td>
                             </tr>
-                        @else
-                            <tr>
-                                <td style="text-align: left;">{{ $layingPlanning->color->color }}</td>
-                                <td>{{ $layingPlanning->order_qty }}</td>
-                                <td><?php
-                                $total_ratio_layer = 0;
-                                foreach ($layingPlanning->layingPlanningDetail as $keyLayingPlanningDetail => $layingPlanningDetail) {
-                                    foreach ($layingPlanningDetail->layingPlanningDetailSize as $keyLayingPlanningDetailSize => $layingPlanningDetailSize) {
-                                        foreach ($data['cutting_order_record_detail'] as $keyCuttingOrderRecordDetail => $cuttingOrderRecordDetail) {
-                                            foreach ($cuttingOrderRecordDetail->cuttingOrderRecord as $keyCuttingOrderRecord => $cuttingOrderRecord) {
-                                                if ($layingPlanning->color_id == $cuttingOrderRecordDetail->color_id) {
-                                                        $total_ratio_layer += $layingPlanningDetailSize->ratio_per_size * $cuttingOrderRecordDetail->layer;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                echo $total_ratio_layer;
-                                ?></td>
-                                @foreach ($data['group'] as $key => $group)
-                                    <td><?php
-                                        $total_ratio_layer = 0;
-                                        $isCuttingOrderRecordDetail = 'false';
-                                        foreach ($layingPlanning->layingPlanningDetail as $keyLayingPlanningDetail => $layingPlanningDetail) {
-                                            foreach ($layingPlanningDetail->layingPlanningDetailSize as $keyLayingPlanningDetailSize => $layingPlanningDetailSize) {
-                                                foreach ($data['cutting_order_record_detail'] as $keyCuttingOrderRecordDetail => $cuttingOrderRecordDetail) {
-                                                    foreach ($cuttingOrderRecordDetail->cuttingOrderRecord as $keyCuttingOrderRecord => $cuttingOrderRecord) {
-                                                        if ($layingPlanning->color_id == $cuttingOrderRecordDetail->color_id && $group->id == $cuttingOrderRecordDetail->user_group->id) {
-                                                                $total_ratio_layer += $layingPlanningDetailSize->ratio_per_size * $cuttingOrderRecordDetail->layer;
-                                                                $isCuttingOrderRecordDetail = 'true';
-                                                        } 
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        echo $total_ratio_layer;
-                                    ?></td>
-                                @endforeach
-                                <td><?php
-                                    $qty = 0;
-                                    $isTrue = 'false';
-                                    foreach ($layingPlanning->layingPlanningDetail as $keyLayingPlanningDetail => $layingPlanningDetail) {
-                                        if ($layingPlanningDetail->layingPlanningDetailSize->count() > 0) {
-                                            $isTrue = 'true';
-                                            foreach ($layingPlanningDetail->layingPlanningDetailSize as $keyLayingPlanningDetailSize => $layingPlanningDetailSize) {
-                                                $qty += $layingPlanningDetailSize->ratio_per_size * $layingPlanningDetail->layer_qty;
-                                            }
-                                        }
-                                    }
-                                    echo $qty;
-                                ?></td>
-                                <td><?php
-                                    $accumulation = 0;
-                                    foreach ($layingPlanning->layingPlanningDetail as $keyLayingPlanningDetail => $layingPlanningDetail) {
-                                        foreach ($data['cutting_order_record_detail'] as $keyCuttingOrderRecordDetail => $cuttingOrderRecordDetail) {
-                                            foreach ($cuttingOrderRecordDetail->cuttingOrderRecord as $keyCuttingOrderRecord => $cuttingOrderRecord) {
-                                                $accumulation += $cuttingOrderRecordDetail->layer;
-                                            }
-                                        }
-                                    }
-                                    echo $accumulation;
-                                ?></td>
-                                <td><?php
-                                    foreach ($layingPlanning->layingPlanningDetail as $keyLayingPlanningDetail => $layingPlanningDetail) {
-                                        foreach ($data['cutting_order_record_detail'] as $keyCuttingOrderRecordDetail => $cuttingOrderRecordDetail) {
-                                            foreach ($cuttingOrderRecordDetail->cuttingOrderRecord as $keyCuttingOrderRecord => $cuttingOrderRecord) {
-                                                $accumulation += $cuttingOrderRecordDetail->layer;
-                                            }
-                                        }
-                                    }
-                                    echo $accumulation / $layingPlanning->order_qty * 100;
-                                ?>%</td>
-                                <td></td>
-                            </tr>
-                        @endif
-                        @if ($loop->iteration == count($data['laying_planning'])|| $layingPlanning->buyer->name != $data['laying_planning'][$loop->iteration]->buyer->name)
-                            <tr style="background-color: #d3d3d3;">
-                                <td colspan="4" style="text-align: right; padding-right: 6px !important;">Sub Total</td>
-                                <td></td>
-                                @foreach ($data['group'] as $key => $group)
-                                    <td></td>
-                                @endforeach
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        @endif
+                        @endforeach
                     @endforeach
                 </tbody>
             </table>

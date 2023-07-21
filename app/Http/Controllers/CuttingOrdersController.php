@@ -388,6 +388,8 @@ class CuttingOrdersController extends Controller
             'manpower' => count($this->manpower($name)),
             'progress' => $this->duration($cutting_order_id),
             'date' => Carbon::now()->format('d-m-Y'),
+            'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order->created_at)->format('d-m-Y')
+            
         ];
 
         // return view('page.cutting-order.report', compact('data','cor_details'));
