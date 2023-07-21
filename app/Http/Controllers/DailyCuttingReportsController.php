@@ -59,38 +59,57 @@ class DailyCuttingReportsController extends Controller
             ->get();
             
             foreach($layingPlannings as $key_lp => $laying_planning) {
-                // $get_size_ratio = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
-                // $total_size_ratio = 0;
-                // foreach( $get_size_ratio as $key => $size ) {
-                //     $total_size_ratio += $size->ratio_per_size;
-                // }
+                $total_qty_per_day = 0;
+                $total_previous_cutting = 0;
 
-                // laying planning details get laying planning detail size
-                
-
+                // get cor dari setiap laying planning
                 $cutting_order_records = CuttingOrderRecord::select('cutting_order_records.*', DB::raw("SUM(cutting_order_record_details.layer) as total_layer"))
                 ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
                 ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
                 ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
+                ->whereDate('cutting_order_record_details.created_at', '=', $date_filter)
                 ->groupBy('cutting_order_records.id')
                 ->get();
 
                 foreach ($cutting_order_records as $key_cor => $cor) {
-                    $laying_planning_detail_size = LayingPlanningDetailSize::select('laying_planning_detail_sizes.*')
+                    // dd($cor);
+                    $total_ratio = LayingPlanningDetailSize::select('laying_planning_detail_sizes.*')
                     ->join('laying_planning_details', 'laying_planning_details.id', '=', 'laying_planning_detail_sizes.laying_planning_detail_id')
-                    ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
+                    ->join('cutting_order_records', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
+                    ->where('cutting_order_records.id', '=', $cor->id)
                     ->sum('laying_planning_detail_sizes.ratio_per_size');
+                    $cutting_order_records[$key_cor]->total_size_ratio = $total_ratio;
+                    $cutting_order_records[$key_cor]->total_qty_per_cor = $total_ratio * $cor->total_layer;
+                    $total_qty_per_day += $total_ratio * $cor->total_layer;
                 }
-                
-                // get previous balance per laying planning dari cor detail
-                $cutting_order_record_details = CuttingOrderRecordDetail::select('cutting_order_record_details.*')
-                ->join('cutting_order_records', 'cutting_order_records.id', '=', 'cutting_order_record_details.cutting_order_record_id')
+
+                $layingPlannings[$key_lp]->total_qty_per_day = $total_qty_per_day;
+
+                // get previous cor dari setiap laying planning
+                $prev_cutting_order_records = CuttingOrderRecord::select('cutting_order_records.*', DB::raw("SUM(cutting_order_record_details.layer) as total_layer"))
                 ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
+                ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
                 ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
                 ->whereDate('cutting_order_record_details.created_at', '<', $date_filter)
+                ->groupBy('cutting_order_records.id')
                 ->get();
-                // dd($cutting_order_record_details);
-                return $cutting_order_records; 
+
+                foreach ($prev_cutting_order_records as $key_cor => $cor) {
+                    // dd($cor);
+                    $total_ratio = LayingPlanningDetailSize::select('laying_planning_detail_sizes.*')
+                    ->join('laying_planning_details', 'laying_planning_details.id', '=', 'laying_planning_detail_sizes.laying_planning_detail_id')
+                    ->join('cutting_order_records', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
+                    ->where('cutting_order_records.id', '=', $cor->id)
+                    ->sum('laying_planning_detail_sizes.ratio_per_size');
+                    $prev_cutting_order_records[$key_cor]->total_size_ratio = $total_ratio;
+                    $prev_cutting_order_records[$key_cor]->total_qty_per_cor = $total_ratio * $cor->total_layer;
+                    $total_previous_cutting += $total_ratio * $cor->total_layer;
+                }
+
+                $layingPlannings[$key_lp]->total_previous_cutting = $total_previous_cutting;
+                $layingPlannings[$key_lp]->previous_balance = $layingPlannings[$key_lp]->order_qty - $total_previous_cutting;
+                $layingPlannings[$key_lp]->accumulation = $total_previous_cutting + $total_qty_per_day;
+                $layingPlannings[$key_lp]->completed = round(($layingPlannings[$key_lp]->accumulation / $layingPlannings[$key_lp]->order_qty * 100), 2) . "%" ;
             }
 
             $data[$key] = (object) [
@@ -98,12 +117,12 @@ class DailyCuttingReportsController extends Controller
                 'laying_plannings' => $layingPlannings
             ];
         } 
-        // SELECT * FROM `cutting_order_records` WHERE id IN (SELECT cutting_order_record_id FROM `cutting_order_record_details` WHERE created_at LIKE '2021-08-31%')
+        // dd($data);
+        // return $data; 
         
-        // $filename = 'Daily Cutting Output Report';
-        // $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data', 'date_filter'))->setPaper('a4', 'landscape');
-        // return $pdf->stream($filename);
-        return view('page.daily-cutting-report.print', compact('data', 'date_filter'));
-        // return $data;
+        $filename = 'Daily Cutting Output Report';
+        $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data', 'date_filter'))->setPaper('a4', 'landscape');
+        return $pdf->stream($filename);
+        // return view('page.daily-cutting-report.print', compact('data', 'date_filter'));
     }
 }
