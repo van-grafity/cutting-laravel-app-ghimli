@@ -126,12 +126,12 @@
                                 <td>{{ $laying_planning->gl_number }}</td>
                                 <td>{{ $laying_planning->color }}</td>
                                 <td>{{ $laying_planning->order_qty }}</td>
+                                <td>{{ $laying_planning->previous_balance }}</td>
                                 <td>0</td>
                                 <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
-                                <td>0</td>
+                                <td>{{ $laying_planning->total_qty_per_day}}</td>
+                                <td>{{ $laying_planning->accumulation}}</td>
+                                <td>{{ $laying_planning->completed}}</td>
                                 <td>0</td>
                             </tr>
                         @endforeach

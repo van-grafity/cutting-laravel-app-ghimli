@@ -167,49 +167,9 @@
                         @endif
                     @endforeach
                     <td>{{ $detail->layer_qty }}</td>
-                    <td><?php
-                    // print_total_size_ratio($cutting_order->layingPlanningDetail) * $cutting_order->layingPlanningDetail->layer_qty,
-                        $total_size_ratio = 0;
-                        foreach ($detail->layingPlanningDetailSize as $item)
-                        {
-                            $total_size_ratio += $item->ratio_per_size;
-                        }
-                        if ($total_size_ratio == 0)
-                        {
-                            echo '-';
-                        }
-                        else
-                        {
-                            echo $total_size_ratio * $detail->layer_qty;
-                        }
-                    ?></td>
-                    <td width="5.2%">
-                    @foreach ($cuttingOrderRecord as $item)
-                        @if ($item->layingPlanningDetail->id == $detail->id)
-                            @if ($item->cuttingOrderRecordDetail->count() > 0)
-                                {{ date('d-M-Y', strtotime($item->cuttingOrderRecordDetail[$item->cuttingOrderRecordDetail->count() - 1]->created_at)) }}
-                            @else
-                                -
-                            @endif
-                        @endif
-                    @endforeach
-                    </td>
-                    <td>
-                        <?php
-                        $total_layer = 0;
-                        foreach ($cuttingOrderRecord as $item)
-                        {
-                            if ($item->layingPlanningDetail->id == $detail->id)
-                            {
-                                foreach ($item->cuttingOrderRecordDetail as $record)
-                                {
-                                    $total_layer += $record->layer;
-                                }
-                            }
-                        }
-                        echo $total_layer;
-                        ?>
-                    </td>
+                    <td></td>
+                    <td width="5.2%"></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
