@@ -102,7 +102,7 @@
                         <th rowspan="2" style="width: 10%;">COLOR</th>
                         <th rowspan="2" style="width: 3%;">MI QTY</th>
                         <th rowspan="1">{{ $date_filter }}</th>
-                        <th colspan="2">Cutting Output</th>
+                        <th colspan="{{ count($groups) }}">Cutting Output</th>
                         <th rowspan="2">Total Qty </br> per day</th>
                         <th rowspan="2">Acumulation </br> (pcs)</th>
                         <th rowspan="2">Completed (%)</th>
@@ -110,7 +110,9 @@
                     </tr>
                     <tr>
                         <th rowspan="1">Previous Balance</th>
-                        <th rowspan="1" colspan="2">Group</th>
+                        @foreach($groups as $key_group => $group)
+                            <th rowspan="1" colspan="1">{{ $group->group_name }}</th>
+                        @endforeach
                     </tr>
                 </thead>
 
@@ -124,11 +126,12 @@
                                 @endif
                                 <td>{{ $laying_planning->style }}</td>
                                 <td>{{ $laying_planning->gl_number }}</td>
-                                <td>{{ $laying_planning->color }}</td>
+                                <td>{{ $laying_planning->color }} ({{$laying_planning->cons_name}})</td>
                                 <td>{{ $laying_planning->order_qty }}</td>
                                 <td>{{ $laying_planning->previous_balance }}</td>
-                                <td>0</td>
-                                <td>0</td>
+                                @foreach($laying_planning->qty_per_groups as $key_group => $group)
+                                    <td>{{ $group->qty_group }}</td>
+                                @endforeach
                                 <td>{{ $laying_planning->total_qty_per_day}}</td>
                                 <td>{{ $laying_planning->accumulation}}</td>
                                 <td>{{ $laying_planning->completed}}</td>
