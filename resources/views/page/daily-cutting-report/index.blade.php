@@ -17,21 +17,24 @@
     }
 </style>
 <div class="container">
-    <div class="row">
-        <div class="col-12">
+    <div class="row justify-content-center"> {{-- Center the card within the row --}}
+        <div class="col-lg-6">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-title mb-1 header-wrapper">Daily Cutting Report</h6>
-                    <lable>Filter Date</lable>
-                    <div class="input-group date" id="filter_date" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" data-target="#filter_date" name="filter_date" id="filter_date_input"/>
-                        <div class="input-group-append" data-target="#filter_date" data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    <h6 class="card-title text-center mb-4">Daily Cutting Report</h6> {{-- Center the title --}}
+                    <div class="form-group">
+                        <label for="filter_date">Filter Date</label>
+                        <div class="input-group date" id="filter_date" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#filter_date" name="filter_date" id="filter_date_input"/>
+                            <div class="input-group-append" data-target="#filter_date" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="action-button-group">
-                        <a href="javascript:void(0);" class="btn btn-primary mb-2" id="btn_print_report" style="height: fit-content">Print Report</a>
+                    <div class="d-flex justify-content-center"> {{-- Center the buttons --}}
+                        <a href="javascript:void(0);" class="btn btn-primary mb-2 mr-2" id="btn_print_report">Print Report</a>
+                        {{-- Add other buttons here if needed --}}
                     </div>
                 </div>
             </div>
