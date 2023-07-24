@@ -168,9 +168,9 @@ class DailyCuttingReportsController extends Controller
         // dd($data);
         // return $data; 
         
-        // $filename = 'Daily Cutting Output Report';
-        // $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data', 'date_filter', 'groups'))->setPaper('a4', 'landscape');
-        // return $pdf->stream($filename);
-        return view('page.daily-cutting-report.print', compact('data', 'date_filter', 'groups'));
+        $filename = 'Daily Cutting Output Report';
+        $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data', 'date_filter', 'groups'))->setPaper('a4', 'landscape');
+        return $pdf->stream($filename);
+        // return view('page.daily-cutting-report.print', compact('data', 'date_filter', 'groups'));
     }
 }
