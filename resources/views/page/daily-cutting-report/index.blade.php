@@ -21,7 +21,6 @@
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-title text-center mb-4">Daily Cutting Report</h6> {{-- Center the title --}}
                     <div class="form-group">
                         <label for="filter_date">Filter Date</label>
                         <div class="input-group date" id="filter_date" data-target-input="nearest">
