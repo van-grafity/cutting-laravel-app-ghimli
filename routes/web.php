@@ -75,6 +75,7 @@ Route::group(['middleware' => ['auth','can:admin-only']], function () {
     // Route::resource('remark', RemarksController::class);
     Route::resource('pallets', PalletsController::class);
     Route::get('/pallets-print', [PalletsController::class, 'print'])->name('pallets.print');
+    Route::get('/pallets-printt', [PalletsController::class, 'printt'])->name('pallets.printt');
     Route::get('qrcode', function () {
         return QrCode::size(300)->generate('A basic example of QR code!');
     });

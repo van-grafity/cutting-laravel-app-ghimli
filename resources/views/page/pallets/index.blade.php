@@ -32,6 +32,7 @@
         <div class="row">
             <div class="col-12">
                 <a href="{{ route('pallets.print') }}" class="btn btn-primary mb-3">Print</a>
+                <a href="{{ route('pallets.printt') }}" class="btn btn-primary mb-3">Printt</a>
                 @if (count($pallets) > 0)
                     <table class="table table-striped">
                         <thead>

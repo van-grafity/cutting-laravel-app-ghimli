@@ -84,6 +84,19 @@ class PalletsController extends Controller
         return $pdf->stream($filename);
     }
 
+    public function printt()
+    {
+        $pallets = Pallet::where('serial_number', 'like', 'PLT-B%')->take(1)->get();
+        $qrCodes = [];
+        foreach ($pallets as $pallet) {
+            $qrCodes[] = QrCode::size(100)->generate($pallet->serial_number);
+        }
+        $customPaper = array(0, 0, 360, 360);
+        $pdf = PDF::loadview('page.pallets.print', compact('pallets', 'qrCodes'))->setPaper($customPaper, 'landscape');
+        $filename = 'pallets-' . date('YmdHis') . '.pdf';
+        return $pdf->stream($filename);
+    }
+
     /**
      * Remove the specified resource from storage.
      */
