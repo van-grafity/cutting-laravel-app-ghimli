@@ -17,6 +17,8 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RemarksController;
 use App\Http\Controllers\FabricRequisitionsController;
 use App\Http\Controllers\DailyCuttingReportsController;
+use App\Http\Controllers\PalletsController;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +73,11 @@ Route::group(['middleware' => ['auth','can:admin-only']], function () {
     // Route::resource('size', SizesController::class);
     // Route::resource('color', ColorsController::class);
     // Route::resource('remark', RemarksController::class);
+    Route::resource('pallets', PalletsController::class);
+    Route::get('/pallets-print', [PalletsController::class, 'print'])->name('pallets.print');
+    Route::get('qrcode', function () {
+        return QrCode::size(300)->generate('A basic example of QR code!');
+    });
     
     Route::put('user-management/reset/{id}', [UsersController::class,'reset'])->name('user-management.reset');
 });
