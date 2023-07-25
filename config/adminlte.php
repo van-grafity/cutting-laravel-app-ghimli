@@ -419,6 +419,12 @@ return [
             'can'  => 'clerk',
         ],
         [
+            'text' => 'Pallet',
+            'url'  => '/pallets',
+            'icon' => 'fas fa-fw fa fa-solid fa-pallet',
+            'can'  => 'admin-only',
+        ],
+        [
             'text' => 'Cutting Ticket',
             'icon' => 'fas fa-fw fa fa-solid fa-clipboard-list',
             'can'  => 'clerk',

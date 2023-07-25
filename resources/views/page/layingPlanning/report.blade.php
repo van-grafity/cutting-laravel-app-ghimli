@@ -310,6 +310,7 @@
                     @endforeach
                     <td><?php
                         $total_all_size = 0;
+                        $sisa = 0;
                         foreach ($details as $detail)
                         {
                             foreach ($detail->layingPlanningDetailSize as $size)
@@ -317,7 +318,11 @@
                                 $total_all_size += $size->qty_per_size;
                             }
                         }
-                        echo $total_all_size - $total;
+                        foreach ($data->layingPlanningSize as $item)
+                        {
+                            $sisa += $item->quantity;
+                        }
+                        echo $sisa - $total_all_size;
                     ?></td>
                     <td><?php
                         $total = 0;
@@ -424,12 +429,12 @@
         font-family: Calibri, san-serif;
     }
     
-    @page {
+    /* @page {
         margin-top: 1cm;
         margin-left: 0.4cm;
         margin-right: 0.4cm;
         margin-bottom: 3.5cm;
-    }
+    } */
     
     table.table-bordered > thead > tr > th{
         border-top: 1px solid black;

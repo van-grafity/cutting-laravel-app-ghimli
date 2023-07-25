@@ -29,6 +29,10 @@
             text-align: center;
             vertical-align: middle;
         }
+
+        serial-number {
+            font-size: 8px;
+        }
 	</style>
 </head>
 
