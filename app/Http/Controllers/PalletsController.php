@@ -78,7 +78,7 @@ class PalletsController extends Controller
         foreach ($pallets as $pallet) {
             $qrCodes[] = QrCode::size(100)->generate($pallet->serial_number);
         }
-        $customPaper = array(0,0,180.00, 298.00);
+        $customPaper = array(0, 0, 360, 360);
         $pdf = PDF::loadview('page.pallets.print', compact('pallets', 'qrCodes'))->setPaper($customPaper, 'landscape');
         $filename = 'pallets-' . date('YmdHis') . '.pdf';
         return $pdf->stream($filename);
