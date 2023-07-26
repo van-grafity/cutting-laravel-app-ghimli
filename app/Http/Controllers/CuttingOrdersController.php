@@ -160,7 +160,7 @@ class CuttingOrdersController extends Controller
         $layingPlanningDetail = LayingPlanningDetail::find($getCuttingOrder->layingPlanningDetail->id);
         
         $cutting_order = [
-            'serial_number'=> $layingPlanningDetail->cuttingOrderRecord->serial_number,
+            'serial_number'=> $getCuttingOrder->serial_number,
             'no_laying_sheet'=> $layingPlanningDetail->no_laying_sheet,
             'table_number' => $layingPlanningDetail->table_number,
             'gl_number' => $layingPlanningDetail->layingPlanning->gl->gl_number,
@@ -435,11 +435,15 @@ class CuttingOrdersController extends Controller
         $fabric_type = Str::substr($fabric_type, 0, 4);
         $fabric_type = Str::upper($fabric_type);
         $fabric_type = preg_replace('/[^A-Za-z0-9\-]/', '', $fabric_type);
+        $fabric_cons = $layingPlanningDetail->layingPlanning->fabricCons->name;
+        $fabric_cons = Str::substr($fabric_cons, 0, 4);
+        $fabric_cons = Str::upper($fabric_cons);
+        $fabric_cons = preg_replace('/[^A-Za-z0-9\-]/', '', $fabric_cons);
         $table_number = Str::padLeft($layingPlanningDetail->table_number, 3, '0');
         $getDuplicateSN = CuttingOrderRecord::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
         $duplicateSN = count($getDuplicateSN) + 1;
         $duplicateSN = Str::padLeft($duplicateSN, 2, '0');
-        $serial_number = "COR-{$gl_number}-{$color_code}{$fabric_type}-S{$style}-{$duplicateSN}-{$table_number}";
+        $serial_number = "COR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-S{$style}-{$duplicateSN}-{$table_number}";
         
         return $serial_number;
     }
