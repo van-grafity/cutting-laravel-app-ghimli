@@ -33,7 +33,7 @@ class LayingPlanningController extends BaseController
     public function show(Request $request)
     {
         $input = $request->all();
-        $getCuttingOrder = CuttingOrderRecord::with(['layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.color', 'CuttingOrderRecordDetail', 'CuttingOrderRecordDetail.color'])->where('serial_number', $input['serial_number'])->latest()->first();
+        $getCuttingOrder = CuttingOrderRecord::with([ 'statusLayer',  'statusCut', 'layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.color', 'CuttingOrderRecordDetail', 'CuttingOrderRecordDetail.color'])->where('serial_number', $input['serial_number'])->latest()->first();
         if ($getCuttingOrder == null) return $this->onSuccess(null, 'Cutting Order not found.');
         $layingPlanningDetail = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.color'])->find($getCuttingOrder->layingPlanningDetail->id);
         if ($layingPlanningDetail->layingPlanning->color == null || $layingPlanningDetail->layingPlanning->color->id == null) return $this->onError(404, 'Color not found.');
@@ -51,7 +51,7 @@ class LayingPlanningController extends BaseController
         $status = $getCuttingOrder->statusLayer->name ?? 'not completed';
         $data = collect(
             [
-                'laying_planning_detail' => $getCuttingOrder->layingPlanningDetail->load('layingPlanning', 'layingPlanning.color', 'cuttingOrderRecord', 'cuttingOrderRecord.statusLayer', 'cuttingOrderRecord.cuttingOrderRecordDetail', 'cuttingOrderRecord.cuttingOrderRecordDetail.color'),
+                'cutting_order_record' => $getCuttingOrder->load('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color'),
                 // 'laying_planning_detail' => $getCuttingOrder->load('layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.color', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color'),
                 'status' => $status
             ]

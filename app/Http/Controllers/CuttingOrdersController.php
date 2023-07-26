@@ -160,7 +160,7 @@ class CuttingOrdersController extends Controller
         $layingPlanningDetail = LayingPlanningDetail::find($getCuttingOrder->layingPlanningDetail->id);
         
         $cutting_order = [
-            'serial_number'=> $layingPlanningDetail->cuttingOrderRecord->serial_number,
+            'serial_number'=> $cuttingOrderRecord->serial_number,
             'no_laying_sheet'=> $layingPlanningDetail->no_laying_sheet,
             'table_number' => $layingPlanningDetail->table_number,
             'gl_number' => $layingPlanningDetail->layingPlanning->gl->gl_number,
