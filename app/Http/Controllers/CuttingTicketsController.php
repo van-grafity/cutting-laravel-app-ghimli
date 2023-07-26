@@ -210,10 +210,9 @@ class CuttingTicketsController extends Controller
         try {
             $next_ticket_number = 1;
             $cuttingOrderRecord = CuttingOrderRecord::find($request->cutting_order_id);
-            $layingPlanningDetail = $cuttingOrderRecord->layingPlanningDetail;
+            $layingPlanningDetail = LayingPlanningDetail::find($cuttingOrderRecord->laying_planning_detail_id);
             $planning_size_list = $layingPlanningDetail->layingPlanningDetailSize;
-            $cutting_order_details = $layingPlanningDetail->cuttingOrderRecord->cuttingOrderRecordDetail;
-
+            $cutting_order_details = $cuttingOrderRecord->cuttingOrderRecordDetail;
             foreach ($planning_size_list as $planning_size) {
                 $ratio_per_size = $planning_size->ratio_per_size;
                 for ($i=0; $i < $ratio_per_size; $i++) { 
@@ -227,6 +226,7 @@ class CuttingTicketsController extends Controller
                             'table_number'=> $cutting_order_detail->cuttingOrderRecord->layingPlanningDetail->table_number,
                             'fabric_roll'=> $cutting_order_detail->fabric_roll,
                         ];
+                        // return $data_ticket;
                         $insertCuttingTicket = CuttingTicket::create($data_ticket);
                         $next_ticket_number++;
                     }
