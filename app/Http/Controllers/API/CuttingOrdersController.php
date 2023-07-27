@@ -23,13 +23,26 @@ class CuttingOrdersController extends BaseController
     // }
     public function index()
     {
-        $data = CuttingOrderRecord::with('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->latest()->get();
-        $data = collect(
-            [
-                'cutting_order_record' => $data
-            ]
-        );
-        return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
+        $data = CuttingOrderRecord::with('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->latest()->paginate(100);
+        
+        // Buat array untuk menyimpan informasi paginasi
+        $pagination = [
+            'current_page' => $data->currentPage(),
+            'last_page' => $data->lastPage(),
+            'prev_page_url' => $data->previousPageUrl(),
+            'next_page_url' => $data->nextPageUrl(),
+            'total' => $data->total(),
+        ];
+        
+        // Buat array untuk menyimpan data "cutting_order_record"
+        $cuttingOrderRecords = [
+            'cutting_order_record' => $data->items()
+        ];
+
+        // Gabungkan kedua array menjadi satu
+        $result = array_merge($cuttingOrderRecords, $pagination);
+
+        return $this->onSuccess($result, 'Cutting Order Record retrieved successfully.');
     }
 
     public function show($serial_number)
