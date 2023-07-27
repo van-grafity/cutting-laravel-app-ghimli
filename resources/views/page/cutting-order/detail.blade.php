@@ -121,15 +121,16 @@
                         <thead class="">
                             <tr>
                                 <th scope="col">No. </th>
-                                <th scope="col">Place No</th>
-                                <th scope="col">
+                                <th scope="col">Roll No.</th>
+                                <th scope="col">Batch No.</th>
+                                <th scope="col" width='10px'>
                                     <span>
-                                        Fabric Length Sticker (yard)
+                                        Fabric Yardage (Sticker)
                                     </span>
                                 </th>
                                 <th scope="col">Weight</th>
                                 <th scope="col">Layer</th>
-                                <th scope="col">Actual length (yard)</th>
+                                <th scope="col">Actual Yardage</th>
                                 <th scope="col">
                                 <span>
                                     Balance End (yard)
@@ -145,6 +146,7 @@
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $detail->fabric_roll }}</td>
+                                <td>{{ $detail->fabric_batch }}</td>
                                 <td>{{ $detail->yardage }}</td>
                                 <td>{{ $detail->weight }}</td>
                                 <td>{{ $detail->layer }}</td>
@@ -169,7 +171,7 @@
                                 <td colspan="8"></td>
                             </tr>
                             <tr class="bg-dark mt-2">
-                                <td colspan="2" class="text-right">Total</td>
+                                <td colspan="3" class="text-right">Total</td>
                                 <td>{{ $cutting_order->total_width }} Yard</td>
                                 <td>{{ $cutting_order->total_weight }}</td>
                                 <td class="bi bi-table" data-toggle="tooltip" data-placement="top" title="Total layer {{ $cutting_order->total_layer }} harus sama dengan layer actual planning">
