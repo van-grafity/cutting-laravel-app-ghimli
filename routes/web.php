@@ -139,6 +139,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('fabric-requisition-create/{id}', [FabricRequisitionsController::class,'createNota'])->name('fabric-requisition.createNota');
     Route::get('fabric-requisition-print/{id}', [FabricRequisitionsController::class,'print_pdf'])->name('fabric-requisition.print');
     Route::get('fabric-requisition-detail/{id}', [FabricRequisitionsController::class,'fabric_requisition_detail'])->name('fabric-requisition.detail');
+    Route::get('print-multiple-fabric-requisition/{id}', [FabricRequisitionsController::class,'print_multiple_fabric_requisition'])->name('fabric-requisition.print-multiple');    
 
 
     Route::resource('daily-cutting-report', DailyCuttingReportsController::class);
