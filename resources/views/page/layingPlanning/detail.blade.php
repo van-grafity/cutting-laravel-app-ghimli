@@ -107,6 +107,7 @@
                     </div>
                     <div class="d-flex justify-content-end mb-1">
                         <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
+                        <a href="{{ route('fabric-requisition.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2">Print Fabric Req</a>
                     </div>
 
                     <table class="table align-middle table-nowrap table-hover">

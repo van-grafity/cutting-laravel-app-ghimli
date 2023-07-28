@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\FabricRequisition;
 use App\Models\LayingPlanningDetail;
+use App\Models\LayingPlanning;
 
 use Illuminate\Support\Str;
 
@@ -183,6 +184,40 @@ class FabricRequisitionsController extends Controller
         // $customPaper = array(0,0,612.00,380.00);
         $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
+        return $pdf->stream($filename);
+    }
+
+    public function print_multiple_fabric_requisition($id)
+    {
+        $laying_planning = LayingPlanning::find($id);
+        $laying_planning_detail = LayingPlanningDetail::where('laying_planning_id', $laying_planning->id)->get();
+        $fabric_requisition = FabricRequisition::with(['layingPlanningDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
+            $query->where('laying_planning_id', $id);
+        })->get();
+        
+        $filename = $laying_planning->gl->gl_number . '.pdf';
+        $data = [];
+        foreach ($fabric_requisition as $fabric) {
+            $data[] = (object)[
+                'serial_number' => $fabric->serial_number,
+                'gl_number' => $fabric->layingPlanningDetail->layingPlanning->gl->gl_number,
+                'style' => $fabric->layingPlanningDetail->layingPlanning->style->style,
+                'fabric_po' => $fabric->layingPlanningDetail->layingPlanning->fabric_po,
+                'no_laying_sheet' => $fabric->layingPlanningDetail->no_laying_sheet,
+                'fabric_type' => $fabric->layingPlanningDetail->layingPlanning->fabricType->name,   
+                'color' => $fabric->layingPlanningDetail->layingPlanning->color->color,
+                'quantity_required' => $fabric->layingPlanningDetail->total_length . " yards",
+                'quantity_issued' => "-",
+                'difference' => "-",
+                'table_number' => $fabric->layingPlanningDetail->table_number,   
+                'date' => Carbon::now()->format('d-m-Y'),
+            ];
+        }
+
+        // 21.6 cm x 14 cm
+        // $customPaper = array(0,0,612.00,380.00);
+        $customPaper = array(0,0,612.00,792.00);
+        $pdf = PDF::loadview('page.fabric-requisition.print-multiple', compact('data'))->setPaper($customPaper, 'portrait');
         return $pdf->stream($filename);
     }
 

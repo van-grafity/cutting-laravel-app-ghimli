@@ -89,7 +89,7 @@
             }
             
         @endphp
-        <table class="table table-bordered" style="width:100%; font-size: 10px; font-weight: bold; margin-bottom: 0 !important; padding-bottom: 0 !important;">
+        <table class="table table-bordered" style="width:100%; font-size: 10px; font-weight: bold; margin-bottom: 0 !important; padding-bottom: 25 !important;">
             <thead>
                 <tr>
                     <th rowspan="3">No</br>Laying</br>Sheet</th>
@@ -175,7 +175,7 @@
                     <td></td>
                 </tr>
                 <!-- || $loop->iteration == $details->count() -->
-                @if($loop->iteration < $details->count() && $detail->marker_code != $details[$loop->iteration]->marker_code)
+                @if($loop->iteration < $details->count() && $detail->marker_code != $details[$loop->iteration]->marker_code || $loop->iteration == $details->count())
                 <tr>
                         <td></td>
                         <td></td>
@@ -192,7 +192,7 @@
                         @foreach ($data->layingPlanningSize as $item)
                         <td></td>
                         @endforeach
-                        <td><strong><?php
+                        <td style="font-size: 11.2px;"><b><?php
                         $total_layer = 0;
                         foreach ($details as $detail)
                         {
@@ -202,7 +202,7 @@
                             }
                         }
                         echo $total_layer;
-                        ?></strong></td>
+                        ?></br></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -249,17 +249,7 @@
                         }
                         echo $total_length;
                     ?></td>
-                    <td><?php
-                        $marker_code = [];
-                        foreach ($details as $detail)
-                        {
-                            array_push($marker_code, $detail->marker_code);
-                        }
-                        $marker_code = array_unique($marker_code);
-                        $marker_code = array_values($marker_code);
-                        $total_marker_code = count($marker_code);
-                        echo $total_marker_code;
-                    ?></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -267,7 +257,7 @@
                     @foreach ($data->layingPlanningSize as $item)
                     <td></td>
                     @endforeach
-                    <td><?php
+                    <td style="font-size: 11.2px;"><?php
                         $total = 0;
                         foreach ($details as $detail)
                         {
@@ -392,7 +382,7 @@
             </tr>
         </table>
         
-        <table width="100%" style="font-size: 12px; font-family: Times New Roman, Times, serif; font-weight: bold;">
+        <table width="100%" style="font-size: 12px; font-family: Times New Roman, Times, serif; font-weight: bold; position: absolute; bottom: 60px;">
             <tr>
                 <td width="50%" style="text-align: center;">
                     <p>Prepared by:</p>
