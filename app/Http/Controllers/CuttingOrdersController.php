@@ -70,6 +70,15 @@ class CuttingOrdersController extends Controller
             ->addColumn('table_number', function ($data){
                 return $data->layingPlanningDetail->table_number;
             })
+            ->addColumn('style', function ($data){
+                return $data->layingPlanningDetail->layingPlanning->style->style;
+            })
+            ->addColumn('fabric_type', function ($data){
+                return $data->layingPlanningDetail->layingPlanning->fabricType->name;
+            })
+            ->addColumn('fabric_consumption', function ($data){
+                return $data->layingPlanningDetail->layingPlanning->fabricCons->name;
+            })
             ->addColumn('status', function($data){
                 $sum_layer = 0;
                 $status = '';
