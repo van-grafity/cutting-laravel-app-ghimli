@@ -175,7 +175,7 @@
                     <td></td>
                 </tr>
                 <!-- || $loop->iteration == $details->count() -->
-                @if($loop->iteration < $details->count() && $detail->marker_code != $details[$loop->iteration]->marker_code)
+                @if($loop->iteration < $details->count() && $detail->marker_code != $details[$loop->iteration]->marker_code || $loop->iteration == $details->count())
                 <tr>
                         <td></td>
                         <td></td>
@@ -192,7 +192,7 @@
                         @foreach ($data->layingPlanningSize as $item)
                         <td></td>
                         @endforeach
-                        <td><strong><?php
+                        <td style="font-size: 11.2px;"><b><?php
                         $total_layer = 0;
                         foreach ($details as $detail)
                         {
@@ -202,7 +202,7 @@
                             }
                         }
                         echo $total_layer;
-                        ?></strong></td>
+                        ?></br></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -257,7 +257,7 @@
                     @foreach ($data->layingPlanningSize as $item)
                     <td></td>
                     @endforeach
-                    <td><?php
+                    <td style="font-size: 11.2px;"><?php
                         $total = 0;
                         foreach ($details as $detail)
                         {
