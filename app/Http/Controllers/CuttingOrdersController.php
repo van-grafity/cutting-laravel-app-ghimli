@@ -170,6 +170,7 @@ class CuttingOrdersController extends Controller
         
         $cutting_order = [
             'serial_number'=> $getCuttingOrder->serial_number,
+            'laying_planning_id' => $layingPlanningDetail->layingPlanning->id,
             'no_laying_sheet'=> $layingPlanningDetail->no_laying_sheet,
             'table_number' => $layingPlanningDetail->table_number,
             'gl_number' => $layingPlanningDetail->layingPlanning->gl->gl_number,

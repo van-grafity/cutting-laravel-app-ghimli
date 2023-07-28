@@ -91,7 +91,9 @@
             ajax: "{{ url('/cutting-order-data') }}",
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'serial_number', name: 'serial_number'},
+                {data: 'serial_number', name: 'serial_number', render: function(data, type, row) {
+                    return '<a href="{{ url("/cutting-order") }}/'+row.id+'">'+data+'</a>';
+                }},
                 {data: 'no_laying_sheet', name: 'no_laying_sheet'},
                 {data: 'color', name: 'color'},
                 {data: 'table_number', name: 'table_number'},
