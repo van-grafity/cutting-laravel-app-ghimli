@@ -17,7 +17,7 @@
                                         <tr style="font-weight:700; font-size:20px;">
                                             <td>NO</td>
                                             <td>:</td>
-                                            <td>{{ $cutting_order->serial_number }}</td>
+                                            <td><a href="{{ route('laying-planning.show',$cutting_order->laying_planning_id) }}" style="color:blue;">{{ $cutting_order->serial_number }}</a></td>
                                         </tr>
                                     </thead>
                                 </table>
