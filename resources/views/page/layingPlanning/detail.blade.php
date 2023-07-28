@@ -127,7 +127,10 @@
                             @foreach ($details as $detail)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $detail->table_number }}</td>
+                                    <!-- onClick table number to refirect http://localhost/cutting-ticket-app/public/cutting-order/28 -->
+                                    <td>
+                                        <a href="{{ route('cutting-order.show', $detail->cor_id) }}" class="text-decoration-none">{{ $detail->table_number }}</a>
+                                    </td>
                                     <td>{{ $detail->marker_code }}</td>
                                     <td>{{ $detail->marker_length }}</td>
                                     <td>{{ $detail->total_all_size }}</td>
