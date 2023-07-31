@@ -60,7 +60,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-4">
                                 <table>
                                     <tbody class="align-top">
                                         <tr>
@@ -89,6 +89,17 @@
                                             <td>{{ $cutting_order->size_ratio }}</td>
                                         </tr>
                                         <tr>
+                                            <td>Marker Code</td>
+                                            <td class="pl-4">:</td>
+                                            <td>
+                                                @if($cutting_order->marker_code == 'PILOT RUN')
+                                                    <span class="badge badge-warning"> {{ $cutting_order->marker_code }} </span>
+                                                @else
+                                                    {{ $cutting_order->marker_code }}
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td>Layer</td>
                                             <td class="pl-4">:</td>
                                             <td>{{ $cutting_order->layer }}</td>
@@ -96,6 +107,12 @@
                                     </tbody>
                                 </table>
                             </div>
+                            @if($cutting_order->marker_code == 'PILOT RUN')
+                            <div class="col-md-4 text-right" hidden>
+                                <a href="" class="btn btn-success shadow-sm">Approve Pilot Run</a>
+                                <a href="" class="btn btn-danger shadow-sm">Reject</a>
+                            </div>
+                            @endif
                         </div>
 
                         <div class="row">
@@ -105,6 +122,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        
 
                     </div>
 

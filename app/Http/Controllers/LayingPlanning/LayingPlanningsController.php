@@ -182,7 +182,7 @@ class LayingPlanningsController extends Controller
             // faric requisition disable
             $details[$key]->fr_status = $value->fabricRequisition ? 'disabled' : '';
             // cuttingOrderRecord->layingPlanningDetail-layingPlanning
-            // $details[$key]->cor_id = CuttingOrderRecord
+            $details[$key]->cor_id = $value->cuttingOrderRecord ? $value->cuttingOrderRecord->id : '';
             $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
                 $query->where('laying_planning_id', $id);
             })->get();

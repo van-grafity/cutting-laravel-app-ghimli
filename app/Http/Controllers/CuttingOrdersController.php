@@ -183,6 +183,7 @@ class CuttingOrdersController extends Controller
             'marker_length' => $layingPlanningDetail->marker_yard ." yd ". $layingPlanningDetail->marker_inch. " inch",
             'marker_inches' => $layingPlanningDetail->marker_inch,
             'marker_yards' => $layingPlanningDetail->marker_yard,
+            'marker_code' => $layingPlanningDetail->marker_code,
             'layer' => $layingPlanningDetail->layer_qty,
         ];
 
