@@ -158,10 +158,13 @@ class CuttingOrdersController extends Controller
         $layingPlanningDetail = LayingPlanningDetail::find($request->laying_planning_detail_id);
         $dataCuttingOrder = [
             'serial_number' => $this->generate_serial_number($layingPlanningDetail),
-            'laying_planning_detail_id' => $request->laying_planning_detail_id
+            'laying_planning_detail_id' => $request->laying_planning_detail_id,
+            'created_by' => auth()->user()->id,
         ];
         $insertCuttingOrder = CuttingOrderRecord::create($dataCuttingOrder);
-        return redirect()->route('cutting-order.index')->with('success', 'Cutting Order created successfully.');
+
+        $idCuttingOrder = $insertCuttingOrder->id;
+        return redirect()->route('cutting-order.show', $idCuttingOrder)->with('success', 'Cutting Order created successfully.');
     }
 
     public function show($id) {
@@ -169,6 +172,7 @@ class CuttingOrdersController extends Controller
         $layingPlanningDetail = LayingPlanningDetail::find($getCuttingOrder->layingPlanningDetail->id);
         
         $cutting_order = [
+            'id' => $getCuttingOrder->id,
             'serial_number'=> $getCuttingOrder->serial_number,
             'laying_planning_id' => $layingPlanningDetail->layingPlanning->id,
             'no_laying_sheet'=> $layingPlanningDetail->no_laying_sheet,
@@ -184,6 +188,8 @@ class CuttingOrdersController extends Controller
             'marker_inches' => $layingPlanningDetail->marker_inch,
             'marker_yards' => $layingPlanningDetail->marker_yard,
             'marker_code' => $layingPlanningDetail->marker_code,
+            'is_pilot_run' => $getCuttingOrder->is_pilot_run,
+            'created_by' => $getCuttingOrder->user->name,
             'layer' => $layingPlanningDetail->layer_qty,
         ];
 
@@ -300,6 +306,18 @@ class CuttingOrdersController extends Controller
         ], 200);
     }
 
+    public function approve_pilot_run($id) {
+        try {
+            $cutting_order = CuttingOrderRecord::find($id);
+            $cutting_order->is_pilot_run = !$cutting_order->is_pilot_run;
+            $cutting_order->save();
+            
+            return redirect()->route('cutting-order.show', $id)->with('success', 'Cutting Order created successfully.');
+        } catch (\Throwable $th) {
+            return redirect()->route('cutting-order.show', $id)->with('error', $th->getMessage());
+        }
+    }
+    
     public function print_report_pdf($cutting_order_id) {
 
         $cutting_order = CuttingOrderRecord::find($cutting_order_id);

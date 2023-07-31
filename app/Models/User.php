@@ -72,4 +72,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Groups::class, 'user_groups');
     }
+    
+    public function cuttingOrderRecord()
+    {
+        return $this->hasMany(CuttingOrderRecord::class, 'created_by', 'id');
+    }
 }
