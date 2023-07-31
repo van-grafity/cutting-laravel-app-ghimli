@@ -57,10 +57,15 @@
                                             <td class="pl-4">:</td>
                                             <td>{{ $cutting_order->color }}</td>
                                         </tr>
+                                        <tr>
+                                            <td>Created By</td>
+                                            <td class="pl-4">:</td>
+                                            <td>{{ $cutting_order->created_by }}</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-4">
                                 <table>
                                     <tbody class="align-top">
                                         <tr>
@@ -89,6 +94,21 @@
                                             <td>{{ $cutting_order->size_ratio }}</td>
                                         </tr>
                                         <tr>
+                                            <td>Marker Code</td>
+                                            <td class="pl-4">:</td>
+                                            <td>
+                                                @if($cutting_order->marker_code == 'PILOT RUN')
+                                                    @if($cutting_order->is_pilot_run == true)
+                                                        <span class="badge badge-success"> {{ $cutting_order->marker_code }} </span>
+                                                    @else
+                                                        <span class="badge badge-warning"> {{ $cutting_order->marker_code }} </span>
+                                                    @endif
+                                                @else
+                                                    <span class="badge badge-primary"> {{ $cutting_order->marker_code }} </span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td>Layer</td>
                                             <td class="pl-4">:</td>
                                             <td>{{ $cutting_order->layer }}</td>
@@ -96,6 +116,15 @@
                                     </tbody>
                                 </table>
                             </div>
+                            @if($cutting_order->marker_code == 'PILOT RUN')
+                            <div class="col-md-4 text-right">
+                                @if($cutting_order->is_pilot_run == true)
+                                    <a href="{{ route('cutting-order.approve-pilot-run',$cutting_order->id) }}" class="btn btn-danger shadow-sm">Reject</a>
+                                @else
+                                    <a href="{{ route('cutting-order.approve-pilot-run',$cutting_order->id) }}" class="btn btn-success shadow-sm">Approve</a>
+                                @endif
+                            </div>
+                            @endif
                         </div>
 
                         <div class="row">
@@ -105,6 +134,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        
 
                     </div>
 
@@ -305,6 +336,7 @@
 @push('js')
 <script type="text/javascript">
     const cutting_order_detail_url ='{{ route("cutting-order.detail",":id") }}';
+    const approve_pilot_run_url ='{{ route("cutting-order.approve-pilot-run",":id") }}';
     
 </script>
 <script type="text/javascript">
@@ -351,6 +383,31 @@ $(document).ready(function(){
         $('#btn_submit').text("OK")
         $('#modal_form').modal('show')
     }
+
+    async function approve_pilot_run(id) {
+        let url_approve_pilot_run = approve_pilot_run_url.replace(':id',id);
+        result = await using_fetch(url_approve_pilot_run,'', "GET");
+        if(result.status !== "success") {
+            return false;
+        }
+
+        $('#fabric_roll').text(result.data.fabric_roll)
+        $('#fabric_batch').text(result.data.fabric_batch)
+        $('#color').text(result.data.color.color)
+        $('#yardage').text(result.data.yardage)
+        $('#weight').text(result.data.weight)
+        $('#layer').text(result.data.layer)
+        $('#joint').text(result.data.joint)
+        $('#balance_end').text(result.data.balance_end)
+        $('#remarks').text(result.data.remarks)
+        $('#operator').text(result.data.operator)
+        $('#cutting_date').text(result.data.cutting_date)
+
+        $('#modal_formLabel').text("Detail")
+        $('#btn_submit').text("OK")
+        $('#modal_form').modal('show')
+    }
+
 
 </script>
 @endpush('js')

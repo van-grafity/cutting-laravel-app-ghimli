@@ -14,6 +14,7 @@ class CuttingOrderRecord extends Model
         'laying_planning_detail_id',
         'id_status_layer',
         'id_status_cut',
+        'created_by',
     ];
 
     public function layingPlanningDetail()
@@ -41,5 +42,8 @@ class CuttingOrderRecord extends Model
         return $this->belongsTo(StatusCut::class, 'id_status_cut', 'id');
     }
 
-    
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
 }

@@ -181,6 +181,12 @@ class LayingPlanningsController extends Controller
             $details[$key]->cor_status = $value->cuttingOrderRecord ? 'disabled' : '';
             // faric requisition disable
             $details[$key]->fr_status = $value->fabricRequisition ? 'disabled' : '';
+            // cuttingOrderRecord->layingPlanningDetail-layingPlanning
+            $details[$key]->cor_id = $value->cuttingOrderRecord ? $value->cuttingOrderRecord->id : '';
+            $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
+                $query->where('laying_planning_id', $id);
+            })->get();
+            $details[$key]->cutting_order_record = $cutting_order_record;
             $total_pcs_all_table = $total_pcs_all_table + $value->total_all_size;
             $total_length_all_table = $total_length_all_table + $value->total_length;
         }
