@@ -25,7 +25,6 @@ class CuttingOrdersController extends BaseController
     {
         $data = CuttingOrderRecord::with('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->latest()->paginate(100);
         
-        // Buat array untuk menyimpan informasi paginasi
         $pagination = [
             'current_page' => $data->currentPage(),
             'last_page' => $data->lastPage(),
@@ -34,12 +33,10 @@ class CuttingOrdersController extends BaseController
             'total' => $data->total(),
         ];
         
-        // Buat array untuk menyimpan data "cutting_order_record"
         $cuttingOrderRecords = [
             'cutting_order_record' => $data->items()
         ];
 
-        // Gabungkan kedua array menjadi satu
         $result = array_merge($cuttingOrderRecords, $pagination);
 
         return $this->onSuccess($result, 'Cutting Order Record retrieved successfully.');
