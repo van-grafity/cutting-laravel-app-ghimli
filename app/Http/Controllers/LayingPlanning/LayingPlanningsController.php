@@ -13,6 +13,7 @@ use App\Models\CuttingOrderRecord;
 use App\Models\CuttingOrderRecordDetail;
 use App\Models\FabricType;
 use App\Models\FabricRequisition;
+use App\Models\GlCombine;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -92,7 +93,8 @@ class LayingPlanningsController extends Controller
         $fabricTypes = DB::table('fabric_types')->get();
         $fabricCons = DB::table('fabric_cons')->get();
         $sizes = DB::table('sizes')->get();
-        return view('page.layingPlanning.add', compact('gls', 'styles', 'colors', 'fabricTypes', 'fabricCons', 'sizes'));
+        $gl_combines = GlCombine::all();
+        return view('page.layingPlanning.add', compact('gls', 'styles', 'colors', 'fabricTypes', 'fabricCons', 'sizes','gl_combines'));
     }
 
     /**

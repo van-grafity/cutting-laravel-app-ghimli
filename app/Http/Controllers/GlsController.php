@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Gl;
 use App\Models\Buyer;
 use App\Models\Style;
+use App\Models\GlCombine;
 
 use Yajra\Datatables\Datatables;
 
@@ -37,10 +38,14 @@ class GlsController extends Controller
     }
 
     public function show($id){
-        $data = Gl::find($id);
+        $data = Gl::with('buyer', 'style', 'glCombine')->find($id);
         try {
-            $data = Gl::find($id);
-            return response()->json($data, 200);
+            $date_return = [
+                'status' => 'success',
+                'data'=> $data,
+                'message'=> 'Gl '.$data->gl_number.' successfully get',
+            ];
+            return response()->json($date_return, 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
@@ -81,6 +86,17 @@ class GlsController extends Controller
             }
         }
 
+        $gl_combine_name_json = $request->gl_combine_name_json;
+        if($gl_combine_name_json){
+            $gl_combine_name_json = json_decode($gl_combine_name_json);
+            foreach ($gl_combine_name_json as $key => $gl_combine_name) {
+                $gl_combine = [
+                    'id_gl' => $gl->id,
+                    'name' => $gl_combine_name,
+                ];
+                $insertGlCombine = GlCombine::create($gl_combine);
+            }
+        }
         return redirect('/gl')->with('success', 'Gl '.$gl->gl_number.' Successfully Added!');
     }
 
@@ -142,6 +158,25 @@ class GlsController extends Controller
                 }
             }
         }
+
+        $gl_combine_name_json = $request->gl_combine_name_json;
+        if($gl_combine_name_json){
+            $gl_combine_name_json = json_decode($gl_combine_name_json);
+            foreach ($gl_combine_name_json as $key => $gl_combine_name) {
+                $gl_combine = [
+                    'id_gl' => $gl->id,
+                    'name' => $gl_combine_name,
+                ];
+                $insertGlCombine = GlCombine::create($gl_combine);
+            }
+        }
+
+        if($request->gl_combine_id){
+            $delete = GlCombine::where('id_gl', $gl->id)->whereNotIn('id', $request->gl_combine_id)->delete();
+        }else{
+            $delete = GlCombine::where('id_gl', $gl->id)->delete();
+        }
+        
         $deleteStyle = Style::where('gl_id', $gl->id)->whereNotIn('id', $style_ids)->delete();
         return redirect('/gl')->with('success', 'Gl '.$gl->gl_number.' Successfully Updated!');
     }

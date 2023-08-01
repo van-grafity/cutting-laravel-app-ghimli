@@ -30,4 +30,9 @@ class Gl extends Model
     public function layingPlanning(){
         return $this->hasMany(LayingPlanning::class, 'gl_id', 'id');
     }
+
+    public function glCombine()
+    {
+        return $this->hasMany(GlCombine::class, 'id_gl', 'id');
+    }
 }
