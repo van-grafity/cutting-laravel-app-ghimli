@@ -377,6 +377,8 @@ $(function (e) {
         form.find('input[name="season"]').val(result.data.season);
         form.find('input[name="size_order"]').val(result.data.size_order);
 
+        $('#table_res_gl_combine > tbody').html('');
+
         if(result.data.gl_combine.length > 0){
             $('#flexSwitchCheckDefault').prop('checked', true);
             $('#gl_combine_name').show();

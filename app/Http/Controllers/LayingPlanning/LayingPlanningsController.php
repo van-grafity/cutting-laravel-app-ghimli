@@ -87,7 +87,7 @@ class LayingPlanningsController extends Controller
 
     public function layingCreate()
     {
-        $gls = DB::table('gls')->get();
+        $gls = GL::with('GLCombine')->get();
         $styles = DB::table('styles')->get();
         $colors = DB::table('colors')->get();
         $fabricTypes = DB::table('fabric_types')->get();

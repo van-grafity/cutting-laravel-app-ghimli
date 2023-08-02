@@ -225,9 +225,6 @@
                                     <label for="select_combine" class="form-label">Add Combine</label>
                                     <select class="form-control" id="select_combine" name="select_combine" style="width: 100%;" data-placeholder="Select Combine">
                                     <option value="">Select Combine</option>
-                                    @foreach ($gl_combines as $combine)
-                                        <option value="{{ $combine->id }}">{{ $combine->name }}</option>
-                                    @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-1 col-sm-2">
@@ -287,6 +284,8 @@
             using_fetch(url_gl_combine, data_params, "GET").then((result) => {
                 for (let i = 0; i < result.data.length; i++) {
                     if(result.data[i].id_gl == gl_id){
+                        $('#select_combine').append(`<option value="${result.data[i].id}">${result.data[i].name}</option>`);
+                        $('#select_combine').trigger('change');
                         $('#combine_wrapper').show();
                         $('#is_combine_wrapper').show();
                         isCombines = true;
