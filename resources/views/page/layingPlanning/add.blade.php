@@ -176,63 +176,65 @@
                         </div>
 
                         <!-- Table List Size -->
-                        <div class="row mt-5">
-                            <div class="col-sm-12 col-md-6" id="table_laying_planning_size_wrapper">
-                                <label for="fabric_type" class="form-label">List Size</label>
-                                <table id="table_laying_planning_size" class="table table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">Size</th>
-                                            <th class="text-center">Qty</th>
-                                            <th class="text-center" width="150">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-center align-middle" colspan="3">No Selected Size</td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot class="bg-dark">
-                                        <tr>
-                                            <th class="text-center">Total</th>
-                                            <th class="" id="total_size_qty" colspan="2">: </th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                        <div class="col-sm-12 col-md-12" style="display: none" id="is_combine_wrapper">
+                            <div class="row mt-5">
+                                <div class="col-sm-12 col-md-6" id="table_laying_planning_size_wrapper">
+                                    <label for="fabric_type" class="form-label">List Size</label>
+                                    <table id="table_laying_planning_size" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">Size</th>
+                                                <th class="text-center">Qty</th>
+                                                <th class="text-center" width="150">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-center align-middle" colspan="3">No Selected Size</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot class="bg-dark">
+                                            <tr>
+                                                <th class="text-center">Total</th>
+                                                <th class="" id="total_size_qty" colspan="2">: </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
 
-                            </div>
-                        </div>
-                        <!-- add size to table -->
-                        <div class="row">
-                            <div class="col-md-2 col-sm-6">
-                                <label for="select_size" class="form-label">Add Size</label>
-                                <select class="form-control" id="select_size" name="select_size" style="width: 100%;" data-placeholder="Select Size">
-                                <option value="">Select Size</option>
-                                @foreach ($sizes as $size)
-                                    <option value="{{ $size->id }}">{{ $size->size }}</option>
-                                @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-2 col-sm-4">
-                                <div class="form-group">
-                                    <label for="size_qty" class="form-label">Size Qty</label>
-                                    <input type="number" class="form-control" id="size_qty" name="size_qty" min="0">
                                 </div>
                             </div>
-                            <!-- hidden add combine -->
-                            <div class="col-md-2 col-sm-6" id="combine_wrapper" style="display: none">
-                                <label for="select_combine" class="form-label">Add Combine</label>
-                                <select class="form-control" id="select_combine" name="select_combine" style="width: 100%;" data-placeholder="Select Combine">
-                                <option value="">Select Combine</option>
-                                @foreach ($gl_combines as $combine)
-                                    <option value="{{ $combine->id }}">{{ $combine->name }}</option>
-                                @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-1 col-sm-2">
-                                <div class="form-group">
-                                    <label for="" class="" style="color: rgba(255, 255, 255, 0">.</label>
-                                    <a id="btn_add_laying_size" class="btn btn-success form-control">Add Size</a>
+                            <!-- add size to table -->
+                            <div class="row">
+                                <div class="col-md-2 col-sm-6">
+                                    <label for="select_size" class="form-label">Add Size</label>
+                                    <select class="form-control" id="select_size" name="select_size" style="width: 100%;" data-placeholder="Select Size">
+                                    <option value="">Select Size</option>
+                                    @foreach ($sizes as $size)
+                                        <option value="{{ $size->id }}">{{ $size->size }}</option>
+                                    @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2 col-sm-4">
+                                    <div class="form-group">
+                                        <label for="size_qty" class="form-label">Size Qty</label>
+                                        <input type="number" class="form-control" id="size_qty" name="size_qty" min="0">
+                                    </div>
+                                </div>
+                                <!-- hidden add combine -->
+                                <div class="col-md-2 col-sm-6" id="combine_wrapper" style="display: none">
+                                    <label for="select_combine" class="form-label">Add Combine</label>
+                                    <select class="form-control" id="select_combine" name="select_combine" style="width: 100%;" data-placeholder="Select Combine">
+                                    <option value="">Select Combine</option>
+                                    @foreach ($gl_combines as $combine)
+                                        <option value="{{ $combine->id }}">{{ $combine->name }}</option>
+                                    @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-1 col-sm-2">
+                                    <div class="form-group">
+                                        <label for="" class="" style="color: rgba(255, 255, 255, 0">.</label>
+                                        <a id="btn_add_laying_size" class="btn btn-success form-control">Add Size</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -259,8 +261,7 @@
     const url_fabric_type = `{{ route('fetch.fabric-type') }}`;
     const url_gl_combine = `{{ route('fetch.gl-combine') }}`;
 
-    const isCombines = false;
-    
+    let isCombines = false;
     
     $( document ).ready(function() {
         $('#total_size_qty').html(': '+sum_size_qty()); // ## update total size
@@ -281,83 +282,72 @@
         $('#gl').on('change', function(e) {
             let gl_id = $(this).val();
             let data_params = { gl_id }
-
-            // <thead>
-            //     <tr>
-            //         <th class="text-center">Size</th>
-            //         <th class="text-center">Qty</th>
-            //         <th class="text-center">Combine</th>
-            //         <th class="text-center" width="150">Action</th>
-            //     </tr>
-            // </thead>
-
-            // <thead>
-            //     <tr>
-            //         <th class="text-center">Size</th>
-            //         <th class="text-center">Qty</th>
-            //         <th class="text-center" width="150">Action</th>
-            //     </tr>
-            // </thead>
+            let tableHtml = '';
 
             using_fetch(url_gl_combine, data_params, "GET").then((result) => {
                 for (let i = 0; i < result.data.length; i++) {
                     if(result.data[i].id_gl == gl_id){
                         $('#combine_wrapper').show();
-                        $('#table_laying_planning_size_wrapper').html(`
-                            <table id="table_laying_planning_size" class="table table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">Size</th>
-                                        <th class="text-center">Qty</th>
-                                        <th class="text-center">Combine</th>
-                                        <th class="text-center" width="150">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-center align-middle" colspan="3">No Selected Size</td>
-                                    </tr>
-                                </tbody>
-                                <foot class="bg-dark">
-                                    <tr>
-                                        <th class="text-center">Total</th>
-                                        <th class="" id="total_size_qty" colspan="3">: </th>
-                                    </tr>
-                                </foot>
-                            </table>
-                        `);
+                        $('#is_combine_wrapper').show();
+                        isCombines = true;
                         break;
                     }else{
                         $('#combine_wrapper').hide();
-                        $('#table_laying_planning_size_wrapper').html(`
-                            <table id="table_laying_planning_size" class="table table-bordered table-hover">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">Size</th>
-                                        <th class="text-center">Qty</th>
-                                        <th class="text-center" width="150">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-center align-middle" colspan="3">No Selected Size</td>
-                                    </tr>
-                                </tbody>
-                                <foot class="bg-dark">
-                                    <tr>
-                                        <th class="text-center">Total</th>
-                                        <th class="" id="total_size_qty" colspan="2">: </th>
-                                    </tr>
-                                </foot>
-                            </table>
-                        `);
+                        $('#is_combine_wrapper').show();
+                        isCombines = false;
                     }
                 }
+
+                if(isCombines){
+                    tableHtml = `
+                        <thead>
+                            <tr>
+                                <th class="text-center">Size</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-center">Combine</th>
+                                <th class="text-center" width="150">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center align-middle" colspan="4">No Selected Size</td>
+                            </tr>
+                        </tbody>
+                        <tfoot class="bg-dark">
+                            <tr>
+                                <th class="text-center">Total</th>
+                                <th class="" id="total_size_qty" colspan="3">: </th>
+                            </tr>
+                        </tfoot>
+                    `;
+                }else{
+                    tableHtml = `
+                        <thead>
+                            <tr>
+                                <th class="text-center">Size</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-center" width="150">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center align-middle" colspan="3">No Selected Size</td>
+                            </tr>
+                        </tbody>
+                        <tfoot class="bg-dark">
+                            <tr>
+                                <th class="text-center">Total</th>
+                                <th class="" id="total_size_qty" colspan="2">: </th>
+                            </tr>
+                        </tfoot>
+                    `;
+                }
+
+                $('#table_laying_planning_size').html(tableHtml);
             }).catch((err) => {
                 console.log(err);
             });
-
-
+            
             // ## Dynamic Data Select Style depend on Select GL
             using_fetch(url_style, data_params, "GET").then((result) => {
                 $('#style').select2().empty();
@@ -404,8 +394,8 @@
             });
         })
     });
-
 </script>
+
 <script type="text/javascript">
     let element_html;
     let data_row_count = $('#table_laying_planning_size > tbody tr').length;
@@ -444,11 +434,18 @@
     }
 
     // ## membuat baris baru untuk setiap size yang telah di pilih
+    // result.data[i].id_gl == gl_id)
     function create_tr_element() {
         let select_size_value = $('#select_size').val();
         let select_size_text = $('#select_size option:selected').text();
         let size_qty = $('#size_qty').val();
-        let element = `
+        let select_combine_value = $('#select_combine').val();
+        let select_combine_text = $('#select_combine option:selected').text();
+        let combine = '';
+        if(isCombines){
+            combine = `<td class="text-center align-middle">${select_combine_text}</td>`;
+        }
+        element_html = `
         <tr>
             <td class="text-center align-middle">
                 <input type="hidden" name="laying_planning_size_id[]" value="${select_size_value}">
@@ -458,11 +455,12 @@
                 <input type="hidden" name="laying_planning_size_qty[]" value="${size_qty}">
                 ${size_qty}
             </td>
+            ${combine}
             <td class="text-center align-middle">
-                <a class="btn btn-sm btn-danger btn-delete-size" data-id="${select_size_value}">Delete</a>
+                <a class="btn btn-danger btn-sm btn-delete-size" data-id="${select_size_value}"><i class="fa fa-trash"></i></a>
             </td>
-        </tr>`
-        return element;
+        </tr>`;
+        return element_html;
     }
 
     // ## memeriksa apakah size yang akan ditambahkan sudah ada di dalam tabel
