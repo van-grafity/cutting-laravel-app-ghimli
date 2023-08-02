@@ -154,11 +154,12 @@ class LayingPlanningsController extends Controller
                 $insertLayingSize = LayingPlanningSize::create($laying_planning_size);
             }
 
-            return redirect()->route('laying-planning.index')
-                ->with('success', 'Laying Planning successfully Added!');
+            return redirect()->route('laying-planning.show',$insertLayingData->id)
+                ->with('success', 'Data Laying Planning berhasil dibuat.');
         } catch (\Throwable $th) {
-            return redirect()->route('laying-planning.index')
-                ->with('error', $th->getMessage());
+            return redirect('laying-planning-create')
+                        ->withErrors($th->getMessage())
+                        ->withInput();
         }
     }
 

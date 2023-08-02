@@ -517,24 +517,21 @@
 
 
     // ## when user click on remove button
-    $('#table_laying_planning_size > tbody').on("click",".btn-delete-size", function(e){ 
-        e.preventDefault();
-
-        // deleted_size_id = $(this).data('id');
-        // insert_option_after_delete(deleted_size_id);
-        
-        $(this).parent().parent().remove();
-		data_row_count--;
-        
-        if(is_table_empty_data()){
-            element_html = `
-            <tr>
-                <td class="text-center align-middle" colspan="3">No Selected Size</td>
-            </tr>`;
-
-            $('#table_laying_planning_size > tbody').html(element_html);
-        }
-
+    $(document).on('click', '.btn-delete-size', function(e) {
+        let size_id = $(this).data('id');
+        let select_size = $('#select_size');
+        let select_combine = $('#select_combine');
+        let select_size_option = $(`#select_size option[value='${size_id}'`);
+        let select_combine_option = $(`#select_combine option[value='${size_id}'`);
+        let select_size_option_text = select_size_option.text();
+        let select_combine_option_text = select_combine_option.text();
+        let select_size_option_value = select_size_option.val();
+        let select_combine_option_value = select_combine_option.val();
+        let select_size_option_html = `<option value="${select_size_option_value}">${select_size_option_text}</option>`;
+        let select_combine_option_html = `<option value="${select_combine_option_value}">${select_combine_option_text}</option>`;
+        select_size.append(select_size_option_html);
+        select_combine.append(select_combine_option_html);
+        $(this).closest('tr').remove();
         $('#total_size_qty').html(': '+sum_size_qty());
     });
 
