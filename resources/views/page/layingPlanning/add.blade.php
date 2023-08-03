@@ -281,22 +281,49 @@
             let data_params = { gl_id }
             let tableHtml = '';
 
+            $('#combine_wrapper').hide();
+            $('#is_combine_wrapper').show();
+            isCombines = false;
+
             using_fetch(url_gl_combine, data_params, "GET").then((result) => {
-                for (let i = 0; i < result.data.length; i++) {
-                    if(result.data[i].id_gl == gl_id){
-                        $('#select_combine').append(`<option value="${result.data[i].id}">${result.data[i].name}</option>`);
-                        $('#select_combine').trigger('change');
+                let gl_combine_id = result.data.map(function(item) {
+                    return item.id;
+                });
+
+                $('#select_combine').select2().empty();
+                let data = result.data.map(function(item) {
+                    if(item.id_gl == gl_id){
                         $('#combine_wrapper').show();
                         $('#is_combine_wrapper').show();
                         isCombines = true;
-                        break;
-                    }else{
-                        $('#combine_wrapper').hide();
-                        $('#is_combine_wrapper').show();
-                        isCombines = false;
+                        return {
+                            id: item.id,
+                            text: item.name
+                        };
+                    }
+                });
+                for (let i = 0; i < data.length; i++) {
+                    if(data[i] != undefined){
+                        $('#select_combine').append(`<option value="${data[i].id}">${data[i].text}</option>`);
                     }
                 }
+                let select_combine = $('#select_combine').select2({ data })
+                select_combine.trigger('change');
 
+                
+                    // if(result.data[i].id_gl == gl_id){
+                    //     $('#select_combine').append(`<option value="${result.data[i].id}">${result.data[i].name}</option>`);
+                    //     $('#select_combine').trigger('change');
+                    //     $('#combine_wrapper').show();
+                    //     $('#is_combine_wrapper').show();
+                    //     isCombines = true;
+                    //     break;
+                    // }else{
+                    //     $('#combine_wrapper').hide();
+                    //     $('#is_combine_wrapper').show();
+                    //     isCombines = false;
+                    // }
+                
                 if(isCombines){
                     tableHtml = `
                         <thead>
@@ -442,7 +469,10 @@
         let select_combine_text = $('#select_combine option:selected').text();
         let combine = '';
         if(isCombines){
-            combine = `<td class="text-center align-middle">${select_combine_text}</td>`;
+            combine = `<td class="text-center align-middle">
+                <input type="hidden" name="gl_combine_id[]" value="${select_combine_value}">
+                ${select_combine_text}
+            </td>`;
         }
         element_html = `
         <tr>

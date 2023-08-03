@@ -8,6 +8,8 @@ use App\Models\CuttingTicket;
 use App\Models\CuttingOrderRecord;
 use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanningDetailSize;
+use App\Models\GlCombine;
+use App\Models\LayingPlanningSizeGlCombine;
 
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
@@ -52,29 +54,26 @@ class CuttingTicketsController extends Controller
     }
 
     public function dataCuttingTicket(){
-        $query = CuttingOrderRecord::with(['CuttingTicket', 'CuttingTicket.size'])
-        ->select('cutting_order_records.*')
-        ->whereHas('CuttingTicket')
-        ->get();
+        $query = CuttingOrderRecord::get();
             return Datatables::of($query)
             ->escapeColumns([])
             ->addColumn('ticket_number', function($data){
-                return $data->serial_number;
+                return $data->serial_number == null ? '-' : $data->serial_number;
             })
             ->addColumn('table_number', function($data){
-                return $data->layingPlanningDetail->table_number;
+                return $data->layingPlanningDetail->table_number == null ? '-' : $data->layingPlanningDetail->table_number;
             })
             ->addColumn('color', function($data){
-                return $data->layingPlanningDetail->layingPlanning->color->color;
+                return $data->layingPlanningDetail->layingPlanning->color->color == null ? '-' : $data->layingPlanningDetail->layingPlanning->color->color;
             })
             ->addColumn('fabric_type', function($data){
-                return $data->layingPlanningDetail->layingPlanning->fabricType->name;
+                return $data->layingPlanningDetail->layingPlanning->fabricType->name == null ? '-' : $data->layingPlanningDetail->layingPlanning->fabricType->name;
             })
             ->addColumn('fabric_cons', function($data){
-                return $data->layingPlanningDetail->layingPlanning->fabricCons->name;
+                return $data->layingPlanningDetail->layingPlanning->fabricCons->name == null ? '-' : $data->layingPlanningDetail->layingPlanning->fabricCons->name;
             })
             ->addColumn('style', function($data){
-                return $data->layingPlanningDetail->layingPlanning->style->style;
+                return $data->layingPlanningDetail->layingPlanning->style->style == null ? '-' : $data->layingPlanningDetail->layingPlanning->style->style;
             })
             ->addColumn('action', function($data){
                 return '
@@ -250,7 +249,7 @@ class CuttingTicketsController extends Controller
                 'message' => $th->getMessage()
             ]);
         }
-        return redirect()->route('cutting-ticket.index');
+        return "CT-{$gl_number}-{$color_code}-{$table_number}-{$ticket_number}";
     }
 
     public function print_report_pdf($id) {
@@ -356,6 +355,17 @@ class CuttingTicketsController extends Controller
         return $pdf->stream($filename);
     }
 
+    // $get_size_list = $data->layingPlanningSize()->with('glCombine')->get();
+    //     $size_list = [];
+    //     foreach ($get_size_list as $key => $size) {
+    //         $size_list[] = $size->size;
+    //         $gl_combine_name = "";
+    //         foreach ($size->glCombine as $key => $gl_combine) {
+    //             $gl_combine_name = $gl_combine_name . $gl_combine->glCombine->name . " ";
+    //         }
+    //         $size->size->size = $size->size->size ."". $gl_combine_name;
+    //     }
+
     // private function
     function generate_ticket_number($ticket_id) {
         $ticket = CuttingTicket::find($ticket_id);
@@ -365,12 +375,19 @@ class CuttingTicketsController extends Controller
         
         $color_code = $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->color->color_code;
 
+        $size = $ticket->size->size;
+
+        $layingPlanningSizeGlCombine = LayingPlanningSizeGlCombine::with('layingPlanningSize.size')->get();
+        $layingPlanningSizeGlCombine = $layingPlanningSizeGlCombine->where('layingPlanningSize.size_id', $ticket->size_id)->first();
+        $gl_combine = $layingPlanningSizeGlCombine->glCombine->name;
+        $gl_combine = $gl_number . $gl_combine;
+
         $table_number = $ticket->cuttingOrderRecord->layingPlanningDetail->table_number;
         $table_number = Str::padLeft($table_number, 3, '0');
         
         $ticket_number = Str::padLeft($ticket->ticket_number, 3, '0');
         
-        return "CT-{$gl_number}-{$color_code}-{$table_number}-{$ticket_number}";
+        return "CT-{$gl_combine}-{$size}-{$color_code}-{$table_number}-{$ticket_number}";
     }
 
     function print_size_ratio($layingPlanningDetail) {

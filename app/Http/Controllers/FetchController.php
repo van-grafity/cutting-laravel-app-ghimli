@@ -160,7 +160,7 @@ class FetchController extends Controller
     public function gl_combine(Request $request) {
         try {
             $id = $request->id;
-            $gl_combine = GlCombine::select('*')
+            $gl_combine = GlCombine::with('gl')
                     ->when($id, function ($query, $id){
                         $query->where('id', $id);
                     })->get();

@@ -19,4 +19,9 @@ class GlCombine extends Model
     {
         return $this->belongsTo(Gl::class, 'id_gl', 'id');
     }
+    
+    public function layingPlanningSizeGlCombine()
+    {
+        return $this->hasMany(LayingPlanningSizeGlCombine::class, 'id_gl_combine', 'id');
+    }
 }

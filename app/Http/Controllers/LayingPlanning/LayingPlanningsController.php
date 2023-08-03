@@ -14,6 +14,7 @@ use App\Models\CuttingOrderRecordDetail;
 use App\Models\FabricType;
 use App\Models\FabricRequisition;
 use App\Models\GlCombine;
+use App\Models\LayingPlanningSizeGlCombine;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -145,6 +146,7 @@ class LayingPlanningsController extends Controller
 
             $selected_sizes = $request->laying_planning_size_id;
             $selected_sizes_qty = $request->laying_planning_size_qty;
+            $gl_combine_id = $request->gl_combine_id;
             foreach ($selected_sizes as $key => $size_id) {
                 $laying_planning_size = [
                     'size_id' => $size_id,
@@ -152,8 +154,15 @@ class LayingPlanningsController extends Controller
                     'laying_planning_id' => $insertLayingData->id,
                 ];
                 $insertLayingSize = LayingPlanningSize::create($laying_planning_size);
+                if($gl_combine_id[$key] != 0){
+                    $laying_planning_size_gl_combine = [
+                        'id_laying_planning_size' => $insertLayingSize->id,
+                        'id_gl_combine' => $gl_combine_id[$key],
+                    ];
+                    $insertLayingSizeGlCombine = LayingPlanningSizeGlCombine::create($laying_planning_size_gl_combine);
+                }
             }
-
+            
             return redirect()->route('laying-planning.show',$insertLayingData->id)
                 ->with('success', 'Data Laying Planning berhasil dibuat.');
         } catch (\Throwable $th) {
@@ -197,10 +206,21 @@ class LayingPlanningsController extends Controller
         $data->total_pcs_all_table = $total_pcs_all_table;
         $data->total_length_all_table = $total_length_all_table;
 
-        $get_size_list = $data->layingPlanningSize()->get();
+        // $gl_combine = GlCombine::with('layingPlanningSizeGlCombine')->whereHas('layingPlanningSizeGlCombine', function($query) use ($id) {
+        //     $query->whereHas('layingPlanningSize', function($query) use ($id) {
+        //         $query->where('laying_planning_id', $id);
+        //     });
+        // })->get();
+
+        $get_size_list = $data->layingPlanningSize()->with('glCombine')->get();
         $size_list = [];
         foreach ($get_size_list as $key => $size) {
             $size_list[] = $size->size;
+            $gl_combine_name = "";
+            foreach ($size->glCombine as $key => $gl_combine) {
+                $gl_combine_name = $gl_combine_name . $gl_combine->glCombine->name . " ";
+            }
+            $size->size->size = $size->size->size ."". $gl_combine_name;
         }
         return view('page.layingPlanning.detail', compact('data', 'details','size_list'));
     }
