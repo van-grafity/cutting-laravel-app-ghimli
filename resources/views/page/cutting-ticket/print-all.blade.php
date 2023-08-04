@@ -11,10 +11,10 @@
     <style type="text/css">
         @page {
             size: 10.2cm 6.4cm;
-            margin-left: 0.1cm;
-            margin-right: 0.1cm;
-            margin-top: 1cm;
-            margin-bottom: 1cm;
+            margin-left: 1cm;
+            margin-right: 1cm;
+            margin-top: 0.7cm;
+            margin-bottom: 0.7cm;
         }
         body {
             width: 100%;
@@ -38,46 +38,41 @@
 
 <body width="100%" height="100%">
     @foreach ($data as $cutting_ticket)
+        <div class="row">
+            <div class="serial-number" style="text-align: left; font-size: 12px;">Serial No. : {{ $cutting_ticket->serial_number }}</div>
+            <div class="serial-number" style="text-align: left; font-size: 12px;">Color : {{ $cutting_ticket->color }}</div>
+        </div>
+        </br>
         <table>
-        <tbody>
-            <tr>
-                <td rowspan="7" style="padding: 0px; margin: 0px; font-size: 8px;" width="100">
-                
-                <img src="https://chart.googleapis.com/chart?chs=125x125&cht=qr&chl={{ $cutting_ticket->serial_number }}&choe=UTF-8" title="Link to Google.com" />
-                    <div class="serial-number">{{ $cutting_ticket->serial_number }}</div>
-                </td>
-            </tr>
-            <tr>
-                <td width="14%" style="text-align: left; font-size: 10px;">Ticket Number </td>
-                <td style="padding-left: 8px; padding-right: 8px; font-size: 10px;">: </td>
-                <td style="text-align: left; font-size: 10px;">{{ $cutting_ticket->ticket_number }} </td>
-            </tr>
-            <tr>
-                <td width="14%" style="text-align: left; font-size: 10px;">Buyer </td>
-                <td style="padding-left: 8px; padding-right: 8px; font-size: 10px;">: </td>
-                <td style="text-align: left; font-size: 10px;">{{ $cutting_ticket->buyer }} </td>
-            </tr>
-            <tr>
-                <td width="14%" style="text-align: left; font-size: 10px;">Size </td>
-                <td style="padding-left: 8px; padding-right: 8px; font-size: 10px;">: </td>
-                <td style="text-align: left; font-size: 10px;">{{ $cutting_ticket->size }} </td>
-            </tr>
-            <tr>
-                <td width="14%" style="text-align: left; font-size: 10px;">Color </td>
-                <td style="padding-left: 8px; padding-right: 8px; font-size: 10px;">: </td>
-                <td style="text-align: left; font-size: 8px;">{{ $cutting_ticket->color }} </td>
-            </tr>
-            <tr>
-                <td width="14%" style="text-align: left; font-size: 10px;">Layer </td>
-                <td style="padding-left: 8px; padding-right: 8px; font-size: 10px;">: </td>
-                <td style="text-align: left; font-size: 10px;">{{ $cutting_ticket->layer }} </td>
-            </tr>
-            <tr>
-                <td style="text-align: left;"></td>
-                <td></td>
-                <td style="text-align: left;"></td>
-            </tr>
-        </tbody>
+            <tbody>
+                <tr>
+                    <td rowspan="4" style="text-align: center; font-size: 12px;">
+                    <img src="data:image/png;base64, {!! base64_encode(QrCode::size(120)->generate($cutting_ticket->serial_number)) !!} ">
+                    </td>
+                    <td width="14px"></td>
+                    <td width="14%" style="text-align: left; font-size: 12px;">Ticket No. </td>
+                    <td style="padding-left: 8px; padding-right: 8px; font-size: 12px;">: </td>
+                    <td style="text-align: left; font-size: 12px;">{{ $cutting_ticket->ticket_number }} </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td width="14%" style="text-align: left; font-size: 12px;">Buyer </td>
+                    <td style="padding-left: 8px; padding-right: 8px; font-size: 12px;">: </td>
+                    <td style="text-align: left; font-size: 12px;">{{ $cutting_ticket->buyer }} </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td width="14%" style="text-align: left; font-size: 12px;">Size </td>
+                    <td style="padding-left: 8px; padding-right: 8px; font-size: 12px;">: </td>
+                    <td style="text-align: left; font-size: 12px;">{{ $cutting_ticket->size }} </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td width="14%" style="text-align: left; font-size: 12px;">Layer </td>
+                    <td style="padding-left: 8px; padding-right: 8px; font-size: 12px;">: </td>
+                    <td style="text-align: left; font-size: 12px;">{{ $cutting_ticket->layer }} </td>
+                </tr>
+            </tbody>
         </table>
     @endforeach
 </body>

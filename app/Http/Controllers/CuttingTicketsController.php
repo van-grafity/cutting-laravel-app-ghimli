@@ -342,6 +342,7 @@ class CuttingTicketsController extends Controller
             $layingPlanningDetail = $ticket->cuttingOrderRecord->layingPlanningDetail;
             $data[] = (object)[
                 'serial_number' => $this->generate_ticket_number($ticket->id),
+                'gl_number' => $layingPlanningDetail->layingPlanning->gl->gl_number,
                 'buyer' => $layingPlanningDetail->layingPlanning->gl->buyer->name,
                 'size' => $ticket->size->size,
                 'color' => $layingPlanningDetail->layingPlanning->color->color,
