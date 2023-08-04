@@ -9,6 +9,7 @@ use App\Models\Color;
 use App\Models\FabricType;
 use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanningDetailSize;
+use App\Models\GlCombine;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -145,6 +146,29 @@ class FetchController extends Controller
                 'status' => 'success',
                 'data'=> $fabric_type,
                 'message'=> 'Data Fabric Type berhasil diambil',
+            ];
+            return response()->json($date_return, 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
+    public function gl_combine(Request $request) {
+        try {
+            $id = $request->id;
+            $gl_combine = GlCombine::with('gl')
+                    ->when($id, function ($query, $id){
+                        $query->where('id', $id);
+                    })->get();
+
+            $date_return = [
+                'status' => 'success',
+                'data'=> $gl_combine,
+                'message'=> 'Data Gl Combine berhasil diambil',
             ];
             return response()->json($date_return, 200);
 

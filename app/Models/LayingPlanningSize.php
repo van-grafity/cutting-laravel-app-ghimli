@@ -20,4 +20,14 @@ class LayingPlanningSize extends Model
     {
         return $this->belongsTo(size::class, 'size_id', 'id');
     }
+    
+    public function layingPlanning()
+    {
+        return $this->belongsTo(LayingPlanning::class, 'laying_planning_id', 'id');
+    }
+
+    public function glCombine()
+    {
+        return $this->hasMany(LayingPlanningSizeGlCombine::class, 'id_laying_planning_size', 'id');
+    }
 }

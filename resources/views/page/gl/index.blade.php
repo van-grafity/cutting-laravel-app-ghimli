@@ -79,8 +79,8 @@
                                 @endforeach
                             </select>
                         </div>
+                        </br>
 
-                        <hr>
                         <div class="row">
                             <div class="col-sm-12">
                                 <table class="table table-bordered table-hover" id="table_style">
@@ -112,7 +112,45 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
+
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="combine_gl">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Combine GL</label>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="gl_combine_name" class="form-label" style="display:none;">GL Combine Name</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" id="gl_combine_name" name="gl_combine_name" placeholder="Enter GL Combine Name" style="display:none;">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-success" type="button" id="btn_add_gl_combine" style="display:none;">Add</button>
+                                        </div>
+
+                                        <div class="invalid-feedback"></div>
+                                        <div class="valid-feedback"></div>
+                                        <small class="text-muted">If you want to combine GL, please add GL Combine Name</small>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-sm-12">
+                                <table class="table table-bordered table-hover" id="table_res_gl_combine" style="display:none;">
+                                    <thead>
+                                        <tr>
+                                            <th >GL Combine Name</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     <!-- END .card-body -->
                 </div>
                 <div class="modal-footer">
@@ -129,6 +167,55 @@
 <script type="text/javascript">
 $(document).ready(function(){
 
+    $('#flexSwitchCheckDefault').click(function(){
+        if($(this).is(':checked')){
+            $('#gl_combine_name').show();
+            $('#btn_add_gl_combine').show();
+            $('#table_res_gl_combine').show();
+        } else {
+            $('#gl_combine_name').hide();
+            $('#btn_add_gl_combine').hide();
+            $('#table_res_gl_combine').hide();
+        }
+    });
+    
+    $('#btn_add_gl_combine').click(function(){
+        let gl_combine_name = $('#gl_combine_name').val();
+        if(gl_combine_name == ''){
+            swal_failed({
+                title : "Please input GL Combine Name",
+            });
+            return false;
+        }
+
+        let element = `
+        <tr>
+            <td name="res_combine_name[]">${gl_combine_name}</td>
+            <td class="text-center">
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm p-2 btn-style-delete"><i class="fas fa-trash-alt"></i></a>
+            </td>
+        </tr>
+        `;
+        $('#table_res_gl_combine > tbody').append(element);
+        $('#gl_combine_name').val('');
+    });
+
+    $('#table_res_gl_combine > tbody').on("click",".btn-style-delete", function(e){ 
+        e.preventDefault();
+        $(this).parent().parent().remove();
+    });
+    
+    // res_combine_name parsing to controller
+    $('#gl_form').submit(function(e){
+        e.preventDefault();
+        let gl_combine_name = [];
+        $('td[name="res_combine_name[]"]').each(function(){
+            gl_combine_name.push($(this).text());
+        });
+        let gl_combine_name_json = JSON.stringify(gl_combine_name);
+        $('#gl_form').append(`<input type="hidden" name="gl_combine_name_json" value='${gl_combine_name_json}'>`);
+        this.submit();
+    });
     // ## Show Flash Message
     let session = {!! json_encode(session()->all()) !!};
     show_flash_message(session);
@@ -273,7 +360,6 @@ $(function (e) {
     const update_url ='{{ route("gl.update",":id") }}';
     const delete_url ='{{ route("gl.destroy",":id") }}';
     const fetch_style_url = '{{ route("fetch.style") }}';
-    
 
     async function edit_gl(gl_id) {
         let url_edit = edit_url.replace(':id',gl_id);
@@ -286,10 +372,35 @@ $(function (e) {
 
         let url_update = update_url.replace(':id',gl_id);
         form.attr('action', url_update);
-        form.find('#gl_buyer').val(result.buyer_id).trigger('change');
-        form.find('input[name="gl_number"]').val(result.gl_number);
-        form.find('input[name="season"]').val(result.season);
-        form.find('input[name="size_order"]').val(result.size_order);
+        form.find('#gl_buyer').val(result.data.buyer_id).trigger('change');
+        form.find('input[name="gl_number"]').val(result.data.gl_number);
+        form.find('input[name="season"]').val(result.data.season);
+        form.find('input[name="size_order"]').val(result.data.size_order);
+
+        $('#table_res_gl_combine > tbody').html('');
+
+        if(result.data.gl_combine.length > 0){
+            $('#flexSwitchCheckDefault').prop('checked', true);
+            $('#gl_combine_name').show();
+            $('#btn_add_gl_combine').show();
+            $('#table_res_gl_combine').show();
+            result.data.gl_combine.forEach((data, i) => {
+                let element = `
+                <tr>
+                    <td name="res_combine_name[]">${data.name}</td>
+                    <td class="text-center">
+                        <a href="javascript:void(0);" class="btn btn-danger btn-sm p-2 btn-style-delete"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+                `;
+                $('#table_res_gl_combine > tbody').append(element);
+            });
+        } else {
+            $('#flexSwitchCheckDefault').prop('checked', false);
+            $('#gl_combine_name').hide();
+            $('#btn_add_gl_combine').hide();
+            $('#table_res_gl_combine').hide();
+        }
 
         // ## Get Style from the GL
         let data_style_params = { gl_id: gl_id };

@@ -157,6 +157,7 @@ Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(
     Route::get('style', [FetchController::class, 'style'])->name('style');
     Route::get('color', [FetchController::class, 'color'])->name('color');
     Route::get('fabric-type', [FetchController::class, 'fabric_type'])->name('fabric-type');
+    Route::get('gl-combine', [FetchController::class, 'gl_combine'])->name('gl-combine');
     
     Route::get('get-cutting-order/{id}', [CuttingTicketsController::class, 'get_cutting_order'])->name('cutting-order');
 });

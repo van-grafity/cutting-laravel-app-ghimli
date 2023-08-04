@@ -196,7 +196,7 @@
             ajax: "{{ url('/cutting-ticket-data') }}",
             columns: [
                 {data: 'ticket_number', name: 'ticket_number', render: function(data, type, row) {
-                    return `<a href="{{ url('/cutting-ticket/detail') }}/${row.id}">+ ${data}</a>`
+                    return `<a href="{{ url('/cutting-ticket/detail') }}/${row.id}">${data}</a>`
                 }},
                 {data: 'table_number', name: 'table_number'},
                 {data: 'color', name: 'color'},
