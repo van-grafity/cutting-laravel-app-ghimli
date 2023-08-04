@@ -10,6 +10,7 @@ use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanningDetailSize;
 use App\Models\GlCombine;
 use App\Models\LayingPlanningSizeGlCombine;
+use App\Models\LayingPlanningSize;
 
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
@@ -54,7 +55,8 @@ class CuttingTicketsController extends Controller
     }
 
     public function dataCuttingTicket(){
-        $query = CuttingOrderRecord::get();
+        $query = CuttingOrderRecord::whereHas('CuttingTicket')
+        ->get();
             return Datatables::of($query)
             ->escapeColumns([])
             ->addColumn('ticket_number', function($data){
@@ -249,7 +251,6 @@ class CuttingTicketsController extends Controller
                 'message' => $th->getMessage()
             ]);
         }
-        return "CT-{$gl_number}-{$color_code}-{$table_number}-{$ticket_number}";
     }
 
     public function print_report_pdf($id) {
@@ -377,10 +378,21 @@ class CuttingTicketsController extends Controller
 
         $size = $ticket->size->size;
 
-        $layingPlanningSizeGlCombine = LayingPlanningSizeGlCombine::with('layingPlanningSize.size')->get();
-        $layingPlanningSizeGlCombine = $layingPlanningSizeGlCombine->where('layingPlanningSize.size_id', $ticket->size_id)->first();
-        $gl_combine = $layingPlanningSizeGlCombine->glCombine->name;
-        $gl_combine = $gl_number . $gl_combine;
+        $gl_combine = '';
+        $layingPlanningSizeGlCombine = LayingPlanningSizeGlCombine::with('layingPlanningSize.size', 'glCombine')
+            ->whereHas('layingPlanningSize', function($q) use ($ticket) {
+                $q->where('laying_planning_id', $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->id);
+                $q->where('size_id', $ticket->size_id);
+            })->get();
+            
+        if ($layingPlanningSizeGlCombine->isEmpty()) {
+            $gl_combine = $gl_number;
+        } else {
+            $layingPlanningSize = LayingPlanningSize::where('laying_planning_id', $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->id)->where('size_id', $ticket->size_id)->first();
+            $layingPlanningSizeGlCombine = $layingPlanningSizeGlCombine->where('id_laying_planning_size', $layingPlanningSize->id)->first();
+            $gl_combine = $layingPlanningSizeGlCombine->glCombine->name;
+            $gl_combine = $gl_number . $gl_combine;
+        }
 
         $table_number = $ticket->cuttingOrderRecord->layingPlanningDetail->table_number;
         $table_number = Str::padLeft($table_number, 3, '0');
