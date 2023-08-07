@@ -245,12 +245,15 @@ class CuttingTicketsController extends Controller
                     }
                 }
             }
+            return redirect()->route('cutting-ticket.index')
+                ->with('success', 'Data Cutting Ticket berhasil di generate');
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
                 'message' => $th->getMessage()
             ]);
         }
+
     }
 
     public function print_report_pdf($id) {
