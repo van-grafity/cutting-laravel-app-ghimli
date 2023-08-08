@@ -18,6 +18,6 @@ class Buyer extends Model
 
     public function gls()
     {
-        return $this->hasMany(gl::class);
+        return $this->hasMany(Gl::class);
     }
 }

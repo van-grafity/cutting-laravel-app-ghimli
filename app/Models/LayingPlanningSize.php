@@ -18,7 +18,7 @@ class LayingPlanningSize extends Model
     
     public function size()
     {
-        return $this->belongsTo(size::class, 'size_id', 'id');
+        return $this->belongsTo(Size::class, 'size_id', 'id');
     }
     
     public function layingPlanning()
