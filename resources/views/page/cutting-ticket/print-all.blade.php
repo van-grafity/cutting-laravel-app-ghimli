@@ -13,8 +13,8 @@
             size: 10.2cm 6.4cm;
             margin-left: 1cm;
             margin-right: 1cm;
-            margin-top: 0.7cm;
-            margin-bottom: 0.7cm;
+            margin-top: 0.2cm;
+            margin-bottom: 0.2cm;
         }
         body {
             width: 100%;
@@ -38,9 +38,10 @@
 
 <body width="100%" height="100%">
     @foreach ($data as $cutting_ticket)
+        </br>
         <div class="row">
-            <div class="serial-number" style="text-align: left; font-size: 12px;">Serial No. : {{ $cutting_ticket->serial_number }}</div>
-            <div class="serial-number" style="text-align: left; font-size: 12px;">Color : {{ $cutting_ticket->color }}</div>
+            <div class="serial-number" style="text-align: left; font-size: 10px;">Serial No. : <span style="font-size: 11px;">{{ $cutting_ticket->serial_number }}</span></div>
+            <div class="serial-number" style="text-align: left; font-size: 10px;">Color : <span style="font-size: 11px;">{{ $cutting_ticket->color }}</span></div>
         </div>
         </br>
         <table>
@@ -74,6 +75,9 @@
                 </tr>
             </tbody>
         </table>
+        </br>
+        </br>
+        </br>
     @endforeach
 </body>
 
