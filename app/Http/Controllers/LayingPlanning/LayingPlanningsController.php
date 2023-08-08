@@ -154,15 +154,16 @@ class LayingPlanningsController extends Controller
                     'laying_planning_id' => $insertLayingData->id,
                 ];
                 $insertLayingSize = LayingPlanningSize::create($laying_planning_size);
-                if($gl_combine_id[$key] != 0){
+                $id_laying_planning_size = $insertLayingSize->id;
+                if (isset($gl_combine_id[$key])) {
+                    $id_gl_combine = $gl_combine_id[$key];
                     $laying_planning_size_gl_combine = [
-                        'id_laying_planning_size' => $insertLayingSize->id,
-                        'id_gl_combine' => $gl_combine_id[$key],
+                        'id_laying_planning_size' => $id_laying_planning_size,
+                        'id_gl_combine' => $id_gl_combine,
                     ];
                     $insertLayingSizeGlCombine = LayingPlanningSizeGlCombine::create($laying_planning_size_gl_combine);
                 }
             }
-            
             return redirect()->route('laying-planning.show',$insertLayingData->id)
                 ->with('success', 'Data Laying Planning berhasil dibuat.');
         } catch (\Throwable $th) {
