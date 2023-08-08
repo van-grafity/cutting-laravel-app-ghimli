@@ -32,7 +32,7 @@ class LayingPlanning extends Model
 
     public function gl()
     {
-        return $this->belongsTo(gl::class, 'gl_id', 'id');
+        return $this->belongsTo(Gl::class, 'gl_id', 'id');
     }
 
     public function style()
