@@ -19,7 +19,7 @@ class Gl extends Model
 
     public function buyer()
     {
-        return $this->belongsTo(buyer::class);
+        return $this->belongsTo(Buyer::class);
     }
 
     public function style()
