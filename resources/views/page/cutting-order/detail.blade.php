@@ -116,7 +116,8 @@
                                     </tbody>
                                 </table>
                             </div>
-                            @can('admin-only')
+                            
+                            @can('ppc')
                                 @if($cutting_order->marker_code == 'PILOT RUN')
                                 <div class="col-md-4 text-right">
                                     @if($cutting_order->is_pilot_run == true)
