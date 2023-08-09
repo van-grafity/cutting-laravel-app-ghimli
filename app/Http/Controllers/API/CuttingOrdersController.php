@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\CuttingOrderRecord;
 use App\Models\CuttingOrderRecordDetail;
 use App\Models\LayingPlanningDetail;
+use App\Models\LayingPlanning;
 use App\Models\Color;
 use App\Models\Remark;
 use App\Models\StatusLayer;
@@ -46,6 +47,15 @@ class CuttingOrdersController extends BaseController
     {
         $getCuttingOrder = CuttingOrderRecord::where('serial_number', $serial_number)->latest()->first();
         if ($getCuttingOrder == null) return $this->onError(404, 'Cutting Order Record not found.');
+        $layingPlanningDetail = LayingPlanningDetail::where('id', $getCuttingOrder->laying_planning_detail_id)->first();
+        // $layingPlanning = LayingPlanning::with('layingPlanningDetail.cuttingOrderRecord')->where('id', $layingPlanningDetail->laying_planning_id)->first();
+
+        // foreach ($layingPlanning->layingPlanningDetail as $detail) {
+        //     if ($detail->marker_code == 'PILOT RUN' && $detail->cuttingOrderRecord->is_pilot_run == 0) {
+        //         return $this->onError(404, 'Pilot Run must be approved first.');
+        //     }
+        // }
+        
         $cuttingRecordDetail = CuttingOrderRecordDetail::with('CuttingOrderRecord')->whereHas('CuttingOrderRecord', function ($query) use ($serial_number) {
             $query->where('serial_number', $serial_number);
         })->get();
@@ -53,21 +63,11 @@ class CuttingOrdersController extends BaseController
         $data = collect(
             [
                 'cutting_order_record_detail' => $cuttingRecordDetail,
+                'laying_planning' => $layingPlanning
             ]
         );
         return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
     }
-
-    // public function show($serial_number)
-    // {
-    //     $getCuttingOrderRecordDetail = CuttingOrderRecord::where('serial_number', $serial_number)->with('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->get();
-    //     $data = collect(
-    //         [
-    //             'cutting_order_record' => $getCuttingOrderRecordDetail
-    //         ]
-    //     );
-    //     return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
-    // }
     
     public function store(Request $request)
     {
