@@ -119,13 +119,15 @@
                             
                             @can('ppc')
                                 @if($cutting_order->marker_code == 'PILOT RUN')
-                                <div class="col-md-4 text-right">
-                                    @if($cutting_order->is_pilot_run == true)
-                                        <a href="{{ route('cutting-order.approve-pilot-run',$cutting_order->id) }}" class="btn btn-danger shadow-sm">Reject</a>
-                                    @else
-                                        <a href="{{ route('cutting-order.approve-pilot-run',$cutting_order->id) }}" class="btn btn-success shadow-sm">Approve</a>
+                                    @if(count($cutting_order_detail) > 0)
+                                        <div class="col-md-4 text-right">
+                                            @if($cutting_order->is_pilot_run == true)
+                                                <a href="{{ route('cutting-order.approve-pilot-run',$cutting_order->id) }}" class="btn btn-danger shadow-sm">Reject</a>
+                                            @else
+                                                <a href="{{ route('cutting-order.approve-pilot-run',$cutting_order->id) }}" class="btn btn-success shadow-sm">Approve</a>
+                                            @endif
+                                        </div>
                                     @endif
-                                </div>
                                 @endif
                             @endcan
                         </div>
