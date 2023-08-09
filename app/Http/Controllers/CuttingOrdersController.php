@@ -155,16 +155,22 @@ class CuttingOrdersController extends Controller
 
     public function store(Request $request)
     {
-        $layingPlanningDetail = LayingPlanningDetail::find($request->laying_planning_detail_id);
-        $dataCuttingOrder = [
-            'serial_number' => $this->generate_serial_number($layingPlanningDetail),
-            'laying_planning_detail_id' => $request->laying_planning_detail_id,
-            'created_by' => auth()->user()->id,
-        ];
-        $insertCuttingOrder = CuttingOrderRecord::create($dataCuttingOrder);
+        $checkCuttingOrder = CuttingOrderRecord::where('laying_planning_detail_id', $request->laying_planning_detail_id)->first();
+        if ($checkCuttingOrder != null) {
+            return redirect()->route('cutting-order.show', $checkCuttingOrder->id)->with('error', 'Cutting Order already exist.');
+        }
 
-        $idCuttingOrder = $insertCuttingOrder->id;
-        return redirect()->route('cutting-order.show', $idCuttingOrder)->with('success', 'Cutting Order created successfully.');
+        try {
+            $dataCuttingOrder = [
+                'serial_number' => $this->generate_serial_number(LayingPlanningDetail::find($request->laying_planning_detail_id)),
+                'laying_planning_detail_id' => $request->laying_planning_detail_id,
+                'created_by' => auth()->user()->id,
+            ];
+            $cuttingOrder = CuttingOrderRecord::create($dataCuttingOrder);
+            return redirect()->route('cutting-order.show', $cuttingOrder->id)->with('success', 'Cutting Order created successfully.');
+        } catch (\Throwable $th) {
+            return redirect()->route('cutting-order.index')->with('error', $th->getMessage());
+        }
     }
 
     public function show($id) {
