@@ -209,7 +209,7 @@ class CuttingOrdersController extends BaseController
         $cuttingOrderRecord->id_status_cut = $statusCut->id;
         $cuttingOrderRecord->save();
         $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('statusCut')
-            ->get();
+            ->first();
         $data = collect(
             [
                 'cutting_order_record' => $data
