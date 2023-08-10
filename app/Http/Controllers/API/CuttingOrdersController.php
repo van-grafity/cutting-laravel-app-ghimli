@@ -35,7 +35,7 @@ class CuttingOrdersController extends BaseController
         ];
         
         $cuttingOrderRecords = [
-            'cutting_order_record' => $data->items()
+            'cutting_order_records' => $data->items()
         ];
 
         $result = array_merge($cuttingOrderRecords, $pagination);
@@ -62,7 +62,7 @@ class CuttingOrdersController extends BaseController
         
         $data = collect(
             [
-                'cutting_order_record_detail' => $cuttingRecordDetail,
+                'cutting_order_record_details' => $cuttingRecordDetail,
                 // 'laying_planning' => $layingPlanning
             ]
         );
@@ -119,7 +119,7 @@ class CuttingOrdersController extends BaseController
         $cuttingOrderRecordDetail->save();
         $cuttingOrderRecord->save();
         $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('statusLayer', 'cuttingOrderRecordDetail')
-            ->get();
+            ->first();
         $data = collect(
             [
                 'cutting_order_record' => $data
@@ -137,7 +137,7 @@ class CuttingOrdersController extends BaseController
         
         $data = collect(
             [
-                'cutting_order_record' => $cuttingOrderRecord
+                'cutting_order_records' => $cuttingOrderRecord
             ]
         );
         return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');

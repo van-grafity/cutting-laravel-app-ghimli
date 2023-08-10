@@ -47,7 +47,7 @@ class LayingPlanningController extends BaseController
         $status = $getCuttingOrder->statusLayer->name ?? 'not completed';
         $data = collect(
             [
-                'cutting_order_record_obj' => $getCuttingOrder->load('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color'),
+                'cutting_order_record' => $getCuttingOrder->load('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color'),
                 // 'laying_planning_detail' => $getCuttingOrder->load('layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.color', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color'),
                 // 'laying_planning' => $layingPlanning,
                 'status' => $status
