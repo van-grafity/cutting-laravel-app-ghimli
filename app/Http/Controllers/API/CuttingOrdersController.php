@@ -106,7 +106,7 @@ class CuttingOrdersController extends BaseController
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
             $cuttingOrderRecord->id_status_layer = $status->id;
         } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
-            return $this->onSuccess(null, 'Layer Cut is over.');
+            return $this->onSuccess(null, 'Layer Cut tidak boleh lebih dari Layer Qty.');
             $status = StatusLayer::where('name', 'over layer')->first();
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
             $cuttingOrderRecord->id_status_layer = $status->id;
