@@ -24,7 +24,7 @@ class CuttingOrdersController extends BaseController
     // }
     public function index()
     {
-        $data = CuttingOrderRecord::with('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->latest()->paginate(100);
+        $data = CuttingOrderRecord::with('statusLayer', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->latest()->paginate(50);
         
         $pagination = [
             'current_page' => $data->currentPage(),
@@ -131,7 +131,7 @@ class CuttingOrdersController extends BaseController
     public function search(Request $request)
     {
         $input = $request->all();
-        $cuttingOrderRecord = CuttingOrderRecord::with('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')
+        $cuttingOrderRecord = CuttingOrderRecord::with('statusLayer', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')
         ->where('serial_number', 'like', '%' . $input['serial_number'] . '%')
         ->get();
         
