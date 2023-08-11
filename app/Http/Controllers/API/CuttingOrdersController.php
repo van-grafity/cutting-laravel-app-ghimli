@@ -24,7 +24,7 @@ class CuttingOrdersController extends BaseController
     // }
     public function index()
     {
-        $data = CuttingOrderRecord::with('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->latest()->paginate(100);
+        $data = CuttingOrderRecord::with('statusLayer', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->latest()->paginate(50);
         
         $pagination = [
             'current_page' => $data->currentPage(),
@@ -35,7 +35,7 @@ class CuttingOrdersController extends BaseController
         ];
         
         $cuttingOrderRecords = [
-            'cutting_order_record' => $data->items()
+            'cutting_order_records' => $data->items()
         ];
 
         $result = array_merge($cuttingOrderRecords, $pagination);
@@ -62,7 +62,7 @@ class CuttingOrdersController extends BaseController
         
         $data = collect(
             [
-                'cutting_order_record_detail' => $cuttingRecordDetail,
+                'cutting_order_record_details' => $cuttingRecordDetail,
                 // 'laying_planning' => $layingPlanning
             ]
         );
@@ -106,7 +106,7 @@ class CuttingOrdersController extends BaseController
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
             $cuttingOrderRecord->id_status_layer = $status->id;
         } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
-            return $this->onSuccess(null, 'Layer Cut is over.');
+            return $this->onSuccess(null, 'Layer Cut tidak boleh lebih dari Layer Qty.');
             $status = StatusLayer::where('name', 'over layer')->first();
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
             $cuttingOrderRecord->id_status_layer = $status->id;
@@ -119,7 +119,7 @@ class CuttingOrdersController extends BaseController
         $cuttingOrderRecordDetail->save();
         $cuttingOrderRecord->save();
         $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('statusLayer', 'cuttingOrderRecordDetail')
-            ->get();
+            ->first();
         $data = collect(
             [
                 'cutting_order_record' => $data
@@ -131,13 +131,13 @@ class CuttingOrdersController extends BaseController
     public function search(Request $request)
     {
         $input = $request->all();
-        $cuttingOrderRecord = CuttingOrderRecord::with('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')
+        $cuttingOrderRecord = CuttingOrderRecord::with('statusLayer', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')
         ->where('serial_number', 'like', '%' . $input['serial_number'] . '%')
         ->get();
         
         $data = collect(
             [
-                'cutting_order_record' => $cuttingOrderRecord
+                'cutting_order_records' => $cuttingOrderRecord
             ]
         );
         return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
@@ -209,7 +209,7 @@ class CuttingOrdersController extends BaseController
         $cuttingOrderRecord->id_status_cut = $statusCut->id;
         $cuttingOrderRecord->save();
         $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('statusCut')
-            ->get();
+            ->first();
         $data = collect(
             [
                 'cutting_order_record' => $data

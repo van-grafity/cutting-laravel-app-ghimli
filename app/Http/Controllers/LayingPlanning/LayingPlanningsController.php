@@ -24,7 +24,7 @@ use Yajra\Datatables\Datatables;
 
 use Carbon\Carbon;
 
-use Barryvdh\DomPDF\Facade\PDF;
+use PDF;
 
 class LayingPlanningsController extends Controller
 {
