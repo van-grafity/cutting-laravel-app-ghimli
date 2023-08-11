@@ -35,10 +35,11 @@
                                 <th scope="col" class="">Serial Number</th>
                                 <th width="11%" scope="col" class="">No Lay Sheet</th>
                                 <th scope="col" class="">Color</th>
-                                <th width="8%" scope="col" class="">Table No</th>
+                                <th width="5%" scope="col" class="">Table No</th>
                                 <th scope="col" class="">Style</th>
                                 <th scope="col" class="">Fabric Type</th>
                                 <th scope="col" class="">Fabric Consumption</th>
+                                <th width="5%" scope="col" class="">Marker Code</th>
                                 <th scope="col" class="">Status Lay</th>
                                 <th hidden scope="col" class=""></th>
                                 <th scope="col" class="">Status Cut</th>
@@ -100,6 +101,7 @@
                 {data: 'style', name: 'style'},
                 {data: 'fabric_type', name: 'fabric_type'},
                 {data: 'fabric_consumption', name: 'fabric_consumption'},
+                {data: 'marker_code', name: 'marker_code'},
                 {data: 'status', name: 'status'},
                 {data: 'status_lay', name: 'status_layer', visible: false},
                 {data: 'status_cut', name: 'status_cut'},

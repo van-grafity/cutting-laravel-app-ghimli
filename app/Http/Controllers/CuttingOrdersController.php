@@ -79,6 +79,9 @@ class CuttingOrdersController extends Controller
             ->addColumn('fabric_consumption', function ($data){
                 return $data->layingPlanningDetail->layingPlanning->fabricCons->name;
             })
+            ->addColumn('marker_code', function($data){
+                return $data->layingPlanningDetail->marker_code;
+            })
             ->addColumn('status', function($data){
                 $sum_layer = 0;
                 $status = '';
@@ -123,7 +126,7 @@ class CuttingOrdersController extends Controller
                 return $action;
             })
             ->make(true);
-        }
+    }
 
     public function createNota($laying_planning_detail_id) {
         $layingPlanningDetail = LayingPlanningDetail::find($laying_planning_detail_id);
