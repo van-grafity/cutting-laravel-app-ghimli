@@ -112,7 +112,7 @@
             </div>
             <div class="serial-number-qr">
                 <div class="qr-wrapper" style="margin-top: -15px; margin-right: -15px;">
-                    <img src="https://chart.googleapis.com/chart?chs=70x70&cht=qr&chl={{ $data->serial_number }}" alt="">
+                    <img src="data:image/png;base64, {!! base64_encode(QrCode::size(70)->generate($data->serial_number)) !!} ">
                 </div>
             </div>
             <div class="title-nota">
