@@ -26,27 +26,27 @@ class CuttingOrdersController extends Controller
 {
     public function index()
     {
-        $get_data_cutting_order = CuttingOrderRecord::with('layingPlanningDetail')
-            ->join('laying_planning_details', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
-            ->orderBy('laying_planning_details.id')
-            ->orderBy('laying_planning_details.table_number')
-            ->select('cutting_order_records.id','laying_planning_detail_id','serial_number')
-            ->get();
+        // $get_data_cutting_order = CuttingOrderRecord::with('layingPlanningDetail')
+        // ->join('laying_planning_details', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
+        // ->orderBy('laying_planning_details.id')
+        // ->orderBy('laying_planning_details.table_number')
+        // ->select('cutting_order_records.id','laying_planning_detail_id','serial_number')
+        // ->get();
 
-        $data = [];
-        foreach ($get_data_cutting_order as $index => $cutting_order) {
-            $temp = (object)[
-                'id' => $cutting_order->id,
-                'no' => $index + 1,
-                'serial_number' => $cutting_order->serial_number,
-                'no_laying_sheet' => $cutting_order->layingPlanningDetail->no_laying_sheet,
-                'gl_number' => $cutting_order->layingPlanningDetail->layingPlanning->gl->gl_number,
-                'color' => $cutting_order->layingPlanningDetail->layingPlanning->color->color,
-                'table_number' => $cutting_order->layingPlanningDetail->table_number,
-            ];
-            $data[] = $temp;
-        }
-        return view('page.cutting-order.index',compact('data'));
+        // $data = [];
+        // foreach ($get_data_cutting_order as $index => $cutting_order) {
+        //     $temp = (object)[
+        //         'id' => $cutting_order->id,
+        //         'no' => $index + 1,
+        //         'serial_number' => $cutting_order->serial_number,
+        //         'no_laying_sheet' => $cutting_order->layingPlanningDetail->no_laying_sheet,
+        //         'gl_number' => $cutting_order->layingPlanningDetail->layingPlanning->gl->gl_number,
+        //         'color' => $cutting_order->layingPlanningDetail->layingPlanning->color->color,
+        //         'table_number' => $cutting_order->layingPlanningDetail->table_number,
+        //     ];
+        //     $data[] = $temp;
+        // }
+        return view('page.cutting-order.index');
     }
 
     public function dataCuttingOrder(){
@@ -78,6 +78,9 @@ class CuttingOrdersController extends Controller
             })
             ->addColumn('fabric_consumption', function ($data){
                 return $data->layingPlanningDetail->layingPlanning->fabricCons->name;
+            })
+            ->addColumn('marker_code', function($data){
+                return $data->layingPlanningDetail->marker_code;
             })
             ->addColumn('status', function($data){
                 $sum_layer = 0;
@@ -123,7 +126,7 @@ class CuttingOrdersController extends Controller
                 return $action;
             })
             ->make(true);
-        }
+    }
 
     public function createNota($laying_planning_detail_id) {
         $layingPlanningDetail = LayingPlanningDetail::find($laying_planning_detail_id);
