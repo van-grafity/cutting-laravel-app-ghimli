@@ -117,20 +117,33 @@
                                 </table>
                             </div>
                             
-                            @can('ppc')
-                                @if($cutting_order->marker_code == 'PILOT RUN')
-                                    @if(count($cutting_order_detail) > 0)
-                                        <div class="col-md-4 text-right">
-                                            @if($cutting_order->is_pilot_run == true)
-                                                <a href="{{ route('cutting-order.approve-pilot-run',$cutting_order->id) }}" class="btn btn-danger shadow-sm">Reject</a>
-                                            @else
-                                                <a href="{{ route('cutting-order.approve-pilot-run',$cutting_order->id) }}" class="btn btn-success shadow-sm">Approve</a>
-                                            @endif
-                                        </div>
+                            <div class="col-md-4 text-right">
+                                @can('ppc')
+                                    @if($cutting_order->marker_code == 'PILOT RUN')
+                                        @if(count($cutting_order_detail) > 0)
+                                                @if($cutting_order->is_pilot_run == true)
+                                                    <a href="{{ route('cutting-order.approve-pilot-run',$cutting_order->id) }}" class="btn btn-danger shadow-sm">Reject</a>
+                                                @else
+                                                    <a href="{{ route('cutting-order.approve-pilot-run',$cutting_order->id) }}" class="btn btn-success shadow-sm">Approve</a>
+                                                @endif
+                                        @endif
                                     @endif
-                                @endif
-                            @endcan
-                        </div>
+                                @endcan
+                                <div class="btn-group">
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="{{ route('cutting-order.print', $cutting_order->id) }}" target="_blank">Print Nota</a>
+                                            <!-- <a class="dropdown-item" href="{{ route('cutting-order.report', $cutting_order->id) }}" target="_blank">Print Report</a>
+                                            @can('clerk')
+                                                <a class="dropdown-item" href="javascript:void(0);" onclick="delete_cuttingOrder({{ $cutting_order->id }})" data-id="{{ $cutting_order->id }}">Delete</a>
+                                            @endcan -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                         <div class="row">
                             <div class="col-sm-12">
