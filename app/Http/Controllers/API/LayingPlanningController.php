@@ -37,20 +37,12 @@ class LayingPlanningController extends BaseController
         if ($getCuttingOrder == null) return $this->onSuccess(null, 'Cutting Order not found.');
         $layingPlanningDetail = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.color'])->find($getCuttingOrder->layingPlanningDetail->id);
         $layingPlanning = LayingPlanning::with('layingPlanningDetail.cuttingOrderRecord')->where('id', $layingPlanningDetail->laying_planning_id)->first();
-
-        // foreach ($layingPlanning->layingPlanningDetail as $detail) {
-        //     if ($detail->marker_code == 'PILOT RUN' && $detail->cuttingOrderRecord->is_pilot_run == 0 && $detail->cuttingOrderRecord->serial_number != $getCuttingOrder->serial_number) {
-        //         return $this->onSuccess(null, 'Pilot Run must be approved first.');
-        //     }
-        // }
         
         if ($layingPlanningDetail->layingPlanning->color == null || $layingPlanningDetail->layingPlanning->color->id == null) return $this->onError(404, 'Color not found.');
         $status = $getCuttingOrder->statusLayer->name ?? 'not completed';
         $data = collect(
             [
                 'cutting_order_record' => $getCuttingOrder->load('cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color'),
-                // 'laying_planning_detail' => $getCuttingOrder->load('layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.color', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color'),
-                // 'laying_planning' => $layingPlanning,
                 'status' => $status
             ]
         );

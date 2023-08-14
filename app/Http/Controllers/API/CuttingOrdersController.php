@@ -93,26 +93,22 @@ class CuttingOrdersController extends BaseController
         $cuttingOrderRecordDetail->joint = $input['joint'];
         $cuttingOrderRecordDetail->balance_end = $input['balance_end'];
 
-        // $remark = Remark::where('name', $input['remarks'])->first();
-        // if ($remark == null) return $this->onError(404, 'Remark not found.'); // not relation
-        // $cuttingOrderRecordDetail->remark_id = $remark->id;
-
         $cuttingOrderRecordDetail->remarks = $input['remarks'];
         $cuttingOrderRecordDetail->operator = $input['operator'];
 
         $sum_layer += $input['layer'];
         if ($sum_layer == $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
             $status = StatusLayer::where('name', 'completed')->first();
-            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
+            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
             $cuttingOrderRecord->id_status_layer = $status->id;
         } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
             return $this->onSuccess(null, 'Layer Cut tidak boleh lebih dari Layer Qty.');
             $status = StatusLayer::where('name', 'over layer')->first();
-            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
+            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
             $cuttingOrderRecord->id_status_layer = $status->id;
         } else {
             $status = StatusLayer::where('name', 'not completed')->first();
-            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.'); // not relation
+            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
             $cuttingOrderRecord->id_status_layer = $status->id;
         }
         
