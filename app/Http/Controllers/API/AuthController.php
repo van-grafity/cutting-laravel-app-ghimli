@@ -83,12 +83,6 @@ class AuthController extends BaseController
     {
         $request->user()->currentAccessToken()->delete();
         return $this->onSuccess(null, 'User logged out');
-        
-        // auth()->user()->tokens()->delete();
-
-        // return [
-        //     'message' => 'Tokens Revoked'
-        // ];
     }
 
     public function index()
