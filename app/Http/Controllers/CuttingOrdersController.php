@@ -38,30 +38,30 @@ class CuttingOrdersController extends Controller
             ->addColumn('serial_number', function ($data){
                 return $data->serial_number;
             })
-            ->addColumn('no_laying_sheet', function ($data){
-                return $data->layingPlanningDetail->no_laying_sheet;
-            })
+            // ->addColumn('no_laying_sheet', function ($data){
+            //     return $data->layingPlanningDetail->no_laying_sheet;
+            // })
             ->addColumn('gl_number', function ($data){
                 return $data->layingPlanningDetail->layingPlanning->gl->gl_number;
             })
             ->addColumn('color', function ($data){
                 return $data->layingPlanningDetail->layingPlanning->color->color;
             })
-            ->addColumn('table_number', function ($data){
-                return $data->layingPlanningDetail->table_number;
-            })
-            ->addColumn('style', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->style->style;
-            })
-            ->addColumn('fabric_type', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->fabricType->name;
-            })
-            ->addColumn('fabric_consumption', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->fabricCons->name;
-            })
-            ->addColumn('marker_code', function($data){
-                return $data->layingPlanningDetail->marker_code;
-            })
+            // ->addColumn('table_number', function ($data){
+            //     return $data->layingPlanningDetail->table_number;
+            // })
+            // ->addColumn('style', function ($data){
+            //     return $data->layingPlanningDetail->layingPlanning->style->style;
+            // })
+            // ->addColumn('fabric_type', function ($data){
+            //     return $data->layingPlanningDetail->layingPlanning->fabricType->name;
+            // })
+            // ->addColumn('fabric_consumption', function ($data){
+            //     return $data->layingPlanningDetail->layingPlanning->fabricCons->name;
+            // })
+            // ->addColumn('marker_code', function($data){
+            //     return $data->layingPlanningDetail->marker_code;
+            // })
             ->addColumn('status', function($data){
                 $sum_layer = 0;
                 $status = '';
@@ -77,17 +77,17 @@ class CuttingOrdersController extends Controller
                 }
                 return $status;
             })
-            ->addColumn('status_lay', function($data){
-                $status = '';
-                if ($data->statusLayer->name == 'completed') {
-                    $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
-                } else if ($data->statusLayer->name == 'over layer') {
-                    $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
-                } else {
-                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
-                }
-                return $status;
-            })
+            // ->addColumn('status_lay', function($data){
+            //     $status = '';
+            //     if ($data->statusLayer->name == 'completed') {
+            //         $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
+            //     } else if ($data->statusLayer->name == 'over layer') {
+            //         $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
+            //     } else {
+            //         $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
+            //     }
+            //     return $status;
+            // })
             ->addColumn('status_cut', function($data){
                 $status = '';
                 if ($data->statusCut->name == 'sudah') {
