@@ -461,8 +461,13 @@ class CuttingOrdersController extends Controller
         $getDuplicateSN = CuttingOrderRecord::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
         $duplicateSN = count($getDuplicateSN) + 1;
         $duplicateSN = Str::padLeft($duplicateSN, 2, '0');
-        $serial_number = "COR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-S{$style}-{$duplicateSN}-{$table_number}";
         
+        $serial_number = "COR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-S{$style}-{$duplicateSN}-{$table_number}";
+        $checkDuplicateSN = CuttingOrderRecord::where('serial_number', $serial_number)->first();
+        if ($checkDuplicateSN != null) {
+            $serial_number = $serial_number . "-1";
+        }
+
         return $serial_number;
     }
 
