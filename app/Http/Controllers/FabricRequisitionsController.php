@@ -186,7 +186,7 @@ class FabricRequisitionsController extends Controller
         $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
         return $pdf->stream($filename);
     }
-
+    
     public function print_multiple_fabric_requisition($id)
     {
         $laying_planning = LayingPlanning::find($id);
@@ -214,12 +214,11 @@ class FabricRequisitionsController extends Controller
             ];
         }
 
-        // 21.6 cm x 14 cm
-        // $customPaper = array(0,0,612.00,380.00);
         $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.fabric-requisition.print-multiple', compact('data'))->setPaper($customPaper, 'portrait');
         return $pdf->stream($filename);
     }
+
 
     public function fabric_requisition_detail(Request $request, $id) {
 
