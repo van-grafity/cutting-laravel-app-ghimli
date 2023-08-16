@@ -14,6 +14,7 @@ use App\Models\Groups;
 use App\Models\StatusLayer;
 use App\Models\StatusCut;
 use App\Models\LayingPlanning;
+use App\Models\GL;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -446,6 +447,51 @@ class CuttingOrdersController extends Controller
         // return view('page.cutting-order.report', compact('data','cor_details'));
         $pdf = PDF::loadview('page.cutting-order.report', compact('data','cor_details'))->setPaper('a4', 'landscape');
         return $pdf->stream($filename);
+    }
+
+    public function statusCuttingOrderRecord()
+    {
+        $gls = GL::with('GLCombine')->get();
+        $statusLayer = StatusLayer::all();
+        $statusCut = StatusCut::all();
+        return view('page.cutting-order.status-cutting-order-record', compact('gls', 'statusLayer', 'statusCut'));
+    }
+
+    public function printStatusCuttingOrderRecord(Request $request)
+    {
+        $date_start = $request->date_start;
+        $date_end = $request->date_end;
+        $gl_number = $request->gl_number;
+        $status_layer = $request->status_layer;
+        $status_cut = $request->status_cut;
+
+        $cuttingOrderRecord = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'CuttingOrderRecordDetail', 'layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.gl', 'layingPlanningDetail.layingPlanning.color', 'layingPlanningDetail.layingPlanning.style'])
+            ->whereHas('cuttingOrderRecordDetail', function($query) use ($date_start, $date_end) {
+                $query->whereBetween('updated_at', [$date_start, $date_end]);
+            })
+            ->whereHas('layingPlanningDetail', function($query) use ($gl_number) {
+                $query->whereHas('layingPlanning', function($query) use ($gl_number) {
+                    $query->where('gl_id', $gl_number);
+                });
+            })
+            ->whereHas('statusLayer', function($query) use ($status_layer) {
+                $query->where('id', $status_layer);
+            })
+            ->whereHas('statusCut', function($query) use ($status_cut) {
+                $query->where('id', $status_cut);
+            })
+            ->get();
+            
+        $data = [
+            'cuttingOrderRecord' => $cuttingOrderRecord,
+            'date_start' => $date_start,
+            'date_end' => $date_end,
+            'gl_number' => $cuttingOrderRecord->first()->layingPlanningDetail->layingPlanning->gl->gl_number ?? '',
+            'status_layer' => $cuttingOrderRecord->first()->statusLayer->name ?? '',
+            'status_cut' => $cuttingOrderRecord->first()->statusCut->name ?? '',
+        ];
+        $pdf = PDF::loadview('page.cutting-order.report-status', compact('data'))->setPaper('a4', 'landscape');
+        return $pdf->stream('Report Status Cutting Order Record.pdf');
     }
 
     public function getCuttingOrderRecordByDate($date)
