@@ -127,8 +127,10 @@
                         <tbody>
                             @foreach ($details as $detail)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <!-- onClick table number to refirect http://localhost/cutting-ticket-app/public/cutting-order/28 -->
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="{{ $detail->id }}" id="flexCheckDefault" name="laying_planning_laying_planning_detail_id[]">
+                                        </div>
                                     <td>
                                         <a href="{{ route('cutting-order.show', $detail->cor_id) }}" class="text-decoration-none">{{ $detail->table_number }}</a>
                                     </td>
