@@ -283,6 +283,39 @@ class CuttingOrdersController extends Controller
         return $pdf->stream($filename);
     }
 
+    public function print_multiple($id)
+    {
+        $laying_planning = LayingPlanning::find($id);
+        $cutting_order = CuttingOrderRecord::whereHas('layingPlanningDetail', function($query) use ($id) {
+            $query->where('laying_planning_id', $id);
+        })->get();
+
+        $filename = $laying_planning->style->style . '.pdf';
+        $data = [];
+        foreach ($cutting_order as $cutting) {
+            $data[] = (object)[
+                'serial_number' => $cutting->serial_number,
+                'style' => $cutting->layingPlanningDetail->layingPlanning->style->style,
+                'gl_number' => $cutting->layingPlanningDetail->layingPlanning->gl->gl_number,
+                'no_laying_sheet' => $cutting->layingPlanningDetail->no_laying_sheet,
+                'fabric_po' => $cutting->layingPlanningDetail->layingPlanning->fabric_po,
+                'marker_code' => $cutting->layingPlanningDetail->marker_code,
+                'marker_length' => $cutting->layingPlanningDetail->marker_yard.' yd '.  $cutting->layingPlanningDetail->marker_inch.' inch',
+                'fabric_type' => $cutting->layingPlanningDetail->layingPlanning->fabricType->name,   
+                'fabric_cons' => $cutting->layingPlanningDetail->layingPlanning->fabricCons->name,   
+                'table_number' => $cutting->layingPlanningDetail->table_number,   
+                'buyer' => $cutting->layingPlanningDetail->layingPlanning->buyer->name,   
+                'size_ratio' => $this->print_size_ratio($cutting->layingPlanningDetail),   
+                'color' => $cutting->layingPlanningDetail->layingPlanning->color->color,
+                'layer' => $cutting->layingPlanningDetail->layer_qty,
+                'date' => Carbon::now()->format('d-m-Y'),
+            ];
+        }
+        
+        $pdf = PDF::loadview('page.cutting-order.print-multiple', compact('data'))->setPaper('a4', 'landscape');
+        return $pdf->stream($filename);
+    }
+
     public function cutting_order_detail(Request $request, $id) {
 
         $cutting_order_record_detail = CuttingOrderRecordDetail::find($id);
