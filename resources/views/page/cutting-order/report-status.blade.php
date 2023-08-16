@@ -84,15 +84,17 @@
             <div class="title-nota">
                 STATUS CUTTING OUTPUT REPORT
                 <br>
+                @if ($data['gl_number'] == null)
+                <div class="subtitle-nota">GL : -</div>
+                @else
                 <div class="subtitle-nota">GL : {{ $data['gl_number'] }}</div>
+                @endif
                 <div class="subtitle-nota"></div>
             </div>
 
         </div>
 
-        <!-- if gl_number null-->
         @if ($data['gl_number'] == null)
-        <!-- data tidak ada -->
         <div class="body-nota">
             <table class="table table-nota">
                 <thead class="">
@@ -111,7 +113,6 @@
             </table>
         </div>
         @else
-
             <table class="table">
                 <tbody>
                     <tr>

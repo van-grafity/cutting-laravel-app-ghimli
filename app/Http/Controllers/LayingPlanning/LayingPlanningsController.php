@@ -414,7 +414,8 @@ class LayingPlanningsController extends Controller
                 'created_by' => auth()->user()->id,
             ];
             $cuttingOrder = CuttingOrderRecord::create($dataCuttingOrder);
-            return redirect()->route('cutting-order.show', $cuttingOrder->id)->with('success', 'Cutting Order created successfully.');
+            return redirect()->route('laying-planning.show',$layingPlanning->id)
+                ->with('success', 'Data Detail Laying Planning berhasil dibuat.');
         } catch (\Throwable $th) {
             return redirect()->route('cutting-order.index')->with('error', $th->getMessage());
         }
@@ -539,7 +540,6 @@ class LayingPlanningsController extends Controller
 
         }
 
-        // create cutting order record
         $checkCuttingOrder = CuttingOrderRecord::where('laying_planning_detail_id', $insertLayingDetail->id)->first();
         if ($checkCuttingOrder != null) {
             return redirect()->route('cutting-order.show', $checkCuttingOrder->id)->with('error', 'Cutting Order already exist.');
@@ -552,7 +552,8 @@ class LayingPlanningsController extends Controller
                 'created_by' => auth()->user()->id,
             ];
             $cuttingOrder = CuttingOrderRecord::create($dataCuttingOrder);
-            return redirect()->route('cutting-order.show', $cuttingOrder->id)->with('success', 'Cutting Order created successfully.');
+            return redirect()->route('laying-planning.show',$layingPlanning->id)
+                ->with('success', 'Data Detail Laying Planning berhasil diduplicate sebanyak '. $duplicate_qty .' kali.');
         } catch (\Throwable $th) {
             return redirect()->route('cutting-order.index')->with('error', $th->getMessage());
         }
