@@ -121,6 +121,8 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('cutting-order-approve-pilot-run/{id}', [CuttingOrdersController::class,'approve_pilot_run'])->name('cutting-order.approve-pilot-run');
     Route::get('cutting-order-record/{date}', [CuttingOrdersController::class,'getCuttingOrderRecordByDate'])->name('cutting-order.date');
     Route::get('print-multiple/{id}', [CuttingOrdersController::class,'print_multiple'])->name('cutting-order.print-multiple');
+    Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
+    Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');
 
     Route::resource('cutting-ticket', CuttingTicketsController::class);
     Route::prefix('cutting-ticket')->name('cutting-ticket.')->group(function(){
