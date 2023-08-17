@@ -14,7 +14,7 @@ use App\Models\Groups;
 use App\Models\StatusLayer;
 use App\Models\StatusCut;
 use App\Models\LayingPlanning;
-use App\Models\GL;
+use App\Models\Gl;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -451,7 +451,7 @@ class CuttingOrdersController extends Controller
 
     public function statusCuttingOrderRecord()
     {
-        $gls = GL::with('GLCombine')->get();
+        $gls = Gl::with('GLCombine')->get();
         $statusLayer = StatusLayer::all();
         $statusCut = StatusCut::all();
         return view('page.cutting-order.status-cutting-order-record', compact('gls', 'statusLayer', 'statusCut'));
