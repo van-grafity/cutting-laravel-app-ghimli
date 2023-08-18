@@ -185,9 +185,21 @@
 </script>
 
 <script type="text/javascript">
+    async function loading(){
+        Swal.fire({
+            title: 'Loading',
+            html: 'Please wait..',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            },
+        });
+    }
+    
     $(function (e) {
         $('#cutting_ticket_table').DataTable({
-            processing: true,
+            processing: loading(),
             serverSide: true,
             ajax: "{{ url('/cutting-ticket-data') }}",
             columns: [
@@ -201,18 +213,11 @@
             searching: true,
             autoWidth: false,
             responsive: true,
+            drawCallback: function( settings ) {
+                Swal.close();
+            }
         });
     });
-</script>
-
-<script type="text/javascript">
-$(document).ready(function() {
-
-
-});
-</script>
-
-<script type="text/javascript">
     function delete_ticket(id){
         Swal.fire({
             title: 'Are you sure?',
@@ -259,17 +264,7 @@ $(document).ready(function() {
         })
     }
     
-    async function loading(){
-        Swal.fire({
-            title: 'Loading',
-            html: 'Please wait..',
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            onBeforeOpen: () => {
-                Swal.showLoading()
-            },
-        });
-    }
+    
 
     function refresh_ticket(id){
         Swal.fire({
