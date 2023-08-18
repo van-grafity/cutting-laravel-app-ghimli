@@ -92,13 +92,7 @@ class UsersController extends Controller
             ]);
             $user->save();
             $user->assignRole($request->role);
-            // group userGroup
-            // $userGroup = UserGroups::firstOrCreate([
-            //     'user_id' => $user->id,
-            //     'group_id' => $request->group,
-            // ]);
-
-            // if request->group null return stop
+            
             if($request->group == null){
                 return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Added!');
             }
@@ -121,7 +115,6 @@ class UsersController extends Controller
         }
 
         try {
-            //code...
         } catch (\Throwable $th) {
             //throw $th;
         }
