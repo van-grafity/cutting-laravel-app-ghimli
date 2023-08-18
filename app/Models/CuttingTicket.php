@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class CuttingTicket extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $fillable = [
         'ticket_number',
@@ -32,5 +35,12 @@ class CuttingTicket extends Model
     {
         return $this->belongsTo(Size::class, 'size_id', 'id');
     }
-    
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['ticket_number', 'size_id', 'layer', 'cutting_order_record_detail_id'])
+            ->useLogName('cutting_ticket_log')
+            ->logOnlyDirty();
+    }
 }

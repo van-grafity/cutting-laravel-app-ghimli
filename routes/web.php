@@ -69,6 +69,7 @@ Route::group(['middleware' => ['auth']], function () {
 // ## Route for Master Data (Admin)
 Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::resource('user-management', UsersController::class);
+    Route::get('/activity-log', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('activity-log.index');
     // Route::resource('buyer', BuyerController::class);
     // Route::resource('size', SizesController::class);
     // Route::resource('color', ColorsController::class);
