@@ -103,13 +103,26 @@
 
         fill_form_input(result.data);
     });
+    
+    async function loading(){
+        Swal.fire({
+            title: 'Loading',
+            html: 'Please wait..',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            },
+        });
+    }
 
-    $('#submit_form').on('click', function(e){
+    $('#submit_form').on('click', async function(e){
         e.preventDefault();
         if(!$('#cutting_order_id').val()){
             alert("No Cutting Order belum dipilih")
             return false;
         }
+        loading();
         $("#form_generate_ticket" ).submit();
     })
 </script>

@@ -21,10 +21,6 @@
                             <tr>
                                 <th scope="col" style="width: 20%;">Serial Number</th>
                                 <th scope="col">Table No.</th>
-                                <th scope="col">Color</th>
-                                <th scope="col">Fabric Type</th>
-                                <th scope="col">Fabric Cons</th>
-                                <th scope="col">Style</th>
                                 <th scope="col" style="width: 20%;">Action</th>
                             </tr>
                         </thead>
@@ -199,10 +195,6 @@
                     return `<a href="{{ url('/cutting-ticket/detail') }}/${row.id}">${data}</a>`
                 }},
                 {data: 'table_number', name: 'table_number'},
-                {data: 'color', name: 'color'},
-                {data: 'fabric_type', name: 'fabric_type'},
-                {data: 'fabric_cons', name: 'fabric_cons'},
-                {data: 'style', name: 'style'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
             lengthChange: true,
@@ -266,6 +258,18 @@ $(document).ready(function() {
             }
         })
     }
+    
+    async function loading(){
+        Swal.fire({
+            title: 'Loading',
+            html: 'Please wait..',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            onBeforeOpen: () => {
+                Swal.showLoading()
+            },
+        });
+    }
 
     function refresh_ticket(id){
         Swal.fire({
@@ -276,11 +280,10 @@ $(document).ready(function() {
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
             confirmButtonText: 'Yes, refresh it!',
-            onBeforeOpen: () => {
-                Swal.showLoading()
-            },
+            allowOutsideClick: false,
         }).then((result) => {
             if (result.isConfirmed) {
+                loading();
                 $.ajax({
                     url: "{{ url('/cutting-ticket/refresh-ticket') }}"+'/'+id,
                     type: 'GET',
@@ -315,9 +318,5 @@ $(document).ready(function() {
             }
         })
     }
-
-    // loading swall after Yes, refresh it! button clicked
-    // Swal.showLoading();
-
 </script>
 @endpush

@@ -65,18 +65,6 @@ class CuttingTicketsController extends Controller
             ->addColumn('table_number', function($data){
                 return $data->layingPlanningDetail->table_number == null ? '-' : $data->layingPlanningDetail->table_number;
             })
-            ->addColumn('color', function($data){
-                return $data->layingPlanningDetail->layingPlanning->color->color == null ? '-' : $data->layingPlanningDetail->layingPlanning->color->color;
-            })
-            ->addColumn('fabric_type', function($data){
-                return $data->layingPlanningDetail->layingPlanning->fabricType->name == null ? '-' : $data->layingPlanningDetail->layingPlanning->fabricType->name;
-            })
-            ->addColumn('fabric_cons', function($data){
-                return $data->layingPlanningDetail->layingPlanning->fabricCons->name == null ? '-' : $data->layingPlanningDetail->layingPlanning->fabricCons->name;
-            })
-            ->addColumn('style', function($data){
-                return $data->layingPlanningDetail->layingPlanning->style->style == null ? '-' : $data->layingPlanningDetail->layingPlanning->style->style;
-            })
             ->addColumn('action', function($data){
                 return '
                 <a href="'.route('cutting-ticket.print-multiple', $data->id).'"  target="_blank"class="btn btn-primary btn-sm btn-print-ticket">Print Ticket</a>
