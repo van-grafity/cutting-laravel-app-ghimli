@@ -90,15 +90,28 @@ class UsersController extends Controller
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
             ]);
-
-            // group userGroup
-            $userGroup = UserGroups::firstOrCreate([
-                'user_id' => $user->id,
-                'group_id' => $request->group,
-            ]);
-
             $user->save();
             $user->assignRole($request->role);
+            // group userGroup
+            // $userGroup = UserGroups::firstOrCreate([
+            //     'user_id' => $user->id,
+            //     'group_id' => $request->group,
+            // ]);
+
+            // if request->group null return stop
+            if($request->group == null){
+                return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Added!');
+            }
+
+            $userGroup = UserGroups::where('user_id', $user->id)->first();
+            if($userGroup){
+                $userGroup->group_id = $request->group;
+            } else {
+                $userGroup = new UserGroups;
+                $userGroup->user_id = $user->id;
+                $userGroup->group_id = $request->group;
+            }
+            
             $userGroup->save();
 
             return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Added!');
