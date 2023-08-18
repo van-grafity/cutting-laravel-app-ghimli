@@ -152,9 +152,7 @@
                     </tr>
                     <tr>
                         <th>Color/ Warna</th>
-                        <th> {{ $fbr->color }} </th>
-                        <th></th>
-                        <th></th>
+                        <th colspan="3"> {{ $fbr->color }} </th>
                     </tr>
                     <tr>
                         <th>Quantity Required / Jumlah Permintaan</th>
