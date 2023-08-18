@@ -141,8 +141,8 @@
                     <tr>
                         <th width="150">GL  NO: {{ $fbr->gl_number }}</th>
                         <th>Style No: {{ $fbr->style }}</th>
-                        <th>P/O No: {{ $fbr->fabric_po }}</th>
-                        <th>Lay No: {{ $fbr->no_laying_sheet }}</th>
+                        <th width="15%">P/O No: {{ $fbr->fabric_po }}</th>
+                        <th width="17%">Lay No: {{ $fbr->no_laying_sheet }}</th>
                     </tr>
                     <tr>
                         <th>Fabric Detail / Uraian Kain</th>
