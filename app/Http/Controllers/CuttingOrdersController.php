@@ -42,12 +42,12 @@ class CuttingOrdersController extends Controller
             // ->addColumn('no_laying_sheet', function ($data){
             //     return $data->layingPlanningDetail->no_laying_sheet;
             // })
-            ->addColumn('gl_number', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->gl->gl_number;
-            })
-            ->addColumn('color', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->color->color;
-            })
+            // ->addColumn('gl_number', function ($data){
+            //     return $data->layingPlanningDetail->layingPlanning->gl->gl_number;
+            // })
+            // ->addColumn('color', function ($data){
+            //     return $data->layingPlanningDetail->layingPlanning->color->color;
+            // })
             // ->addColumn('table_number', function ($data){
             //     return $data->layingPlanningDetail->table_number;
             // })

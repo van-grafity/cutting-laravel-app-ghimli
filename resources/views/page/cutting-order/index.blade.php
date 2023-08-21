@@ -34,7 +34,7 @@
                                 <th scope="col" class="">No. </th>
                                 <th scope="col" class="">Serial Number</th>
                                 <!-- <th width="11%" scope="col" class="">No Lay Sheet</th> -->
-                                <th scope="col" class="">Color</th>
+                                <!-- <th scope="col" class="">Color</th> -->
                                 <!-- <th width="5%" scope="col" class="">Table No</th>
                                 <th scope="col" class="">Style</th>
                                 <th scope="col" class="">Fabric Type</th>
@@ -96,7 +96,7 @@
                     return '<a href="{{ url("/cutting-order") }}/'+row.id+'">'+data+'</a>';
                 }},
                 // {data: 'no_laying_sheet', name: 'no_laying_sheet'},
-                {data: 'color', name: 'color'},
+                // {data: 'color', name: 'color'},
                 // {data: 'table_number', name: 'table_number'},
                 // {data: 'style', name: 'style'},
                 // {data: 'fabric_type', name: 'fabric_type'},
