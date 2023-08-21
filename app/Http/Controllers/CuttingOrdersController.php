@@ -31,7 +31,7 @@ class CuttingOrdersController extends Controller
     }
 
     public function dataCuttingOrder(){
-        $query = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'layingPlanningDetail', 'cuttingOrderRecordDetail'])
+        $query = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'layingPlanningDetail'])
             ->select('cutting_order_records.id','laying_planning_detail_id','serial_number', 'id_status_layer', 'id_status_cut')->get();
             return Datatables::of($query)
             ->addIndexColumn()
@@ -63,21 +63,21 @@ class CuttingOrdersController extends Controller
             // ->addColumn('marker_code', function($data){
             //     return $data->layingPlanningDetail->marker_code;
             // })
-            ->addColumn('status', function($data){
-                $sum_layer = 0;
-                $status = '';
-                foreach ($data->cuttingOrderRecordDetail as $detail) {
-                    $sum_layer += $detail->layer;
-                }
-                if ($sum_layer == $data->layingPlanningDetail->layer_qty) {
-                    $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
-                } else if ($sum_layer > $data->layingPlanningDetail->layer_qty) {
-                    $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
-                } else {
-                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
-                }
-                return $status;
-            })
+            // ->addColumn('status', function($data){
+            //     $sum_layer = 0;
+            //     $status = '';
+            //     foreach ($data->cuttingOrderRecordDetail as $detail) {
+            //         $sum_layer += $detail->layer;
+            //     }
+            //     if ($sum_layer == $data->layingPlanningDetail->layer_qty) {
+            //         $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
+            //     } else if ($sum_layer > $data->layingPlanningDetail->layer_qty) {
+            //         $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
+            //     } else {
+            //         $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
+            //     }
+            //     return $status;
+            // })
             // ->addColumn('status_lay', function($data){
             //     $status = '';
             //     if ($data->statusLayer->name == 'completed') {
