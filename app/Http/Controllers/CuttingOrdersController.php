@@ -32,7 +32,8 @@ class CuttingOrdersController extends Controller
 
     public function dataCuttingOrder(){
         $query = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'layingPlanningDetail'])
-            ->select('cutting_order_records.id','laying_planning_detail_id','serial_number', 'id_status_layer', 'id_status_cut')->get();
+            ->orderBy('id', 'desc')
+            ->get();
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
@@ -78,17 +79,17 @@ class CuttingOrdersController extends Controller
             //     }
             //     return $status;
             // })
-            // ->addColumn('status_lay', function($data){
-            //     $status = '';
-            //     if ($data->statusLayer->name == 'completed') {
-            //         $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
-            //     } else if ($data->statusLayer->name == 'over layer') {
-            //         $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
-            //     } else {
-            //         $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
-            //     }
-            //     return $status;
-            // })
+            ->addColumn('status', function($data){
+                $status = '';
+                if ($data->statusLayer->name == 'completed') {
+                    $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
+                } else if ($data->statusLayer->name == 'over layer') {
+                    $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
+                } else {
+                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
+                }
+                return $status;
+            })
             ->addColumn('status_cut', function($data){
                 $status = '';
                 if ($data->statusCut->name == 'sudah') {

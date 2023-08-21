@@ -40,8 +40,7 @@
                                 <th scope="col" class="">Fabric Type</th>
                                 <th scope="col" class="">Fabric Consumption</th>
                                 <th width="5%" scope="col" class="">Marker Code</th> -->
-                                <!-- <th scope="col" class="">Status Lay</th> -->
-                                <!-- <th hidden scope="col" class=""></th> -->
+                                <th scope="col" class="">Status Lay</th>
                                 <th scope="col" class="">Status Cut</th>
                                 <th width="21.5%" scope="col" class="">Action</th>
                             </tr>
@@ -102,8 +101,8 @@
                 // {data: 'fabric_type', name: 'fabric_type'},
                 // {data: 'fabric_consumption', name: 'fabric_consumption'},
                 // {data: 'marker_code', name: 'marker_code'},
-                // {data: 'status', name: 'status'},
                 // {data: 'status_lay', name: 'status_layer', visible: false},
+                {data: 'status', name: 'status'},
                 {data: 'status_cut', name: 'status_cut'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
