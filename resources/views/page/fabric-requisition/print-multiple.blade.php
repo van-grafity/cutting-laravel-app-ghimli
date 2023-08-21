@@ -175,17 +175,33 @@
                 </thead>
             </table>
 
-            <table class="header-subtitle" style="padding-top: 10px;">
+            <table width="100%" style="font-size: 11px; font-weight: bold; align-items: center; padding-top: 10px;">
                 <thead>
                     <tr>
                         <td width="60" class="no-border">Prepared by</td>
-                        <td width="100" class="">: </td>
-                        <td width="30" class="no-border"></td>
+                        <td class="">: </td>
+                        <td>
+                            <div style="display:inline-block; text-align:center;">
+                                <span>MELDA (58734)</span>
+                                <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 130px;">
+                            </div>
+                        </td>
                         <td width="60" class="no-border">Authorized by</td>
-                        <td width="100" class="">: </td>
-                        <td width="30" class="no-border"></td>
+                        <td class="">: </td>
+                        <td>
+                            <div style="display:inline-block; text-align:center;">
+                                <span>ROBERT (36120)</span>
+                                <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 130px;">
+                            </div>
+                        </td>
                         <td width="60" class="no-border">Received by</td>
-                        <td width="100" class="">: </td>
+                        <td class="">:</td>
+                        <td>
+                            <div style="display:inline-block; text-align:center;">
+                                <div style="height: 18px;"></div>
+                                <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 130px;">
+                            </div>
+                        </td>
                     </tr>
                 </thead>
             </table>
@@ -264,18 +280,34 @@
                     </tr>
                 </thead>
             </table>
-
-            <table class="header-subtitle">
+            
+            <table width="100%" style="font-size: 11px; font-weight: bold; align-items: center;">
                 <thead>
                     <tr>
                         <td width="60" class="no-border">Prepared by</td>
-                        <td width="100" class="">: </td>
-                        <td width="30" class="no-border"></td>
+                        <td class="">: </td>
+                        <td>
+                            <div style="display:inline-block; text-align:center;">
+                                <span>MELDA (58734)</span>
+                                <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 130px;">
+                            </div>
+                        </td>
                         <td width="60" class="no-border">Authorized by</td>
-                        <td width="100" class="">: </td>
-                        <td width="30" class="no-border"></td>
+                        <td class="">: </td>
+                        <td>
+                            <div style="display:inline-block; text-align:center;">
+                                <span>ROBERT (36120)</span>
+                                <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 130px;">
+                            </div>
+                        </td>
                         <td width="60" class="no-border">Received by</td>
-                        <td width="100" class="">: </td>
+                        <td class="">:</td>
+                        <td>
+                            <div style="display:inline-block; text-align:center;">
+                                <div style="height: 18px;"></div>
+                                <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 130px;">
+                            </div>
+                        </td>
                     </tr>
                 </thead>
             </table>
