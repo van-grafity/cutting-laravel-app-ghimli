@@ -439,7 +439,8 @@ class CuttingOrdersController extends Controller
             'total_yardage' => $this->print_total_yardage($cutting_order_detail),
             'group' => $name,
             'manpower' => count($this->manpower($name)),
-            'progress' => $this->duration($cutting_order_id),
+            'spread_time' => $this->updated_at_status_layer($cutting_order->id),
+            'cutting_time' => $this->updated_at_status_cut($cutting_order->id),
             'date' => Carbon::now()->format('d-m-Y'),
             'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order->created_at)->format('d-m-Y')
             
@@ -617,14 +618,29 @@ class CuttingOrdersController extends Controller
         return $manpower;
     }
 
-    public function duration($cutting_order_id) {
-        $cutting_order = CuttingOrderRecord::find($cutting_order_id);
-        $cutting_order_detail = $cutting_order->cuttingOrderRecordDetail;
-        $start = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order_detail[0]->created_at);
-        $end = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order_detail[count($cutting_order_detail) - 1]->created_at);
-        $duration = $start->diffInSeconds($end);
-        $duration = $duration / 60;
-        return $duration . " minutes";
+    public function updated_at_status_cut($cutting_order_id) {
+        $cutting_order = CuttingOrderRecord::with(['statusCut'])
+        ->whereHas('statusCut', function($query) {
+            $query->where('name', '=', 'sudah');
+        })
+        ->where('id', $cutting_order_id)
+        ->first();
+        
+        $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order->updated_at)->format('d-m-Y H:i:s');
+        return $updated_at;
+    }
+
+    public function updated_at_status_layer($cutting_order_id) {
+        $cutting_order = CuttingOrderRecord::with(['statusLayer'])
+        ->whereHas('statusLayer', function($query) {
+            $query->where('name', '=', 'completed', 'or', 'name', '=', 'over Layer');
+        })
+        ->where('id', $cutting_order_id)
+        ->first();
+
+        $cutting_order_detail = CuttingOrderRecordDetail::where('cutting_order_record_id', $cutting_order_id)->get();
+        $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order_detail->last()->updated_at)->format('d-m-Y H:i:s');
+        return $updated_at;
     }
 
     public function chartCuttingOrder() {

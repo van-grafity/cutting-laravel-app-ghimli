@@ -411,7 +411,7 @@
                         <td></td>
                         <td>Layer <br> <i style="font-weight: 500;">Lapisan</i></td>
                         <td style="text-align: center; vertical-align: middle;"> {{ $data->total_layer }} </td>
-                        <td></td>
+                        <td style="text-align: center; vertical-align: middle;"> {{$data->spread_time}} </td>
                         <td></td>
                     </tr>
                     <tr>
@@ -439,7 +439,7 @@
                         <td></td>
                         <td>Qty Used <br> <i style="font-weight: 500;">Jumlah dipakai</i></td>
                         <td style="text-align: center; vertical-align: middle;"> {{ $data->total_yardage }} </td>
-                        <td style="text-align: center; vertical-align: middle;"> {{$data->progress}} </td>
+                        <td style="text-align: center; vertical-align: middle;"> {{$data->cutting_time}} </td>
                         <td></td>
                     </tr>
                     <tr>
