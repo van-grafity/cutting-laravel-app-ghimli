@@ -639,7 +639,7 @@ class CuttingOrdersController extends Controller
         ->first();
 
         $cutting_order_detail = CuttingOrderRecordDetail::where('cutting_order_record_id', $cutting_order_id)->get();
-        $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order_detail->last()->updated_at)->format('d-m-Y H:i:s');
+        $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order_detail->first()->updated_at)->format('d-m-Y H:i:s');
         return $updated_at;
     }
 
