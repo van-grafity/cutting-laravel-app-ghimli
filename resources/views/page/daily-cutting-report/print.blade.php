@@ -121,9 +121,14 @@
                     @php $count_lp = count($item->laying_plannings); @endphp
                         @foreach($item->laying_plannings as $key_lp => $laying_planning)
                             <tr>
-                                @if ($key_lp == 0)
+                                <!-- @if ($key_lp == 0)
                                     <td rowspan="{{$count_lp}}">{{ $item->buyer }}</td>
-                                @endif
+                                @endif -->
+                                <td>
+                                    {{
+                                        $item->buyer
+                                    }}
+                                </td>
                                 <td>{{ $laying_planning->style }}</td>
                                 <td>{{ $laying_planning->gl_number }}</td>
                                 <td>{{ $laying_planning->color }} ({{$laying_planning->cons_name}})</td>

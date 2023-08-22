@@ -28,14 +28,20 @@ class DailyCuttingReportsController extends Controller
     }
 
     public function dailyCuttingReport(Request $request) {
+        // result date filter
         $date_filter = $request->date;
-        
+        $date_filter_night_shift = Carbon::parse($date_filter)->addDay()->format('Y-m-d H:i:s');
+        $date_filter_night_shift = Carbon::parse($date_filter_night_shift)->format('Y-m-d 00:05:00');
+    
         // get data group yang ada potong hari ini
         $groups = Groups::select('groups.id', 'group_name')
         ->join('user_groups', 'user_groups.group_id', '=', 'groups.id')
         ->join('users', 'users.id', '=', 'user_groups.user_id')
         ->join('cutting_order_record_details', 'cutting_order_record_details.operator', '=', 'users.name')
-        ->whereDate('cutting_order_record_details.created_at', '=', $date_filter)
+        ->where(function($query) use ($date_filter_night_shift, $date_filter) {
+            $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
+            ->whereDate('cutting_order_record_details.created_at', '=', $date_filter);
+        })
         ->groupBy('groups.id')
         ->orderBy('groups.id')
         ->get();
@@ -47,7 +53,10 @@ class DailyCuttingReportsController extends Controller
         ->join('gls', 'gls.id', '=', 'laying_plannings.gl_id')
         ->join('buyers', 'buyers.id', '=', 'gls.buyer_id')
         ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
-        ->whereDate('cutting_order_record_details.created_at', '=', $date_filter)
+        ->where(function($query) use ($date_filter_night_shift, $date_filter) {
+            $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
+            ->whereDate('cutting_order_record_details.created_at', '=', $date_filter);
+        })
         ->groupBy('buyers.id')
         ->get();
 
@@ -64,7 +73,10 @@ class DailyCuttingReportsController extends Controller
             ->join('buyers', 'buyers.id', '=', 'gls.buyer_id')
             ->join('colors', 'colors.id', '=', 'laying_plannings.color_id')
             ->join('fabric_cons', 'fabric_cons.id', '=', 'laying_plannings.fabric_cons_id')
-            ->whereDate('cutting_order_record_details.created_at', '=', $date_filter)
+            ->where(function($query) use ($date_filter_night_shift, $date_filter) {
+                $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
+                ->whereDate('cutting_order_record_details.created_at', '=', $date_filter);
+            })
             ->where('gls.buyer_id', '=', $buyer->id)
             ->groupBy('laying_plannings.id')
             ->get();
@@ -85,7 +97,10 @@ class DailyCuttingReportsController extends Controller
                     ->join('user_groups', 'user_groups.user_id', '=', 'users.id')
                     ->join('groups', 'groups.id', '=', 'user_groups.group_id')
                     ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
-                    ->whereDate('cutting_order_record_details.created_at', '=', $date_filter)
+                    ->where(function($query) use ($date_filter_night_shift, $date_filter) {
+                        $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
+                        ->whereDate('cutting_order_record_details.created_at', '=', $date_filter);
+                    })
                     ->where('groups.id', '=', $group->id)
                     ->get();
                     
@@ -115,7 +130,10 @@ class DailyCuttingReportsController extends Controller
                 ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
                 ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
                 ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
-                ->whereDate('cutting_order_record_details.created_at', '=', $date_filter)
+                ->where(function($query) use ($date_filter_night_shift, $date_filter) {
+                    $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
+                    ->whereDate('cutting_order_record_details.created_at', '=', $date_filter);
+                })
                 ->groupBy('cutting_order_records.id')
                 ->get();
 
@@ -138,7 +156,11 @@ class DailyCuttingReportsController extends Controller
                 ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
                 ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
                 ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
-                ->whereDate('cutting_order_record_details.created_at', '<', $date_filter)
+                // ->whereDate('cutting_order_record_details.created_at', '<', $date_filter)
+                ->where(function($query) use ($date_filter_night_shift, $date_filter) {
+                    $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
+                    ->whereDate('cutting_order_record_details.created_at', '=', $date_filter);
+                })
                 ->groupBy('cutting_order_records.id')
                 ->get();
 
