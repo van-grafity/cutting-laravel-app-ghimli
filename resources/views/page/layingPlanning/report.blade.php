@@ -167,7 +167,21 @@
                         @endif
                     @endforeach
                     <td>{{ $detail->layer_qty }}</td>
-                    <td></td>
+                    <!-- res = total_cutting_order_record * details layingPlanningDetailSize laying_planning_detail_id -->
+                    <td>
+                        <!-- // $total_cutting_order_record = 0;
+                        // foreach ($cuttingOrderRecord as $record)
+                        // {
+                        //     if ($record->laying_planning_detail_id == $detail->id)
+                        //     {
+                        //         foreach ($record->cuttingOrderRecordDetail as $record_detail)
+                        //         {
+                        //             $total_cutting_order_record += $record_detail->layer;
+                        //         }
+                        //     }
+                        // }
+                        // echo $total_cutting_order_record; -->
+                    </td>
                     <td width="5.2%"></td>
                     <td></td>
                     <td></td>
