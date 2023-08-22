@@ -115,7 +115,6 @@
                         @endforeach
                     </tr>
                 </thead>
-
                 <tbody>
                     @foreach ($data as $key => $item)
                     @php $count_lp = count($item->laying_plannings); @endphp
@@ -142,8 +141,104 @@
                                 <td>{{ $laying_planning->completed}}</td>
                                 <td>0</td>
                             </tr>
+                            @if ($key_lp == $count_lp - 1)
+                                <tr style="background-color: #d9d9d9;">
+                                    <td colspan="4" style="text-align: center; font-weight: bold;">Subtotal</td>
+                                    <td><b><?php
+                                        $total_mi_qty = 0;
+                                        foreach($item->laying_plannings as $key_lp => $laying_planning) {
+                                            $total_mi_qty += $laying_planning->order_qty;
+                                        }
+                                        echo $total_mi_qty;
+                                    ?></td>
+                                    <td><b><?php
+                                        $total_prev = 0;
+                                        foreach($item->laying_plannings as $key_lp => $laying_planning) {
+                                            $total_prev += $laying_planning->previous_balance;
+                                        }
+                                        echo $total_prev;
+                                    ?></td>
+                                    @foreach($laying_planning->qty_per_groups as $key_group => $group)
+                                        <td><b><?php
+                                            $total_qty_group = 0;
+                                            foreach($item->laying_plannings as $key_lp => $laying_planning) {
+                                                $total_qty_group += $laying_planning->qty_per_groups[$key_group]->qty_group;
+                                            }
+                                            echo $total_qty_group;
+                                        ?></td>
+                                    @endforeach
+                                    <td><b><?php
+                                        $total_qty_per_day = 0;
+                                        foreach($item->laying_plannings as $key_lp => $laying_planning) {
+                                            $total_qty_per_day += $laying_planning->total_qty_per_day;
+                                        }
+                                        echo $total_qty_per_day;
+                                    ?></td>
+                                    <td><b><?php
+                                        $total_accumulation = 0;
+                                        foreach($item->laying_plannings as $key_lp => $laying_planning) {
+                                            $total_accumulation += $laying_planning->accumulation;
+                                        }
+                                        echo $total_accumulation;
+                                    ?></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            @endif
                         @endforeach
                     @endforeach
+                    <tr style="background-color: #bfbfbf;">
+                        <td colspan="4" style="text-align: center; font-weight: bold;">Total</td>
+                        <td><b><?php
+                            $total_mi_qty = 0;
+                            foreach($data as $key => $item) {
+                                foreach($item->laying_plannings as $key_lp => $laying_planning) {
+                                    $total_mi_qty += $laying_planning->order_qty;
+                                }
+                            }
+                            echo $total_mi_qty;
+                        ?></td>
+                        <td><b><?php
+                            $total_prev = 0;
+                            foreach($data as $key => $item) {
+                                foreach($item->laying_plannings as $key_lp => $laying_planning) {
+                                    $total_prev += $laying_planning->previous_balance;
+                                }
+                            }
+                            echo $total_prev;
+                        ?></td>
+                        @foreach($groups as $key_group => $group)
+                            <td><b><?php
+                                $total_qty_group = 0;
+                                foreach($data as $key => $item) {
+                                    foreach($item->laying_plannings as $key_lp => $laying_planning) {
+                                        $total_qty_group += $laying_planning->qty_per_groups[$key_group]->qty_group;
+                                    }
+                                }
+                                echo $total_qty_group;
+                            ?></td>
+                        @endforeach
+                        <td><b><?php
+                            $total_qty_per_day = 0;
+                            foreach($data as $key => $item) {
+                                foreach($item->laying_plannings as $key_lp => $laying_planning) {
+                                    $total_qty_per_day += $laying_planning->total_qty_per_day;
+                                }
+                            }
+                            echo $total_qty_per_day;
+                        ?></td>
+                        <td><b><?php
+                            $total_accumulation = 0;
+                            foreach($data as $key => $item) {
+                                foreach($item->laying_plannings as $key_lp => $laying_planning) {
+                                    $total_accumulation += $laying_planning->accumulation;
+                                }
+                            }
+                            echo $total_accumulation;
+                        ?></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
                 </tbody>
             </table>
 
