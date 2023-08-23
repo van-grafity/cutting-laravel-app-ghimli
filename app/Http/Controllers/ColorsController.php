@@ -7,9 +7,6 @@ use App\Models\Color;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\DB;
 
-use Spatie\Activitylog\Models\Activity;
-use Illuminate\Support\Facades\Log;
-
 class ColorsController extends Controller
 {
     public function index()
@@ -66,14 +63,6 @@ class ColorsController extends Controller
             'color' => $request->color,
             'color_code' => $request->color_code,
         ]);
-
-        // Merekam log aktivitas menggunakan Spatie Activity Log
-        activity()
-            ->performedOn($color)
-            ->log('Color ' . $color->color . ' was added');
-
-        // Merekam log info menggunakan Laravel Log
-        Log::info('Color ' . $color->color . ' was added', ['color_id' => $color->id]);
 
         return redirect('/color')->with('success', 'Color ' . $color->color . ' Successfully Added!');
     }
