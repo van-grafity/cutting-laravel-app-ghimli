@@ -57,7 +57,6 @@
         .header-subtitle {
             font-weight: bold;
             width: 100%;
-            margin-bottom: .3rem;
         }
 
         .header-subtitle td {
