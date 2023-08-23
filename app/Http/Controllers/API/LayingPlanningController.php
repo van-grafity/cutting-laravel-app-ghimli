@@ -48,6 +48,7 @@ class LayingPlanningController extends BaseController
         );
 
         foreach ($layingPlanning->layingPlanningDetail as $detail) {
+            if ($detail->cuttingOrderRecord == null) return $this->onSuccess(null, 'Pilot Run belum di buat.');
             if ($detail->marker_code == 'PILOT RUN' && $detail->cuttingOrderRecord->is_pilot_run == 0) {
                 if ($detail->cuttingOrderRecord->serial_number != $getCuttingOrder->serial_number) {
                     return $this->onSuccess(null, 'Pilot Run must be approved first.');
