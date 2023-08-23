@@ -5,6 +5,7 @@ namespace App\Http\Controllers\LayingPlanning;
 use App\Http\Controllers\Controller;
 use App\Models\Gl;
 use App\Models\Color;
+use App\Models\Style;
 use App\Models\LayingPlanning;
 use App\Models\LayingPlanningSize;
 use App\Models\LayingPlanningDetail;
@@ -127,7 +128,7 @@ class LayingPlanningsController extends Controller
         }
 
         try {
-            $serial_number = $this->generate_serial_number($request->gl,$request->color, $request->fabric_type, $request->fabric_cons);
+            $serial_number = $this->generate_serial_number($request->gl,$request->color, $request->style, $request->fabric_type, $request->fabric_cons);
             $layingData = [
                 'serial_number' => $serial_number,
                 'gl_id' => $request->gl,
@@ -576,33 +577,41 @@ class LayingPlanningsController extends Controller
         return $no_laying_sheet;
     }
 
-    function generate_serial_number($gl_id = null, $color_id = null, $fabric_type_id = null, $fabric_cons_id = null) {
-        if (!$gl_id || !$color_id || !$fabric_type_id || !$fabric_cons_id) {
+    function generate_serial_number($gl_id = null, $color_id = null, $style_id = null, $fabric_type_id = null, $fabric_cons_id = null) {
+        if (!$gl_id || !$color_id || !$style_id || !$fabric_type_id || !$fabric_cons_id) {
             return 0;
         }
+
         $gl = Gl::find($gl_id);
         $gl_number = $gl->gl_number;
         $color = Color::find($color_id);
+        $style = Style::find($style_id);
+        $style_serial = $style->style;
+        $style_serial = substr($style_serial, 0, 2).substr($style_serial, 4, 2);
+        $style_serial = $style_serial . Str::padLeft(rand(0, 99), 2, '0');
         $fabric_type = FabricType::find($fabric_type_id);
         $fabric_type_serial = $fabric_type->name;
-        $fabric_cons_serial = FabricCons::find($fabric_cons_id)->name;
-        $fabric_cons_serial = Str::upper($fabric_cons_serial);
-        $fabric_cons_serial = Str::random(2).$fabric_cons_serial;
-        $fabric_cons_serial = substr($fabric_cons_serial, 0, 2).substr($fabric_cons_serial, 4, 2);
-        $length_object = strlen($fabric_type_serial);
-        $fabric_type_serial = substr($fabric_type_serial, 0, 2).substr($fabric_type_serial, $length_object-2, $length_object);
+        $fabric_type_serial = substr($fabric_type_serial, 0, 2).substr($fabric_type_serial, 4, 2);
+        $fabric_type_serial = preg_replace('/[^A-Za-z0-9\-]/', '', $fabric_type_serial);
         $fabric_type_serial = Str::upper($fabric_type_serial);
+        $fabric_cons_serial = FabricCons::find($fabric_cons_id)->name;
+        $fabric_cons_serial = substr($fabric_cons_serial, 0, 2).substr($fabric_cons_serial, 4, 2);
+        $fabric_cons_serial = preg_replace('/[^A-Za-z0-9\-]/', '', $fabric_cons_serial);
+        $fabric_cons_serial = Str::upper($fabric_cons_serial);
 
         $getDuplicateSN = LayingPlanning::select('gl_id','color_id')
                             ->where('gl_id', $gl_id)
                             ->where('color_id', $color_id)
+                            ->where('style_id', $style_id)
                             ->get();
         $count_duplicate = $getDuplicateSN->count();
 
-        if ($count_duplicate <= 0) {
-        $serial_number = "LP-{$gl_number}-{$color->color_code}{$fabric_type_serial}{$fabric_cons_serial}";
+        if ($getDuplicateSN->count() > 0) {
+            $count_duplicate = $count_duplicate + 1;
+            $count_duplicate = Str::padLeft($count_duplicate, 2, '0');
+            $serial_number = "LP-{$gl_number}-{$color->color_code}{$fabric_type_serial}{$fabric_cons_serial}-S{$style_serial}-{$count_duplicate}";
         } else {
-        $serial_number = "LP-{$gl_number}-{$color->color_code}{$fabric_type_serial}-{$fabric_cons_serial}-".Str::padLeft($count_duplicate+1, 2, '0');
+            $serial_number = "LP-{$gl_number}-{$color->color_code}{$fabric_type_serial}{$fabric_cons_serial}-S{$style_serial}-01";
         }
         return $serial_number;
     }
