@@ -200,7 +200,7 @@ class FabricRequisitionsController extends Controller
                 'gl_number' => $fabric_requisition->layingPlanningDetail->layingPlanning->gl->gl_number,
                 'style' => $fabric_requisition->layingPlanningDetail->layingPlanning->style->style,
                 'fabric_po' => $fabric_requisition->layingPlanningDetail->layingPlanning->fabric_po,
-                'no_laying_sheet' => $fabric_requisition->layingPlanningDetail->no_laying_sheet,
+                'no_laying_sheet' => $this->format_no_laying_sheet($fabric_requisition->layingPlanningDetail->no_laying_sheet),
                 'fabric_type' => $fabric_requisition->layingPlanningDetail->layingPlanning->fabricType->name,   
                 'color' => $fabric_requisition->layingPlanningDetail->layingPlanning->color->color,
                 'quantity_required' => $fabric_requisition->layingPlanningDetail->total_length . " yards",
@@ -214,6 +214,11 @@ class FabricRequisitionsController extends Controller
         $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.fabric-requisition.print-multiple', compact('data'))->setPaper($customPaper, 'portrait');
         return $pdf->stream('fabric-requisition.pdf');
+    }
+
+    public function format_no_laying_sheet($no_laying_sheet){
+        $no_laying_sheet = preg_replace('/[^0-9\-]/', '', $no_laying_sheet);
+        return $no_laying_sheet;
     }
 
     public function fabric_requisition_detail(Request $request, $id) {

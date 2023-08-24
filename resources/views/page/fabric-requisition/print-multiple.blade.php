@@ -9,9 +9,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
     <style type="text/css">
+        * {
+            font-family: Calibri, san-serif;
+        }
         @page {
             size: 21.8cm 13.8cm;
-            margin-top: 0.35cm;
+            margin: 1cm;
         }
 
 		table tr td,
@@ -21,7 +24,7 @@
 
         .table-nota td, .table-nota th {
             padding: 0rem 0.25rem;
-			font-size: 8pt;
+			font-size: 11.2px;
         }
 
         .company-name {
