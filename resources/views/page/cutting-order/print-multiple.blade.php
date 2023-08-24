@@ -113,13 +113,13 @@
             </div>
             <div class="serial-number-qr">
                 <div class="qr-wrapper" style="margin-top: -15px; margin-right: -15px;">
-                    <img src="data:image/png;base64, {!! base64_encode(QrCode::size(70)->generate($cor->serial_number)) !!} ">
+                    <img src="data:image/png;base64, {!! base64_encode(QrCode::size(70)->generate($cor['serial_number'])) !!} ">
                 </div>
             </div>
             <div class="title-nota">
                 CUTTING ORDER RECORD
                 <br>
-                <div class="subtitle-nota">{{ $cor->serial_number }}</div>
+                <div class="subtitle-nota">{{ $cor['serial_number'] }}</div>
             </div>
 
         </div>
@@ -127,16 +127,16 @@
             <thead>
                 <tr>
                     <td width="35" class="no-border"> Style No</td>
-                    <td width="80">: {{ $cor->style }} </td>
-                    <td width="60" class="no-border text-right"> {{ $cor->marker_code }} </td>
+                    <td width="80">: {{ $cor['style'] }} </td>
+                    <td width="60" class="no-border text-right"> {{ $cor['marker_code'] }} </td>
                     <td width="80" class="no-border text-right"> GL No </td>
-                    <td width="110" class="" >: {{ $cor->gl_number}} </td>
+                    <td width="110" class="" >: {{ $cor['gl_number']}} </td>
                     <td width="100" class="no-border text-right">Portion</td>
-                    <td width="100" class="">: {{ $cor->fabric_cons }} </td>
+                    <td width="100" class="">: {{ $cor['fabric_cons'] }} </td>
                     <td width="25" class="no-border"></td>
                     <td width="80" class="subtitle-right"> 
-                        No : {{ $cor->no_laying_sheet}} <br> 
-                        Date : {{ $cor->date }} 
+                        No : {{ $cor['no_laying_sheet']}} <br> 
+                        Date : {{ $cor['date'] }} 
                     </td>
                 </tr>
             </thead>
@@ -146,27 +146,27 @@
                 <thead class="">
                     <tr>
                         <th width="40">Fabric P/O No. </th>
-                        <th width="90"> {{ $cor->fabric_po }} </th>
+                        <th width="90"> {{ $cor['fabric_po'] }} </th>
                         <th width="60">Marker Length <br> <i style="font-weight: 500;">Panjang Marker</i></th>
-                        <th width="150" colspan="2"> {{ $cor->marker_length }} </th>
+                        <th width="150" colspan="2"> {{ $cor['marker_length'] }} </th>
                         <th width="100" colspan="2">Fabric Type <br> <i style="font-weight: 500;">Jenis Kain</i></th>
-                        <th width="120" colspan="3"> {{ $cor->fabric_type }} </th>
+                        <th width="120" colspan="3"> {{ $cor['fabric_type'] }} </th>
                         <th width="60">Cutting Lot <br> <i style="font-weight: 500;">Lot Potongan</i></th>
-                        <th width="60" style="text-align:center; font-size:14px;"> {{ $cor-> table_number }} </th>
+                        <th width="60" style="text-align:center; font-size:14px;"> {{ $cor['table_number'] }} </th>
                     </tr>
                     <tr>
                         <th rowspan="2">Buyer </th>
-                        <th rowspan="2"> {{ $cor->buyer }} </th>
+                        <th rowspan="2"> {{ $cor['buyer'] }} </th>
                         <th rowspan="2">Width <br> <i style="font-weight: 500;">Lebar</i></th>
-                        <th rowspan="2" colspan="2"> {{ $cor->size_ratio }} </th>
+                        <th rowspan="2" colspan="2"> {{ $cor['size_ratio'] }} </th>
                         <th colspan="2">Colour / <i style="font-weight: 500;">Warna</i></th>
-                        <th colspan="3"> {{ $cor->color }} </th>
+                        <th colspan="3"> {{ $cor['color'] }} </th>
                         <th rowspan="2">Laid By <br> <i style="font-weight: 500;">Dibentang Oleh</i></th>
                         <th rowspan="2"> - </th>
                     </tr>
                     <tr>
                         <th colspan="2">Layer / <i style="font-weight: 500;">Lapisan</i></th>
-                        <th colspan="3">{{ $cor->layer }}</th>
+                        <th colspan="3">{{ $cor['layer'] }}</th>
                     </tr>
                     <tr>
                         <th> Place No. </th>

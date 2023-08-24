@@ -107,8 +107,8 @@
                     </div>
                     <div class="d-flex justify-content-end mb-1">
                         <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
-                        <a href="{{ route('cutting-order.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2">Print Nota</a>
-                        <a href="{{ route('fabric-requisition.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2">Print Fabric Req</a>
+                        <a href="{{ route('cutting-order.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_nota">Print Nota</a>
+                        <a href="{{ route('fabric-requisition.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_fabric">Print Fabric Req</a>
                     </div>
 
                     <table class="table align-middle table-nowrap table-hover">
@@ -129,7 +129,7 @@
                                 <tr>
                                     <td>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="{{ $detail->id }}" id="flexCheckDefault" name="laying_planning_laying_planning_detail_id[]">
+                                            <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
                                         </div>
                                     <td>
                                         <a href="{{ route('cutting-order.show', $detail->cor_id) }}" class="text-decoration-none">{{ $detail->table_number }}</a>
@@ -482,6 +482,34 @@ $(document).ready(function(){
             swal_failed({ title: result.message });
         }
 
+    });
+
+    $('#print_multi_fabric').on('click', function(e){
+        let laying_planning_laying_planning_detail_ids = [];
+        $('input[name="laying_planning_laying_planning_detail_ids[]"]:checked').each(function() {
+            laying_planning_laying_planning_detail_ids.push($(this).val());
+        });
+        if(laying_planning_laying_planning_detail_ids.length == 0){
+            swal_failed({ title: "Please select cutting table" });
+            return false;
+        }
+        let url = $(this).attr('href');
+        url = url + '?laying_planning_laying_planning_detail_ids=' + laying_planning_laying_planning_detail_ids;
+        $(this).attr('href', url);
+    });
+
+    $('#print_multi_nota').on('click', function(e){
+        let laying_planning_laying_planning_detail_ids = [];
+        $('input[name="laying_planning_laying_planning_detail_ids[]"]:checked').each(function() {
+            laying_planning_laying_planning_detail_ids.push($(this).val());
+        });
+        if(laying_planning_laying_planning_detail_ids.length == 0){
+            swal_failed({ title: "Please select cutting table" });
+            return false;
+        }
+        let url = $(this).attr('href');
+        url = url + '?laying_planning_laying_planning_detail_ids=' + laying_planning_laying_planning_detail_ids;
+        $(this).attr('href', url);
     });
 
     $('.btn-detail-duplicate').on('click', async function(e){

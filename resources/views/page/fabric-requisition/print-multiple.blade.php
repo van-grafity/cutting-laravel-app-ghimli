@@ -126,10 +126,10 @@
                     <tr>
                         <td width="10" class="no-border">Dept</td>
                         <td width="100" class="">: </td>
-                        <td width="300" class="no-border" style="text-align: center;"> {{ $fbr->serial_number }} </td>
+                        <td width="300" class="no-border" style="text-align: center;"> {{ $fbr['serial_number'] }} </td>
                         <td width="80" class="subtitle-right"> 
-                            No : {{ $fbr->no_laying_sheet}} <br> 
-                            Date : {{ $fbr->date }} 
+                            No : {{ $fbr['no_laying_sheet']}} <br> 
+                            Date : {{ $fbr['date'] }} 
                         </td>
                     </tr>
                 </thead>
@@ -138,36 +138,36 @@
             <table class="table table-nota" style="margin: 0px 0px 0px 0px !important;">
                 <thead class="">
                     <tr>
-                        <th width="150">GL  NO: {{ $fbr->gl_number }}</th>
-                        <th>Style No: {{ $fbr->style }}</th>
-                        <th width="15%">P/O No: {{ $fbr->fabric_po }}</th>
-                        <th width="17%">Lay No: {{ $fbr->no_laying_sheet }}</th>
+                        <th width="150">GL  NO: {{ $fbr['gl_number'] }}</th>
+                        <th>Style No: {{ $fbr['style'] }}</th>
+                        <th width="15%">P/O No: {{ $fbr['fabric_po'] }}</th>
+                        <th width="17%">Lay No: {{ $fbr['no_laying_sheet'] }}</th>
                     </tr>
                     <tr>
                         <th>Fabric Detail / Uraian Kain</th>
-                        <th> {{ $fbr->fabric_type }} </th>
+                        <th> {{ $fbr['fabric_type'] }} </th>
                         <th></th>
                         <th></th>
                     </tr>
                     <tr>
                         <th>Color/ Warna</th>
-                        <th colspan="3"> {{ $fbr->color }} </th>
+                        <th colspan="3"> {{ $fbr['color'] }} </th>
                     </tr>
                     <tr>
                         <th>Quantity Required / Jumlah Permintaan</th>
-                        <th> {{ $fbr->quantity_required }} </th>
+                        <th> {{ $fbr['quantity_required'] }} </th>
                         <th></th>
                         <th></th>
                     </tr>
                     <tr>
                         <th>Quantity Issued / Jumlah dikeluarkan</th>
-                        <th> {{ $fbr->quantity_issued }} </th>
+                        <th> {{ $fbr['quantity_issued'] }} </th>
                         <th></th>
                         <th></th>
                     </tr>
                     <tr>
                         <th>Difference / Perbedaan</th>
-                        <th> {{ $fbr->difference }} </th>
+                        <th> {{ $fbr['difference'] }} </th>
                         <th></th>
                         <th></th>
                     </tr>

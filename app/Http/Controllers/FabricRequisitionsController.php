@@ -193,39 +193,35 @@ class FabricRequisitionsController extends Controller
         $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
         return $pdf->stream($filename);
     }
-    
-    public function print_multiple_fabric_requisition($id)
+
+    public function print_multiple_fabric_requisition($id, Request $request)
     {
-        $laying_planning = LayingPlanning::find($id);
-        $laying_planning_detail = LayingPlanningDetail::where('laying_planning_id', $laying_planning->id)->get();
-        $fabric_requisition = FabricRequisition::with(['layingPlanningDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
-            $query->where('laying_planning_id', $id);
-        })->get();
-        
-        $filename = $laying_planning->gl->gl_number . '.pdf';
+        $laying_planning_laying_planning_detail_ids = $request->laying_planning_laying_planning_detail_ids;
+        $laying_planning_laying_planning_detail_ids = explode(',', $laying_planning_laying_planning_detail_ids);
+        $laying_planning_details = LayingPlanningDetail::whereIn('id', $laying_planning_laying_planning_detail_ids)->get();
         $data = [];
-        foreach ($fabric_requisition as $fabric) {
-            $data[] = (object)[
-                'serial_number' => $fabric->serial_number,
-                'gl_number' => $fabric->layingPlanningDetail->layingPlanning->gl->gl_number,
-                'style' => $fabric->layingPlanningDetail->layingPlanning->style->style,
-                'fabric_po' => $fabric->layingPlanningDetail->layingPlanning->fabric_po,
-                'no_laying_sheet' => $fabric->layingPlanningDetail->no_laying_sheet,
-                'fabric_type' => $fabric->layingPlanningDetail->layingPlanning->fabricType->name,   
-                'color' => $fabric->layingPlanningDetail->layingPlanning->color->color,
-                'quantity_required' => $fabric->layingPlanningDetail->total_length . " yards",
+        foreach($laying_planning_details as $laying_planning_detail){
+            $fabric_requisition = FabricRequisition::where('laying_planning_detail_id', $laying_planning_detail->id)->first();
+            $data[] = [
+                'serial_number' => $fabric_requisition->serial_number,
+                'gl_number' => $fabric_requisition->layingPlanningDetail->layingPlanning->gl->gl_number,
+                'style' => $fabric_requisition->layingPlanningDetail->layingPlanning->style->style,
+                'fabric_po' => $fabric_requisition->layingPlanningDetail->layingPlanning->fabric_po,
+                'no_laying_sheet' => $fabric_requisition->layingPlanningDetail->no_laying_sheet,
+                'fabric_type' => $fabric_requisition->layingPlanningDetail->layingPlanning->fabricType->name,   
+                'color' => $fabric_requisition->layingPlanningDetail->layingPlanning->color->color,
+                'quantity_required' => $fabric_requisition->layingPlanningDetail->total_length . " yards",
                 'quantity_issued' => "-",
                 'difference' => "-",
-                'table_number' => $fabric->layingPlanningDetail->table_number,   
+                'table_number' => $fabric_requisition->layingPlanningDetail->table_number,   
                 'date' => Carbon::now()->format('d-m-Y'),
             ];
         }
 
         $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.fabric-requisition.print-multiple', compact('data'))->setPaper($customPaper, 'portrait');
-        return $pdf->stream($filename);
+        return $pdf->stream('fabric-requisition.pdf');
     }
-
 
     public function fabric_requisition_detail(Request $request, $id) {
 
