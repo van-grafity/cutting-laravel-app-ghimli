@@ -167,22 +167,46 @@
                         @endif
                     @endforeach
                     <td>{{ $detail->layer_qty }}</td>
-                    <!-- res = total_cutting_order_record * details layingPlanningDetailSize laying_planning_detail_id -->
                     <td>
-                        <!-- // $total_cutting_order_record = 0;
-                        // foreach ($cuttingOrderRecord as $record)
-                        // {
-                        //     if ($record->laying_planning_detail_id == $detail->id)
-                        //     {
-                        //         foreach ($record->cuttingOrderRecordDetail as $record_detail)
-                        //         {
-                        //             $total_cutting_order_record += $record_detail->layer;
-                        //         }
-                        //     }
-                        // }
-                        // echo $total_cutting_order_record; -->
+                        <?php
+                         $total_cutting_order_record = 0;
+                         $total_size_ratio = 0;
+                         foreach ($cuttingOrderRecord as $record)
+                         {
+                             if ($record->laying_planning_detail_id == $detail->id)
+                             {
+                                 foreach ($record->cuttingOrderRecordDetail as $record_detail)
+                                 {
+                                     $total_cutting_order_record += $record_detail->layer;
+                                 }
+                             }
+                         }
+                        foreach ($detail->layingPlanningDetailSize as $size)
+                        {
+                            $total_size_ratio += $size->ratio_per_size;
+                        }
+                        echo ($total_cutting_order_record * $total_size_ratio) == 0 ? '-' : $total_cutting_order_record * $total_size_ratio;
+                        ?>
                     </td>
-                    <td width="5.2%"></td>
+                    <td width="5.2%">
+                        <?php
+                        $updated_at = '';
+                        foreach ($cuttingOrderRecord as $record)
+                        {
+                            if ($record->laying_planning_detail_id == $detail->id)
+                            {
+                                foreach ($record->cuttingOrderRecordDetail as $record_detail)
+                                {
+                                    if ($record_detail->layer != 0)
+                                    {
+                                        $updated_at = $record->updated_at;
+                                    }
+                                }
+                            }
+                        }
+                        echo $updated_at == '' ? '-' : date('d-M', strtotime($updated_at));
+                        ?>
+                    </td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -396,7 +420,7 @@
             </tr>
         </table>
         
-        <table width="100%" style="font-size: 12px; font-family: Times New Roman, Times, serif; font-weight: bold; position: absolute; bottom: 60px;">
+        <table width="100%" style="font-size: 12px; font-family: Times New Roman, Times, serif; font-weight: bold;">
             <tr>
                 <td width="50%" style="text-align: center;">
                     <p>Prepared by:</p>
