@@ -124,7 +124,7 @@ class FabricRequisitionsController extends Controller
     }
 
     public function format_no_laying_sheet($no_laying_sheet){
-        $no_laying_sheet = Str::substr($no_laying_sheet, 0, 5);
+        $no_laying_sheet = Str::substr($no_laying_sheet, 0, 11);
         $no_laying_sheet = Str::upper($no_laying_sheet);
         $no_laying_sheet = preg_replace('/[^A-Za-z0-9\-]/', '', $no_laying_sheet);
         return $no_laying_sheet;
@@ -207,7 +207,7 @@ class FabricRequisitionsController extends Controller
                 'gl_number' => $fabric_requisition->layingPlanningDetail->layingPlanning->gl->gl_number,
                 'style' => $fabric_requisition->layingPlanningDetail->layingPlanning->style->style,
                 'fabric_po' => $fabric_requisition->layingPlanningDetail->layingPlanning->fabric_po,
-                'no_laying_sheet' => $fabric_requisition->layingPlanningDetail->no_laying_sheet,
+                'no_laying_sheet' => $this->format_no_laying_sheet($fabric_requisition->layingPlanningDetail->no_laying_sheet),
                 'fabric_type' => $fabric_requisition->layingPlanningDetail->layingPlanning->fabricType->name,   
                 'color' => $fabric_requisition->layingPlanningDetail->layingPlanning->color->color,
                 'quantity_required' => $fabric_requisition->layingPlanningDetail->total_length . " yards",
