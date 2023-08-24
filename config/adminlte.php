@@ -325,6 +325,13 @@ return [
                     'can'  => 'admin-only',
                 ],
                 [
+                    'text' => 'Cutting Group',
+                    'url'  => '/user-cutting-group',
+                    'classes'=> 'ml-3',
+                    'icon'  => 'fas fa-fw fa fa-solid fa-object-group',
+                    'can'  => 'admin-only',
+                ],
+                [
                     'text' => 'Buyer',
                     'url'  => '/buyer',
                     'classes'=> 'ml-3',
