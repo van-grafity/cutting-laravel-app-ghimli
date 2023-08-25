@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cutting Order Record</title>
+    <title>Cutting Order Status</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
@@ -82,10 +82,10 @@
                 <div>Rev 0</div>
             </div>
             <div class="title-nota">
-                STATUS CUTTING OUTPUT REPORT
+                STATUS CUTTING ORDER REPORT
                 <br>
                 @if ($data['gl_number'] == null)
-                <div class="subtitle-nota">GL : -</div>
+                <div class="subtitle-nota"></div>
                 @else
                 <div class="subtitle-nota">GL : {{ $data['gl_number'] }}</div>
                 @endif
@@ -94,82 +94,42 @@
 
         </div>
 
-        @if ($data['gl_number'] == null)
-        <div class="body-nota">
-            <table class="table table-nota">
-                <thead class="">
-                    <tr>
-                        <th>Serial Number</th>
-                        <th>Color</th>
-                        <th>Style</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr>
-                        <td colspan="3" style="text-align: center;">Data Tidak Ada</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        @else
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important;
-                padding-bottom: 1.5 !important;
-                padding-left: 0.3 !important;
-                padding-right: 0.3 !important;">Date Start</td>
-                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important;
-                padding-bottom: 1.5 !important;
-                padding-left: 0.3 !important;
-                padding-right: 0.3 !important;">:</td>
-                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important;
-                padding-bottom: 1.5 !important;
-                padding-left: 0.3 !important;
-                padding-right: 0.3 !important;">{{ $data['date_start'] }}</td>
-                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important;
-                padding-bottom: 1.5 !important;
-                padding-left: 0.3 !important;
-                padding-right: 0.3 !important;">Date End</td>
-                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important;
-                padding-bottom: 1.5 !important;
-                padding-left: 0.3 !important;
-                padding-right: 0.3 !important;">:</td>
-                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important;
-                padding-bottom: 1.5 !important;
-                padding-left: 0.3 !important;
-                padding-right: 0.3 !important;">{{ $data['date_end'] }}</td>
-                    </tr>
-                    <tr>
-                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important;
-                padding-bottom: 1.5 !important;
-                padding-left: 0.3 !important;
-                padding-right: 0.3 !important;">Status Cut</td>
-                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important;
-                padding-bottom: 1.5 !important;
-                padding-left: 0.3 !important;
-                padding-right: 0.3 !important;">:</td>
-                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important;
-                padding-bottom: 1.5 !important;
-                padding-left: 0.3 !important;
-                padding-right: 0.3 !important;">{{ $data['status_cut'] }}</td>
-                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important;
-                padding-bottom: 1.5 !important;
-                padding-left: 0.3 !important;
-                padding-right: 0.3 !important;">Status Layer</td>
-                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important;
-                padding-bottom: 1.5 !important;
-                padding-left: 0.3 !important;
-                padding-right: 0.3 !important;">:</td>
-                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important;
-                padding-bottom: 1.5 !important;
-                padding-left: 0.3 !important;
-                padding-right: 0.3 !important;">{{ $data['status_layer'] }}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <!-- $cuttingOrderRecord = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'CuttingOrderRecordDetail', 'layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.gl', 'layingPlanningDetail.layingPlanning.color']) -->
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;">Date Start</td>
+                    <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;">:</td>
+                    <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;">{{ $data['date_start'] }}</td>
+                    <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;">Date End</td>
+                    <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;">:</td>
+                    <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;">{{ $data['date_end'] }}</td>
+                </tr>
+                @if ($data['status_layer'] == null || $data['status_layer'] == null)
+                @else
+                <tr>
+                    @if ($data['status_layer'] == null)
+                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;"></td>
+                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;"></td>
+                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;"></td>
+                    @else
+                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;">Status Layer</td>
+                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;">:</td>
+                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;">{{ $data['status_layer'] ?? '-' }}</td>
+                    @endif
+                    @if ($data['status_cut'] == null)
+                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5px !important; padding-bottom: 1.5px !important; padding-left: 0.3px !important; padding-right: 0.3px !important;"></td>
+                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5px !important; padding-bottom: 1.5px !important; padding-left: 0.3px !important; padding-right: 0.3px !important;"></td>
+                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5px !important; padding-bottom: 1.5px !important; padding-left: 0.3px !important; padding-right: 0.3px !important;"></td>
+                    @else
+                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;">Status Cut</td>
+                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;">:</td>
+                        <td style="font-size: 9pt; font-weight: bold; border: 0px solid !important; padding-top: 1.5 !important; padding-bottom: 1.5 !important; padding-left: 0.3 !important; padding-right: 0.3 !important;">{{ $data['status_cut'] ?? '-' }}</td>
+                    @endif
+                </tr>
+                @endif
+            </tbody>
+        </table>
+        
             <div class="body-nota">
                 <table class="table table-nota">
                     <thead class="">
@@ -177,6 +137,16 @@
                             <th>Serial Number</th>
                             <th>Color</th>
                             <th>Style</th>
+                            @if ($data['status_layer'] == null || $data['status_layer'] == null)
+                                <th>Status Layer</th>
+                                <th>Status Cut</th>
+                            @else
+                                <th>Status Layer</th>
+                                <th>Status Cut</th>
+                            @endif
+                            <!-- layer -->
+                            <th>Layer</th>
+                            <th>Date</th>
                         </tr>
                     </thead>
 
@@ -186,12 +156,53 @@
                             <td>{{ $item->serial_number }}</td>
                             <td>{{ $item->layingPlanningDetail->layingPlanning->color->color }}</td>
                             <td>{{ $item->layingPlanningDetail->layingPlanning->style->style }}</td>
+                            @if ($data['status_layer'] == null || $data['status_layer'] == null)
+                                <td>
+                                    @if ($item->status_layer_id == 1)
+                                        Belum Layer
+                                    @elseif ($item->status_layer_id == 2)
+                                        Sudah Layer
+                                    @else
+                                        Over Layer
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($item->status_cut_id == 1)
+                                        Belum Potong
+                                    @else
+                                        Sudah Potong
+                                    @endif
+                                </td>
+                            @else
+                                <td>
+                                    @if ($item->status_layer_id == 1)
+                                        Belum Layer
+                                    @elseif ($item->status_layer_id == 2)
+                                        Sudah Layer
+                                    @else
+                                        Over Layer
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($item->status_cut_id == 1)
+                                        Belum Potong
+                                    @else
+                                        Sudah Potong
+                                    @endif
+                                </td>
+                            @endif
+                            <td><?php $total_layer = 0; ?>
+                                @foreach ($item->cuttingOrderRecordDetail as $detail)
+                                    <?php $total_layer += $detail->layer; ?>
+                                @endforeach
+                                {{ $total_layer }}
+                            </td>
+                            <td>{{ date('d/M/Y', strtotime($item->updated_at)) }}</td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
-        @endif
     </div>
 </body>
 </html>

@@ -472,27 +472,56 @@ class CuttingOrdersController extends Controller
             })
             ->whereHas('layingPlanningDetail', function($query) use ($gl_number) {
                 $query->whereHas('layingPlanning', function($query) use ($gl_number) {
-                    $query->where('gl_id', $gl_number);
+                    if ($gl_number != null) {
+                        $query->where('gl_id', $gl_number);
+                    }
                 });
             })
             ->whereHas('statusLayer', function($query) use ($status_layer) {
-                $query->where('id', $status_layer);
+                if ($status_layer != null) {
+                    $query->where('id', $status_layer);
+                }
             })
             ->whereHas('statusCut', function($query) use ($status_cut) {
-                $query->where('id', $status_cut);
+                if ($status_cut != null) {
+                    $query->where('id', $status_cut);
+                }
             })
+            ->orderBy('serial_number', 'asc')
             ->get();
             
         $data = [
             'cuttingOrderRecord' => $cuttingOrderRecord,
             'date_start' => $date_start,
             'date_end' => $date_end,
-            'gl_number' => $cuttingOrderRecord->first()->layingPlanningDetail->layingPlanning->gl->gl_number ?? '',
-            'status_layer' => $cuttingOrderRecord->first()->statusLayer->name ?? '',
-            'status_cut' => $cuttingOrderRecord->first()->statusCut->name ?? '',
+            'gl_number' => $gl_number == null ? '' : ($cuttingOrderRecord->first() == null ? '' : $cuttingOrderRecord->first()->layingPlanningDetail->layingPlanning->gl->gl_number),
+            'status_layer' => $status_layer == null ? '' : $this->getStatusLayer($status_layer),
+            'status_cut' => $status_cut == null ? '' : $this->getStatusCut($status_cut),
         ];
         $pdf = PDF::loadview('page.cutting-order.report-status', compact('data'))->setPaper('a4', 'landscape');
         return $pdf->stream('Report Status Cutting Order Record.pdf');
+    }
+
+    public function getStatusLayer($id)
+    {
+        $statusLayer = StatusLayer::find($id);
+        if ($statusLayer->name == 'not completed') {
+            return 'Belum Layer';
+        } else if ($statusLayer->name == 'completed') {
+            return 'Sudah Layer';
+        } else {
+            return 'Over Layer';
+        }
+    }
+
+    public function getStatusCut($id)
+    {
+        $statusCut = StatusCut::find($id);
+        if ($statusCut->name == 'belum') {
+            return 'Belum Potong';
+        } else {
+            return 'Sudah Potong';
+        }
     }
 
     public function getCuttingOrderRecordByDate($date)

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Status Cutting Order Record')
+@section('title', 'Status Cutting Order')
 
 @section('content')
 <style>

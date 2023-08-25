@@ -463,7 +463,7 @@ return [
             'can'  => 'clerk',
         ],
         [
-            'text' => 'Status Cutting Order Record',
+            'text' => 'Cutting Order Status',
             'url'  => '/status-cutting-order-record',
             'icon' => 'fas fa-fw fa fa-solid fa-file-alt',
             'can'  => 'clerk',
