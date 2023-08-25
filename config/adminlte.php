@@ -467,6 +467,12 @@ return [
             'url'  => '/status-cutting-order-record',
             'icon' => 'fas fa-fw fa fa-solid fa-file-alt',
             'can'  => 'clerk',
+        ],
+        [
+            'text' => 'GL Status',
+            'url'  => '/status-cutting-order-record',
+            'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
+            'can'  => 'clerk',
         ]
     ],
 
