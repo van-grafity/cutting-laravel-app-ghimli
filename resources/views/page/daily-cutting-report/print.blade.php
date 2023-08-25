@@ -60,7 +60,7 @@
             padding: 0px !important;
         }
         .table-nota tbody td {
-            border: 1px dashed black;
+            border: 1px solid;
             vertical-align: middle;
             text-align: center;
             font-weight: bold;
@@ -245,7 +245,7 @@
             </br>
             </br>
 
-            <table width="100%" style="font-size: 12px; font-family: Times New Roman, Times, serif; font-weight: bold;">
+            <table width="100%" style="font-size: 12px; font-family: Times New Roman, Times, serif; font-weight: bold; position: absolute; bottom: 50px;">
                 <tr>
                     <td width="50%" style="text-align: center;">
                         <p>Prepared by:</p>

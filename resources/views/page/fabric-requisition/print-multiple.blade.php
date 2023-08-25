@@ -148,9 +148,7 @@
                     </tr>
                     <tr>
                         <th>Fabric Detail / Uraian Kain</th>
-                        <th> {{ $fbr['fabric_type'] }} </th>
-                        <th></th>
-                        <th></th>
+                        <th colspan="3"> {{ $fbr['fabric_type'] }} </th>
                     </tr>
                     <tr>
                         <th>Color/ Warna</th>
