@@ -129,7 +129,17 @@
                 @endif
             </tbody>
         </table>
-        
+        <!-- cara get updated_at dari cutting order record detail -->
+        <!-- $cutting_order = CuttingOrderRecord::with(['statusLayer'])
+        ->whereHas('statusLayer', function($query) {
+            $query->where('name', '=', 'completed', 'or', 'name', '=', 'over Layer');
+        })
+        ->where('id', $cutting_order_id)
+        ->first();
+
+        $cutting_order_detail = CuttingOrderRecordDetail::where('cutting_order_record_id', $cutting_order_id)->get();
+        $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order_detail->first()->updated_at)->format('d-m-Y H:i:s');
+        return $updated_at; -->
             <div class="body-nota">
                 <table class="table table-nota">
                     <thead class="">
@@ -137,16 +147,19 @@
                             <th>Serial Number</th>
                             <th>Color</th>
                             <th>Style</th>
+                            <th>Layer</th>
                             @if ($data['status_layer'] == null || $data['status_layer'] == null)
                                 <th>Status Layer</th>
                                 <th>Status Cut</th>
+                                <th>Date Layer</th>
+                                <th>Date Cut</th>
                             @else
                                 <th>Status Layer</th>
                                 <th>Status Cut</th>
+                                <th>Date Layer</th>
+                                <th>Date Cut</th>
                             @endif
-                            <!-- layer -->
-                            <th>Layer</th>
-                            <th>Date</th>
+                            
                         </tr>
                     </thead>
 
@@ -156,6 +169,12 @@
                             <td>{{ $item->serial_number }}</td>
                             <td>{{ $item->layingPlanningDetail->layingPlanning->color->color }}</td>
                             <td>{{ $item->layingPlanningDetail->layingPlanning->style->style }}</td>
+                            <td><?php $total_layer = 0; ?>
+                                @foreach ($item->cuttingOrderRecordDetail as $detail)
+                                    <?php $total_layer += $detail->layer; ?>
+                                @endforeach
+                                {{ $total_layer }}
+                            </td>
                             @if ($data['status_layer'] == null || $data['status_layer'] == null)
                                 <td>
                                     @if ($item->status_layer_id == 1)
@@ -173,6 +192,15 @@
                                         Sudah Potong
                                     @endif
                                 </td>
+                                <td><?php
+                                    foreach ($item->cuttingOrderRecordDetail as $detail) {
+                                        if ($detail != null) {
+                                            echo date('d/M/Y', strtotime($detail->updated_at));
+                                            break;
+                                        }
+                                    }
+                                ?></td>
+                                <td>{{ date('d/M/Y', strtotime($item->updated_at)) }}</td>
                             @else
                                 <td>
                                     @if ($item->status_layer_id == 1)
@@ -190,14 +218,16 @@
                                         Sudah Potong
                                     @endif
                                 </td>
+                                <td><?php
+                                    foreach ($item->cuttingOrderRecordDetail as $detail) {
+                                        if ($detail != null) {
+                                            echo date('d/M/Y', strtotime($detail->updated_at));
+                                            break;
+                                        }
+                                    }
+                                ?></td>
+                                <td>{{ date('d/M/Y', strtotime($item->updated_at)) }}</td>
                             @endif
-                            <td><?php $total_layer = 0; ?>
-                                @foreach ($item->cuttingOrderRecordDetail as $detail)
-                                    <?php $total_layer += $detail->layer; ?>
-                                @endforeach
-                                {{ $total_layer }}
-                            </td>
-                            <td>{{ date('d/M/Y', strtotime($item->updated_at)) }}</td>
                         </tr>
                         @endforeach
                     </tbody>

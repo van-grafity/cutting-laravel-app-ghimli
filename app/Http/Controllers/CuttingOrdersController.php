@@ -468,6 +468,7 @@ class CuttingOrdersController extends Controller
 
         $cuttingOrderRecord = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'CuttingOrderRecordDetail', 'layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.gl', 'layingPlanningDetail.layingPlanning.color', 'layingPlanningDetail.layingPlanning.style'])
             ->whereHas('cuttingOrderRecordDetail', function($query) use ($date_start, $date_end) {
+                [$date_start, $date_end] = $this->formatDate($date_start, $date_end);
                 $query->whereBetween('updated_at', [$date_start, $date_end]);
             })
             ->whereHas('layingPlanningDetail', function($query) use ($gl_number) {
@@ -500,6 +501,19 @@ class CuttingOrdersController extends Controller
         ];
         $pdf = PDF::loadview('page.cutting-order.report-status', compact('data'))->setPaper('a4', 'landscape');
         return $pdf->stream('Report Status Cutting Order Record.pdf');
+    }
+
+    public function formatDate($date_start, $date_end)
+    {
+        if ($date_start == null && $date_end == null) {
+            $date_start = Carbon::now()->toDateString();
+            $date_end = Carbon::now()->toDateString();
+        } else if ($date_start == null && $date_end != null) {
+            $date_start = $date_end;
+        } else if ($date_start != null && $date_end == null) {
+            $date_end = $date_start;
+        }
+        return [$date_start, $date_end];
     }
 
     public function getStatusLayer($id)
