@@ -129,21 +129,11 @@
                 @endif
             </tbody>
         </table>
-        <!-- cara get updated_at dari cutting order record detail -->
-        <!-- $cutting_order = CuttingOrderRecord::with(['statusLayer'])
-        ->whereHas('statusLayer', function($query) {
-            $query->where('name', '=', 'completed', 'or', 'name', '=', 'over Layer');
-        })
-        ->where('id', $cutting_order_id)
-        ->first();
-
-        $cutting_order_detail = CuttingOrderRecordDetail::where('cutting_order_record_id', $cutting_order_id)->get();
-        $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order_detail->first()->updated_at)->format('d-m-Y H:i:s');
-        return $updated_at; -->
             <div class="body-nota">
                 <table class="table table-nota">
                     <thead class="">
                         <tr>
+                            <th>G/L Number</th>
                             <th>Serial Number</th>
                             <th>Color</th>
                             <th>Style</th>
@@ -166,6 +156,7 @@
                     <tbody>
                         @foreach ($data['cuttingOrderRecord'] as $item)
                         <tr>
+                            <td>{{ $item->layingPlanningDetail->layingPlanning->gl->gl_number }}</td>
                             <td>{{ $item->serial_number }}</td>
                             <td>{{ $item->layingPlanningDetail->layingPlanning->color->color }}</td>
                             <td>{{ $item->layingPlanningDetail->layingPlanning->style->style }}</td>
@@ -175,59 +166,39 @@
                                 @endforeach
                                 {{ $total_layer }}
                             </td>
-                            @if ($data['status_layer'] == null || $data['status_layer'] == null)
-                                <td>
-                                    @if ($item->status_layer_id == 1)
-                                        Belum Layer
-                                    @elseif ($item->status_layer_id == 2)
-                                        Sudah Layer
-                                    @else
-                                        Over Layer
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($item->status_cut_id == 1)
-                                        Belum Potong
-                                    @else
-                                        Sudah Potong
-                                    @endif
-                                </td>
-                                <td><?php
-                                    foreach ($item->cuttingOrderRecordDetail as $detail) {
-                                        if ($detail != null) {
-                                            echo date('d/M/Y', strtotime($detail->updated_at));
-                                            break;
-                                        }
+                            
+                            <td>
+                                @if ($item->statusLayer->name == 'not completed')
+                                    Belum Layer
+                                @elseif ($item->statusLayer->name == 'completed')
+                                    Sudah Layer
+                                @else
+                                    Over Layer
+                                @endif
+                            </td>
+                            <td>
+                                @if ($item->statusCut->name == 'belum')
+                                    Belum Potong
+                                @else
+                                    Sudah Potong
+                                @endif
+                            </td>
+                            <td><?php
+                                foreach ($item->cuttingOrderRecordDetail as $detail) {
+                                    if ($detail != null) {
+                                        echo date('d/M/Y', strtotime($detail->updated_at));
+                                        break;
                                     }
-                                ?></td>
-                                <td>{{ date('d/M/Y', strtotime($item->updated_at)) }}</td>
-                            @else
-                                <td>
-                                    @if ($item->status_layer_id == 1)
-                                        Belum Layer
-                                    @elseif ($item->status_layer_id == 2)
-                                        Sudah Layer
-                                    @else
-                                        Over Layer
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($item->status_cut_id == 1)
-                                        Belum Potong
-                                    @else
-                                        Sudah Potong
-                                    @endif
-                                </td>
-                                <td><?php
-                                    foreach ($item->cuttingOrderRecordDetail as $detail) {
-                                        if ($detail != null) {
-                                            echo date('d/M/Y', strtotime($detail->updated_at));
-                                            break;
-                                        }
+                                }
+                            ?></td>
+                            <td><?php
+                                foreach ($item->cuttingOrderRecordDetail as $detail) {
+                                    if ($detail != null) {
+                                        echo date('d/M/Y', strtotime($item->updated_at));
+                                        break;
                                     }
-                                ?></td>
-                                <td>{{ date('d/M/Y', strtotime($item->updated_at)) }}</td>
-                            @endif
+                                }
+                            ?></td>
                         </tr>
                         @endforeach
                     </tbody>
