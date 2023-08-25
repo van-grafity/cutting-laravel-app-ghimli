@@ -470,8 +470,14 @@ return [
         ],
         [
             'text' => 'GL Status',
-            'url'  => '/status-cutting-order-record',
+            'url'  => '#',
             'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
+            'can'  => 'clerk',
+        ],
+        [
+            'text' => 'Subcon Planning Nota',
+            'url'  => '#',
+            'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
             'can'  => 'clerk',
         ]
     ],
