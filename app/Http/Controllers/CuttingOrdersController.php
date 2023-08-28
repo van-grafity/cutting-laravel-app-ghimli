@@ -467,8 +467,8 @@ class CuttingOrdersController extends Controller
         $status_cut = $request->status_cut;
 
         $cuttingOrderRecord = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'CuttingOrderRecordDetail', 'layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.gl', 'layingPlanningDetail.layingPlanning.color', 'layingPlanningDetail.layingPlanning.style'])
-            ->whereDate('created_at', '>=', $date_start)
-            ->whereDate('created_at', '<=', $date_end)
+            ->whereDate('updated_at', '>=', $date_start)
+            ->whereDate('updated_at', '<=', $date_end)
             ->whereHas('layingPlanningDetail', function($query) use ($gl_number) {
                 $query->whereHas('layingPlanning', function($query) use ($gl_number) {
                     if ($gl_number != null) {
