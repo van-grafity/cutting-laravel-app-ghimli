@@ -40,8 +40,9 @@
     @foreach ($data as $cutting_ticket)
         </br>
         <div class="row">
-            <div class="serial-number" style="text-align: left; font-size: 10px;">Serial No. : <span style="font-size: 11px;">{{ $cutting_ticket->serial_number }}</span></div>
-            <div class="serial-number" style="text-align: left; font-size: 10px;">Color : <span style="font-size: 11px;">{{ $cutting_ticket->color }}</span></div>
+            <div class="serial-number" style="text-align: center; font-size: 10px;">Serial No. : <span style="font-size: 11px;">{{ $cutting_ticket->serial_number }}</span></div>
+            <div class="serial-number" style="text-align: center; font-size: 10px;">Color : <span style="font-size: 11px;">{{ $cutting_ticket->color }}</span></div>
+            <div class="serial-number" style="text-align: center; font-size: 10px;">Style : <span style="font-size: 11px;">{{ $cutting_ticket->style }}</span></div>
         </div>
         </br>
         <table>

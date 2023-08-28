@@ -338,6 +338,7 @@ class CuttingTicketsController extends Controller
                 'size' => $ticket->size->size,
                 'color' => $layingPlanningDetail->layingPlanning->color->color,
                 'ticket_number' => Str::padLeft($ticket->ticket_number, 3, '0'),
+                'style' => $layingPlanningDetail->layingPlanning->style->style,
                 'layer' => $ticket->layer,
             ];
         }
