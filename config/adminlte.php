@@ -426,6 +426,12 @@ return [
             'can'  => 'clerk',
         ],
         [
+            'text' => 'Summary Cutting Subcon',
+            'url'  => '/subcon-cutting',
+            'icon' => 'fas fa-fw fa fa-database',
+            'can'  => 'clerk',
+        ],
+        [
             'text' => 'Pallet',
             'url'  => '/pallets',
             'icon' => 'fas fa-fw fa fa-solid fa-pallet',
@@ -469,8 +475,8 @@ return [
             'can'  => 'clerk',
         ],
         [
-            'text' => 'Summary Cutting Subcon',
-            'url'  => '/subcon-cutting',
+            'text' => 'Cutting Report Subcon',
+            'url'  => '/cutting-report-subcon',
             'icon' => 'fas fa-fw fa fa-database',
             'can'  => 'clerk',
         ]

@@ -450,6 +450,32 @@ class CuttingOrdersController extends Controller
         return $pdf->stream($filename);
     }
 
+    // public function dataCuttingOrder2(){
+    //     // where cutting order record detail -> operator = name team UserGroups Group
+    //     // munculkan data hanya group 19, 20, dan 21
+    //     $userGroup = UserGroups::whereIn('group_id', [19, 20, 21])->get();
+    //     $userIds = [];
+    //     foreach ($userGroup as $key => $value) {
+    //         $userIds[] = $value->user_id;
+    //     }
+    //     $users = User::whereIn('id', $userIds)->get();
+    //     $userNames = [];
+    //     foreach ($users as $key => $value) {
+    //         $userNames[] = $value->name;
+    //     }
+    //     $cuttingOrderRecordDetail = CuttingOrderRecordDetail::whereIn('operator', $userNames)->get();
+    //     $cuttingOrderRecordDetailIds = [];
+    //     foreach ($cuttingOrderRecordDetail as $key => $value) {
+    //         $cuttingOrderRecordDetailIds[] = $value->cutting_order_record_id;
+    //     }
+    //     $cuttingOrderRecord = CuttingOrderRecord::whereIn('id', $cuttingOrderRecordDetailIds)->get();
+    //     $cuttingOrderRecordIds = [];
+    //     foreach ($cuttingOrderRecord as $key => $value) {
+    //         $cuttingOrderRecordIds[] = $value->id;
+    //     }
+    //     return $cuttingOrderRecordIds;
+    // }
+
     public function statusCuttingOrderRecord()
     {
         $gls = Gl::with('GLCombine')->get();

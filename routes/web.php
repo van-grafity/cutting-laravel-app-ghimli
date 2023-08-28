@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/style-data', [StylesController::class, 'dataStyle']);
     Route::get('/laying-planning-data', [LayingPlanningsController::class, 'dataLayingPlanning']);
     Route::get('/cutting-order-data', [CuttingOrdersController::class, 'dataCuttingOrder']);
+    Route::get('/subcon-cutting-data', [SubconCuttingController::class, 'dataCuttingOrder']);
     Route::get('/cutting-order-chart', [CuttingOrdersController::class, 'chartCuttingOrder']);
     Route::get('/cutting-ticket-data', [CuttingTicketsController::class, 'dataCuttingTicket']);
     Route::get('/cutting-ticket-detail-data/{id}', [CuttingTicketsController::class, 'dataCuttingTicketByCOR'])->name('cutting-ticket-detail-data'); // http://localhost/cutting-ticket-app/public/cutting-ticket-detail-data/COR-62843-MHG-001
@@ -132,6 +133,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
     Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');
     Route::resource('subcon-cutting', SubconCuttingController::class);
+    Route::get('cutting-report-subcon', [SubconCuttingController::class,'cutting_report_subcon'])->name('subcon-cutting.cutting-report-subcon');
 
     Route::resource('cutting-ticket', CuttingTicketsController::class);
     Route::prefix('cutting-ticket')->name('cutting-ticket.')->group(function(){
