@@ -314,7 +314,7 @@ return [
         ],
         [
             'text' => 'Master Data',
-            'icon' => 'fas fa-fw fa-server',
+            'icon' => 'fas fa-fw fa-ruler-combined',
             'can'  => 'clerk-cutting',
             'submenu' => [
                 [
@@ -364,7 +364,7 @@ return [
         ],
         [
             'text' => 'Master Data Cutting',
-            'icon' => 'fas fa-fw fa-server',
+            'icon' => 'fas fa-fw fa-industry',
             'can'  => 'clerk-cutting',
             'submenu' => [
                 // [
@@ -433,7 +433,7 @@ return [
         ],
         [
             'text' => 'Cutting Ticket',
-            'icon' => 'fas fa-fw fa fa-solid fa-clipboard-list',
+            'icon' => 'fas fa-fw fa fa-object-ungroup',
             'can'  => 'clerk',
             'submenu' => [
                 [
@@ -452,32 +452,26 @@ return [
         [
             'text' => 'Fabric Requisition',
             'url'  => '/fabric-requisition',
-            'icon' => 'fas fa-fw fa fa-solid fa-file-alt',
+            'icon' => 'fas fa-fw fa fa-tasks',
             'can'  => 'clerk',
         ],
         ['header' => 'Reports'],
         [
             'text' => 'Daily Cutting Report',
             'url'  => '/daily-cutting-report',
-            'icon' => 'fas fa-fw fa fa-solid fa-file-alt',
+            'icon' => 'fas fa-fw fa fa-journal-whills',
             'can'  => 'clerk',
         ],
         [
             'text' => 'Cutting Order Status',
             'url'  => '/status-cutting-order-record',
-            'icon' => 'fas fa-fw fa fa-solid fa-file-alt',
+            'icon' => 'fas fa-fw fa fa-chart-bar',
             'can'  => 'clerk',
         ],
         [
-            'text' => 'GL Status',
-            'url'  => '#',
-            'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
-            'can'  => 'clerk',
-        ],
-        [
-            'text' => 'Subcon Planning Nota',
-            'url'  => '#',
-            'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
+            'text' => 'Summary Cutting Subcon',
+            'url'  => '/summary-cutting-subcon',
+            'icon' => 'fas fa-fw fa fa-database',
             'can'  => 'clerk',
         ]
     ],
