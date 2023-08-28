@@ -9,6 +9,7 @@ use App\Http\Controllers\FabricTypesController;
 use App\Http\Controllers\FabricUsagesController;
 use App\Http\Controllers\GlsController;
 use App\Http\Controllers\CuttingOrdersController;
+use App\Http\Controllers\SubconCuttingController;
 use App\Http\Controllers\CuttingTicketsController;
 use App\Http\Controllers\StylesController;
 use App\Http\Controllers\BuyerController;
@@ -130,6 +131,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('print-multiple/{id}', [CuttingOrdersController::class,'print_multiple'])->name('cutting-order.print-multiple');
     Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
     Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');
+    Route::resource('subcon-cutting', SubconCuttingController::class);
 
     Route::resource('cutting-ticket', CuttingTicketsController::class);
     Route::prefix('cutting-ticket')->name('cutting-ticket.')->group(function(){

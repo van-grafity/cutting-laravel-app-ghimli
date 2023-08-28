@@ -470,7 +470,7 @@ return [
         ],
         [
             'text' => 'Summary Cutting Subcon',
-            'url'  => '/summary-cutting-subcon',
+            'url'  => '/subcon-cutting',
             'icon' => 'fas fa-fw fa fa-database',
             'can'  => 'clerk',
         ]
