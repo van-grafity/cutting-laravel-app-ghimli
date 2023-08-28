@@ -133,7 +133,9 @@
                 <table class="table table-nota">
                     <thead class="">
                         <tr>
+                            @if ($data['gl_number'] == null)
                             <th>G/L Number</th>
+                            @endif
                             <th>Serial Number</th>
                             <th>Color</th>
                             <th>Style</th>
@@ -156,7 +158,9 @@
                     <tbody>
                         @foreach ($data['cuttingOrderRecord'] as $item)
                         <tr>
+                            @if ($data['gl_number'] == null)
                             <td>{{ $item->layingPlanningDetail->layingPlanning->gl->gl_number }}</td>
+                            @endif
                             <td>{{ $item->serial_number }}</td>
                             <td>{{ $item->layingPlanningDetail->layingPlanning->color->color }}</td>
                             <td>{{ $item->layingPlanningDetail->layingPlanning->style->style }}</td>

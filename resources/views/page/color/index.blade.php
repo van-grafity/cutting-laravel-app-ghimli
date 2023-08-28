@@ -51,7 +51,7 @@
                         </div>
                         <div class="form-group">
                             <label for="color_code">Code</label>
-                            <input type="text" class="form-control" id="color_code" name="color_code" placeholder="Color code">
+                            <input type="text" class="form-control" id="color_code" name="color_code" placeholder="Color code" readonly>
                         </div>
                     </div>
                     <!-- END .card-body -->
@@ -84,10 +84,6 @@ $(document).ready(function(){
         for (let index = 0; index < color_code_length; index++) {
             color_code += String.fromCharCode(Math.floor(Math.random() * 26) + 97).toUpperCase();
         }
-        // let color_code = color_name.substring(0, 4).toUpperCase() + Math.floor(Math.random() * 1000);
-        // if(color_code.length > 8){
-        //     color_code = color_code.substring(0, 8);
-        // }
         $('#color_code').val(color_code);
     });
 
@@ -239,36 +235,5 @@ $(function (e) {
 
 
 <script type="text/javascript">
-    // $(function (e) {
-    //     $('#color_table').DataTable({
-    //         processing: true,
-    //         serverSide: true,
-    //         ajax: "{{ url('/color-data') }}",
-    //         columns: [
-    //             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-    //             {data: 'color', name: 'color'},
-    //             {data: 'color_code', name: 'color_code'},
-    //             {data: 'action', name: 'action', orderable: false, searchable: false},
-    //         ],
-    //         // dom: 'Bfrtip',
-    //         // dom: '<"wrapperx"flipt>',
-    //         // dom: '<"top"i>rt<"bottom"flp><"clear">',
-    //         // dom: '<"top"i>rt<"bottom"flp><"clear">',
-    //         // dom:    "<'row'<'col-sm-12 col-md-6'B><'col-sm-12 col-md-3'l><'col-sm-12 col-md-3'f>>" +
-    //         //         "<'row'<'col-sm-12'tr>>" +
-    //         //         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-    //         // buttons: [ 'copy', 'csv', 'excel', 'pdf', 'print'],
-    //         // paging: true,
-    //         lengthChange: true,
-    //         searching: true,
-    //         // ordering: true,
-    //         // info: true,
-    //         autoWidth: false,
-    //         responsive: true,
-    //     });
-    //     // }).buttons().container().appendTo('#color_table_wrapper .col-md-6:eq(0)');
-
-    // });
-    
 </script>
 @endpush
