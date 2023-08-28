@@ -139,7 +139,8 @@
                             <th>Serial Number</th>
                             <th>Color</th>
                             <th>Style</th>
-                            <th>Layer</th>
+                            <th>MI Qty</th>
+                            <th>Cut Qty</th>
                             @if ($data['status_layer'] == null || $data['status_layer'] == null)
                                 <th>Status Layer</th>
                                 <th>Status Cut</th>
@@ -164,13 +165,22 @@
                             <td>{{ $item->serial_number }}</td>
                             <td>{{ $item->layingPlanningDetail->layingPlanning->color->color }}</td>
                             <td>{{ $item->layingPlanningDetail->layingPlanning->style->style }}</td>
-                            <td><?php $total_layer = 0; ?>
-                                @foreach ($item->cuttingOrderRecordDetail as $detail)
-                                    <?php $total_layer += $detail->layer; ?>
-                                @endforeach
-                                {{ $total_layer }}
+                            <td>{{ $item->layingPlanningDetail->layingPlanning->order_qty }}</td>
+                            <td>
+                                <?php
+                                    $total_cutting_order_record = 0;
+                                    $total_size_ratio = 0;
+                                    foreach ($item->cuttingOrderRecordDetail as $record_detail)
+                                    {
+                                        $total_cutting_order_record += $record_detail->layer;
+                                    }
+                                    foreach ($item->layingPlanningDetail->layingPlanningDetailSize as $size)
+                                    {
+                                        $total_size_ratio += $size->ratio_per_size;
+                                    }
+                                    echo ($total_cutting_order_record * $total_size_ratio) == 0 ? '-' : $total_cutting_order_record * $total_size_ratio;
+                                ?>
                             </td>
-                            
                             <td>
                                 @if ($item->statusLayer->name == 'not completed')
                                     Belum Layer
