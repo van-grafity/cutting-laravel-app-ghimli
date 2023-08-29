@@ -441,40 +441,14 @@ class CuttingOrdersController extends Controller
             'spread_time' => $this->updated_at_status_layer($cutting_order->id),
             'cutting_time' => $this->updated_at_status_cut($cutting_order->id),
             'date' => Carbon::now()->format('d-m-Y'),
+            'laid_by' => $name,
             'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order->created_at)->format('d-m-Y')
             
         ];
 
-        // return view('page.cutting-order.report', compact('data','cor_details'));
         $pdf = PDF::loadview('page.cutting-order.report', compact('data','cor_details'))->setPaper('a4', 'landscape');
         return $pdf->stream($filename);
     }
-
-    // public function dataCuttingOrder2(){
-    //     // where cutting order record detail -> operator = name team UserGroups Group
-    //     // munculkan data hanya group 19, 20, dan 21
-    //     $userGroup = UserGroups::whereIn('group_id', [19, 20, 21])->get();
-    //     $userIds = [];
-    //     foreach ($userGroup as $key => $value) {
-    //         $userIds[] = $value->user_id;
-    //     }
-    //     $users = User::whereIn('id', $userIds)->get();
-    //     $userNames = [];
-    //     foreach ($users as $key => $value) {
-    //         $userNames[] = $value->name;
-    //     }
-    //     $cuttingOrderRecordDetail = CuttingOrderRecordDetail::whereIn('operator', $userNames)->get();
-    //     $cuttingOrderRecordDetailIds = [];
-    //     foreach ($cuttingOrderRecordDetail as $key => $value) {
-    //         $cuttingOrderRecordDetailIds[] = $value->cutting_order_record_id;
-    //     }
-    //     $cuttingOrderRecord = CuttingOrderRecord::whereIn('id', $cuttingOrderRecordDetailIds)->get();
-    //     $cuttingOrderRecordIds = [];
-    //     foreach ($cuttingOrderRecord as $key => $value) {
-    //         $cuttingOrderRecordIds[] = $value->id;
-    //     }
-    //     return $cuttingOrderRecordIds;
-    // }
 
     public function statusCuttingOrderRecord()
     {

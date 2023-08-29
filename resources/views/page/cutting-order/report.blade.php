@@ -161,7 +161,7 @@
                         <th colspan="2">Colour / <i style="font-weight: 500;">Warna</i></th>
                         <th colspan="3"> {{ $data->color }} </th>
                         <th rowspan="2">Laid By <br> <i style="font-weight: 500;">Dibentang Oleh</i></th>
-                        <th rowspan="2"> - </th>
+                        <th rowspan="2"> {{ $data->laid_by }} </th>
                     </tr>
                     <tr>
                         <th colspan="2">Layer / <i style="font-weight: 500;">Lapisan</i></th>

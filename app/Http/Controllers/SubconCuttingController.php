@@ -23,10 +23,12 @@ class SubconCuttingController extends Controller
     }
 
     public function dataCuttingOrder(){
-        // $userGroup = UserGroups::whereIn('group_id', [5, 6, 7])->get();
-        // ganti berdasarkan group->description dimana description = subcon
-        $group = Groups::where('group_description', 'Subcon')->first();
-        $userGroup = UserGroups::where('group_id', $group->id)->get();
+        $group = Groups::where('group_description', 'Subcon')->get();
+        $groupIds = [];
+        foreach ($group as $key => $value) {
+            $groupIds[] = $value->id;
+        }
+        $userGroup = UserGroups::whereIn('group_id', $groupIds)->get();
         $userIds = [];
         foreach ($userGroup as $key => $value) {
             $userIds[] = $value->user_id;
