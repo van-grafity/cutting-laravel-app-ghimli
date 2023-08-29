@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\CuttingOrderRecord;
 use App\Models\CuttingOrderRecordDetail;
 use App\Models\User;
+use App\Models\Groups;
 use App\Models\UserGroups;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -22,7 +23,10 @@ class SubconCuttingController extends Controller
     }
 
     public function dataCuttingOrder(){
-        $userGroup = UserGroups::whereIn('group_id', [5, 6, 7])->get();
+        // $userGroup = UserGroups::whereIn('group_id', [5, 6, 7])->get();
+        // ganti berdasarkan group->description dimana description = subcon
+        $group = Groups::where('group_description', 'Subcon')->first();
+        $userGroup = UserGroups::where('group_id', $group->id)->get();
         $userIds = [];
         foreach ($userGroup as $key => $value) {
             $userIds[] = $value->user_id;
@@ -140,7 +144,8 @@ class SubconCuttingController extends Controller
 
     public function cutting_report_subcon()
     {
-        return "Test";
+        // untuk sementara ke halaman comming soon
+        return view('page.coming_soon');
     }
 
     /**
