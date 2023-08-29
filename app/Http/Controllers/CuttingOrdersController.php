@@ -662,7 +662,7 @@ class CuttingOrdersController extends Controller
     public function updated_at_status_cut($cutting_order_id) {
         $cutting_order = CuttingOrderRecord::with(['statusCut'])
         ->whereHas('statusCut', function($query) {
-            $query->where('name', '=', 'sudah');
+            $query->where('name', '=', 'belum', 'or', 'name', '=', 'sudah');
         })
         ->where('id', $cutting_order_id)
         ->first();
