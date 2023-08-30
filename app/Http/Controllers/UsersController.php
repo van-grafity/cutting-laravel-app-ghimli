@@ -254,7 +254,21 @@ class UsersController extends Controller
         $user->email = $request->email;
         $user->save();
         $user->syncRoles($request->role);
-        
+
+        if($request->group == null){
+            return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Updated!');
+        }
+
+        $userGroup = UserGroups::where('user_id', $user->id)->first();
+        if($userGroup){
+            $userGroup->group_id = $request->group;
+        } else {
+            $userGroup = new UserGroups;
+            $userGroup->user_id = $user->id;
+            $userGroup->group_id = $request->group;
+        }
+
+        $userGroup->save();
         return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Updated!');
     }
 
