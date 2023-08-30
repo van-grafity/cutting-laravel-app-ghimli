@@ -141,7 +141,7 @@
             <table class="table table-nota" style="margin: 0px 0px 0px 0px !important;">
                 <thead class="">
                     <tr>
-                        <th width="150">GL  NO: {{ $fbr['gl_number'] }}</th>
+                        <th width="150" style="font-size: 13px !important;">GL  NO: {{ $fbr['gl_number'] }}</th>
                         <th>Style No: {{ $fbr['style'] }}</th>
                         <th width="15%">P/O No: {{ $fbr['fabric_po'] }}</th>
                         <th width="20%">Lay No: {{ $fbr['no_laying_sheet'] }}</th>
