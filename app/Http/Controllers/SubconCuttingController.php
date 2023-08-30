@@ -8,6 +8,10 @@ use App\Models\CuttingOrderRecordDetail;
 use App\Models\User;
 use App\Models\Groups;
 use App\Models\UserGroups;
+use App\Models\LayingPlanning;
+use App\Models\LayingPlanningDetail;
+
+use PDF;
 use Yajra\DataTables\Facades\DataTables;
 
 class SubconCuttingController extends Controller
@@ -146,8 +150,19 @@ class SubconCuttingController extends Controller
 
     public function cutting_report_subcon()
     {
-        // untuk sementara ke halaman comming soon
-        return view('page.coming_soon');
+        $id = 700;
+        $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('id', $id)->first();
+        $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($id) {
+            $query->where('id', $id);
+        })->get();
+        $details->load('cuttingOrderRecord', 'cuttingOrderRecord.cuttingOrderRecordDetail', 'cuttingOrderRecord.cuttingOrderRecordDetail.color');
+        $cuttingOrderRecord = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
+            $query->whereHas('layingPlanning', function($query) use ($id) {
+                $query->where('id', $id);
+            });
+        })->get();
+        $pdf = PDF::loadView('page.subcon.report', compact('data', 'details', 'cuttingOrderRecord'))->setPaper('a4', 'potrait');
+        return $pdf->stream('laying-planning-report.pdf');
     }
 
     /**
