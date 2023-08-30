@@ -24,6 +24,7 @@ class UserRolePermissionsSeeder extends Seeder
         Permission::create(['name' => 'menu master']);
         Permission::create(['name' => 'menu planning']);
         Permission::create(['name' => 'menu cutting']);
+        Permission::create(['name' => 'menu layer']);
         Permission::create(['name' => 'menu ticket']);
         Permission::create(['name' => 'menu ppc']);
 
@@ -38,6 +39,10 @@ class UserRolePermissionsSeeder extends Seeder
         $role_cutting = Role::create(['name' => 'cutter']);
         $role_cutting->givePermissionTo('menu master');
         $role_cutting->givePermissionTo('menu cutting');
+
+        $role_layer = Role::create(['name' => 'layer']);
+        $role_layer->givePermissionTo('menu master');
+        $role_layer->givePermissionTo('menu layer');
 
         $role_ticket = Role::create(['name' => 'ticketer']);
         $role_ticket->givePermissionTo('menu master');
@@ -103,6 +108,13 @@ class UserRolePermissionsSeeder extends Seeder
             'password' => Hash::make('123456789'),
         ]);
         $user->assignRole($role_cutting);
+
+        $user = \App\Models\User::factory()->create([
+            'name' => 'User Layer',
+            'email' => 'layer@ghimli,com',
+            'password' => Hash::make('123456789'),
+        ]);
+        $user->assignRole($role_layer);
         
         $user = \App\Models\User::factory()->create([
             'name' => 'User PPC',
