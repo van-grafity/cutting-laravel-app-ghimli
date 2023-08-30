@@ -193,7 +193,9 @@ class UsersController extends Controller
                 'remember_token' => Str::random(10),
             ]);
             $user->save();
-            $user->assignRole($request->role);
+            if($request->role != null){
+                $user->assignRole($request->role);
+            }
             
             if($request->group == null){
                 return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Added!');
@@ -253,17 +255,12 @@ class UsersController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->save();
-        // $user->syncRoles($request->role);
-//         DB::table('model_has_roles')
-// ->where('model_id', $request->userid)
-// ->update(['role_id' =>  $request->editusertype]);
-// SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '6-48-App\Models\User' for key 'model_has_roles.PRIMARY'
+        
         if($request->role != null){
-            DB::table('model_has_roles')
-            ->where('model_id', $request->userid)
-            ->update(['role_id' =>  $request->role]);
+            $user->assignRole($request->role);
         }
-if($request->group == null){
+
+        if($request->group == null){
             return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Updated!');
         }
 
