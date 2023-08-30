@@ -182,6 +182,8 @@ class CuttingOrdersController extends Controller
             'is_pilot_run' => $getCuttingOrder->is_pilot_run,
             'created_by' => $getCuttingOrder->user->name,
             'layer' => $layingPlanningDetail->layer_qty,
+            'status_layer' => $getCuttingOrder->statusLayer->name,  
+            'status_cut' => $getCuttingOrder->statusCut->name,
         ];
 
         $size_ratio = $this->print_size_ratio($layingPlanningDetail);

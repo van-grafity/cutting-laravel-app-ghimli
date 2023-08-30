@@ -113,6 +113,30 @@
                                             <td class="pl-4">:</td>
                                             <td>{{ $cutting_order->layer }}</td>
                                         </tr>
+                                        <tr>
+                                            <td>Status Layer</td>
+                                            <td class="pl-4">:</td>
+                                            <td>
+                                                @if($cutting_order->status_layer == 'completed')
+                                                    <span class="badge badge-success"> Sudah Layer </span>
+                                                @elseif($cutting_order->status_layer == 'over Layer')
+                                                    <span class="badge badge-danger"> Over Layer </span>
+                                                @else
+                                                    <span class="badge badge-warning"> Belum Layer </span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Status Cut</td>
+                                            <td class="pl-4">:</td>
+                                            <td>
+                                                @if($cutting_order->status_cut == 'sudah')
+                                                    <span class="badge badge-success"> Sudah Potong </span>
+                                                @else
+                                                    <span class="badge badge-warning"> Belum Potong </span>
+                                                @endif
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
