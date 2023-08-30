@@ -40,12 +40,12 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('clerk-cutting', function ($user) {
-            return $user->hasRole(['super_admin','cutter']);
+            return $user->hasRole(['super_admin','cutter','layer']);
         });
 
-        Gate::define('clerk-cutting', function ($user) {
-            return $user->hasRole(['super_admin','layer']);
-        });
+        // Gate::define('clerk-cutting', function ($user) {
+        //     return $user->hasRole(['super_admin','layer']);
+        // });
 
         Gate::define('ppc', function ($user) {
             return $user->hasRole(['super_admin','ppc']);
