@@ -10,6 +10,11 @@ use App\Models\Groups;
 use App\Models\UserGroups;
 use App\Models\LayingPlanning;
 use App\Models\LayingPlanningDetail;
+use App\Models\LayingPlanningSize;
+use App\Models\FabricRequisition;
+use App\Models\GlCombine;
+use App\Models\GlCombineDetail;
+use Carbon\Carbon;
 
 use PDF;
 use Yajra\DataTables\Facades\DataTables;
@@ -26,23 +31,9 @@ class SubconCuttingController extends Controller
         return view('page.subcon.index');
     }
 
-    public function dataCuttingOrder(){
-        $group = Groups::where('group_description', 'Subcon')->get();
-        $groupIds = [];
-        foreach ($group as $key => $value) {
-            $groupIds[] = $value->id;
-        }
-        $userGroup = UserGroups::whereIn('group_id', $groupIds)->get();
-        $userIds = [];
-        foreach ($userGroup as $key => $value) {
-            $userIds[] = $value->user_id;
-        }
-        $users = User::whereIn('id', $userIds)->get();
-        $userNames = [];
-        foreach ($users as $key => $value) {
-            $userNames[] = $value->name;
-        }
-        $cuttingOrderRecordDetail = CuttingOrderRecordDetail::whereIn('operator', $userNames)->get();
+    public function dataCuttingOrder()
+    {
+        $cuttingOrderRecordDetail = CuttingOrderRecordDetail::whereIn('operator', $this->getOperator())->get();
         $cuttingOrderRecordDetailIds = [];
         foreach ($cuttingOrderRecordDetail as $key => $value) {
             $cuttingOrderRecordDetailIds[] = $value->cutting_order_record_id;
@@ -50,45 +41,42 @@ class SubconCuttingController extends Controller
         $cuttingOrderRecord = CuttingOrderRecord::whereIn('id', $cuttingOrderRecordDetailIds)->get();
         $cuttingOrderRecordIds = [];
         foreach ($cuttingOrderRecord as $key => $value) {
-            $cuttingOrderRecordIds[] = $value->id;
+            $cuttingOrderRecordIds[] = $value->laying_planning_detail_id;
         }
-        $query = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'layingPlanningDetail'])
-            ->whereIn('id', $cuttingOrderRecordIds)
-            ->orderBy('id', 'desc')
-            ->get();
-        return DataTables::of($query)
+        $detail = LayingPlanningDetail::whereIn('id', $cuttingOrderRecordIds)->get();
+        $query = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])
+            ->whereHas('style', function($query) {
+                $query->whereNull('deleted_at');
+            })
+            ->whereIn('id', $detail->pluck('laying_planning_id'))
+            ->select('laying_plannings.id','laying_plannings.serial_number','laying_plannings.gl_id','laying_plannings.style_id','laying_plannings.buyer_id','laying_plannings.color_id','laying_plannings.fabric_type_id','laying_plannings.delivery_date','laying_plannings.plan_date')->get();
+            return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
-            ->addColumn('serial_number', function ($data){
-                return $data->serial_number;
+            ->addColumn('gl_number', function ($data){
+                return $data->gl->gl_number;
             })
-            ->addColumn('status', function($data){
-                $status = '';
-                if ($data->statusLayer->name == 'completed') {
-                    $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
-                } else if ($data->statusLayer->name == 'over layer') {
-                    $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
-                } else {
-                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
-                }
-                return $status;
+            ->addColumn('style', function ($data){
+                return $data->style->style;
             })
-            ->addColumn('status_cut', function($data){
-                $status = '';
-                if ($data->statusCut->name == 'sudah') {
-                    $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Sudah Potong</span>';
-                } else {
-                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Potong</span>';
-                }
-                return $status;
+            ->addColumn('buyer', function ($data){
+                return $data->buyer->name;
             })
-            ->addColumn('action', function($data){
-                $action = '
-                <a href="'.route('cutting-order.print', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank">Print Nota</a>
-                <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'">Delete</a>
-                <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1">Detail</a>';
-                $action .= $data->cuttingOrderRecordDetail->isEmpty() ? '' : '<a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank">Print Report</a>';
-                return $action;
+            ->addColumn('color', function ($data){
+                return $data->color->color;
+            })
+            ->addColumn('fabric_type', function ($data){
+                return $data->fabricType->description;
+            })
+            ->addColumn('delivery_date', function ($data){
+                return Carbon::createFromFormat('Y-m-d', $data->delivery_date)->format('d-m-Y');
+            })
+            ->addColumn('plan_date', function ($data){
+                return Carbon::createFromFormat('Y-m-d', $data->plan_date)->format('d-m-Y');
+            })
+            ->addColumn('action', function ($data) {
+                $button = '<a href="'.route('subcon-cutting.show', $data->id).'" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>';
+                return $button;
             })
             ->make(true);
     }
@@ -122,7 +110,61 @@ class SubconCuttingController extends Controller
      */
     public function show($id)
     {
-        //
+        $laying_planning_id = $id;
+        $cuttingOrderRecordDetail = CuttingOrderRecordDetail::whereIn('operator', $this->getOperator())->get();
+        $cuttingOrderRecordDetailIds = [];
+        foreach ($cuttingOrderRecordDetail as $key => $value) {
+            $cuttingOrderRecordDetailIds[] = $value->cutting_order_record_id;
+        }
+        $cuttingOrderRecord = CuttingOrderRecord::whereIn('id', $cuttingOrderRecordDetailIds)->get();
+        $cuttingOrderRecordIds = [];
+        foreach ($cuttingOrderRecord as $key => $value) {
+            $cuttingOrderRecordIds[] = $value->laying_planning_detail_id;
+        }
+        $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->find($laying_planning_id);
+        $details = LayingPlanningDetail::with(['fabricRequisition'])
+            ->where('laying_planning_id', $laying_planning_id)
+            ->whereIn('id', $cuttingOrderRecordIds)
+            ->get();
+        $fabric_requisition = FabricRequisition::with(['layingPlanningDetail'])->whereHas('layingPlanningDetail', function($query) use ($laying_planning_id) {
+            $query->where('laying_planning_id', $laying_planning_id);
+        })->get();
+        $total_order_qty = LayingPlanning::where('gl_id', $data->gl_id)->sum('order_qty');
+        $data->total_order_qty = $total_order_qty;
+        $total_pcs_all_table = 0;
+        $total_length_all_table = 0;
+
+        $delivery_date = Carbon::createFromFormat('Y-m-d', $data->delivery_date)->format('d-m-Y');
+        $data->delivery_date = $delivery_date;
+        $plan_date = Carbon::createFromFormat('Y-m-d', $data->plan_date)->format('d-m-Y');
+        $data->plan_date = $plan_date;
+
+        foreach($details as $key => $value) {
+            $details[$key]->cor_status = $value->cuttingOrderRecord ? 'disabled' : '';
+            $details[$key]->fr_status = $value->fabricRequisition ? 'disabled' : '';
+            $details[$key]->cor_id = $value->cuttingOrderRecord ? $value->cuttingOrderRecord->id : '';
+            $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($laying_planning_id) {
+                $query->where('laying_planning_id', $laying_planning_id);
+            })->get();
+            $details[$key]->cutting_order_record = $cutting_order_record;
+            $total_pcs_all_table = $total_pcs_all_table + $value->total_all_size;
+            $total_length_all_table = $total_length_all_table + $value->total_length;
+        }
+
+        $data->total_pcs_all_table = $total_pcs_all_table;
+        $data->total_length_all_table = $total_length_all_table;
+  
+        $get_size_list = $data->layingPlanningSize()->with('glCombine')->get();
+        $size_list = [];
+        foreach ($get_size_list as $key => $size) {
+            $size_list[] = $size->size;
+            $gl_combine_name = "";
+            foreach ($size->glCombine as $key => $gl_combine) {
+                $gl_combine_name = $gl_combine_name . $gl_combine->glCombine->name . " ";
+            }
+            $size->size->size = $size->size->size ."". $gl_combine_name;
+        }
+        return view('page.subcon.detail', compact('data', 'details','size_list')); 
     }
 
     /**
@@ -148,13 +190,34 @@ class SubconCuttingController extends Controller
         //
     }
 
-    public function cutting_report_subcon()
+    // Route::get('cutting-report-subcon/{id}', [SubconCuttingController::class,'cutting_report_subcon'])->name('subcon-cutting.cutting-report-subcon');
+    public function cutting_report_subcon($id)
     {
-        $id = 700;
+        // $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('id', $id)->first();
+        // $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($id) {
+        //     $query->where('id', $id);
+        // })->get();
+        // $details->load('cuttingOrderRecord', 'cuttingOrderRecord.cuttingOrderRecordDetail', 'cuttingOrderRecord.cuttingOrderRecordDetail.color');
+        // $cuttingOrderRecord = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
+        //     $query->whereHas('layingPlanning', function($query) use ($id) {
+        //         $query->where('id', $id);
+        //     });
+        // })->get();
+        // ganti get data berdasarkan subcon
+        $cuttingOrderRecordDetail = CuttingOrderRecordDetail::whereIn('operator', $this->getOperator())->get();
+        $cuttingOrderRecordDetailIds = [];
+        foreach ($cuttingOrderRecordDetail as $key => $value) {
+            $cuttingOrderRecordDetailIds[] = $value->cutting_order_record_id;
+        }
+        $cuttingOrderRecord = CuttingOrderRecord::whereIn('id', $cuttingOrderRecordDetailIds)->get();
+        $cuttingOrderRecordIds = [];
+        foreach ($cuttingOrderRecord as $key => $value) {
+            $cuttingOrderRecordIds[] = $value->laying_planning_detail_id;
+        }
         $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('id', $id)->first();
         $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($id) {
             $query->where('id', $id);
-        })->get();
+        })->whereIn('id', $cuttingOrderRecordIds)->get();
         $details->load('cuttingOrderRecord', 'cuttingOrderRecord.cuttingOrderRecordDetail', 'cuttingOrderRecord.cuttingOrderRecordDetail.color');
         $cuttingOrderRecord = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
             $query->whereHas('layingPlanning', function($query) use ($id) {
@@ -163,6 +226,47 @@ class SubconCuttingController extends Controller
         })->get();
         $pdf = PDF::loadView('page.subcon.report', compact('data', 'details', 'cuttingOrderRecord'))->setPaper('a4', 'potrait');
         return $pdf->stream('laying-planning-report.pdf');
+    }
+    
+    public function print()
+    {
+        $cuttingOrderRecordDetail = CuttingOrderRecordDetail::whereIn('operator', $this->getOperator())->get();
+        $cuttingOrderRecordDetailIds = [];
+        foreach ($cuttingOrderRecordDetail as $key => $value) {
+            $cuttingOrderRecordDetailIds[] = $value->cutting_order_record_id;
+        }
+        $cuttingOrderRecord = CuttingOrderRecord::whereIn('id', $cuttingOrderRecordDetailIds)->get();
+        $cuttingOrderRecordIds = [];
+        foreach ($cuttingOrderRecord as $key => $value) {
+            $cuttingOrderRecordIds[] = $value->laying_planning_detail_id;
+        }
+        $detail = LayingPlanningDetail::whereIn('id', $cuttingOrderRecordIds)->get();
+        $laying_plannings = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])
+            ->whereHas('style', function($query) {
+                $query->whereNull('deleted_at');
+            })
+            ->whereIn('id', $detail->pluck('laying_planning_id'))
+            ->select('laying_plannings.id','laying_plannings.serial_number')->get();
+        return view('page.subcon.print', compact('laying_plannings'));
+    }
+
+    public function getOperator(){
+        $group = Groups::where('group_description', 'Subcon')->get();
+        $groupIds = [];
+        foreach ($group as $key => $value) {
+            $groupIds[] = $value->id;
+        }
+        $userGroup = UserGroups::whereIn('group_id', $groupIds)->get();
+        $userIds = [];
+        foreach ($userGroup as $key => $value) {
+            $userIds[] = $value->user_id;
+        }
+        $users = User::whereIn('id', $userIds)->get();
+        $userNames = [];
+        foreach ($users as $key => $value) {
+            $userNames[] = $value->name;
+        }
+        return $userNames;
     }
 
     /**

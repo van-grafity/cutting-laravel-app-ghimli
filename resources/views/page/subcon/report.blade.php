@@ -53,7 +53,8 @@
         <table class="table table-bordered" style="width:100%; font-size: 10px; font-weight: bold; margin-bottom: 0 !important; padding-bottom: 28 !important;">
             <thead>
                 <tr>
-                    <th rowspan="3">No</br>Laying</br>Sheet</th>
+                    <th rowspan="3">No</th>
+                    <th rowspan="3" width="10%">No</br>Laying</br>Sheet</th>
                     <th rowspan="3">Date</th>
                     <th colspan="{{ $length }}">Ratio</th>
                     <th rowspan="3">Lay</br>Qty</th>
@@ -76,6 +77,7 @@
                 @foreach ($details as $detail)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
+                    <td>{{ $detail->no_laying_sheet }}</td>
                     <td>{{ date('d-M', strtotime($detail->layingPlanning->plan_date)) }}</td>
                     @foreach ($detail->layingPlanningDetailSize as $item)
                         @if ($item->qty_per_size == 0)
