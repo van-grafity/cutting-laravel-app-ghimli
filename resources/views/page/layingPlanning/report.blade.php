@@ -350,7 +350,7 @@
                         {
                             $sisa += $item->quantity;
                         }
-                        echo $sisa - $total_all_size;
+                        echo $total_all_size -  $sisa;
                     ?></td>
                     <td><?php
                         $total = 0;
