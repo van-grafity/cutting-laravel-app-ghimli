@@ -476,7 +476,7 @@ return [
         ],
         [
             'text' => 'Cutting Report Subcon',
-            'url'  => '/cutting-report-subcon',
+            'url'  => '/cutting-print-subcon',
             'icon' => 'fas fa-fw fa fa-database',
             'can'  => 'clerk',
         ]
