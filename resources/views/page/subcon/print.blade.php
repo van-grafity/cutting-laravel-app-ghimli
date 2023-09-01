@@ -31,7 +31,14 @@
                             @endforeach
                         </select>
                     </div>
+                    
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <p class="card-text">*Planning serial number muncul hanya berdasarkan data subcon</p>
+                        </div>
+                    </div>
 
+                    <br/>
                     <div class="d-flex justify-content-center">
                         <a href="javascript:void(0);" class="btn btn-primary mb-2 mr-2" id="btn_print_report">Print Summary</a>
                     </div>
