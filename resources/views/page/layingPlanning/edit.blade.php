@@ -27,7 +27,7 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="gl" class="form-label">GL</label>
-                                    <select class="form-control select2" id="gl" name="gl" style="width: 100%;" data-placeholder="Choose GL" disabled>
+                                    <select class="form-control select2" id="gl" name="gl" style="width: 100%;" data-placeholder="Choose GL">
                                         <option value="">Choose GL</option>
                                         @foreach ($gls as $gl)
                                             <option value="{{ $gl->id }}" {{ $gl->id == $layingPlanning->gl_id ? 'selected' : '' }}>{{ $gl->gl_number }}</option>
