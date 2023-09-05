@@ -25,7 +25,13 @@ class CuttingOrdersController extends BaseController
     public function index()
     {
         $data = CuttingOrderRecord::with('statusLayer', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->latest()->paginate(50);
-        
+        // get latest base on data cuttingOrderRecordDetail
+        // $data = CuttingOrderRecord::with('statusLayer', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')
+        //     ->whereHas('cuttingOrderRecordDetail', function ($query) {
+        //         $query->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-2 day')));
+        //     })
+        //     ->latest()
+        //     ->paginate(50);
         $pagination = [
             'current_page' => $data->currentPage(),
             'last_page' => $data->lastPage(),
