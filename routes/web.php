@@ -38,8 +38,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::resource('machine', MachineController::class);
 Route::get('/machine/print/{serial_number}', [MachineController::class, 'print'])->name('machine.print');
 Route::get('/machine/print-multiple/{id}', [MachineController::class, 'print_multiple'])->name('machine.print-multiple');
+Route::get('/machine-data', [MachineController::class, 'dataMachine'])->name('machine-data');
+Route::get('/machine-qr-code', [MachineController::class, 'qr_code'])->name('machine-qr-code');
+
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {

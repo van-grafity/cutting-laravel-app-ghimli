@@ -6,6 +6,13 @@ use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+
+use App\Models\Machine;
+use App\Models\MachineType;
+use App\Models\Brand;
+
+use Yajra\Datatables\Datatables;
+
 use PDF;
 class MachineController extends Controller
 {
@@ -16,9 +23,23 @@ class MachineController extends Controller
      */
     public function index()
     {
-        //
+        return view ('page.machine.index');
     }
 
+    public function dataMachine()
+    {
+        $query = Machine::with('machine_type', 'brand')->get();
+        return Datatables::of($query)
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->addColumn('machine_type', function($data) {
+                return $data->machine_type->machine_type;
+            })
+            ->addColumn('brand', function($data) {
+                return $data->brand->brand;
+            })
+            ->make(true);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -135,6 +156,29 @@ class MachineController extends Controller
         $pdf = PDF::loadview('page.machine.print-multi', compact('data'))->setPaper('a4', 'landscape');
         return $pdf->stream('machine-serial-number.pdf');
     }
+
+    public function qr_code(Request $request)
+    {
+        $machines = Machine::with('machine_type', 'brand')
+            ->limit(1000)
+            ->get();
+        $data = [];
+        $serial_numbers = [];
+        foreach ($machines as $key => $machine) {
+            $serial_numbers[] = $machine->serial_number;
+        }
+        $data = [
+            'serial_number' => $serial_numbers,
+        ];
+        foreach ($data['serial_number'] as $key => $value) {
+            $data['serial_number'][$key] = [
+                'serial_number' => $value,
+            ];
+        }
+        $pdf = PDF::loadview('page.machine.print-multi', compact('data'))->setPaper('a4', 'landscape');
+        return $pdf->stream('machine-serial-number.pdf');
+    }
+
     /**
      * Remove the specified resource from storage.
      *
