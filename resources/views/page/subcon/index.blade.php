@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Subcon Cutting')
+@section('title', 'Summary by Group')
 
 @section('content')
 <div class="container-fluid">
@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="content-title text-center">
-                        <h3>Subcon Cutting List</h3>
+                        <h3>Summary by Group</h3>
                     </div>
                     <table class="table table-bordered table-hover" id="laying_planning_table">
                         <thead class="">
