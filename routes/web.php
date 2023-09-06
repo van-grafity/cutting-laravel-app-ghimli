@@ -19,7 +19,9 @@ use App\Http\Controllers\RemarksController;
 use App\Http\Controllers\FabricRequisitionsController;
 use App\Http\Controllers\DailyCuttingReportsController;
 use App\Http\Controllers\PalletsController;
+use App\Http\Controllers\MachineController;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Crypt;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +38,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/machine/print/{serial_number}', [MachineController::class, 'print'])->name('machine.print');
+Route::get('/machine/print-multiple/{id}', [MachineController::class, 'print_multiple'])->name('machine.print-multiple');
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
