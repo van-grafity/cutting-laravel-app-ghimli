@@ -200,7 +200,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class,
     ],
 
     /*
@@ -219,7 +218,6 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'QrCode' => SimpleSoftwareIO\QrCode\QrCode::class,
-        'Image' => Intervention\Image\Facades\Image::class,
     ])->toArray(),
 
 ];
