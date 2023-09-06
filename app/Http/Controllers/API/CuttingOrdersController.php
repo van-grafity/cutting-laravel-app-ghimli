@@ -25,7 +25,13 @@ class CuttingOrdersController extends BaseController
     public function index()
     {
         $data = CuttingOrderRecord::with('statusLayer', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->latest()->paginate(50);
-        
+        // get latest base on data cuttingOrderRecordDetail
+        // $data = CuttingOrderRecord::with('statusLayer', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')
+        //     ->whereHas('cuttingOrderRecordDetail', function ($query) {
+        //         $query->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-2 day')));
+        //     })
+        //     ->latest()
+        //     ->paginate(50);
         $pagination = [
             'current_page' => $data->currentPage(),
             'last_page' => $data->lastPage(),
@@ -123,6 +129,31 @@ class CuttingOrdersController extends BaseController
         );
         return $this->onSuccess($data, 'Cutting Order Record Detail created successfully.');
     }
+
+    public function checkRangeWithinRadius(Request $request)
+    {
+        $currentLatitude = 1.108483; // $request->input('current_latitude')
+        $currentLongitude = 104.071415; // $request->input('current_longitude')
+        $radius = 30.0; // Radius dalam meter
+
+        $targetLatitude = 1.073364; // $request->input('target_latitude')
+        $targetLongitude = 104.024663; // $request->input('target_longitude')
+
+        $radiusInDegrees = $radius / 111300; // 111300 adalah jarak antara 1 derajat latitude dengan 1 derajat longitude
+
+        // if range is outside target latitude and longitude
+        if (
+            ($currentLatitude > ($targetLatitude + $radiusInDegrees)) ||
+            ($currentLatitude < ($targetLatitude - $radiusInDegrees)) ||
+            ($currentLongitude > ($targetLongitude + $radiusInDegrees)) ||
+            ($currentLongitude < ($targetLongitude - $radiusInDegrees))
+        ) {
+            return $this->onSuccess(404, 'Kamu diluar radius.');
+        }
+        return $this->onSuccess(null, 'Kamu berada di dalam radius.');
+        
+    }
+
 
     public function search(Request $request)
     {

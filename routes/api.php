@@ -24,7 +24,7 @@ use App\Http\Controllers\API\CuttingTicketsController;
 
 Route::post('login', [AuthController::class, 'signin']);
 Route::post('register', [AuthController::class, 'signup']);
-
+Route::get('cutting-orders/radius/check-range-within-radius', [CuttingOrdersController::class, 'checkRangeWithinRadius']);
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/me', [AuthController::class, 'me']);
@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('cutting-orders/cor/{id}', [CuttingOrdersController::class, 'getLayingPlanningDetailByCuttingOrderRecordId']);
     Route::post('cutting-orders/status-cut', [CuttingOrdersController::class, 'postStatusCut']);
     Route::post('cutting-orders/search', [CuttingOrdersController::class, 'search']);
+    
 
     Route::get('cutting-tickets', [CuttingTicketsController::class, 'index']);
     Route::get('cutting-tickets/{id}', [CuttingTicketsController::class, 'show']);

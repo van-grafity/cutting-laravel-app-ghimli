@@ -438,6 +438,23 @@ return [
             'can'  => 'admin-only',
         ],
         [
+            'text' => 'Machine',
+            'icon' => 'fas fa-fw fa fa-object-ungroup',
+            'can'  => 'clerk',
+            'submenu' => [
+                [
+                    'classes'=> 'ml-3',
+                    'text' => 'Machine List',
+                    'url' => '/machine',
+                ],
+                [
+                    'classes'=> 'ml-3',
+                    'text' => 'Machine Qr Code',
+                    'url' => '/machine-qr-code',
+                ],
+            ],
+        ],
+        [
             'text' => 'Cutting Ticket',
             'icon' => 'fas fa-fw fa fa-object-ungroup',
             'can'  => 'clerk',
