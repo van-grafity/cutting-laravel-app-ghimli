@@ -426,33 +426,10 @@ return [
             'can'  => 'clerk',
         ],
         [
-            'text' => 'Summary Cutting Subcon',
+            'text' => 'Summary by Group',
             'url'  => '/subcon-cutting',
             'icon' => 'fas fa-fw fa fa-database',
             'can'  => 'clerk',
-        ],
-        [
-            'text' => 'Pallet',
-            'url'  => '/pallets',
-            'icon' => 'fas fa-fw fa fa-solid fa-pallet',
-            'can'  => 'admin-only',
-        ],
-        [
-            'text' => 'Machine',
-            'icon' => 'fas fa-fw fa fa-object-ungroup',
-            'can'  => 'clerk',
-            'submenu' => [
-                [
-                    'classes'=> 'ml-3',
-                    'text' => 'Machine List',
-                    'url' => '/machine',
-                ],
-                [
-                    'classes'=> 'ml-3',
-                    'text' => 'Machine Qr Code',
-                    'url' => '/machine-qr-code',
-                ],
-            ],
         ],
         [
             'text' => 'Cutting Ticket',
@@ -496,7 +473,38 @@ return [
             'url'  => '/cutting-print-subcon',
             'icon' => 'fas fa-fw fa fa-database',
             'can'  => 'clerk',
-        ]
+        ],
+        ['header' => 'Warehouse'],
+        [
+            'text' => 'Fabric Issues',
+            'url'  => '/fabric-issues',
+            'icon' => 'fas fa-fw fa fa-tasks',
+            'can'  => 'clerk',
+        ],
+        ['header' => 'Lain-lain'],
+        [
+            'text' => 'Pallet',
+            'url'  => '/pallets',
+            'icon' => 'fas fa-fw fa fa-solid fa-pallet',
+            'can'  => 'admin-only',
+        ],
+        [
+            'text' => 'Machine',
+            'icon' => 'fas fa-fw fa fa-object-ungroup',
+            'can'  => 'clerk',
+            'submenu' => [
+                [
+                    'classes'=> 'ml-3',
+                    'text' => 'Machine List',
+                    'url' => '/machine',
+                ],
+                [
+                    'classes'=> 'ml-3',
+                    'text' => 'Machine Qr Code',
+                    'url' => '/machine-qr-code',
+                ],
+            ],
+        ],
     ],
 
     /*
