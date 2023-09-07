@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Subcon Cutting Detail')
+@section('title', 'Summary Group Detail')
 
 @section('content')
 <div class="container-fluid">
@@ -10,6 +10,21 @@
                 <div class="card-body">
                     
                     <div class="detail-section my-5 px-5">
+                        <div class="row mt-5">
+                            <div class="col-md-12 text-right">
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle shadow-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Action
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a type="button" class="dropdown-item" href="#"
+                                        data-toggle="modal" data-target="#exampleModalLong">
+                                            Summary Group
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row mb-3">
                             <div class="col-sm-12">
                                 <table>
@@ -97,7 +112,6 @@
                                 </table>
                             </div>
                         </div>
-
                     </div>
 
                     <hr style="border-top:2px solid #bbb" class="py-3">
@@ -112,6 +126,7 @@
                                 <th scope="col" hidden>No. </th>
                                 <th scope="col">No Laying Sheet </th>
                                 <th scope="col">Table No</th>
+                                <th scope="col">Group</th>
                                 <th scope="col">Marker Code</th>
                                 <th scope="col">Marker Length</th>
                                 <th scope="col">Total Pcs</th>
@@ -130,6 +145,11 @@
                                     <td>
                                         <a href="{{ route('cutting-order.show', $detail->cor_id) }}" class="text-decoration-none">{{ $detail->table_number }}</a>
                                     </td>
+                                    <td><?php
+                                        $group = $detail->group;
+                                        $group = substr($group, 0, 8);
+                                        echo $group;
+                                    ?></td>
                                     <td>{{ $detail->marker_code }}</td>
                                     <td>{{ $detail->marker_length }}</td>
                                     <td>{{ $detail->total_all_size }}</td>
@@ -157,6 +177,35 @@
                     </div>
 
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Summary Group date start, date end, gl_number -->
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Summary Group</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row mt-3">
+                    <div class="col-sm-12">
+                        <label for="gl_number">Group</label>
+                        <select class="form-control" id="gl_number" name="gl_number">
+                            <option value="">-- Select Group --</option>
+                            @foreach ($data->group as $group)
+                                @if (substr($group, 0, 8) != '')
+                                    <option value="{{ $group }}">{{ substr($group, 0, 8) }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="javascript:void(0);" class="btn btn-primary" id="btn_modal_summary_group">Print</a>
             </div>
         </div>
     </div>
@@ -398,6 +447,9 @@ $(document).ready(function(){
         placement: "top",
         trigger: "focus"
     });
+
+    // btn_modal_summary_group show modal test
+   
 
     $('#btn_modal_create').click((e) => {
         $('#modal_formLabel').text("Add Cutting Table")

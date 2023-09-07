@@ -28,7 +28,8 @@ class SubconCuttingController extends Controller
      */
     public function index()
     {
-        return view('page.subcon.index');
+        $group = Groups::where('group_description', 'Subcon')->get();
+        return view('page.subcon.index', compact('group'));
     }
 
     public function dataCuttingOrder()
@@ -142,6 +143,7 @@ class SubconCuttingController extends Controller
         foreach($details as $key => $value) {
             $details[$key]->cor_status = $value->cuttingOrderRecord ? 'disabled' : '';
             $details[$key]->fr_status = $value->fabricRequisition ? 'disabled' : '';
+            $details[$key]->group = $value->cuttingOrderRecord ? $value->cuttingOrderRecord->cuttingOrderRecordDetail->first()->operator : '';
             $details[$key]->cor_id = $value->cuttingOrderRecord ? $value->cuttingOrderRecord->id : '';
             $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($laying_planning_id) {
                 $query->where('laying_planning_id', $laying_planning_id);
@@ -150,6 +152,15 @@ class SubconCuttingController extends Controller
             $total_pcs_all_table = $total_pcs_all_table + $value->total_all_size;
             $total_length_all_table = $total_length_all_table + $value->total_length;
         }
+        // $details[$key]->group = value->cuttingOrderRecord->cuttingOrderRecordDetail->operator
+        // push to group uniq only
+        $group = [];
+        foreach ($details as $key => $value) {
+            if (!in_array($value->group, $group)) {
+                $group[] = $value->group;
+            }
+        }
+        $data->group = $group;
 
         $data->total_pcs_all_table = $total_pcs_all_table;
         $data->total_length_all_table = $total_length_all_table;
@@ -230,6 +241,7 @@ class SubconCuttingController extends Controller
     
     public function print()
     {
+        $group = Groups::get();
         $cuttingOrderRecordDetail = CuttingOrderRecordDetail::whereIn('operator', $this->getOperator())->get();
         $cuttingOrderRecordDetailIds = [];
         foreach ($cuttingOrderRecordDetail as $key => $value) {
@@ -247,7 +259,7 @@ class SubconCuttingController extends Controller
             })
             ->whereIn('id', $detail->pluck('laying_planning_id'))
             ->select('laying_plannings.id','laying_plannings.serial_number')->get();
-        return view('page.subcon.print', compact('laying_plannings'));
+        return view('page.subcon.print', compact('laying_plannings', 'group'));
     }
 
     public function getOperator(){

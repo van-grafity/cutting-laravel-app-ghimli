@@ -22,7 +22,28 @@
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-body">
-                    <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="date_start">Date Start</label>
+                            <input type="date" class="form-control" id="date_start" name="date_start">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="date_end">Date End</label>
+                            <input type="date" class="form-control" id="date_end" name="date_end">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <label for="gl_number">Group</label>
+                            <select class="form-control" id="gl_number" name="gl_number">
+                                <option value="">-- Select Group --</option>
+                                @foreach ($group as $group)
+                                    <option value="{{ $group->id }}">{{ substr($group->group_name, 0) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <!-- <div class="form-group">
                         <label for="lp_serial_number">Laying Planning Serial Number</label>
                         <select class="form-control" id="lp_serial_number" name="lp_serial_number">
                             <option value="">-- Select Laying Planning Serial Number --</option>
@@ -31,12 +52,12 @@
                             @endforeach
                         </select>
                     </div>
-                    
-                    <div class="card bg-danger text-white">
+                     -->
+                    <!-- <div class="card bg-danger text-white">
                         <div class="card-body">
                             <p class="card-text">*Planning serial number muncul hanya berdasarkan data subcon</p>
                         </div>
-                    </div>
+                    </div> -->
 
                     <br/>
                     <div class="d-flex justify-content-center">

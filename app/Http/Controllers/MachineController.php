@@ -162,9 +162,9 @@ class MachineController extends Controller
         $machines = Machine::with('machine_type', 'brand')
         ->whereBetween('id', [1, 821])
         ->get();
-        $machines = Machine::with('machine_type', 'brand')
-        ->whereBetween('id', [822, 1642])
-        ->get();
+        // $machines = Machine::with('machine_type', 'brand')
+        // ->whereBetween('id', [822, 1642])
+        // ->get();
         $data = [];
         $serial_numbers = [];
         foreach ($machines as $key => $machine) {
