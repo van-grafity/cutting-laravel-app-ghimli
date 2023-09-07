@@ -463,13 +463,13 @@ return [
             'can'  => 'clerk',
         ],
         [
-            'text' => 'Cutting Order Status',
+            'text' => 'Cutting Status',
             'url'  => '/status-cutting-order-record',
             'icon' => 'fas fa-fw fa fa-chart-bar',
             'can'  => 'clerk',
         ],
         [
-            'text' => 'Cutting Report Subcon',
+            'text' => 'Cutting Group Report',
             'url'  => '/cutting-print-subcon',
             'icon' => 'fas fa-fw fa fa-database',
             'can'  => 'clerk',

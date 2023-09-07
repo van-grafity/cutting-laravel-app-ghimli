@@ -111,7 +111,12 @@
                     <tr>
                         <th rowspan="1">Previous Balance</th>
                         @foreach($groups as $key_group => $group)
-                            <th rowspan="1" colspan="1">{{ $group->group_name }}</th>
+                            <th rowspan="1" colspan="1"><?php
+                                $group_name = $group->group_name;
+                                $group_name = substr($group_name, 0, 8);
+                                echo $group_name;
+                            ?></th>
+
                         @endforeach
                     </tr>
                 </thead>
