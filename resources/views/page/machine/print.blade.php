@@ -46,7 +46,7 @@
             </tr>
             <tr>
                 <td rowspan="3" width="100" height="100" style="padding-left: 12px; margin: 0px; font-size: 24px;">
-                    {{ $cor['serial_number'] }}
+                    {{ $data['serial_number'] }}
                 </td>
             </tr>
         </tbody>
