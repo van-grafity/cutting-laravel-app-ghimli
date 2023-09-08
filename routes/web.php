@@ -17,6 +17,7 @@ use App\Http\Controllers\FetchController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RemarksController;
 use App\Http\Controllers\FabricRequisitionsController;
+use App\Http\Controllers\FabricIssuesController;
 use App\Http\Controllers\DailyCuttingReportsController;
 use App\Http\Controllers\PalletsController;
 use App\Http\Controllers\MachineController;
@@ -73,6 +74,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/cutting-ticket-detail-data/{id}', [CuttingTicketsController::class, 'dataCuttingTicketByCOR'])->name('cutting-ticket-detail-data'); // http://localhost/cutting-ticket-app/public/cutting-ticket-detail-data/COR-62843-MHG-001
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
     Route::get('/fabric-requisition-data', [FabricRequisitionsController::class, 'dataFabricRequisition']);
+    Route::get('/fabric-issue-data', [FabricIssuesController::class, 'dataFabricIssue']);
     Route::get('/daily-cutting-data', [DailyCuttingReportsController::class, 'dataDailyCutting']);
 });
 
@@ -171,7 +173,8 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('daily-cutting-report-print', [DailyCuttingReportsController::class,'dailyCuttingReport'])->name('daily-cutting.print-report');
 });
 
-
+Route::resource('fabric-issue', FabricIssuesController::class);
+Route::get('fabric-issue-print/{id}', [FabricIssuesController::class,'print'])->name('fabric-issue.print');
 
 // ## Route for Fetch Select2 Form
 Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(function(){
