@@ -89,15 +89,6 @@ class FabricIssuesController extends Controller
         //
     }
 
-    // Schema::create('fabric_issues', function (Blueprint $table) {
-    //     $table->id();
-    //     $table->bigInteger('fabric_request_id')->unsigned();
-    //     $table->foreign('fabric_request_id')->references('id')->on('fabric_requisitions')->onDelete('cascade');
-    //     $table->string('roll_no');
-    //     $table->string('weight');
-    //     $table->timestamps();
-    // });
-
     /**
      * Display the specified resource.
      *
@@ -185,7 +176,7 @@ class FabricIssuesController extends Controller
             $header[] = 'WEIGHT / Berat';
         }
 
-        $customPaper = array(0,0,612.00,792.00);
+        $customPaper = array(0,0,612.00,400.00);
         $pdf = PDF::loadview('page.fabric-issue.print', compact('data', 'fabric_issues', 'header'))->setPaper($customPaper, 'portrait');
         return $pdf->stream($filename);
     }

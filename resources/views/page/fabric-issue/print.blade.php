@@ -104,15 +104,6 @@
 
         <table width="100%" style="margin: 0px 0px 0px 0px; !important; padding: 0px 0px 0px 0px; !important;">
             <tr>
-                <td width="50%" style="font-weight: bold; font-size: 14px;">
-                    <div style="font-size: 10px;">{{ $data->serial_number }}</div>
-                </td>
-                <td width="50%" style="text-align: right; font-size: 10px;">
-                    RP-GLA-CUT-002-00<br>
-                    Rev 00<br>
-                </td>
-            </tr>
-            <tr>
                 <td colspan="2" style="text-align: center; font-weight: bold; font-size: 14px;">
                     PT. GHIM LI INDONESIA
                     <br>
@@ -209,25 +200,31 @@
                 @endforeach
             </thead>
             <tbody>
-                <!-- @php
+                @php
                     $count = 0;
                 @endphp
-                @foreach ($fabric_issues as $item)
+                @for ($i = 0; $i < 14; $i++)
                     @if ($count == 0)
                         <tr>
                     @endif
-                    <td>{{ $item->roll_number }}</td>
-                    <td>{{ $item->weight }}</td>
+                    @if (isset($fabric_issues[$i]))
+                        <td style="font-size: 8pt;">{{ $fabric_issues[$i]->roll_no }}</td>
+                        <td style="font-size: 8pt;">{{ $fabric_issues[$i]->weight }}</td>
+                    @else
+                        <td style="font-size: 8pt;"></td>
+                        <td style="font-size: 8pt;"></td>
+                    @endif
                     @php
                         $count++;
                     @endphp
-                    @if ($count == 4)
+                    @if ($count == 2)
                         </tr>
                         @php
                             $count = 0;
                         @endphp
                     @endif
-                @endforeach -->
+                @endfor
+                
             </tbody>
         </table>
 
