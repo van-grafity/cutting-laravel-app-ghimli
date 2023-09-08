@@ -18,5 +18,10 @@ class FabricRequisition extends Model
     {
         return $this->belongsTo(LayingPlanningDetail::class, 'laying_planning_detail_id', 'id');
     }
+
+    public function fabricIssues()
+    {
+        return $this->hasMany(FabricIssue::class, 'fabric_request_id', 'id');
+    }
     
 }

@@ -477,7 +477,7 @@ return [
         ['header' => 'Warehouse'],
         [
             'text' => 'Fabric Issues',
-            'url'  => '/fabric-issues',
+            'url'  => '/fabric-issue',
             'icon' => 'fas fa-fw fa fa-tasks',
             'can'  => 'clerk',
         ],
