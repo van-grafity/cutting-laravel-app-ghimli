@@ -22,7 +22,7 @@
                                 <th scope="col" class="">P/O No</th>
                                 <th scope="col" class="">Color</th>
                                 <th width="8%" scope="col" class="">Status</th>
-                                <th width="6%" scope="col" class="">Action</th>
+                                <th width="8%" scope="col" class="">Action</th>
                             </tr>
                         </thead>
                     </table>
