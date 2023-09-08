@@ -67,6 +67,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/gl-data', [GlsController::class, 'dataGl']);
     Route::get('/style-data', [StylesController::class, 'dataStyle']);
     Route::get('/laying-planning-data', [LayingPlanningsController::class, 'dataLayingPlanning']);
+    Route::get('/laying-planning-detail-data/{id}', [LayingPlanningsController::class, 'dataLayingPlanningDetail'])->name('laying-planning-detail-data');
     Route::get('/cutting-order-data', [CuttingOrdersController::class, 'dataCuttingOrder']);
     Route::get('/subcon-cutting-data', [SubconCuttingController::class, 'dataCuttingOrder']);
     Route::get('/cutting-order-chart', [CuttingOrdersController::class, 'chartCuttingOrder']);
