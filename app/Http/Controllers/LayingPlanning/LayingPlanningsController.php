@@ -198,10 +198,10 @@ class LayingPlanningsController extends Controller
             $details[$key]->fr_status = $value->fabricRequisition ? 'disabled' : '';
             // cuttingOrderRecord->layingPlanningDetail-layingPlanning
             $details[$key]->cor_id = $value->cuttingOrderRecord ? $value->cuttingOrderRecord->id : '';
-            $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
-                $query->where('laying_planning_id', $id);
-            })->get();
-            $details[$key]->cutting_order_record = $cutting_order_record;
+            // $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
+            //     $query->where('laying_planning_id', $id);
+            // })->get();
+            // $details[$key]->cutting_order_record = $cutting_order_record;
             $total_pcs_all_table = $total_pcs_all_table + $value->total_all_size;
             $total_length_all_table = $total_length_all_table + $value->total_length;
         }
@@ -228,6 +228,37 @@ class LayingPlanningsController extends Controller
         return view('page.layingPlanning.detail', compact('data', 'details','size_list'));
     }
 
+    public function dataLayingPlanningDetail($id){
+        $query = LayingPlanningDetail::with(['fabricRequisition'])->where('laying_planning_id', $id)->get();
+        $total_pcs_all_table = 0;
+        $total_length_all_table = 0;
+
+        foreach($query as $key => $value) {
+            $query[$key]->cor_status = $value->cuttingOrderRecord ? 'disabled' : '';
+            $query[$key]->fr_status = $value->fabricRequisition ? 'disabled' : '';
+            $query[$key]->cor_id = $value->cuttingOrderRecord ? $value->cuttingOrderRecord->id : '';
+            $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($cor) use ($id) {
+                $cor->where('laying_planning_id', $id);
+            })->get();
+            $query[$key]->cutting_order_record = $cutting_order_record;
+            $total_pcs_all_table = $total_pcs_all_table + $value->total_all_size;
+            $total_length_all_table = $total_length_all_table + $value->total_length;
+        }
+
+        return Datatables::of($query)
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->addColumn('action', function($data){
+                $action = '<a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="'.$data->id.'" data-url="'.route('laying-planning.detail-edit', $data->id).'">Edit</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="'.$data->id.'" data-url="'.route('laying-planning.detail-delete', $data->id).'" >Delete</a>
+                <a href="'.route('cutting-order.createNota', $data->id).'" class="btn btn-info btn-sm '.$data->cor_status.'">Create COR</a>
+                <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="'.$data->id.'">Duplicate</a>
+                <a href="'.route('fabric-requisition.createNota', $data->id).'" class="btn btn-sm btn-outline-dark '.$data->fr_status.'" data-id="'.$data->id.'">Fabric Req</a>';
+                return $action;
+            })
+            ->make(true);
+    }
+        
     public function layingPlanningReport($id)
     {
         $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('id', $id)->first();
