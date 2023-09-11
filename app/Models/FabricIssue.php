@@ -13,6 +13,7 @@ class FabricIssue extends Model
         'fabric_request_id',
         'roll_no',
         'weight',
+        'yard',
     ];
 
     public function fabricRequest()

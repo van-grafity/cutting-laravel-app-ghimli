@@ -26,7 +26,7 @@ class FabricIssuesController extends Controller
 
     public function dataFabricIssue(){
         $query = FabricRequisition::with(['layingPlanningDetail'])
-            ->select('fabric_requisitions.id','laying_planning_detail_id','serial_number')->get();
+            ->select('fabric_requisitions.id','laying_planning_detail_id','serial_number','is_issue')->get();
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
@@ -52,10 +52,10 @@ class FabricIssuesController extends Controller
                 return $data->layingPlanningDetail->table_number;
             })
             ->addColumn('status', function ($data){
-                if($data->is_issue == 0){
-                    return '<span class="badge badge-danger">Belum Issue</span>';
+                if($data->is_issue == 1){
+                    return '<span class="badge badge-success">Issued</span>';
                 }else{
-                    return '<span class="badge badge-success">Sudah Issue</span>';
+                    return '<span class="badge badge-danger">Not Issued</span>';
                 }
             })
             ->addColumn('action', function($data){
@@ -86,7 +86,30 @@ class FabricIssuesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'fabric_requisition_id' => 'required',
+            'roll_no' => 'required',
+            'weight' => 'required',
+            'yard' => 'required',
+        ]);
+
+        $fabric_issue = FabricIssue::create([
+            'fabric_request_id' => $request->fabric_requisition_id,
+            'roll_no' => $request->roll_no,
+            'weight' => $request->weight,
+            'yard' => $request->yard,
+        ]);
+
+        $fabric_requisition = FabricRequisition::find($request->fabric_requisition_id);
+        $fabric_issues = FabricIssue::where('fabric_request_id', $request->fabric_requisition_id)->get();
+        // jika lebih besar dari fabric_requisition->layingPlanningDetail->total_length atau sama dengan fabric_issues->sum('yard')
+        if($fabric_requisition->layingPlanningDetail->total_length <= $fabric_issues->sum('yard')){
+            $fabric_requisition->is_issue = 1;
+            $fabric_requisition->save();
+        }
+
+
+        return redirect()->back()->with('success', 'Fabric Issue '.$fabric_issue->roll_no.' Successfully Added!');
     }
 
     /**
@@ -130,7 +153,15 @@ class FabricIssuesController extends Controller
      */
     public function edit($id)
     {
-        //
+            try {
+                $data = FabricIssue::find($id);
+                return response()->json($data, 200);
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $th->getMessage()
+                ]);
+            }
     }
 
     /**
@@ -142,7 +173,25 @@ class FabricIssuesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $fabric_issue = FabricIssue::find($id);
+        $fabric_issue->roll_no = $request->roll_no;
+        $fabric_issue->weight = $request->weight;
+        $fabric_issue->yard = $request->yard;
+        $fabric_issue->save();
+
+        $fabric_requisition = FabricRequisition::find($fabric_issue->fabric_request_id);
+        $fabric_issues = FabricIssue::where('fabric_request_id', $fabric_issue->fabric_request_id)->get();
+        
+        // jika lebih besar dari fabric_requisition->layingPlanningDetail->total_length atau sama dengan fabric_issues->sum('yard')
+        if($fabric_requisition->layingPlanningDetail->total_length <= $fabric_issues->sum('yard')){
+            $fabric_requisition->is_issue = 1;
+            $fabric_requisition->save();
+        }else{
+            $fabric_requisition->is_issue = 0;
+            $fabric_requisition->save();
+        }
+        return redirect()->back()->with('success', 'Fabric Issue '.$fabric_issue->roll_no.' Successfully Updated!');
     }
 
     public function print($id)
@@ -170,10 +219,12 @@ class FabricIssuesController extends Controller
         $header = [
             'ROLL No / Nomor Roll',
             'WEIGHT / Berat',
+            'Yard',
         ];
         for ($i=0; $i < 1; $i++) { 
             $header[] = 'ROLL No / Nomor Roll';
             $header[] = 'WEIGHT / Berat';
+            $header[] = 'Yard';
         }
 
         $customPaper = array(0,0,612.00,400.00);

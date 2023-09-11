@@ -39,12 +39,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('machine', MachineController::class);
-Route::get('/machine/print/{serial_number}', [MachineController::class, 'print'])->name('machine.print');
-Route::get('/machine/print-multiple/{id}', [MachineController::class, 'print_multiple'])->name('machine.print-multiple');
-Route::get('/machine-data', [MachineController::class, 'dataMachine'])->name('machine-data');
-Route::get('/machine-qr-code', [MachineController::class, 'qr_code'])->name('machine-qr-code');
-
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
@@ -89,6 +83,15 @@ Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::put('/update-group/{id}', [UsersController::class,'update_group'])->name('update-group');
     Route::delete('/delete-group/{id}', [UsersController::class,'delete_group'])->name('delete-group');
     Route::get('log-viewers', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+
+    Route::resource('fabric-issue', FabricIssuesController::class);
+    Route::get('fabric-issue-print/{id}', [FabricIssuesController::class,'print'])->name('fabric-issue.print');
+
+    Route::resource('machine', MachineController::class);
+    Route::get('/machine/print/{serial_number}', [MachineController::class, 'print'])->name('machine.print');
+    Route::get('/machine/print-multiple/{id}', [MachineController::class, 'print_multiple'])->name('machine.print-multiple');
+    Route::get('/machine-data', [MachineController::class, 'dataMachine'])->name('machine-data');
+    Route::get('/machine-qr-code', [MachineController::class, 'qr_code'])->name('machine-qr-code');
     // Route::resource('buyer', BuyerController::class);
     // Route::resource('size', SizesController::class);
     // Route::resource('color', ColorsController::class);
@@ -173,9 +176,6 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('daily-cutting-detail', [DailyCuttingReportsController::class,'dailyCuttingDetail'])->name('daily-cutting.detail');
     Route::get('daily-cutting-report-print', [DailyCuttingReportsController::class,'dailyCuttingReport'])->name('daily-cutting.print-report');
 });
-
-Route::resource('fabric-issue', FabricIssuesController::class);
-Route::get('fabric-issue-print/{id}', [FabricIssuesController::class,'print'])->name('fabric-issue.print');
 
 // ## Route for Fetch Select2 Form
 Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(function(){

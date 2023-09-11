@@ -196,7 +196,7 @@
         <table class="table table-nota">
             <thead class="">
                 @foreach ($header as $item)
-                    <th>{{ $item }}</th>
+                    <th style="text-align: center;">{{ $item }}</th>
                 @endforeach
             </thead>
             <tbody>
@@ -210,9 +210,11 @@
                     @if (isset($fabric_issues[$i]))
                         <td style="font-size: 8pt;">{{ $fabric_issues[$i]->roll_no }}</td>
                         <td style="font-size: 8pt;">{{ $fabric_issues[$i]->weight }}</td>
+                        <td style="font-size: 8pt; text-align: center;">{{ $fabric_issues[$i]->yard }}</td>
                     @else
                         <td style="font-size: 8pt;"></td>
                         <td style="font-size: 8pt;"></td>
+                        <td style="font-size: 8pt; text-align: center;"></td>
                     @endif
                     @php
                         $count++;
