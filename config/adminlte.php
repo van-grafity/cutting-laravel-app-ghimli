@@ -474,14 +474,20 @@ return [
             'icon' => 'fas fa-fw fa fa-database',
             'can'  => 'clerk',
         ],
-        ['header' => 'Warehouse'],
+        [
+            'header' => 'Warehouse',
+            'can'  => 'admin-only',
+        ],
         [
             'text' => 'Fabric Issues',
             'url'  => '/fabric-issue',
             'icon' => 'fas fa-fw fa fa-tasks',
-            'can'  => 'clerk',
+            'can'  => 'admin-only',
         ],
-        ['header' => 'Lain-lain'],
+        [
+            'header' => 'Lain-lain',
+            'can'  => 'admin-only',
+        ],
         [
             'text' => 'Pallet',
             'url'  => '/pallets',
@@ -491,7 +497,7 @@ return [
         [
             'text' => 'Machine',
             'icon' => 'fas fa-fw fa fa-object-ungroup',
-            'can'  => 'clerk',
+            'can'  => 'admin-only',
             'submenu' => [
                 [
                     'classes'=> 'ml-3',
