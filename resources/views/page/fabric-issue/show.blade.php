@@ -17,10 +17,8 @@
                                         Action
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <!-- print and add issue -->
-                                        <a type="button" class="dropdown-item" href="#"
-                                        data-toggle="modal" data-target="#exampleModalLong">
-                                            <i class="fas fa-print"></i> Add Issue
+                                        <a href="javascript:void(0);" class="dropdown-item" id="btn_modal_create" onclick="showModalFabricIssue(true)">
+                                            <i class="fas fa-plus"></i> Add Issue
                                         </a>
                                         <a type="button" class="dropdown-item" href="{{ route('fabric-issue.print', $fabric_requisition->id) }}" target="_blank">
                                             <i class="fas fa-plus"></i> Print
@@ -113,12 +111,13 @@
                     <div class="content-title text-center">
                         <h3>Fabric Issue</h3>
                     </div>
-                    <table id="fabric_issue_table" class="table table-bordered table-hover" style="width:100% !important; margin-top: 1rem;">
+                    <table id="fabric_issue_table" class="table table-bordered table-hover">
                         <thead class="">
                             <tr>
                                 <th scope="col" class="">No. </th>
                                 <th scope="col" class="">Roll No</th>
                                 <th scope="col" class="">Weight</th>
+                                <th scope="col" class="">Yard</th>
                                 <th scope="col" class="">Action</th>
                             </tr>
                         </thead>
@@ -129,25 +128,78 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $fabric_issue->roll_no }}</td>
                                     <td>{{ $fabric_issue->weight }}</td>
+                                    <td>{{ $fabric_issue->weight }}</td>
                                     <td>
                                         <a href="#" class="btn btn-sm btn-danger" onclick="delete_fabricIssue({{ $fabric_issue->id }})">
                                             <i class="fas fa-trash"></i>
+                                        </a>
+                                        <!-- showmodalfabricIssue edit -->
+                                        <a href="javascript:void(0);" class="btn btn-sm btn-primary" onclick="showModalFabricIssue(false, {{ $fabric_issue->id }})">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                     </td>
                                 </tr>
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="4" class="text-center">No Data</td>
+                                    <td colspan="5" class="text-center">No Data</td>
                                 </tr>
                             @endif
                         </tbody>
+                        <tfoot class="text-center" style="background: #eee;">
+                            <tr class="text-center">
+                                <th colspan="3" class="text-right">Total Yard</th>
+                                <th colspan="2" class="text-left">{{ $fabric_issues->sum('yard') }}</th>
+                            </tr>
+                        </tfoot>
                     </table>
-                    <div class="d-flex justify-content-end">
+                    
+                </div>
+                <div class="card-footer text-right">
                         <a href="{{ route('fabric-issue.index') }}" class="btn btn-secondary">Back</a>
                     </div>
-                </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">
+                    Fabric Issue
+                </h5>
+            </div>
+            <form action="{{ route('fabric-issue.store') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="fabricCons_form">
+                @csrf
+                @method('POST')
+                <div class="modal-body">
+                    <input type="hidden" name="fabric_requisition_id" value="{{ $fabric_requisition->id }}">
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <label for="roll_no">Roll No</label>
+                            <input type="text" class="form-control" id="roll_no" name="roll_no" placeholder="Roll No">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <label for="weight">Weight</label>
+                            <input type="text" class="form-control" id="weight" name="weight" placeholder="Weight">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <label for="yard">Yard</label>
+                            <input type="text" class="form-control" id="yard" name="yard" placeholder="Yard">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary shadow-sm" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary shadow-sm">Save</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -156,31 +208,37 @@
 @push('js')
 <script type="text/javascript">
     
-        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        const delete_url ='{{ route("fabric-issue.destroy",":id") }}';
-
-        async function delete_fabricIssue(fabric_issue_id) {
-
-            data = { title: "Are you sure?" };
-            let confirm_delete = await swal_delete_confirm(data);
-            if(!confirm_delete) { return false; };
-
-            let url_delete = delete_url.replace(':id',fabric_issue_id);
-            let data_params = { token };
-
-            result = await delete_using_fetch(url_delete, data_params)
-            if(result.status == "success"){
-                swal_info({
-                    title : result.message,
-                    reload_option: true, 
-                });
-            } else {
-                swal_failed({ title: result.message });
-            }
-        };
-
-</script>
-
-<script type="text/javascript">
-    const fabric_requisition_id = '{{ $fabric_requisition->id }}';
-@endpush
+    function showModalFabricIssue(add, id = null) {
+        var modal = $('#exampleModalLong'),
+            form = $('#fabricCons_form');
+        if (add) {
+            $('#exampleModalLong').modal('show');
+            $('#exampleModalLongTitle').text('Create Fabric Issue');
+            $('#roll_no').val('');
+            $('#weight').val('');
+            $('#yard').val('');
+            $('#fabricCons_form').attr('action', "{{ route('fabric-issue.store') }}");
+        } else {
+            // form.trigger('reset').parsley().reset();
+            form.attr('action', "{{ route('fabric-issue.update', ':id') }}".replace(':id', id));
+            form.find('[name="_method"]').val('PUT');
+            $('#exampleModalLongTitle').text('Edit Fabric Issue');
+            $.ajax({
+                url: "{{ url('fabric-issue') }}" + '/' + id + '/edit',
+                type: "GET",
+                dataType: "JSON",
+                success: function (data) {
+                    $('#exampleModalLong').modal('show');
+                    $('#exampleModalLongTitle').text('Edit Fabric Issue');
+                    $('#roll_no').val(data.roll_no);
+                    $('#weight').val(data.weight);
+                    $('#yard').val(data.yard);
+                    $('#btn_submit_modal').show();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Error get data from ajax');
+                }
+            });
+        }
+    }
+    </script>
