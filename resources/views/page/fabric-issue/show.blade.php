@@ -17,8 +17,13 @@
                                         Action
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <!-- single issue -->
                                         <a href="javascript:void(0);" class="dropdown-item" id="btn_modal_create" onclick="showModalFabricIssue(true)">
-                                            <i class="fas fa-plus"></i> Add Issue
+                                            <i class="fas fa-plus"></i> Single Issue
+                                        </a>
+                                        <!-- multiple issue using table input in modal -->
+                                        <a href="javascript:void(0);" class="dropdown-item" id="btn_modal_create" onclick="showModalFabricIssueMultiple(true)">
+                                            <i class="fas fa-plus"></i> Multiple Issue
                                         </a>
                                         <a type="button" class="dropdown-item" href="{{ route('fabric-issue.print', $fabric_requisition->id) }}" target="_blank">
                                             <i class="fas fa-plus"></i> Print
@@ -203,11 +208,75 @@
         </div>
     </div>
 </div>
+
+<!-- show modal fabricIssue multiple -->
+<!-- Modal Section -->
+<div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="modal_formLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_formLabel">Fabric Issue Multiple</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('fabric-issue.store') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="fabric_issue_form">
+                @csrf
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-bordered table-hover" id="table_issue">
+                                    <thead>
+                                        <tr>
+                                            <th width="150">Roll No</th>
+                                            <th width="150">Weight</th>
+                                            <th width="150">Yard</th>
+                                            <th width="100" class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <input type="hidden" name="fabric_requisition_id" value="{{ $fabric_requisition->id }}">
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" id="roll_no" name="roll_no[]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" id="weight" name="weight[]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                            <div class="form-group">
+                                                    <input type="text" class="form-control" id="yard" name="yard[]">
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-success" id="btn_add_issue">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn_submit_modal">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('js')
 <script type="text/javascript">
-    
     function showModalFabricIssue(add, id = null) {
         var modal = $('#exampleModalLong'),
             form = $('#fabricCons_form');
@@ -241,4 +310,74 @@
             });
         }
     }
-    </script>
+
+    // show modal fabricIssue multiple
+    function showModalFabricIssueMultiple(add, id = null) {
+        var modal = $('#modal_form'),
+            form = $('#fabric_issue_form');
+        if (add) {
+            $('#modal_form').modal('show');
+            $('#modal_formLabel').text('Create Fabric Issue Multiple');
+            // input roll no, weight, yard jika data ada
+            $.ajax({
+                url: "{{ url('fabric-issue') }}" + '/' + id + '/edit',
+                type: "GET",
+                dataType: "JSON",
+                success: function (data) {
+                    $('#modal_form').modal('show');
+                    $('#modal_formLabel').text('Create Fabric Issue Multiple');
+                    $('#roll_no').val(data.roll_no);
+                    $('#weight').val(data.weight);
+                    $('#yard').val(data.yard);
+                    $('#btn_submit_modal').show();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Error get data from ajax');
+                }
+            });
+            $('#fabric_issue_form').attr('action', "{{ route('fabric-issue.store') }}");
+        } else {
+            // form.trigger('reset').parsley().reset();
+            form.attr('action', "{{ route('fabric-issue.update', ':id') }}".replace(':id', id));
+            form.find('[name="_method"]').val('PUT');
+            $('#modal_formLabel').text('Edit Fabric Issue Multiple');
+            $.ajax({
+                url: "{{ url('fabric-issue') }}" + '/' + id + '/edit',
+                type: "GET",
+                dataType: "JSON",
+                success: function (data) {
+                    $('#modal_form').modal('show');
+                    $('#modal_formLabel').text('Edit Fabric Issue Multiple');
+                    $('#roll_no').val(data.roll_no);
+                    $('#weight').val(data.weight);
+                    $('#yard').val(data.yard);
+                    $('#btn_submit_modal').show();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Error get data from ajax');
+                }
+            });
+        }
+    }
+</script>
+
+<!-- btn_add_issue -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#btn_add_issue').click(function() {
+            var html = '';
+            html += '<tr>';
+            html += '<td><input type="text" class="form-control" id="roll_no" name="roll_no[]"></td>';
+            html += '<td><input type="text" class="form-control" id="weight" name="weight[]"></td>';
+            html += '<td><input type="text" class="form-control" id="yard" name="yard[]"></td>';
+            html += '<td class="text-center"><button type="button" class="btn btn-sm btn-danger" id="btn_remove_issue"><i class="fas fa-minus"></i></button></td>';
+            html += '</tr>';
+            $('#table_issue').append(html);
+        });
+
+        $(document).on('click', '#btn_remove_issue', function() {
+            $(this).closest('tr').remove();
+        });
+    });
+</script>
+@endpush
