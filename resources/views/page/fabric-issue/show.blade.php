@@ -3,35 +3,13 @@
 @section('title', 'Fabric Issue')
 
 @section('content')
-<div class="container-fluid">
+<div class="container">
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     
                     <div class="detail-section my-5 px-5">
-                        <div class="row mt-5">
-                            <div class="col-md-12 text-right">
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle shadow-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Action
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <!-- single issue -->
-                                        <a href="javascript:void(0);" class="dropdown-item" id="btn_modal_create" onclick="showModalFabricIssue(true)">
-                                            <i class="fas fa-plus"></i> Single Issue
-                                        </a>
-                                        <!-- multiple issue using table input in modal -->
-                                        <a href="javascript:void(0);" class="dropdown-item" id="btn_modal_create" onclick="showModalFabricIssueMultiple(true)">
-                                            <i class="fas fa-plus"></i> Multiple Issue
-                                        </a>
-                                        <a type="button" class="dropdown-item" href="{{ route('fabric-issue.print', $fabric_requisition->id) }}" target="_blank">
-                                            <i class="fas fa-plus"></i> Print
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="row mb-3">
                             <div class="col-sm-12">
                                 <table>
@@ -77,6 +55,12 @@
                                     </tbody>
                                 </table>
                             </div>
+                            @php
+                                $total_received_fabric = 0;
+                                foreach($fabric_issues as $fabric_issue){
+                                    $total_received_fabric += $fabric_issue->yard;
+                                }
+                            @endphp
                             <div class="col-md-6">
                                 <table>
                                     <tbody class="align-top">
@@ -98,12 +82,22 @@
                                         <tr>
                                             <td>Quantity Issued</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $fabric_requisition->quantity_issued }}</td>
+                                            <td>
+                                                {{ $total_received_fabric }} yards
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Difference</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $fabric_requisition->difference }}</td>
+                                            <td>
+                                                @php
+                                                    $resTrim = $fabric_requisition->quantity_required;
+                                                    $resTrim = preg_replace("/[^0-9.]/", "", $resTrim);
+                                                    $resTrim = intval($resTrim);
+                                                    $resTrim = $resTrim - $total_received_fabric;
+                                                @endphp
+                                                {{ $resTrim }} yards
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -111,10 +105,31 @@
                         </div>
                     </div>
 
-                    <hr style="border-top:2px solid #bbb" class="py-3">
+                    <hr style="border-top:2px solid #bbb" class="py-1">
 
                     <div class="content-title text-center">
                         <h3>Fabric Issue</h3>
+                    </div>
+
+                    <div class="row">
+                        <div class="text-left mb-3 col-md-6">
+                            <div class="dropdown">
+                                <button class="btn btn-success dropdown-toggle shadow-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Action
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a hidden href="javascript:void(0);" class="dropdown-item" id="btn_modal_create" onclick="showModalFabricIssue(true)">
+                                        <i class="fas fa-plus"></i> Single Issue
+                                    </a>
+                                    <a HIDD href="javascript:void(0);" class="dropdown-item" id="btn_modal_create" onclick="showModalFabricIssueMultiple(true)">
+                                        <i></i> Add Issue
+                                    </a>
+                                    <a type="button" class="dropdown-item" href="{{ route('fabric-issue.print', $fabric_requisition->id) }}" target="_blank">
+                                        <i></i> Print
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <table id="fabric_issue_table" class="table table-bordered table-hover">
                         <thead class="">
@@ -133,12 +148,11 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $fabric_issue->roll_no }}</td>
                                     <td>{{ $fabric_issue->weight }}</td>
-                                    <td>{{ $fabric_issue->weight }}</td>
+                                    <td>{{ $fabric_issue->yard }}</td>
                                     <td>
                                         <a href="#" class="btn btn-sm btn-danger" onclick="delete_fabricIssue({{ $fabric_issue->id }})">
                                             <i class="fas fa-trash"></i>
                                         </a>
-                                        <!-- showmodalfabricIssue edit -->
                                         <a href="javascript:void(0);" class="btn btn-sm btn-primary" onclick="showModalFabricIssue(false, {{ $fabric_issue->id }})">
                                             <i class="fas fa-edit"></i>
                                         </a>
@@ -209,8 +223,6 @@
     </div>
 </div>
 
-<!-- show modal fabricIssue multiple -->
-<!-- Modal Section -->
 <div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="modal_formLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -222,17 +234,24 @@
             </div>
             <form action="{{ route('fabric-issue.store') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="fabric_issue_form">
                 @csrf
+                @method('POST')
                 <div class="modal-body">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-12">
+                                <div class="text-right" style="margin-bottom: 10px; margin-top: -26px;">
+                                    <button type="button" class="btn btn-sm btn-primary" id="btn_add_issue">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <span hidden id="serial_number" name="serial_number"> {{ $fabric_requisition->serial_number }} </span>
+                                </div>
                                 <table class="table table-bordered table-hover" id="table_issue">
                                     <thead>
                                         <tr>
-                                            <th width="150">Roll No</th>
-                                            <th width="150">Weight</th>
-                                            <th width="150">Yard</th>
-                                            <th width="100" class="text-center">Action</th>
+                                            <th>Roll No</th>
+                                            <th>Weight</th>
+                                            <th>Yard</th>
+                                            <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -253,9 +272,9 @@
                                                     <input type="text" class="form-control" id="yard" name="yard[]">
                                                 </div>
                                             </td>
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-success" id="btn_add_issue">
-                                                    <i class="fas fa-plus"></i>
+                                            <td class="text-center" style="vertical-align: middle;">
+                                                <button type="button" class="btn btn-sm btn-danger" id="btn_remove_issue">
+                                                    <i class="fas fa-minus"></i>
                                                 </button>
                                             </td>
                                         </tr>
@@ -311,14 +330,12 @@
         }
     }
 
-    // show modal fabricIssue multiple
     function showModalFabricIssueMultiple(add, id = null) {
         var modal = $('#modal_form'),
             form = $('#fabric_issue_form');
         if (add) {
             $('#modal_form').modal('show');
             $('#modal_formLabel').text('Create Fabric Issue Multiple');
-            // input roll no, weight, yard jika data ada
             $.ajax({
                 url: "{{ url('fabric-issue') }}" + '/' + id + '/edit',
                 type: "GET",
@@ -341,6 +358,7 @@
             form.attr('action', "{{ route('fabric-issue.update', ':id') }}".replace(':id', id));
             form.find('[name="_method"]').val('PUT');
             $('#modal_formLabel').text('Edit Fabric Issue Multiple');
+            
             $.ajax({
                 url: "{{ url('fabric-issue') }}" + '/' + id + '/edit',
                 type: "GET",
@@ -359,9 +377,48 @@
             });
         }
     }
+
+    function delete_fabricIssue(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#007bff',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: "{{ url('fabric-issue') }}" + '/' + id,
+                    type: "POST",
+                    data: {
+                        '_method': 'DELETE',
+                        '_token': '{{ csrf_token() }}'
+                    },
+                    success: function (data) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        location.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: errorThrown
+                        });
+                    }
+                });
+            }
+        });
+    }
 </script>
 
-<!-- btn_add_issue -->
 <script type="text/javascript">
     $(document).ready(function() {
         $('#btn_add_issue').click(function() {

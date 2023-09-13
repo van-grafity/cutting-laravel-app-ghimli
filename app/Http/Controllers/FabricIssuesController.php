@@ -21,41 +21,23 @@ class FabricIssuesController extends Controller
      */
     public function index()
     {
-        return view('page.fabric-issue.index');
+        $fabric_requisitions = FabricRequisition::all();
+        return view('page.fabric-issue.index2', compact('fabric_requisitions'));
     }
 
     public function dataFabricIssue(){
-        $query = FabricRequisition::with(['layingPlanningDetail'])
-            ->select('fabric_requisitions.id','laying_planning_detail_id','serial_number','is_issue')->get();
+        $query = FabricRequisition::with(['layingPlanningDetail'])->get();
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
             ->addColumn('serial_number', function ($data){
                 return $data->serial_number;
             })
-            ->addColumn('gl_number', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->gl->gl_number;
-            })
-            ->addColumn('style_no', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->style->style;
-            })
-            ->addColumn('fabric_po', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->fabric_po;
-            })
-            ->addColumn('no_laying_sheet', function ($data){
-                return $data->layingPlanningDetail->no_laying_sheet;
-            })
-            ->addColumn('color', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->color->color;
-            })
-            ->addColumn('table_number', function ($data){
-                return $data->layingPlanningDetail->table_number;
-            })
             ->addColumn('status', function ($data){
                 if($data->is_issue == 1){
-                    return '<span class="badge badge-success">Issued</span>';
-                }else{
                     return '<span class="badge badge-danger">Not Issued</span>';
+                }else{
+                    return '<span class="badge badge-success">Issued</span>';
                 }
             })
             ->addColumn('action', function($data){
@@ -84,106 +66,6 @@ class FabricIssuesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    // show modal fabricIssue multiple
-    // function showModalFabricIssueMultiple(add, id = null) {
-    //     var modal = $('#modal_form'),
-    //         form = $('#fabric_issue_form');
-    //     if (add) {
-    //         $('#modal_form').modal('show');
-    //         $('#modal_formLabel').text('Create Fabric Issue Multiple');
-    //         $('#roll_no').val('');
-    //         $('#weight').val('');
-    //         $('#yard').val('');
-    //         $('#fabric_issue_form').attr('action', "{{ route('fabric-issue.store') }}");
-    //     } else {
-    //         // form.trigger('reset').parsley().reset();
-    //         form.attr('action', "{{ route('fabric-issue.update', ':id') }}".replace(':id', id));
-    //         form.find('[name="_method"]').val('PUT');
-    //         $('#modal_formLabel').text('Edit Fabric Issue Multiple');
-    //         $.ajax({
-    //             url: "{{ url('fabric-issue') }}" + '/' + id + '/edit',
-    //             type: "GET",
-    //             dataType: "JSON",
-    //             success: function (data) {
-    //                 $('#modal_form').modal('show');
-    //                 $('#modal_formLabel').text('Edit Fabric Issue Multiple');
-    //                 $('#roll_no').val(data.roll_no);
-    //                 $('#weight').val(data.weight);
-    //                 $('#yard').val(data.yard);
-    //                 $('#btn_submit_modal').show();
-    //             },
-    //             error: function (jqXHR, textStatus, errorThrown) {
-    //                 alert('Error get data from ajax');
-    //             }
-    //         });
-    //     }
-    // }
-
-//     <!-- show modal fabricIssue multiple -->
-// <!-- Modal Section -->
-// <div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="modal_formLabel" aria-hidden="true">
-//     <div class="modal-dialog modal-lg" role="document">
-//         <div class="modal-content">
-//             <div class="modal-header">
-//                 <h5 class="modal-title" id="modal_formLabel">Fabric Issue Multiple</h5>
-//                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-//                 <span aria-hidden="true">&times;</span>
-//                 </button>
-//             </div>
-//             <form action="{{ route('fabric-issue.store') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="fabric_issue_form">
-//                 @csrf
-//                 <div class="modal-body">
-//                     <div class="card-body">
-//                         <div class="row">
-//                             <div class="col-sm-12">
-//                                 <table class="table table-bordered table-hover" id="table_issue">
-//                                     <thead>
-//                                         <tr>
-//                                             <th width="150">Roll No</th>
-//                                             <th width="150">Weight</th>
-//                                             <th width="150">Yard</th>
-//                                             <th width="100" class="text-center">Action</th>
-//                                         </tr>
-//                                     </thead>
-//                                     <tbody>
-//                                         <tr>
-//                                             <input type="hidden" name="fabric_requisition_id" value="{{ $fabric_requisition->id }}">
-//                                             <td>
-//                                                 <div class="form-group">
-//                                                     <input type="text" class="form-control" id="roll_no" name="roll_no[]">
-//                                                 </div>
-//                                             </td>
-//                                             <td>
-//                                                 <div class="form-group">
-//                                                     <input type="text" class="form-control" id="weight" name="weight[]">
-//                                                 </div>
-//                                             </td>
-//                                             <!-- yard -->
-//                                             <td>
-//                                             <div class="form-group">
-//                                                     <input type="text" class="form-control" id="yard" name="yard[]">
-//                                                 </div>
-//                                             </td>
-//                                             <td class="text-center">
-//                                                 <button type="button" class="btn btn-sm btn-success" id="btn_add_issue">
-//                                                     <i class="fas fa-plus"></i>
-//                                                 </button>
-//                                             </td>
-//                                         </tr>
-//                                     </tbody>
-//                                 </table>
-//                             </div>
-//                         </div>
-//                     </div>
-//                 </div>
-//                 <div class="modal-footer">
-//                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-//                     <button type="submit" class="btn btn-primary" id="btn_submit_modal">Save</button>
-//                 </div>
-//             </form>
-//         </div>
-//     </div>
-// </div>
     public function store(Request $request)
     {
         $fabric_requisition_id = $request->fabric_requisition_id;
@@ -191,11 +73,10 @@ class FabricIssuesController extends Controller
         $fabric_requisition = FabricRequisition::find($fabric_requisition_id);
         $fabric_issues = FabricIssue::where('fabric_request_id', $fabric_requisition_id)->get();
         
-        $rollNoIds = $request->roll_no; // [1, 2]
-        $weightIds = $request->weight; // [60, 32]
-        $yardIds = $request->yard; // [5, 3]
+        $rollNoIds = $request->roll_no;
+        $weightIds = $request->weight;
+        $yardIds = $request->yard;
         
-        // insert ids to fabric_issue
         foreach ($rollNoIds as $key => $rollNoId) {
             $fabric_issue = new FabricIssue;
             $fabric_issue->roll_no = $rollNoId;
@@ -203,6 +84,16 @@ class FabricIssuesController extends Controller
             $fabric_issue->yard = $yardIds[$key];
             $fabric_issue->fabric_request_id = $fabric_requisition_id;
             $fabric_issue->save();
+        }
+
+        // return $fabric_issues->sum('yard') . " " . $fabric_requisition->layingPlanningDetail->total_length;
+        
+        if($fabric_issues->sum('yard') <= $fabric_requisition->layingPlanningDetail->total_length && $fabric_issues->sum('yard') != 0){
+            $fabric_requisition->is_issue = 1;
+            $fabric_requisition->save();
+        }else{
+            $fabric_requisition->is_issue = 0;
+            $fabric_requisition->save();
         }
 
         return redirect()->back()->with('success', 'Fabric Issue '.$fabric_requisition->serial_number.' Successfully Created!');
@@ -278,15 +169,14 @@ class FabricIssuesController extends Controller
 
         $fabric_requisition = FabricRequisition::find($fabric_issue->fabric_request_id);
         $fabric_issues = FabricIssue::where('fabric_request_id', $fabric_issue->fabric_request_id)->get();
-        
-        // jika lebih besar dari fabric_requisition->layingPlanningDetail->total_length atau sama dengan fabric_issues->sum('yard')
-        if($fabric_requisition->layingPlanningDetail->total_length <= $fabric_issues->sum('yard')){
+        if($fabric_issues->sum('yard') <= $fabric_requisition->layingPlanningDetail->total_length  && $fabric_issues->sum('yard') != 0){
             $fabric_requisition->is_issue = 1;
             $fabric_requisition->save();
         }else{
             $fabric_requisition->is_issue = 0;
             $fabric_requisition->save();
         }
+
         return redirect()->back()->with('success', 'Fabric Issue '.$fabric_issue->roll_no.' Successfully Updated!');
     }
 
