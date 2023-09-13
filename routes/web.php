@@ -69,6 +69,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/cutting-ticket-detail-data/{id}', [CuttingTicketsController::class, 'dataCuttingTicketByCOR'])->name('cutting-ticket-detail-data'); // http://localhost/cutting-ticket-app/public/cutting-ticket-detail-data/COR-62843-MHG-001
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
     Route::get('/fabric-requisition-data', [FabricRequisitionsController::class, 'dataFabricRequisition']);
+    Route::get('/fabric-requisition-serial-number', [FabricRequisitionsController::class, 'get_serial_number'])->name('fabric-requisition-serial-number');
     Route::get('/fabric-issue-data', [FabricIssuesController::class, 'dataFabricIssue']);
     Route::get('/daily-cutting-data', [DailyCuttingReportsController::class, 'dataDailyCutting']);
 });

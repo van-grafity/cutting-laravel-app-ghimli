@@ -21,41 +21,23 @@ class FabricIssuesController extends Controller
      */
     public function index()
     {
-        return view('page.fabric-issue.index');
+        $fabric_requisitions = FabricRequisition::all();
+        return view('page.fabric-issue.index2', compact('fabric_requisitions'));
     }
 
     public function dataFabricIssue(){
-        $query = FabricRequisition::with(['layingPlanningDetail'])
-            ->select('fabric_requisitions.id','laying_planning_detail_id','serial_number','is_issue')->get();
+        $query = FabricRequisition::with(['layingPlanningDetail'])->get();
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
             ->addColumn('serial_number', function ($data){
                 return $data->serial_number;
             })
-            ->addColumn('gl_number', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->gl->gl_number;
-            })
-            ->addColumn('style_no', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->style->style;
-            })
-            ->addColumn('fabric_po', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->fabric_po;
-            })
-            ->addColumn('no_laying_sheet', function ($data){
-                return $data->layingPlanningDetail->no_laying_sheet;
-            })
-            ->addColumn('color', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->color->color;
-            })
-            ->addColumn('table_number', function ($data){
-                return $data->layingPlanningDetail->table_number;
-            })
             ->addColumn('status', function ($data){
                 if($data->is_issue == 1){
-                    return '<span class="badge badge-success">Issued</span>';
-                }else{
                     return '<span class="badge badge-danger">Not Issued</span>';
+                }else{
+                    return '<span class="badge badge-success">Issued</span>';
                 }
             })
             ->addColumn('action', function($data){
@@ -86,30 +68,35 @@ class FabricIssuesController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'fabric_requisition_id' => 'required',
-            'roll_no' => 'required',
-            'weight' => 'required',
-            'yard' => 'required',
-        ]);
+        $fabric_requisition_id = $request->fabric_requisition_id;
 
-        $fabric_issue = FabricIssue::create([
-            'fabric_request_id' => $request->fabric_requisition_id,
-            'roll_no' => $request->roll_no,
-            'weight' => $request->weight,
-            'yard' => $request->yard,
-        ]);
+        $fabric_requisition = FabricRequisition::find($fabric_requisition_id);
+        $fabric_issues = FabricIssue::where('fabric_request_id', $fabric_requisition_id)->get();
+        
+        $rollNoIds = $request->roll_no;
+        $weightIds = $request->weight;
+        $yardIds = $request->yard;
+        
+        foreach ($rollNoIds as $key => $rollNoId) {
+            $fabric_issue = new FabricIssue;
+            $fabric_issue->roll_no = $rollNoId;
+            $fabric_issue->weight = $weightIds[$key];
+            $fabric_issue->yard = $yardIds[$key];
+            $fabric_issue->fabric_request_id = $fabric_requisition_id;
+            $fabric_issue->save();
+        }
 
-        $fabric_requisition = FabricRequisition::find($request->fabric_requisition_id);
-        $fabric_issues = FabricIssue::where('fabric_request_id', $request->fabric_requisition_id)->get();
-        // jika lebih besar dari fabric_requisition->layingPlanningDetail->total_length atau sama dengan fabric_issues->sum('yard')
-        if($fabric_requisition->layingPlanningDetail->total_length <= $fabric_issues->sum('yard')){
+        // return $fabric_issues->sum('yard') . " " . $fabric_requisition->layingPlanningDetail->total_length;
+        
+        if($fabric_issues->sum('yard') <= $fabric_requisition->layingPlanningDetail->total_length && $fabric_issues->sum('yard') != 0){
             $fabric_requisition->is_issue = 1;
+            $fabric_requisition->save();
+        }else{
+            $fabric_requisition->is_issue = 0;
             $fabric_requisition->save();
         }
 
-
-        return redirect()->back()->with('success', 'Fabric Issue '.$fabric_issue->roll_no.' Successfully Added!');
+        return redirect()->back()->with('success', 'Fabric Issue '.$fabric_requisition->serial_number.' Successfully Created!');
     }
 
     /**
@@ -182,15 +169,14 @@ class FabricIssuesController extends Controller
 
         $fabric_requisition = FabricRequisition::find($fabric_issue->fabric_request_id);
         $fabric_issues = FabricIssue::where('fabric_request_id', $fabric_issue->fabric_request_id)->get();
-        
-        // jika lebih besar dari fabric_requisition->layingPlanningDetail->total_length atau sama dengan fabric_issues->sum('yard')
-        if($fabric_requisition->layingPlanningDetail->total_length <= $fabric_issues->sum('yard')){
+        if($fabric_issues->sum('yard') <= $fabric_requisition->layingPlanningDetail->total_length  && $fabric_issues->sum('yard') != 0){
             $fabric_requisition->is_issue = 1;
             $fabric_requisition->save();
         }else{
             $fabric_requisition->is_issue = 0;
             $fabric_requisition->save();
         }
+
         return redirect()->back()->with('success', 'Fabric Issue '.$fabric_issue->roll_no.' Successfully Updated!');
     }
 
