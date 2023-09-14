@@ -122,7 +122,7 @@ class FabricIssuesController extends Controller
             'color' => $layingPlanningDetail->layingPlanning->color->color,
             'fabric_po' => $layingPlanningDetail->layingPlanning->fabric_po,
             'fabric_type' => $layingPlanningDetail->layingPlanning->fabricType->name,
-            'quantity_required' => $layingPlanningDetail->total_length . " yards",
+            'quantity_required' => $layingPlanningDetail->total_length,
             'quantity_issued' => "-",
             'difference' => "-",
         ];

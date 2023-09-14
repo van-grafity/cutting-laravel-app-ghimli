@@ -17,8 +17,8 @@
                     <table class="table table-bordered table-hover" id="laying_planning_table">
                         <thead class="">
                             <tr>
-                                <th scope="col" width="20">No. </th>
-                                <th scope="col" width="100">Serial Number</th>
+                                <th scope="col" width="5%">No. </th>
+                                <th scope="col" width="12%">Serial Number</th>
                                 <th scope="col">Style</th>
                                 <th scope="col">Buyer</th>
                                 <th scope="col">Color</th>

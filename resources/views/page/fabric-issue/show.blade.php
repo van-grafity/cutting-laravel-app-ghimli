@@ -77,7 +77,7 @@
                                         <tr>
                                             <td>Quantity Required</td>
                                             <td class="pl-4">:</td>
-                                            <td>{{ $fabric_requisition->quantity_required }}</td>
+                                            <td>{{ $fabric_requisition->quantity_required }} yards</td>
                                         </tr>
                                         <tr>
                                             <td>Quantity Issued</td>
@@ -90,13 +90,7 @@
                                             <td>Difference</td>
                                             <td class="pl-4">:</td>
                                             <td>
-                                                @php
-                                                    $resTrim = $fabric_requisition->quantity_required;
-                                                    $resTrim = preg_replace("/[^0-9.]/", "", $resTrim);
-                                                    $resTrim = intval($resTrim);
-                                                    $resTrim = $resTrim - $total_received_fabric;
-                                                @endphp
-                                                {{ $resTrim }} yards
+                                                {{ $fabric_requisition->quantity_required - $total_received_fabric }} yards
                                             </td>
                                         </tr>
                                     </tbody>
