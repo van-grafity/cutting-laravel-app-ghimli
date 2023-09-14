@@ -136,6 +136,7 @@
                             <tr>
                                 <th scope="col" class="">No. </th>
                                 <th scope="col" class="">Roll No</th>
+                                <th scope="col" class="">Batch No</th>
                                 <th scope="col" class="">Weight</th>
                                 <th scope="col" class="">Yard</th>
                                 <th scope="col" class="">Action</th>
@@ -147,6 +148,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $fabric_issue->roll_no }}</td>
+                                    <td>{{ $fabric_issue->batch_number }}</td>
                                     <td>{{ $fabric_issue->weight }}</td>
                                     <td>{{ $fabric_issue->yard }}</td>
                                     <td>
@@ -161,13 +163,13 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="5" class="text-center">No Data</td>
+                                    <td colspan="6" class="text-center">No Data</td>
                                 </tr>
                             @endif
                         </tbody>
                         <tfoot class="text-center" style="background: #eee;">
                             <tr class="text-center">
-                                <th colspan="3" class="text-right">Total Yard</th>
+                                <th colspan="4" class="text-right">Total Yard</th>
                                 <th colspan="2" class="text-left">{{ $fabric_issues->sum('yard') }}</th>
                             </tr>
                         </tfoot>
@@ -199,6 +201,12 @@
                         <div class="col-sm-12">
                             <label for="roll_no">Roll No</label>
                             <input type="text" class="form-control" id="roll_no" name="roll_no" placeholder="Roll No">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <label for="batch_number">Batch No</label>
+                            <input type="text" class="form-control" id="batch_number" name="batch_number" placeholder="Batch No">
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -249,6 +257,7 @@
                                     <thead>
                                         <tr>
                                             <th>Roll No</th>
+                                            <th>Bath No</th>
                                             <th>Weight</th>
                                             <th>Yard</th>
                                             <th class="text-center">Action</th>
@@ -260,6 +269,11 @@
                                             <td>
                                                 <div class="form-group">
                                                     <input type="text" class="form-control" id="roll_no" name="roll_no[]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" id="batch_number" name="batch_number[]">
                                                 </div>
                                             </td>
                                             <td>
@@ -303,6 +317,7 @@
             $('#exampleModalLong').modal('show');
             $('#exampleModalLongTitle').text('Create Fabric Issue');
             $('#roll_no').val('');
+            $('#batch_number').val('');
             $('#weight').val('');
             $('#yard').val('');
             $('#fabricCons_form').attr('action', "{{ route('fabric-issue.store') }}");
@@ -319,6 +334,7 @@
                     $('#exampleModalLong').modal('show');
                     $('#exampleModalLongTitle').text('Edit Fabric Issue');
                     $('#roll_no').val(data.roll_no);
+                    $('#batch_number').val(data.batch_number);
                     $('#weight').val(data.weight);
                     $('#yard').val(data.yard);
                     $('#btn_submit_modal').show();
@@ -344,6 +360,7 @@
                     $('#modal_form').modal('show');
                     $('#modal_formLabel').text('Create Fabric Issue Multiple');
                     $('#roll_no').val(data.roll_no);
+                    $('#batch_number').val(data.batch_number);
                     $('#weight').val(data.weight);
                     $('#yard').val(data.yard);
                     $('#btn_submit_modal').show();
@@ -367,6 +384,7 @@
                     $('#modal_form').modal('show');
                     $('#modal_formLabel').text('Edit Fabric Issue Multiple');
                     $('#roll_no').val(data.roll_no);
+                    $('#batch_number').val(data.batch_number);
                     $('#weight').val(data.weight);
                     $('#yard').val(data.yard);
                     $('#btn_submit_modal').show();
@@ -425,6 +443,7 @@
             var html = '';
             html += '<tr>';
             html += '<td><input type="text" class="form-control" id="roll_no" name="roll_no[]"></td>';
+            html += '<td><input type="text" class="form-control" id="batch_number" name="batch_number[]"></td>';
             html += '<td><input type="text" class="form-control" id="weight" name="weight[]"></td>';
             html += '<td><input type="text" class="form-control" id="yard" name="yard[]"></td>';
             html += '<td class="text-center"><button type="button" class="btn btn-sm btn-danger" id="btn_remove_issue"><i class="fas fa-minus"></i></button></td>';
