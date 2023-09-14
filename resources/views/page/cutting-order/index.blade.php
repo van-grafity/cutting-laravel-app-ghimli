@@ -33,20 +33,12 @@
                             <tr>
                                 <th scope="col" class="">No. </th>
                                 <th scope="col" class="">Serial Number</th>
-                                <!-- <th width="11%" scope="col" class="">No Lay Sheet</th> -->
-                                <!-- <th scope="col" class="">Color</th> -->
-                                <!-- <th width="5%" scope="col" class="">Table No</th>
-                                <th scope="col" class="">Style</th>
-                                <th scope="col" class="">Fabric Type</th>
-                                <th scope="col" class="">Fabric Consumption</th>
-                                <th width="5%" scope="col" class="">Marker Code</th> -->
-                                <th scope="col" class="">Status Lay</th>
-                                <th scope="col" class="">Status Cut</th>
-                                <th width="21.5%" scope="col" class="">Action</th>
+                                <th width="12%" scope="col" class="">Created At</th>
+                                <th width="10%" scope="col" class="">Status Lay</th>
+                                <th width="10%" scope="col" class="">Status Cut</th>
+                                <th width="12%" scope="col" class="">Action</th>
                             </tr>
                         </thead>
-                        <!-- <tbody>
-                        </tbody> -->
                     </table>    
                 </div>
             </div>
@@ -94,14 +86,7 @@
                 {data: 'serial_number', name: 'serial_number', render: function(data, type, row) {
                     return '<a href="{{ url("/cutting-order") }}/'+row.id+'">'+data+'</a>';
                 }},
-                // {data: 'no_laying_sheet', name: 'no_laying_sheet'},
-                // {data: 'color', name: 'color'},
-                // {data: 'table_number', name: 'table_number'},
-                // {data: 'style', name: 'style'},
-                // {data: 'fabric_type', name: 'fabric_type'},
-                // {data: 'fabric_consumption', name: 'fabric_consumption'},
-                // {data: 'marker_code', name: 'marker_code'},
-                // {data: 'status_lay', name: 'status_layer', visible: false},
+                {data: 'created_at', name: 'created_at'},
                 {data: 'status', name: 'status'},
                 {data: 'status_cut', name: 'status_cut'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
