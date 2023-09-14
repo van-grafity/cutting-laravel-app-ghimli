@@ -33,10 +33,10 @@
                             <tr>
                                 <th scope="col" class="">No. </th>
                                 <th scope="col" class="">Serial Number</th>
-                                <th width="12%" scope="col" class="">Created At</th>
+                                <th width="10%" scope="col" class="">Created At</th>
                                 <th width="10%" scope="col" class="">Status Lay</th>
                                 <th width="10%" scope="col" class="">Status Cut</th>
-                                <th width="12%" scope="col" class="">Action</th>
+                                <th width="10%" scope="col" class="">Action</th>
                             </tr>
                         </thead>
                     </table>    

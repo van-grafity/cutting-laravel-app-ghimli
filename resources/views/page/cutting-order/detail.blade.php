@@ -160,6 +160,9 @@
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <a class="dropdown-item" href="{{ route('cutting-order.print', $cutting_order->id) }}" target="_blank">Print Nota</a>
+                                            @if(!$cutting_order_detail->isEmpty())
+                                                <a class="dropdown-item" href="{{ route('cutting-order.report', $cutting_order->id) }}" target="_blank">Print Report</a>
+                                            @endif
                                             <!-- <a class="dropdown-item" href="{{ route('cutting-order.report', $cutting_order->id) }}" target="_blank">Print Report</a>
                                             @can('clerk')
                                                 <a class="dropdown-item" href="javascript:void(0);" onclick="delete_cuttingOrder({{ $cutting_order->id }})" data-id="{{ $cutting_order->id }}">Delete</a>

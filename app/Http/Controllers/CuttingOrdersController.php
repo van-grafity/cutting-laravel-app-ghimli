@@ -67,7 +67,7 @@ class CuttingOrdersController extends Controller
                 <a href="'.route('cutting-order.print', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Nota"><i class="fas fa-print"></i></a>
                 <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></a>
                 <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-eye"></i></a>';
-                $action .= $data->cuttingOrderRecordDetail->isEmpty() ? '' : '<a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Report"><i class="fas fa-file-pdf"></i></a>';
+                // $action .= $data->cuttingOrderRecordDetail->isEmpty() ? '' : '<a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Report"><i class="fas fa-file-pdf"></i></a>';
                 return $action;
             })
             ->make(true);
@@ -360,7 +360,8 @@ class CuttingOrdersController extends Controller
             $cor_details[] = $data_detail;
         }
 
-        $name = $cutting_order_detail[0]->operator;
+        // if null
+        $name = $cutting_order_detail[0]->operator ?? null;
         if($name == null){
             $name = 'Name Team not found';
         } else {
@@ -645,7 +646,9 @@ class CuttingOrdersController extends Controller
         ->first();
 
         $cutting_order_detail = CuttingOrderRecordDetail::where('cutting_order_record_id', $cutting_order_id)->get();
-        $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order_detail->first()->updated_at)->format('d-m-Y H:i:s');
+        // if null
+        $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', ($cutting_order_detail->first()->updated_at ?? Carbon::now())
+        )->format('d-m-Y H:i:s');
         return $updated_at;
     }
 
