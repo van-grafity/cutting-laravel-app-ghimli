@@ -12,6 +12,7 @@ class FabricIssue extends Model
     protected $fillable = [
         'fabric_request_id',
         'roll_no',
+        'batch_number',
         'weight',
         'yard',
     ];
