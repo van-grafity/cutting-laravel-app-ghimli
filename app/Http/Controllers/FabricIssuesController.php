@@ -74,12 +74,14 @@ class FabricIssuesController extends Controller
         $fabric_issues = FabricIssue::where('fabric_request_id', $fabric_requisition_id)->get();
         
         $rollNoIds = $request->roll_no;
+        $batchNumberIds = $request->batch_number;
         $weightIds = $request->weight;
         $yardIds = $request->yard;
         
         foreach ($rollNoIds as $key => $rollNoId) {
             $fabric_issue = new FabricIssue;
             $fabric_issue->roll_no = $rollNoId;
+            $fabric_issue->batch_number = $batchNumberIds[$key];
             $fabric_issue->weight = $weightIds[$key];
             $fabric_issue->yard = $yardIds[$key];
             $fabric_issue->fabric_request_id = $fabric_requisition_id;
@@ -120,7 +122,7 @@ class FabricIssuesController extends Controller
             'color' => $layingPlanningDetail->layingPlanning->color->color,
             'fabric_po' => $layingPlanningDetail->layingPlanning->fabric_po,
             'fabric_type' => $layingPlanningDetail->layingPlanning->fabricType->name,
-            'quantity_required' => $layingPlanningDetail->total_length . " yards",
+            'quantity_required' => $layingPlanningDetail->total_length,
             'quantity_issued' => "-",
             'difference' => "-",
         ];
@@ -163,6 +165,7 @@ class FabricIssuesController extends Controller
 
         $fabric_issue = FabricIssue::find($id);
         $fabric_issue->roll_no = $request->roll_no;
+        $fabric_issue->batch_number = $request->batch_number;
         $fabric_issue->weight = $request->weight;
         $fabric_issue->yard = $request->yard;
         $fabric_issue->save();

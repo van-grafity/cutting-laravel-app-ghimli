@@ -31,59 +31,19 @@ class CuttingOrdersController extends Controller
     }
 
     public function dataCuttingOrder(){
-        $query = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'layingPlanningDetail'])
-            ->orderBy('id', 'desc')
-            ->get();
+        $query = CuttingOrderRecord::orderBy('updated_at', 'desc')
+        ->select('serial_number', 'id', 'id_status_layer', 'id_status_cut', 'created_at')->get();
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
             ->addColumn('serial_number', function ($data){
                 return $data->serial_number;
             })
-            // ->addColumn('no_laying_sheet', function ($data){
-            //     return $data->layingPlanningDetail->no_laying_sheet;
-            // })
-            // ->addColumn('gl_number', function ($data){
-            //     return $data->layingPlanningDetail->layingPlanning->gl->gl_number;
-            // })
-            // ->addColumn('color', function ($data){
-            //     return $data->layingPlanningDetail->layingPlanning->color->color;
-            // })
-            // ->addColumn('table_number', function ($data){
-            //     return $data->layingPlanningDetail->table_number;
-            // })
-            // ->addColumn('style', function ($data){
-            //     return $data->layingPlanningDetail->layingPlanning->style->style;
-            // })
-            // ->addColumn('fabric_type', function ($data){
-            //     return $data->layingPlanningDetail->layingPlanning->fabricType->name;
-            // })
-            // ->addColumn('fabric_consumption', function ($data){
-            //     return $data->layingPlanningDetail->layingPlanning->fabricCons->name;
-            // })
-            // ->addColumn('marker_code', function($data){
-            //     return $data->layingPlanningDetail->marker_code;
-            // })
-            // ->addColumn('status', function($data){
-            //     $sum_layer = 0;
-            //     $status = '';
-            //     foreach ($data->cuttingOrderRecordDetail as $detail) {
-            //         $sum_layer += $detail->layer;
-            //     }
-            //     if ($sum_layer == $data->layingPlanningDetail->layer_qty) {
-            //         $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
-            //     } else if ($sum_layer > $data->layingPlanningDetail->layer_qty) {
-            //         $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
-            //     } else {
-            //         $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
-            //     }
-            //     return $status;
-            // })
             ->addColumn('status', function($data){
                 $status = '';
-                if ($data->statusLayer->name == 'completed') {
+                if ($data->id_status_layer == 2) {
                     $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
-                } else if ($data->statusLayer->name == 'over layer') {
+                } else if ($data->id_status_layer == 3) {
                     $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
                 } else {
                     $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
@@ -92,19 +52,22 @@ class CuttingOrdersController extends Controller
             })
             ->addColumn('status_cut', function($data){
                 $status = '';
-                if ($data->statusCut->name == 'sudah') {
+                if ($data->id_status_cut == 2) {
                     $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Sudah Potong</span>';
                 } else {
                     $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Potong</span>';
                 }
                 return $status;
             })
+            ->addColumn('created_at', function($data){
+                return Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('d-m-Y');
+            })
             ->addColumn('action', function($data){
                 $action = '
-                <a href="'.route('cutting-order.print', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank">Print Nota</a>
-                <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'">Delete</a>
-                <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1">Detail</a>';
-                $action .= $data->cuttingOrderRecordDetail->isEmpty() ? '' : '<a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank">Print Report</a>';
+                <a href="'.route('cutting-order.print', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Nota"><i class="fas fa-print"></i></a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></a>
+                <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-eye"></i></a>';
+                // $action .= $data->cuttingOrderRecordDetail->isEmpty() ? '' : '<a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Report"><i class="fas fa-file-pdf"></i></a>';
                 return $action;
             })
             ->make(true);
@@ -397,7 +360,8 @@ class CuttingOrdersController extends Controller
             $cor_details[] = $data_detail;
         }
 
-        $name = $cutting_order_detail[0]->operator;
+        // if null
+        $name = $cutting_order_detail[0]->operator ?? null;
         if($name == null){
             $name = 'Name Team not found';
         } else {
@@ -682,7 +646,9 @@ class CuttingOrdersController extends Controller
         ->first();
 
         $cutting_order_detail = CuttingOrderRecordDetail::where('cutting_order_record_id', $cutting_order_id)->get();
-        $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order_detail->first()->updated_at)->format('d-m-Y H:i:s');
+        // if null
+        $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', ($cutting_order_detail->first()->updated_at ?? Carbon::now())
+        )->format('d-m-Y H:i:s');
         return $updated_at;
     }
 
