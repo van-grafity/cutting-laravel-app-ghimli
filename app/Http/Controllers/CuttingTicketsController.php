@@ -62,9 +62,6 @@ class CuttingTicketsController extends Controller
             ->addColumn('ticket_number', function($data){
                 return $data->serial_number == null ? '-' : $data->serial_number;
             })
-            ->addColumn('table_number', function($data){
-                return $data->layingPlanningDetail->table_number == null ? '-' : $data->layingPlanningDetail->table_number;
-            })
             ->addColumn('action', function($data){
                 return '
                 <a href="'.route('cutting-ticket.print-multiple', $data->id).'"  target="_blank"class="btn btn-primary btn-sm btn-print-ticket">Print Ticket</a>

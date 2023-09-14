@@ -19,9 +19,8 @@
                     <table class="table table-bordered table-hover" id="cutting_ticket_table">
                         <thead class="">
                             <tr>
-                                <th scope="col" style="width: 20%;">Serial Number</th>
-                                <th scope="col">Table No.</th>
-                                <th scope="col" style="width: 20%;">Action</th>
+                                <th scope="col">Serial Number</th>
+                                <th scope="col" width="20%";>Action</th>
                             </tr>
                         </thead>
                         <!-- <tbody>
@@ -35,7 +34,7 @@
 
 
 <!-- Modal Section -->
-<div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="modal_formLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="modal_formLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -150,38 +149,38 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 @endsection
 @push('js')
 <script type="text/javascript">
-    const detail_ticket_url ='{{ route("cutting-ticket.show",":id") }}';
+    // const detail_ticket_url ='{{ route("cutting-ticket.show",":id") }}';
 
-    const show_detail_ticket = async (ticket_id) => {
+    // const show_detail_ticket = async (ticket_id) => {
 
-        let url_detail_ticket = detail_ticket_url.replace(':id',ticket_id);
-        result = await get_using_fetch(url_detail_ticket);
+    //     let url_detail_ticket = detail_ticket_url.replace(':id',ticket_id);
+    //     result = await get_using_fetch(url_detail_ticket);
 
-        $('#detail_ticket_number').text(result.ticket_number)
-        $('#detail_size').text(result.size)
-        $('#detail_no_laying_sheet').text(result.no_laying_sheet)
-        $('#detail_table_number').text(result.table_number)
-        $('#detail_gl_number').text(result.gl_number)
-        $('#detail_buyer').text(result.buyer)
-        $('#detail_style').text(result.style)
-        $('#detail_color').text(result.color)
-        $('#detail_layer').text(result.layer)
-        $('#detail_fabric_roll').text(result.fabric_roll)
-        $('#detail_fabric_po').text(result.fabric_po)
-        $('#detail_fabric_type').text(result.fabric_type)
-        $('#detail_fabric_cons').text(result.fabric_cons)
+    //     $('#detail_ticket_number').text(result.ticket_number)
+    //     $('#detail_size').text(result.size)
+    //     $('#detail_no_laying_sheet').text(result.no_laying_sheet)
+    //     $('#detail_table_number').text(result.table_number)
+    //     $('#detail_gl_number').text(result.gl_number)
+    //     $('#detail_buyer').text(result.buyer)
+    //     $('#detail_style').text(result.style)
+    //     $('#detail_color').text(result.color)
+    //     $('#detail_layer').text(result.layer)
+    //     $('#detail_fabric_roll').text(result.fabric_roll)
+    //     $('#detail_fabric_po').text(result.fabric_po)
+    //     $('#detail_fabric_type').text(result.fabric_type)
+    //     $('#detail_fabric_cons').text(result.fabric_cons)
 
-        $('.qr-wrapper').html(`<img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${result.ticket_number}" alt="">`)
+    //     $('.qr-wrapper').html(`<img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${result.ticket_number}" alt="">`)
 
-        $('#modal_formLabel').text("Detail")
-        $('#btn_submit').text("OK")
-        $('#modal_form').modal('show')
-    }
+    //     $('#modal_formLabel').text("Detail")
+    //     $('#btn_submit').text("OK")
+    //     $('#modal_form').modal('show')
+    // }
 </script>
 
 <script type="text/javascript">
@@ -206,7 +205,6 @@
                 {data: 'ticket_number', name: 'ticket_number', render: function(data, type, row) {
                     return `<a href="{{ url('/cutting-ticket/detail') }}/${row.id}">${data}</a>`
                 }},
-                {data: 'table_number', name: 'table_number'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
             lengthChange: true,
