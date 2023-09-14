@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Cutting Ticket App</title>
+        <title>Cutting App</title>
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
         
         <!-- Font Awesome icons (free version)-->
@@ -28,7 +28,7 @@
             <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
                 <div class="d-flex justify-content-center">
                     <div class="text-center">
-                        <h1 class="mx-auto my-0 text-uppercase">Cutting Ticket App</h1>
+                        <h1 class="mx-auto my-0 text-uppercase">Cutting App</h1>
                         <h2 class="text-white mx-auto mt-2 mb-5">Application for Cutting Department</h2>
                         @if (Route::has('login'))
                             <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
