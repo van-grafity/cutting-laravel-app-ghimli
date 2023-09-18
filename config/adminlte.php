@@ -425,12 +425,12 @@ return [
             'icon' => 'fas fa-fw fa fa-solid fa-cut',
             'can'  => 'clerk',
         ],
-        [
-            'text' => 'Summary by Group',
-            'url'  => '/subcon-cutting',
-            'icon' => 'fas fa-fw fa fa-database',
-            'can'  => 'clerk',
-        ],
+        // [
+        //     'text' => 'Summary by Group',
+        //     'url'  => '/subcon-cutting',
+        //     'icon' => 'fas fa-fw fa fa-database',
+        //     'can'  => 'clerk',
+        // ],
         [
             'text' => 'Cutting Ticket',
             'icon' => 'fas fa-fw fa fa-object-ungroup',

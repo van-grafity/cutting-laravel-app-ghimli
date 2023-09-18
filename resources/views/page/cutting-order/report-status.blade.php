@@ -216,6 +216,37 @@
                         </tr>
                         @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            @if ($data['gl_number'] == null)
+                            <th colspan="5" style="text-align: right;">Total</th>
+                            @else
+                            <th colspan="4" style="text-align: right;">Total</th>
+                            @endif
+                            <th style="text-align: center;">
+                                <?php
+                                $sum = 0;
+                                foreach ($data['cuttingOrderRecord'] as $item)
+                                {
+                                    $total_cutting_order_record = 0;
+                                    $total_size_ratio = 0;
+                                    foreach ($item->cuttingOrderRecordDetail as $record_detail)
+                                    {
+                                        $total_cutting_order_record += $record_detail->layer;
+                                    }
+                                    foreach ($item->layingPlanningDetail->layingPlanningDetailSize as $size)
+                                    {
+                                        $total_size_ratio += $size->ratio_per_size;
+                                    }
+                                    $sum += ($total_cutting_order_record * $total_size_ratio);
+                                }
+                                echo $sum == 0 ? '-' : $sum;
+                                ?>
+                                   
+                            </th>
+                            <th colspan="4"></th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
     </div>
