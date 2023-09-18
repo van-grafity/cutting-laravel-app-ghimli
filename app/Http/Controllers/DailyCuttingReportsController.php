@@ -37,7 +37,7 @@ class DailyCuttingReportsController extends Controller
         $groups = Groups::select('groups.id', 'group_name')
         ->join('user_groups', 'user_groups.group_id', '=', 'groups.id')
         ->join('users', 'users.id', '=', 'user_groups.user_id')
-        ->join('cutting_order_record_details', 'cutting_order_record_details.operator', '=', 'users.name')
+        ->join('cutting_order_record_details', 'cutting_order_record_details.user_id', '=', 'users.id')
         ->where(function($query) use ($date_filter_night_shift, $date_filter) {
             $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
             ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 00:07:00'), $date_filter_night_shift]);
@@ -93,7 +93,7 @@ class DailyCuttingReportsController extends Controller
                     $cutting_order_record_groups = CuttingOrderRecord::select('cutting_order_records.*', DB::raw("SUM(cutting_order_record_details.layer) as total_layer"))
                     ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
                     ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
-                    ->join('users', 'users.name', '=', 'cutting_order_record_details.operator')
+                    ->join('users', 'users.id', '=', 'cutting_order_record_details.user_id')
                     ->join('user_groups', 'user_groups.user_id', '=', 'users.id')
                     ->join('groups', 'groups.id', '=', 'user_groups.group_id')
                     ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
