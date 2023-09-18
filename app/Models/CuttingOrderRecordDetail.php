@@ -20,7 +20,8 @@ class CuttingOrderRecordDetail extends Model
         'joint',
         'balance_end',
         'remarks',
-        'operator'
+        'operator',
+        // 'user_id',
     ];
 
     public function cuttingOrderRecord()
@@ -37,4 +38,9 @@ class CuttingOrderRecordDetail extends Model
     {
         return $this->hasMany(CuttingTicket::class, 'cutting_order_record_detail_id', 'id');
     }
+
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class, 'user_id', 'id');
+    // }
 }

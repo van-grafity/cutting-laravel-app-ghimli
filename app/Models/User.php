@@ -77,4 +77,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(CuttingOrderRecord::class, 'created_by', 'id');
     }
+
+    // public function cuttingOrderRecordDetail()
+    // {
+    //     return $this->hasMany(CuttingOrderRecordDetail::class, 'user_id', 'id');
+    // }
 }
