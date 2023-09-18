@@ -308,13 +308,13 @@ class CuttingOrdersController extends Controller
     
     public function print_report_pdf($cutting_order_id) {
 
-        $cutting_order = CuttingOrderRecord::find($cutting_order_id);
+        $cutting_order = CuttingOrderRecord::with(['cuttingOrderRecordDetail.user'])->find($cutting_order_id);
         $filename = $cutting_order->serial_number . '.pdf';
 
         $cor_details = [];
         $temp_cor_details = [];
-        $cutting_order_detail = $cutting_order->CuttingOrderRecordDetail;
-        
+        $cutting_order_detail = $cutting_order->CuttingOrderRecordDetail->load('user');
+        return $cutting_order_detail;
         foreach ($cutting_order_detail as $key  => $detail) {
             $data_detail = (object)[
                 'place_no' => $detail->fabric_roll,
