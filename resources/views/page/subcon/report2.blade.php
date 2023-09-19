@@ -26,13 +26,14 @@
             <thead>
                 <tr>
                     <th>No</th>
+                    <th>COR Serial No.</th>
                     <th>No</br>Laying</br>Sheet</th>
                     <th>Date</th>
-                    <th>COR Serial No.</th>
                     <th>Color</th>
+                    <th>Ratio</th>
                     <th>Layer</th>
                     <th>Pcs</th>
-                    <th>Ratio</th>
+                    <th>DZ</th>
                 </tr>
             </thead>
 
@@ -43,10 +44,20 @@
                         
                             <tr>
                                 <td>{{ $key + 1 }}</td>
+                                <td style="text-align: left; padding-left: 4px !important;">{{ $value2->serial_number }}</td>
                                 <td>{{ $value->no_laying_sheet }}</td>
                                 <td>{{ date('d-m-Y', strtotime($value2->updated_at)) }}</td>
-                                <td>{{ $value2->serial_number }}</td>
-                                <td>{{ $value->layingPlanning->color->color }}</td>
+                                
+                                <td style="text-align: left; padding-left: 4px !important;">{{ $value->layingPlanning->color->color }}</td>
+                                <td>
+                                    @foreach ($value->layingPlanningDetailSize as $size)
+                                        @if ($size->qty_per_size == 0)
+                                            <span>-</span>
+                                        @else
+                                            <span>{{ $size->ratio_per_size }}</span>
+                                        @endif
+                                    @endforeach
+                                </td>
                                 <td><?php
                                 $total_cutting_order_record = 0;
                                 foreach ($cuttingOrderRecord as $record)
@@ -81,14 +92,27 @@
                                     echo ($total_cutting_order_record * $total_size_ratio) == 0 ? '-' : $total_cutting_order_record * $total_size_ratio;
                                 ?>
                                 </td>
-                                <td>
-                                    @foreach ($value->layingPlanningDetailSize as $size)
-                                        @if ($size->qty_per_size == 0)
-                                            <span>-</span>
-                                        @else
-                                            <span>{{ $size->ratio_per_size }}</span>
-                                        @endif
-                                    @endforeach
+                                <td><?php
+                                    $total_cutting_order_record = 0;
+                                    $total_size_ratio = 0;
+                                    foreach ($cuttingOrderRecord as $record)
+                                    {
+                                        if ($record->laying_planning_detail_id == $value->id)
+                                        {
+                                            foreach ($record->cuttingOrderRecordDetail as $record_detail)
+                                            {
+                                                $total_cutting_order_record += $record_detail->layer;
+                                            }
+                                        }
+                                    }
+                                    foreach ($value->layingPlanningDetailSize as $size)
+                                    {
+                                        $total_size_ratio += $size->ratio_per_size;
+                                    }
+                                    $res = ($total_cutting_order_record * $total_size_ratio) / 12;
+                                    $res = number_format((float)$res, 2, '.', '');
+                                    echo ($total_cutting_order_record * $total_size_ratio) == 0 ? '-' : $res;
+                                ?>
                                 </td>
                             </tr>
                         @endif
@@ -147,7 +171,7 @@
     .table thead th {
         text-align: center;
         vertical-align: middle;
-        font-size: 8px;
+        font-size: 10px;
         padding-top: 1 !important;
         padding-bottom: 1 !important;
         padding-left: 0.3 !important;
