@@ -285,7 +285,7 @@ class SubconCuttingController extends Controller
         }
         $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereIn('id', $cuttingOrderRecordIds)->get();
 
-        $pdf = PDF::loadView('page.subcon.report2', compact('cuttingOrderRecord', 'cuttingOrderRecordDetail', 'details'))->setPaper('a4', 'potrait');
+        $pdf = PDF::loadView('page.subcon.report2', compact('cuttingOrderRecord', 'cuttingOrderRecordDetail', 'details', 'date_start', 'date_end'))->setPaper('a4', 'landscape');
         return $pdf->stream('Summary Group Cutting.pdf');
     }
 

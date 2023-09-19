@@ -16,24 +16,58 @@
             <tr>
                 <td colspan="2" style="text-align: center; font-weight: bold; font-size: 14px;">
                     SUMMARY CUTTING {{ strtoupper($cuttingOrderRecordDetail[0]->user->name) }}
+                    <br/>
+                    <span style="font-size: 12px;">{{ $date_start }} - {{ $date_end }}</span>
                 </td>
             </tr>
         </table>
         <br/>
-        <!--$pdf = PDF::loadView('page.subcon.report2', compact('cuttingOrderRecord', 'cuttingOrderRecordDetail', 'detail'))->setPaper('a4', 'potrait'); -->
         <br/>
+
+        @php
+            $size_all = [];
+            foreach ($details as $key => $value)
+            {
+                foreach ($value->layingPlanningDetailSize as $size)
+                {
+                    if (!in_array($size->size->size, $size_all))
+                    {
+                        array_push($size_all, $size->size->size);
+                    }
+                }
+            }
+
+            $layer = 0;
+            foreach ($cuttingOrderRecord as $record)
+            {
+                if ($record->laying_planning_detail_id == $value->id)
+                {
+                    foreach ($record->cuttingOrderRecordDetail as $record_detail)
+                    {
+                        $layer += $record_detail->layer;
+                    }
+                }
+            }
+        @endphp
+        
         <table class="table table-bordered" style="width:100%; font-size: 10px; font-weight: bold; margin-bottom: 0 !important; padding-bottom: 28 !important;">
             <thead>
                 <tr>
-                    <th>No</th>
-                    <th>COR Serial No.</th>
-                    <th>No</br>Laying</br>Sheet</th>
-                    <th>Date</th>
-                    <th>Color</th>
-                    <th>Ratio</th>
-                    <th>Layer</th>
-                    <th>Pcs</th>
-                    <th>DZ</th>
+                    <th rowspan="2" width="2%">No</th>
+                    <th rowspan="2">COR Serial No.</th>
+                    <th rowspan="2" width="6.5%">No</br>Laying</br>Sheet</th>
+                    <th rowspan="2" width="6.2%">Date</th>
+                    <th rowspan="2">Color</th>
+                    <th rowspan="2">Size/Ratio</th>
+                    <th colspan="{{ count($size_all) }}">Size/Ratio</th>
+                    <th rowspan="2" width="3.2%">Layer</th>
+                    <th rowspan="2" width="3.6%">Pcs</th>
+                    <th rowspan="2" width="3.2%">Dz</th>
+                </tr>
+                <tr>
+                    @foreach ($size_all as $size)
+                        <th rowspan="1" width="2%">{{ $size }}</th>
+                    @endforeach
                 </tr>
             </thead>
 
@@ -49,15 +83,26 @@
                                 <td>{{ date('d-m-Y', strtotime($value2->updated_at)) }}</td>
                                 
                                 <td style="text-align: left; padding-left: 4px !important;">{{ $value->layingPlanning->color->color }}</td>
+                                <!-- size ratio 1 -->
                                 <td>
                                     @foreach ($value->layingPlanningDetailSize as $size)
-                                        @if ($size->qty_per_size == 0)
-                                            <span>-</span>
-                                        @else
-                                            <span>{{ $size->ratio_per_size }}</span>
-                                        @endif
+                                            <span>{{ $size->size->size . '=' . $size->ratio_per_size }}</span>
                                     @endforeach
                                 </td>
+                                <!-- size ratio 2 -->
+                                @foreach ($size_all as $size)
+                                    <td><?php
+                                        $ratio = 0;
+                                        foreach ($value->layingPlanningDetailSize as $size2)
+                                        {
+                                            if ($size2->size->size == $size)
+                                            {
+                                                $ratio = $size2->ratio_per_size;
+                                            }
+                                        }
+                                        echo $ratio == 0 ? '-' : $ratio;
+                                    ?></td>
+                                @endforeach
                                 <td><?php
                                 $total_cutting_order_record = 0;
                                 foreach ($cuttingOrderRecord as $record)
