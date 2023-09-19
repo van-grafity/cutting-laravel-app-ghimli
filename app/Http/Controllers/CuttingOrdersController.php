@@ -314,7 +314,6 @@ class CuttingOrdersController extends Controller
         $cor_details = [];
         $temp_cor_details = [];
         $cutting_order_detail = $cutting_order->CuttingOrderRecordDetail->load('user');
-        return $cutting_order_detail;
         foreach ($cutting_order_detail as $key  => $detail) {
             $data_detail = (object)[
                 'place_no' => $detail->fabric_roll,
