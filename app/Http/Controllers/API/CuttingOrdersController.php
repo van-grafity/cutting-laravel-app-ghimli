@@ -101,6 +101,7 @@ class CuttingOrdersController extends BaseController
 
         $cuttingOrderRecordDetail->remarks = $input['remarks'];
         $cuttingOrderRecordDetail->operator = $input['operator'];
+        $cuttingOrderRecordDetail->user_id = $input['user_id'];
 
         $sum_layer += $input['layer'];
         if ($sum_layer == $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
@@ -120,7 +121,7 @@ class CuttingOrdersController extends BaseController
         
         $cuttingOrderRecordDetail->save();
         $cuttingOrderRecord->save();
-        $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('statusLayer', 'cuttingOrderRecordDetail')
+        $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('statusLayer', 'cuttingOrderRecordDetail.user')
             ->first();
         $data = collect(
             [
