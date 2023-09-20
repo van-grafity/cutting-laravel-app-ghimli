@@ -415,6 +415,18 @@ class CuttingOrdersController extends Controller
         return $pdf->stream($filename);
     }
 
+    public function cuttingCompletion()
+    {
+        return view('page.cutting-order.completion');
+    }
+
+    public function cuttingCompletionReport()
+    {
+        $filename = 'Cutting Completion Report' . '.pdf';
+        $pdf = PDF::loadview('page.cutting-order.completion-report')->setPaper('a4', 'landscape');
+        return $pdf->stream($filename);
+    }
+
     public function statusCuttingOrderRecord()
     {
         $gls = Gl::with('GLCombine')->get();
