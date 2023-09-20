@@ -202,7 +202,7 @@ class SubconCuttingController extends Controller
     }
 
     // Route::get('cutting-report-subcon/{id}', [SubconCuttingController::class,'cutting_report_subcon'])->name('subcon-cutting.cutting-report-subcon');
-    public function cutting_report_subcon($id)
+    public function cutting_report_subcon2($id)
     {
         // $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('id', $id)->first();
         // $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($id) {
@@ -238,8 +238,8 @@ class SubconCuttingController extends Controller
         $pdf = PDF::loadView('page.subcon.report', compact('data', 'details', 'cuttingOrderRecord'))->setPaper('a4', 'potrait');
         return $pdf->stream('laying-planning-report.pdf');
     }
-    
-    public function print()
+
+    public function print2()
     {
         $group = Groups::get();
         $cuttingOrderRecordDetail = CuttingOrderRecordDetail::whereIn('operator', $this->getOperator())->get();
@@ -262,6 +262,49 @@ class SubconCuttingController extends Controller
         return view('page.subcon.print', compact('laying_plannings', 'group'));
     }
 
+    public function summary_report_group_cutting_order_record(Request $request)
+    {
+        $date_start = $request->date_start;
+        $date_end = $request->date_end;
+        $group_id = $request->group_id;
+
+        $cuttingOrderRecordDetail = CuttingOrderRecordDetail::with(['user'])->whereIn('user_id', $this->getUserIdByGroup($group_id))->get();
+        $cuttingOrderRecordDetailIds = [];
+        foreach ($cuttingOrderRecordDetail as $key => $value) {
+            $cuttingOrderRecordDetailIds[] = $value->cutting_order_record_id;
+        }
+        $cuttingOrderRecord = CuttingOrderRecord::whereIn('id', $cuttingOrderRecordDetailIds)
+            ->whereDate('updated_at', '>=', $date_start)
+            ->whereDate('updated_at', '<=', $date_end)
+            ->orderBy('updated_at', 'asc')
+            ->get();
+        
+        $cuttingOrderRecordIds = [];
+        foreach ($cuttingOrderRecord as $key => $value) {
+            $cuttingOrderRecordIds[] = $value->laying_planning_detail_id;
+        }
+        $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereIn('id', $cuttingOrderRecordIds)->get();
+
+        $pdf = PDF::loadView('page.subcon.report2', compact('cuttingOrderRecord', 'cuttingOrderRecordDetail', 'details', 'date_start', 'date_end'))->setPaper('a4', 'landscape');
+        return $pdf->stream('Summary Group Cutting.pdf');
+    }
+
+    public function getUserIdByGroup($group_id)
+    {
+        $user_groups = UserGroups::where('group_id', $group_id)->get();
+        $user_ids = [];
+        foreach ($user_groups as $key => $value) {
+            $user_ids[] = $value->user_id;
+        }
+        return $user_ids;
+    }
+
+    public function print()
+    {
+        $group = Groups::orderBy('id', 'asc')->get();
+        return view('page.subcon.print2', compact('group'));
+    }
+
     public function getOperator(){
         $group = Groups::where('group_description', 'Subcon')->get();
         $groupIds = [];
@@ -277,6 +320,25 @@ class SubconCuttingController extends Controller
         $userNames = [];
         foreach ($users as $key => $value) {
             $userNames[] = $value->name;
+        }
+        return $userNames;
+    }
+
+    public function getOperatorId(){
+        $group = Groups::where('group_description', 'Subcon')->get();
+        $groupIds = [];
+        foreach ($group as $key => $value) {
+            $groupIds[] = $value->id;
+        }
+        $userGroup = UserGroups::whereIn('group_id', $groupIds)->get();
+        $userIds = [];
+        foreach ($userGroup as $key => $value) {
+            $userIds[] = $value->user_id;
+        }
+        $users = User::whereIn('id', $userIds)->get();
+        $userNames = [];
+        foreach ($users as $key => $value) {
+            $userNames[] = $value->id;
         }
         return $userNames;
     }
