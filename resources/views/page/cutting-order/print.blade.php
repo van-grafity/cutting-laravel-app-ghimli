@@ -125,17 +125,19 @@
         <table class="header-subtitle">
             <thead>
                 <tr>
-                    <td width="35" class="no-border"> Style No</td>
-                    <td width="80">: {{ $data->style }} </td>
-                    <td width="60" class="no-border text-right"> {{ $data->marker_code }} </td>
-                    <td width="80" class="no-border text-right"> GL No </td>
-                    <td width="110" class="" >: {{ $data->gl_number}} </td>
-                    <td width="100" class="no-border text-right">Portion</td>
-                    <td width="100" class="">: {{ $data->fabric_cons }} </td>
-                    <td width="25" class="no-border"></td>
-                    <td width="80" class="subtitle-right"> 
+                    <td colspan="1" width="100" class="no-border text-left">Portion</td>
+                    <td colspan="11" width="100" class="text-left">: {{ $data->fabric_cons }} </td>
+                    <td> Date : {{ $data->date }} </td>
+                </tr>
+                <tr>
+                    <td colspan="2" width="35" class="no-border"> Style No</td>
+                    <td colspan="2" width="80">: {{ $data->style }} </td>
+                    <td colspan="2" width="60" class="no-border text-right"> {{ $data->marker_code }} </td>
+                    <td colspan="2" width="80" class="no-border text-right"> GL No </td>
+                    <td colspan="2" width="110" class="" >: {{ $data->gl_number}} </td>
+                    <td colspan="2" width="25" class="no-border"></td>
+                    <td colspan="1" width="80" class="subtitle-right"> 
                         No : {{ $data->no_laying_sheet}} <br> 
-                        Date : {{ $data->date }} 
                     </td>
                 </tr>
             </thead>
