@@ -474,6 +474,12 @@ return [
             'icon' => 'fas fa-fw fa fa-database',
             'can'  => 'clerk',
         ],
+        // [
+        //     'text' => 'Cutting Order Completion',
+        //     'url'  => '/cutting-order-completion',
+        //     'icon' => 'fas fa-fw fa fa-database',
+        //     'can'  => 'clerk',
+        // ],
         [
             'header' => 'Warehouse',
             'can'  => 'admin-only',
