@@ -23,12 +23,21 @@
             <div class="card">
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="date_start">Date Start</label>
-                        <input type="date" class="form-control" id="date_start" name="date_start" placeholder="Date Start">
+                        <label for="start_cut">Start Cut</label>
+                        <input type="date" class="form-control" id="start_cut" name="start_cut" placeholder="Date Start">
                     </div>
                     <div class="form-group">
-                        <label for="date_end">Date End</label>
-                        <input type="date" class="form-control" id="date_end" name="date_end" placeholder="Date End">
+                        <label for="finish_cut">Finish Cut</label>
+                        <input type="date" class="form-control" id="finish_cut" name="finish_cut" placeholder="Date End">
+                    </div>
+                    <div class="form-group">
+                        <label for="gl_number">GL Number</label>
+                        <select class="form-control" id="gl_number" name="gl_number">
+                            <option value="">-- Select GL Number --</option>
+                            @foreach ($gls as $gl)
+                                <option value="{{ $gl->id }}">{{ $gl->gl_number }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="d-flex justify-content-center">
                         <a href="javascript:void(0);" class="btn btn-primary mb-2 mr-2" id="btn_print_report">Print</a>
@@ -42,10 +51,10 @@
 
 @push('js')
 <script type="text/javascript">
-    $('date_start').datetimepicker({
+    $('start_cut').datetimepicker({
         format: 'DD-MM-yyyy'
     });
-    $('date_end').datetimepicker({
+    $('finish_cut').datetimepicker({
         format: 'DD-MM-yyyy'
     });
 </script>
@@ -57,11 +66,14 @@
 
 <script type="text/javascript">
     $(document).ready(function(){
+        $('#gl_number').select2();
+        
         $('#btn_print_report').click(function(){
-            var date_start = $('#date_start').val();
-            var date_end = $('#date_end').val();
+            var start_cut = $('#start_cut').val();
+            var finish_cut = $('#finish_cut').val();
+            var gl_number = $('#gl_number').val();
             
-            window.open(url + '?date_start=' + date_start + '&date_end=' + date_end, '_blank');
+            window.open(url + '?start_cut=' + start_cut + '&finish_cut=' + finish_cut + '&gl_number=' + gl_number, '_blank');
         });
     });
 </script>

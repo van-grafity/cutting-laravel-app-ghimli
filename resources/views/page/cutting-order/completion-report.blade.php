@@ -18,95 +18,172 @@
                     PT. GHIM LI INDONESIA
                 </td>
                 <td width="50%" style="text-align: right; font-size: 10px;">
-                    RP-GLA-CUT-002-00<br>
-                    Rev 00<br>
+                    RP-GLA-CUT-005<br>
+                    Rev 0<br>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" style="text-align: center; font-weight: bold; font-size: 14px;">
                     CUTTING COMPLETION REPORT
                     <br>
-                    <div style="font-size: 10px;">{{ $data->serial_number }}</div>
+                    <span style="font-size: 12px;">{{ $data['start_cut'] }} - {{ $data['finish_cut'] }}</span>
                 </td>
             </tr>
         </table>
         <br/>
-        <table width="100%" style="font-size: 10px; font-weight: bold; padding-top: 2 !important; padding-bottom: 2 !important; padding-left: 4 !important; padding-right: 4 !important;">
+        @php
+            $total_order_qty = 0;
+
+            foreach ($data['layingPlanning'] as $layingPlanning) {
+                $total_order_qty += $layingPlanning->order_qty;
+            }
+
+            $planning = $data['layingPlanning']->first();
+        @endphp
+        <table style="font-size: 11px; font-weight: bold; padding-top: 2 !important; padding-bottom: 2 !important; padding-left: 4 !important; padding-right: 4 !important; width: 100% !important;">
             <tr>
-                <td width="6%">GL#</td>
-                <td>63063-00</td>
-                <td></td>
-                <td></td>
-                <td width="8%">Fabric P/O</td>
-                <td>{{ $data->fabric_po }}</td>
-                <td width="10%" style="text-align: right;">Delivery Date:</td>
-                <td width="8%" style="text-align: right;">
-                    {{ date('d-M-Y', strtotime($data->delivery_date)) }}
-                </td>
+                <td>GL#</td>
+                <td width="1.5%">:</td>
+                <td style="text-align: left;">{{ $planning->gl->gl_number }}</td>
+                <td width="13%">TYPE OF FABRIC</td>
+                <td width="1.5%">:</td>
+                <td style="text-align: left;">{{ $planning->fabricType->name }}</td>
+                <td>DATE</td>
+                <td width="1.5%">:</td>
+                <td style="text-align: left;">{{ $planning->plan_date }}</td>
             </tr>
 
             <tr>
-                <td width="6%">PO. NO</td>
-                <td>100049955</td>
-                <td width="6%">Order Qty</td>
-                <td>{{ $data->order_qty }}</td>
-                <td width="8%">Fabric Type</td>
-                <td>{{ $data->fabricType->description }}</td>
-                <td width="10%" style="text-align: right;">Plan Date:</td>
-                <td width="8%" style="text-align: right;">
-                    {{ date('d-M-Y', strtotime($data->plan_date)) }}
-                </td>
+                <td>PO. NO</td>
+                <td>:</td>
+                <td style="text-align: left;">{{ $planning->fabric_po }}</td>
+                <td>FABRIC.CON'S</td>
+                <td>:</td>
+                <td style="text-align: left;">{{ $planning->fabricCons->name }}</td>
+                <td>DELIVERY DATE</td>
+                <td>:</td>
+                <td style="text-align: left;">{{ $planning->delivery_date }}</td>
+                
             </tr>
+            
             <tr>
                 <td width="6%">BUYER</td>
-                <td>AMAZON</td>
-                <td width="6%">Total Qty</td>
-                <td>{{ $data->order_qty }}</td>
-                <td width="8%">Fabric Cons</td>
-                <td>{{ $data->fabricCons->description }} {{ $data->fabric_cons_qty }}</td>
-                <td></td>
-                <td></td>
+                <td>:</td>
+                <td style="text-align: left;">{{ $planning->buyer->name }}</td>
+                <td>QTY REQ</td>
+                <td>:</td>
+                <td style="text-align: left;">{{ $total_order_qty }} pcs</td>
+                <td>PO Marker</td>
+                <td>:</td>
+                <td style="text-align: left;">xx.xx</td>
             </tr>
 
             <tr>
-                <td width="6%">STYLE</td>
-                <td>202-23C111595</td>
-                <td width="6%"></td>
-                <td></td>
-                <td width="8%">Description</td>
-                <td>{{ $data->style->description }}</td>
-                <td></td>
-                <td></td>
+                <td>STYLE</td>
+                <td>:</td>
+                <td style="text-align: left;">{{ $planning->style->style }}</td>
+                <td>DIFF</td>
+                <td>:</td>
+                <td style="text-align: left;">xxx pcs</td>
+                <td width="15%">Actual Marker Length</td>
+                <td>:</td>
+                <td style="text-align: left;">xx.xx</td>
             </tr>
         </table>
         <br/>
+
+        <!-- "laying_planning": [
+            {
+                "id": 928,
+                "serial_number": "LP-63535-00-CCKVRWGM95COBOS-SK3E085-01",
+                "gl_id": 182,
+                "style_id": 279,
+                "buyer_id": 9,
+                "color_id": 563,
+                "order_qty": 5602,
+                "delivery_date": "2023-11-07",
+                "plan_date": "2023-09-14",
+                "fabric_po": "160020986",
+                "fabric_cons_id": 142,
+                "fabric_type_id": 120,
+                "fabric_cons_qty": 8,
+                "fabric_cons_desc": null,
+                "created_at": "2023-09-14T03:26:12.000000Z",
+                "updated_at": "2023-09-14T03:26:12.000000Z",
+                "gl": {
+                    "id": 182,
+                    "gl_number": "63535-00",
+                    "season": "SP '24",
+                    "size_order": "S-XL 1X-3X",
+                    "buyer_id": 9,
+                    "created_at": "2023-09-14T03:19:20.000000Z",
+                    "updated_at": "2023-09-14T03:19:20.000000Z"
+                },
+                "color": {
+                    "id": 563,
+                    "color": "CLR/CELERY - K3XHE094",
+                    "color_code": "CCKVRWGM",
+                    "created_at": "2023-09-14T03:11:34.000000Z",
+                    "updated_at": "2023-09-14T03:11:34.000000Z"
+                }
+            }
+        ] -->
+        <table class="table table-nota">
+            <tbody class="">
+                @php
+                    $count = 0;
+                @endphp
+                @for ($i = 0; $i < 10; $i++)
+                    @if ($count == 0)
+                        <tr>
+                    @endif
+                    <!-- 'gl', 'style', 'buyer', 'color', 'fabricCons', 'fabricType' -->
+                    @if (isset($data['layingPlanning'][$i]))
+                        <td style="font-size: 8pt;">{{ $data['layingPlanning'][$i]->gl->gl_number }}</td>
+                        <td style="font-size: 8pt;">{{ $data['layingPlanning'][$i]->color->color }}</td>
+                    @else
+                        <td style="font-size: 8pt;"></td>
+                        <td style="font-size: 8pt;"></td>
+                    @endif
+                    @php
+                        $count++;
+                    @endphp
+                    @if ($count == 2)
+                        </tr>
+                        @php
+                            $count = 0;
+                        @endphp
+                    @endif
+                @endfor
+            </tbody>
+        </table>
 
         <table width="100%" style="font-size: 12px; font-family: Times New Roman, Times, serif; font-weight: bold; position: absolute; bottom: 60px;">
             <tr>
-                <td width="50%" style="text-align: center;">
+                <th width="50%" style="text-align: center;">
                     <p>Prepared by:</p>
                     <p></p>
                     <div style="display:inline-block; text-align:center;">
                         <span>MELDA (58734)</span>
                         <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 90px;">
                     </div>
-                </td>
-                <td width="50%" style="text-align: center;">
+                </th>
+                <th width="50%" style="text-align: center;">
                     <p>Authorized by:</p>
                     <p></p>
                     <div style="display:inline-block; text-align:center;">
                         <span>ROBERT (36120)</span>
                         <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 90px;">
                     </div>
-                </td>
-                <td width="50%" style="text-align: center;">
+                </th>
+                <th width="50%" style="text-align: center;">
                     <p>Approved by:</p>
                     <p></p>
                     <div style="display:inline-block; text-align:center;">
                     <div style="height: 18px;"></div>
                         <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 90px;">
                     </div>
-                </td>
+                </th>
             </tr>
         </table>
     </div>
@@ -136,6 +213,7 @@
         text-align: center;
         vertical-align: middle;
         font-size: 8px;
+        border: 1px solid;
         padding-top: 1 !important;
         padding-bottom: 1 !important;
         padding-left: 0.3 !important;
@@ -147,10 +225,10 @@
         vertical-align: middle;
         font-weight: bold;
         font-size: 10px;
+        height:20px;
         padding-top: 1.5 !important;
         padding-bottom: 1.5 !important;
         padding-left: 0.3 !important;
         padding-right: 0.3 !important;
-        margin-bottom: 0px !important;
     }
 </style>
