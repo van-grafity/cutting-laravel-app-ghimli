@@ -23,30 +23,21 @@ class FabricRequisitionsController extends Controller
 
     public function dataFabricRequisition(){
         $query = FabricRequisition::with(['layingPlanningDetail'])
-            ->select('fabric_requisitions.id','laying_planning_detail_id','serial_number')->get();
+            ->select('fabric_requisitions.id','laying_planning_detail_id','serial_number', 'is_issue')->get();
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
             ->addColumn('serial_number', function ($data){
                 return $data->serial_number;
             })
-            ->addColumn('gl_number', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->gl->gl_number;
-            })
-            ->addColumn('style_no', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->style->style;
-            })
             ->addColumn('fabric_po', function ($data){
                 return $data->layingPlanningDetail->layingPlanning->fabric_po;
             })
-            ->addColumn('no_laying_sheet', function ($data){
-                return $data->layingPlanningDetail->no_laying_sheet;
-            })
-            ->addColumn('color', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->color->color;
-            })
             ->addColumn('table_number', function ($data){
                 return $data->layingPlanningDetail->table_number;
+            })
+            ->addColumn('is_issue', function ($data){
+                return $data->is_issue == 1 ? '<span class="badge rounded-pill badge-success" style="padding: 1.2em; text-align: center;">Issued</span>' : '<span class="badge rounded-pill badge-danger" style="padding: 1.2em">Not Issued</span>';
             })
             ->addColumn('action', function($data){
                 return '

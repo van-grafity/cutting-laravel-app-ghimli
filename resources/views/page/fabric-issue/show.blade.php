@@ -11,7 +11,7 @@
                     
                     <div class="detail-section my-5 px-5">
                         <div class="row mb-3">
-                            <div class="col-sm-12">
+                            <div class="col-sm-10">
                                 <table>
                                     <thead>
                                         <tr style="font-weight:700; font-size:20px;">
@@ -22,7 +22,15 @@
                                     </thead>
                                 </table>
                             </div>
+                            <div class="col-sm-2">
+                                @if($fabric_requisition->status == 1)
+                                <span class="badge rounded-pill badge-success" style="padding: 1em">Sudah Issue</span>
+                                @else
+                                <span class="badge rounded-pill badge-danger" style="padding: 1em">Belum Issue</span>
+                                @endif
+                            </div>
                         </div>
+                        
                         <div class="row">
                             <div class="col-md-6">
                                 <table class="text-left">
@@ -108,7 +116,7 @@
                     <div class="row">
                         <div class="text-left mb-3 col-md-6">
                             <div class="dropdown">
-                                <button class="btn btn-success dropdown-toggle shadow-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button class="btn btn-info dropdown-toggle shadow-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Action
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
