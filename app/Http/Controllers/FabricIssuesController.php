@@ -121,7 +121,6 @@ class FabricIssuesController extends Controller
         $fabric_requisition = [
             'id' => $getFabricRequisition->id,
             'serial_number'=> $layingPlanningDetail->fabricRequisition->serial_number,
-            // is_issue
             'status' => $getFabricRequisition->is_issue,
             'no_laying_sheet' => $layingPlanningDetail->no_laying_sheet,
             'table_number' => $layingPlanningDetail->table_number,

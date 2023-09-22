@@ -448,7 +448,7 @@ class CuttingOrdersController extends Controller
             ->orderBy('id', 'asc')
             ->get();
         $layingPlanning->load('layingPlanningDetail.layingPlanningDetailSize');
-        $layingPlanning->load('layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail');
+        // $layingPlanning->load('layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail');
         // return $layingPlanning;
         // return $layingPlanning[0]->layingPlanningDetail[0]->cuttingOrderRecord->cuttingOrderRecordDetail;
         $data = [
