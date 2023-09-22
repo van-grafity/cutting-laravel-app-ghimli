@@ -27,6 +27,8 @@
             </tr>
         </table>
         <br/>
+        <br/>
+        <br/>
         @php
             $total_order_qty = 0;
 
@@ -116,7 +118,7 @@
                                                 @if ($col == 0)
                                                     <td style="text-align: left; width: 10%;">COLOR</td>
                                                 @endif
-                                                <td colspan="{{ $sizeCount }}" style="text-align: center;">{{ $currentPlanning->color->color }}</td>
+                                                <td colspan="{{ $sizeCount + 1 }}" style="text-align: center;">{{ $currentPlanning->color->color }}</td>
                                             </tr>
                                             <tr>
                                                 @if ($col == 0)
@@ -125,6 +127,7 @@
                                                 @foreach ($currentPlanning->layingPlanningSize as $lps)
                                                     <td>{{ $lps->size->size }}</td>
                                                 @endforeach
+                                                <td style="text-align: center;">TOTAL</td>
                                             </tr>
                                             <tr>
                                                 @if ($col == 0)
@@ -133,24 +136,84 @@
                                                 @foreach ($currentPlanning->layingPlanningSize as $lps)
                                                     <td>{{ $lps->quantity }}</td>
                                                 @endforeach
+                                                <td style="text-align: center;">
+                                                    @php
+                                                        $total_qty = 0;
+                                                        foreach ($currentPlanning->layingPlanningSize as $lps)
+                                                        {
+                                                            $total_qty += $lps->quantity;
+                                                        }
+                                                    @endphp
+                                                    {{ $total_qty }}
+                                                </td>
                                             </tr>
-                                            <!-- $layingPlanning->load('layingPlanningDetail.layingPlanningDetailSize');
-                                            $layingPlanning->load('layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail'); -->
                                             <tr>
                                                 @if ($col == 0)
                                                     <td style="text-align: left;">CUT QTY</td>
                                                 @endif
                                                 @foreach ($currentPlanning->layingPlanningSize as $lps)
-                                                    <td>xx</td>
+                                                    @php
+                                                        $total_per_size = 0;
+                                                        foreach ($currentPlanning->layingPlanningDetail as $lpd)
+                                                        {
+                                                            foreach ($lpd->layingPlanningDetailSize as $lps2)
+                                                            {
+                                                                if ($lps2->size_id == $lps->size_id)
+                                                                {
+                                                                    $total_per_size += $lps2->qty_per_size;
+                                                                }
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    <td>{{ $total_per_size }}</td>
                                                 @endforeach
+                                                <td style="text-align: center;">
+                                                    @php
+                                                        $total_per_size = 0;
+                                                        foreach ($currentPlanning->layingPlanningDetail as $lpd)
+                                                        {
+                                                            foreach ($lpd->layingPlanningDetailSize as $lps2)
+                                                            {
+                                                                $total_per_size += $lps2->qty_per_size;
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    {{ $total_per_size }}
+                                                </td>
                                             </tr>
                                             <tr>
                                                 @if ($col == 0)
                                                     <td style="text-align: left;">DIFF</td>
                                                 @endif
                                                 @foreach ($currentPlanning->layingPlanningSize as $lps)
-                                                    <td>xx</td>
+                                                    @php
+                                                        $total_per_size = 0;
+                                                        foreach ($currentPlanning->layingPlanningDetail as $lpd)
+                                                        {
+                                                            foreach ($lpd->layingPlanningDetailSize as $lps2)
+                                                            {
+                                                                if ($lps2->size_id == $lps->size_id)
+                                                                {
+                                                                    $total_per_size += $lps2->qty_per_size;
+                                                                }
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    <td>{{ $total_per_size - $lps->quantity }}</td>
                                                 @endforeach
+                                                <td style="text-align: center;">
+                                                    @php
+                                                        $total_per_size = 0;
+                                                        foreach ($currentPlanning->layingPlanningDetail as $lpd)
+                                                        {
+                                                            foreach ($lpd->layingPlanningDetailSize as $lps2)
+                                                            {
+                                                                $total_per_size += $lps2->qty_per_size;
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    {{ $total_per_size - $total_qty }}
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
