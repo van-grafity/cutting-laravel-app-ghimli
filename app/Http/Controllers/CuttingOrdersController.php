@@ -417,13 +417,46 @@ class CuttingOrdersController extends Controller
 
     public function cuttingCompletion()
     {
-        return view('page.cutting-order.completion');
+        $gls = Gl::with('GLCombine')->get();
+        return view('page.cutting-order.completion', compact('gls'));
     }
 
-    public function cuttingCompletionReport()
+    public function cuttingCompletionReport(Request $request)
     {
+        $start_cut = $request->start_cut;
+        if($start_cut == null){
+            $start_cut = Carbon::now()->toDateString();
+        }
+        $finish_cut = $request->finish_cut;
+        if($finish_cut == null){
+            $finish_cut = Carbon::now()->toDateString();
+        }
+        $gl_number = $request->gl_number;
         $filename = 'Cutting Completion Report' . '.pdf';
-        $pdf = PDF::loadview('page.cutting-order.completion-report')->setPaper('a4', 'landscape');
+        $layingPlanning = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricCons', 'fabricType', 'layingPlanningSize', 'layingPlanningDetail.cuttingOrderRecord'])
+            ->whereHas('layingPlanningDetail.cuttingOrderRecord', function($query) use ($start_cut, $finish_cut, $gl_number) {
+                $query->whereDate('updated_at', '>=', $start_cut)
+                    ->whereDate('updated_at', '<=', $finish_cut)
+                    ->whereHas('layingPlanningDetail', function($query) use ($gl_number) {
+                        if ($gl_number != null) {
+                            $query->whereHas('layingPlanning', function($query) use ($gl_number) {
+                                $query->where('gl_id', $gl_number);
+                            });
+                        }
+                    });
+            })
+            ->orderBy('id', 'asc')
+            ->get();
+        // $layingPlanning->load('layingPlanningDetail.layingPlanningDetailSize');
+        // return $layingPlanning;
+        $data = [
+            'layingPlanning' => $layingPlanning,
+            'start_cut' => $start_cut,
+            'finish_cut' => $finish_cut,
+            'gl_number' => $gl_number
+        ];
+
+        $pdf = PDF::loadview('page.cutting-order.completion-report', compact('data'))->setPaper('a4', 'landscape');
         return $pdf->stream($filename);
     }
 
@@ -465,7 +498,12 @@ class CuttingOrdersController extends Controller
             })
             ->orderBy('serial_number', 'asc')
             ->get();
-            
+        $cuttingOrderRecord = $cuttingOrderRecord->sortBy(function($item) {
+            return $item->layingPlanningDetail->layingPlanning->color->color;
+        });
+        $cuttingOrderRecord = $cuttingOrderRecord->sortBy(function($item) {
+            return $item->layingPlanningDetail->layingPlanning->style->style;
+        });
         $data = [
             'cuttingOrderRecord' => $cuttingOrderRecord,
             'date_start' => $date_start,
