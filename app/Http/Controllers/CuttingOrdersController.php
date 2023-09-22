@@ -448,7 +448,7 @@ class CuttingOrdersController extends Controller
             ->orderBy('id', 'asc')
             ->get();
         // $layingPlanning->load('layingPlanningDetail.layingPlanningDetailSize');
-        return $layingPlanning;
+        // return $layingPlanning;
         $data = [
             'layingPlanning' => $layingPlanning,
             'start_cut' => $start_cut,
@@ -498,7 +498,12 @@ class CuttingOrdersController extends Controller
             })
             ->orderBy('serial_number', 'asc')
             ->get();
-            
+        $cuttingOrderRecord = $cuttingOrderRecord->sortBy(function($item) {
+            return $item->layingPlanningDetail->layingPlanning->color->color;
+        });
+        $cuttingOrderRecord = $cuttingOrderRecord->sortBy(function($item) {
+            return $item->layingPlanningDetail->layingPlanning->style->style;
+        });
         $data = [
             'cuttingOrderRecord' => $cuttingOrderRecord,
             'date_start' => $date_start,

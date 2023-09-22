@@ -4,11 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LAYING PLANNING & CUTTING REPORT</title>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-
-
+    <title>CUTTING COMPLETION REPORT</title>
 </head>
 <body>
     <div>
@@ -40,12 +36,12 @@
 
             $planning = $data['layingPlanning']->first();
         @endphp
-        <table style="font-size: 11px; font-weight: bold; padding-top: 2 !important; padding-bottom: 2 !important; padding-left: 4 !important; padding-right: 4 !important; width: 100% !important;">
+        <table style="font-size: 12px; font-weight: bold; padding-top: 2 !important; padding-bottom: 2 !important; padding-left: 4 !important; padding-right: 4 !important; width: 100% !important;">
             <tr>
-                <td>GL#</td>
+                <td width="5%">GL#</td>
                 <td width="1.5%">:</td>
                 <td style="text-align: left;">{{ $planning->gl->gl_number }}</td>
-                <td width="13%">TYPE OF FABRIC</td>
+                <td width="11%">TYPE OF FABRIC</td>
                 <td width="1.5%">:</td>
                 <td style="text-align: left;">{{ $planning->fabricType->name }}</td>
                 <td>DATE</td>
@@ -85,75 +81,83 @@
                 <td>DIFF</td>
                 <td>:</td>
                 <td style="text-align: left;">xxx pcs</td>
-                <td width="15%">Actual Marker Length</td>
+                <td width="11%">Actual Marker Length</td>
                 <td>:</td>
                 <td style="text-align: left;">xx.xx</td>
             </tr>
         </table>
         <br/>
 
-        <!-- "laying_planning": [
-            {
-                "id": 928,
-                "serial_number": "LP-63535-00-CCKVRWGM95COBOS-SK3E085-01",
-                "gl_id": 182,
-                "style_id": 279,
-                "buyer_id": 9,
-                "color_id": 563,
-                "order_qty": 5602,
-                "delivery_date": "2023-11-07",
-                "plan_date": "2023-09-14",
-                "fabric_po": "160020986",
-                "fabric_cons_id": 142,
-                "fabric_type_id": 120,
-                "fabric_cons_qty": 8,
-                "fabric_cons_desc": null,
-                "created_at": "2023-09-14T03:26:12.000000Z",
-                "updated_at": "2023-09-14T03:26:12.000000Z",
-                "gl": {
-                    "id": 182,
-                    "gl_number": "63535-00",
-                    "season": "SP '24",
-                    "size_order": "S-XL 1X-3X",
-                    "buyer_id": 9,
-                    "created_at": "2023-09-14T03:19:20.000000Z",
-                    "updated_at": "2023-09-14T03:19:20.000000Z"
-                },
-                "color": {
-                    "id": 563,
-                    "color": "CLR/CELERY - K3XHE094",
-                    "color_code": "CCKVRWGM",
-                    "created_at": "2023-09-14T03:11:34.000000Z",
-                    "updated_at": "2023-09-14T03:11:34.000000Z"
-                }
-            }
-        ] -->
-        <table class="table table-nota">
-            <tbody class="">
-                @php
-                    $count = 0;
-                @endphp
-                @for ($i = 0; $i < 10; $i++)
-                    @if ($count == 0)
-                        <tr>
-                    @endif
-                    <!-- 'gl', 'style', 'buyer', 'color', 'fabricCons', 'fabricType' -->
-                    @if (isset($data['layingPlanning'][$i]))
-                        <td style="font-size: 8pt;">{{ $data['layingPlanning'][$i]->gl->gl_number }}</td>
-                        <td style="font-size: 8pt;">{{ $data['layingPlanning'][$i]->color->color }}</td>
-                    @else
-                        <td style="font-size: 8pt;"></td>
-                        <td style="font-size: 8pt;"></td>
-                    @endif
-                    @php
-                        $count++;
-                    @endphp
-                    @if ($count == 2)
-                        </tr>
-                        @php
-                            $count = 0;
-                        @endphp
-                    @endif
+        @php
+            $maxColumnCount = 2;
+            $layingPlanning = $data['layingPlanning'];
+            $rowCount = ceil(count($layingPlanning) / $maxColumnCount);
+        @endphp
+
+        <table width="100%" style="font-size: 12px; font-family: Times New Roman, Times, serif; font-weight: bold;">
+            <tbody>
+                @for ($row = 0; $row < $rowCount; $row++)
+                    <tr>
+                        @for ($col = 0; $col < $maxColumnCount; $col++)
+                            @php
+                                $index = $row * $maxColumnCount + $col;
+                            @endphp
+
+                            @if ($index < count($layingPlanning))
+                                @php
+                                    $currentPlanning = $layingPlanning[$index];
+                                    $sizeCount = count($currentPlanning->layingPlanningSize);
+                                @endphp
+
+                                <td>
+                                    <table class="table table-completion" style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                @if ($col == 0)
+                                                    <td style="text-align: left; width: 10%;">COLOR</td>
+                                                @endif
+                                                <td colspan="{{ $sizeCount }}" style="text-align: center;">{{ $currentPlanning->color->color }}</td>
+                                            </tr>
+                                            <tr>
+                                                @if ($col == 0)
+                                                    <td style="text-align: left;">SIZE</td>
+                                                @endif
+                                                @foreach ($currentPlanning->layingPlanningSize as $lps)
+                                                    <td>{{ $lps->size->size }}</td>
+                                                @endforeach
+                                            </tr>
+                                            <tr>
+                                                @if ($col == 0)
+                                                    <td style="text-align: left;">MI QTY</td>
+                                                @endif
+                                                @foreach ($currentPlanning->layingPlanningSize as $lps)
+                                                    <td>{{ $lps->quantity }}</td>
+                                                @endforeach
+                                            </tr>
+                                            <tr>
+                                                @if ($col == 0)
+                                                    <td style="text-align: left;">CUT QTY</td>
+                                                @endif
+                                                @foreach ($currentPlanning->layingPlanningSize as $lps)
+                                                    <td>xx</td>
+                                                @endforeach
+                                            </tr>
+                                            <tr>
+                                                @if ($col == 0)
+                                                    <td style="text-align: left;">DIFF</td>
+                                                @endif
+                                                @foreach ($currentPlanning->layingPlanningSize as $lps)
+                                                    <td>xx</td>
+                                                @endforeach
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            @else
+                                <td></td>
+                            @endif
+                        @endfor
+                    </tr>
                 @endfor
             </tbody>
         </table>
@@ -194,41 +198,34 @@
     * {
         font-family: Calibri, san-serif;
     }
-    
-    /* @page {
-        margin-top: 1cm;
-        margin-left: 0.4cm;
-        margin-right: 0.4cm;
-        margin-bottom: 3.5cm;
-    } */
-    
-    table.table-bordered > thead > tr > th{
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
-        border-left: 1px solid black;
-        border-right: 1px solid black;
+
+    .table-completion {
+        font-size: 11px;
+        font-family: Times New Roman, Times, serif;
+        font-weight: bold;
+        border-collapse: collapse;
     }
 
-    .table thead th {
-        text-align: center;
-        vertical-align: middle;
-        font-size: 8px;
-        border: 1px solid;
-        padding-top: 1 !important;
-        padding-bottom: 1 !important;
-        padding-left: 0.3 !important;
-        padding-right: 0.3 !important;
+    .table-completion td {
+        padding: 2px;
     }
-    .table tbody td {
-        border: 1px solid;
-        text-align: center;
-        vertical-align: middle;
-        font-weight: bold;
-        font-size: 10px;
-        height:20px;
-        padding-top: 1.5 !important;
-        padding-bottom: 1.5 !important;
-        padding-left: 0.3 !important;
-        padding-right: 0.3 !important;
+
+    .table-completion th {
+        padding: 2px;
     }
+
+    .table-completion tr {
+        border: 1px solid black;
+    }
+
+    .table-completion tr td {
+        border: 1px solid black;
+        text-align: center;
+    }
+
+    .table-completion tr th {
+        border: 1px solid black;
+        padding: 2px;
+    }
+    
 </style>
