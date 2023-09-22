@@ -134,6 +134,8 @@
                                                     <td>{{ $lps->quantity }}</td>
                                                 @endforeach
                                             </tr>
+                                            <!-- $layingPlanning->load('layingPlanningDetail.layingPlanningDetailSize');
+                                            $layingPlanning->load('layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail'); -->
                                             <tr>
                                                 @if ($col == 0)
                                                     <td style="text-align: left;">CUT QTY</td>

@@ -21,11 +21,9 @@
                             <tr>
                                 <th scope="col" class="">No. </th>
                                 <th scope="col" class="">Serial Number</th>
-                                <th scope="col" class="">GL Number</th>
-                                <th scope="col" class="">Style No</th>
                                 <th scope="col" class="">P/O No</th>
-                                <th scope="col" class="">Color</th>
-                                <th scope="col" class="">Action</th>
+                                <th width="10%" scope="col" class="">Status Cut</th>
+                                <th width="16%" scope="col" class="">Action</th>
                             </tr>
                         </thead>
                         <!-- <tbody>
@@ -75,10 +73,8 @@
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'serial_number', name: 'serial_number'},
-                {data: 'gl_number', name: 'gl_number'},
-                {data: 'style_no', name: 'style_no'},
                 {data: 'fabric_po', name: 'fabric_po'},
-                {data: 'color', name: 'color'},
+                {data: 'is_issue', name: 'is_issue'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
             lengthChange: true,

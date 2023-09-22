@@ -90,14 +90,10 @@ class FabricIssuesController extends Controller
 
         // return $fabric_issues->sum('yard') . " " . $fabric_requisition->layingPlanningDetail->total_length;
         
-        if($fabric_issues->sum('yard') <= $fabric_requisition->layingPlanningDetail->total_length && $fabric_issues->sum('yard') != 0){
-            $fabric_requisition->is_issue = 1;
-            $fabric_requisition->save();
-        }else{
-            $fabric_requisition->is_issue = 0;
-            $fabric_requisition->save();
-        }
+        
 
+        // 664 dari 3% 664 * 0.03 = 19.92
+        
         return redirect()->back()->with('success', 'Fabric Issue '.$fabric_requisition->serial_number.' Successfully Created!');
     }
 
@@ -111,10 +107,22 @@ class FabricIssuesController extends Controller
     {
         $getFabricRequisition = FabricRequisition::with(['layingPlanningDetail'])->find($id);
         $layingPlanningDetail = LayingPlanningDetail::find($getFabricRequisition->layingPlanningDetail->id);
+        $fabric_issues = FabricIssue::where('fabric_request_id', $id)->get();
         
+        $getFabricRequisition->is_issue = 1;
+        $max_min = $getFabricRequisition->layingPlanningDetail->total_length * 0.03;
+        if($fabric_issues->sum('yard') <= $getFabricRequisition->layingPlanningDetail->total_length + $max_min && $fabric_issues->sum('yard') >= $getFabricRequisition->layingPlanningDetail->total_length - $max_min && $fabric_issues->sum('yard') != 0){
+            $getFabricRequisition->is_issue = 1;
+        }else{
+            $getFabricRequisition->is_issue = 0;
+        }
+
+        $getFabricRequisition->save();
         $fabric_requisition = [
             'id' => $getFabricRequisition->id,
             'serial_number'=> $layingPlanningDetail->fabricRequisition->serial_number,
+            // is_issue
+            'status' => $getFabricRequisition->is_issue,
             'no_laying_sheet' => $layingPlanningDetail->no_laying_sheet,
             'table_number' => $layingPlanningDetail->table_number,
             'gl_number' => $layingPlanningDetail->layingPlanning->gl->gl_number,
@@ -128,8 +136,6 @@ class FabricIssuesController extends Controller
         ];
 
         $fabric_requisition = (object)$fabric_requisition;
-
-        $fabric_issues = FabricIssue::where('fabric_request_id', $id)->get();
 
         return view('page.fabric-issue.show', compact('fabric_requisition', 'fabric_issues'));
     }

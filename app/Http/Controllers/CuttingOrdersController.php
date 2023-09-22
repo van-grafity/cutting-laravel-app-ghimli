@@ -433,7 +433,7 @@ class CuttingOrdersController extends Controller
         }
         $gl_number = $request->gl_number;
         $filename = 'Cutting Completion Report' . '.pdf';
-        $layingPlanning = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricCons', 'fabricType', 'layingPlanningSize', 'layingPlanningDetail.cuttingOrderRecord'])
+        $layingPlanning = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricCons', 'fabricType', 'layingPlanningSize', 'layingPlanningDetail.cuttingOrderRecord', 'layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail'])
             ->whereHas('layingPlanningDetail.cuttingOrderRecord', function($query) use ($start_cut, $finish_cut, $gl_number) {
                 $query->whereDate('updated_at', '>=', $start_cut)
                     ->whereDate('updated_at', '<=', $finish_cut)
@@ -447,8 +447,10 @@ class CuttingOrdersController extends Controller
             })
             ->orderBy('id', 'asc')
             ->get();
-        // $layingPlanning->load('layingPlanningDetail.layingPlanningDetailSize');
+        $layingPlanning->load('layingPlanningDetail.layingPlanningDetailSize');
+        $layingPlanning->load('layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail');
         // return $layingPlanning;
+        // return $layingPlanning[0]->layingPlanningDetail[0]->cuttingOrderRecord->cuttingOrderRecordDetail;
         $data = [
             'layingPlanning' => $layingPlanning,
             'start_cut' => $start_cut,
