@@ -174,7 +174,12 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div col-sm-12>
+                            <div class="form-group">
+                                <label for="remark" class="form-label">Remark (Optional)</label>
+                                <textarea class="form-control" name="remark" id="remark" cols="30" rows="2"></textarea>
+                            </div>
+                        </div>
                         <!-- Table List Size -->
                         <div class="col-sm-12 col-md-12" style="display: none" id="is_combine_wrapper">
                             <div class="row mt-5">

@@ -143,6 +143,7 @@ class LayingPlanningsController extends Controller
                 'fabric_type_id' => $request->fabric_type,
                 'fabric_cons_qty' => $request->fabric_cons_qty,
                 'fabric_cons_desc' => $request->fabric_cons_desc,
+                'remark' => $request->remark,
             ];
             $insertLayingData = LayingPlanning::create($layingData);
 
@@ -354,6 +355,7 @@ class LayingPlanningsController extends Controller
         $layingPlanning->fabric_type_id = $request->fabric_type;
         $layingPlanning->fabric_cons_qty = $request->fabric_cons_qty;
         $layingPlanning->fabric_cons_desc = $request->fabric_cons_desc;
+        $layingPlanning->remark = $request->remark;
 
         $layingPlanning->save();
 
