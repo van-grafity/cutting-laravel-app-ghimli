@@ -85,8 +85,7 @@ Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::delete('/delete-group/{id}', [UsersController::class,'delete_group'])->name('delete-group');
     Route::get('log-viewers', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 
-    Route::resource('fabric-issue', FabricIssuesController::class);
-    Route::get('fabric-issue-print/{id}', [FabricIssuesController::class,'print'])->name('fabric-issue.print');
+    
 
     Route::resource('machine', MachineController::class);
     Route::get('/machine/print/{serial_number}', [MachineController::class, 'print'])->name('machine.print');
@@ -105,6 +104,11 @@ Route::group(['middleware' => ['auth','can:admin-only']], function () {
     });
     
     Route::put('user-management/reset/{id}', [UsersController::class,'reset'])->name('user-management.reset');
+});
+
+Route::group(['middleware' => ['auth','can:warehouse']], function () {
+    Route::resource('fabric-issue', FabricIssuesController::class);
+    Route::get('fabric-issue-print/{id}', [FabricIssuesController::class,'print'])->name('fabric-issue.print');
 });
 
 // ## Route for Master Data (Cutting Department)
