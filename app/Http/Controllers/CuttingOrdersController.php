@@ -15,6 +15,8 @@ use App\Models\StatusLayer;
 use App\Models\StatusCut;
 use App\Models\LayingPlanning;
 use App\Models\Gl;
+use App\Models\FabricRequisition;
+use App\Models\FabricIssue;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -452,6 +454,15 @@ class CuttingOrdersController extends Controller
             ->orderBy('id', 'asc')
             ->get();
         $layingPlanning->load('layingPlanningDetail.layingPlanningDetailSize');
+        // FabricRequisition->laying_planning_id = $layingPlanning->id;
+        // fabricIssue->fabric_requisition_id = $fabricRequisition->id;
+        // layingPlanning->layingPlanningDetail
+        // $fabric_requisition = FabricRequisition::fin
+        // $layingPlanningDetail = LayingPlanningDetail::with(['layingPlanning'])->where('laying_planning_id', $layingPlanning->first()->id)->get();
+        foreach ($layingPlanning as $key => $value) {
+            $value->layingPlanningDetail->load('fabricRequisition');
+        }
+        // return $layingPlanning;
         // $layingPlanning->load('layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail');
         // return $layingPlanning;
         // return $layingPlanning[0]->layingPlanningDetail[0]->cuttingOrderRecord->cuttingOrderRecordDetail;

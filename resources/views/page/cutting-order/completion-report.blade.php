@@ -226,6 +226,37 @@
                 @endfor
             </tbody>
         </table>
+        <br/>
+        <table class="table table-completion" style="width:100%; font-size: 10px; font-weight: bold; margin-bottom: 0 !important; padding: 0 !important;">
+            <thead>
+                <tr>
+                    <th width="2%" style="text-align: center;">NO</th>
+                    <th>Color</th>
+                    <th width="6%">Fab. Req.</th>
+                    <th width="6%">Fab. Received</th>
+                    <th width="6%">Fab. Issued</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                @foreach ($data['layingPlanning'] as $layingPlanning)
+                    <tr>
+                        <td style="text-align: center;">{{ $loop->iteration }}</td>
+                        <td style="text-align: left; padding-left: 6px;">{{ $layingPlanning->color->color }}</td>
+                        @php
+                            $total_fab_req = 0;
+                            foreach ($layingPlanning->layingPlanningDetail as $lpd)
+                            {
+                                $total_fab_req += $lpd->layer_qty;
+                            }
+                        @endphp
+                        <td>{{ $total_fab_req }}</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
 
         <table width="100%" style="font-size: 12px; font-family: Times New Roman, Times, serif; font-weight: bold; position: absolute; bottom: 60px;">
             <tr>
@@ -233,7 +264,7 @@
                     <p>Prepared by:</p>
                     <p></p>
                     <div style="display:inline-block; text-align:center;">
-                        <span>MELDA (58734)</span>
+                    <div style="height: 18px;"></div>
                         <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 90px;">
                     </div>
                 </th>
@@ -241,7 +272,7 @@
                     <p>Authorized by:</p>
                     <p></p>
                     <div style="display:inline-block; text-align:center;">
-                        <span>ROBERT (36120)</span>
+                    <div style="height: 18px;"></div>
                         <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 90px;">
                     </div>
                 </th>
@@ -291,6 +322,10 @@
     .table-completion tr th {
         border: 1px solid black;
         padding: 2px;
+    }
+
+    .table-fab-issue{
+        
     }
     
 </style>
