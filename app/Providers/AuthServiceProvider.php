@@ -39,6 +39,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->hasRole(['super_admin']);
         });
 
+        Gate::define('warehouse', function ($user) {
+            return $user->hasRole(['super_admin','warehouse']);
+        });
+
         Gate::define('clerk-cutting', function ($user) {
             return $user->hasRole(['super_admin','cutter']);
         });

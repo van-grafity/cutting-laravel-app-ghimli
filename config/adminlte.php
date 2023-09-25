@@ -448,14 +448,17 @@ return [
                 ],
             ],
         ],
-        ['header' => 'Forms'],
+        [   'header'=> 'Forms',
+            'can'   => 'clerk'],
         [
             'text' => 'Fabric Requisition',
             'url'  => '/fabric-requisition',
             'icon' => 'fas fa-fw fa fa-tasks',
             'can'  => 'clerk',
         ],
-        ['header' => 'Reports'],
+        [   'header'=> 'Reports',
+            'can'   => 'clerk',
+        ],
         [
             'text' => 'Daily Cutting Report',
             'url'  => '/daily-cutting-report',
@@ -481,18 +484,18 @@ return [
             'can'  => 'clerk',
         ],
         [
-            'header' => 'Warehouse',
-            'can'  => 'admin-only',
+            'header'=> 'Warehouse',
+            'can'   => 'warehouse',
         ],
         [
             'text' => 'Fabric Issues',
             'url'  => '/fabric-issue',
             'icon' => 'fas fa-fw fa fa-tasks',
-            'can'  => 'admin-only',
+            'can'  => 'warehouse',
         ],
         [
-            'header' => 'Lain-lain',
-            'can'  => 'admin-only',
+            'header'=> 'Lain-lain',
+            'can'   => 'admin-only',
         ],
         [
             'text' => 'Pallet',
