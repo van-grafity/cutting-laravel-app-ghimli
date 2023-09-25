@@ -126,17 +126,19 @@
         <table class="header-subtitle">
             <thead>
                 <tr>
-                    <td width="35" class="no-border"> Style No</td>
-                    <td width="80">: {{ $cor['style'] }} </td>
-                    <td width="60" class="no-border text-right"> {{ $cor['marker_code'] }} </td>
-                    <td width="80" class="no-border text-right"> GL No </td>
-                    <td width="110" class="" >: {{ $cor['gl_number']}} </td>
-                    <td width="100" class="no-border text-right">Portion</td>
-                    <td width="100" class="">: {{ $cor['fabric_cons'] }} </td>
-                    <td width="25" class="no-border"></td>
-                    <td width="80" class="subtitle-right"> 
+                    <td colspan="1" width="100" class="no-border text-left">Portion</td>
+                    <td colspan="11" width="100" class="text-left">: {{ $cor['fabric_cons'] }} </td>
+                    <td> Date : {{ $cor['created_at'] }} </td>
+                </tr>
+                <tr>
+                    <td colspan="2" width="35" class="no-border"> Style No</td>
+                    <td colspan="2" width="80">: {{ $cor['style'] }} </td>
+                    <td colspan="2" width="60" class="no-border text-right"> {{ $cor['marker_code'] }} </td>
+                    <td colspan="2" width="80" class="no-border text-right"> GL No </td>
+                    <td colspan="2" width="110" class="" >: {{ $cor['gl_number']}} </td>
+                    <td colspan="2" width="25" class="no-border"></td>
+                    <td colspan="1" width="80" class="subtitle-right"> 
                         No : {{ $cor['no_laying_sheet']}} <br> 
-                        Date : {{ $cor['date'] }} 
                     </td>
                 </tr>
             </thead>
@@ -303,7 +305,10 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td rowspan="6" colspan="4" style="border:none">Remarks</td>
+                        <td rowspan="6" colspan="4" style="border:none">
+                        <br>
+                        Remarks : <p style="font-size: 11px;">{{ $cor['remark'] }}</p>
+                        </td>
                     </tr>
                     <tr>
                         <td style="font-size:10pt" > 8 </td>

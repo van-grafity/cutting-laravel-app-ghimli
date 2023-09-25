@@ -271,10 +271,12 @@ class CuttingOrdersController extends Controller
                 'fabric_cons' => $cutting_order->layingPlanningDetail->layingPlanning->fabricCons->name,   
                 'table_number' => $cutting_order->layingPlanningDetail->table_number,   
                 'buyer' => $cutting_order->layingPlanningDetail->layingPlanning->buyer->name,   
+                'remark' => $cutting_order->layingPlanningDetail->layingPlanning->remark,   
                 'size_ratio' => $this->print_size_ratio($cutting_order->layingPlanningDetail),   
                 'color' => $cutting_order->layingPlanningDetail->layingPlanning->color->color,
                 'layer' => $cutting_order->layingPlanningDetail->layer_qty,
                 'date' => Carbon::now()->format('d-m-Y'),
+                'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order->created_at)->format('d-m-Y')
             ];
         }
 
