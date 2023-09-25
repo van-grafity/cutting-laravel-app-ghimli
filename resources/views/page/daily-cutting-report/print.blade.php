@@ -102,7 +102,7 @@
                         <th rowspan="2" style="width: 10%;">COLOR</th>
                         <th rowspan="2" style="width: 3%;">MI QTY</th>
                         <th rowspan="1">{{ $date_filter }}</th>
-                        <th colspan="{{ count($groups) }}">Cutting Output</th>
+                        <th colspan="{{ count($groups) }}">Cutting Output (Group)</th>
                         <th rowspan="2">Total Qty </br> per day</th>
                         <th rowspan="2">Acumulation </br> (pcs)</th>
                         <th rowspan="2">Completed (%)</th>
@@ -114,6 +114,8 @@
                             <th rowspan="1" colspan="1"><?php
                                 $group_name = $group->group_name;
                                 $group_name = substr($group_name, 0, 8);
+                                $group_name = str_replace('Group', '', $group_name);
+                                $group_name = str_replace(' ', '', $group_name);
                                 echo $group_name;
                             ?></th>
 
