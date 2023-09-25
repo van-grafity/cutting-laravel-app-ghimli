@@ -572,24 +572,21 @@ class LayingPlanningsController extends Controller
                 $insertPlanningDetailSize = LayingPlanningDetailSize::create($laying_planning_detail_size);
             }
 
-        }
+            $checkCuttingOrder = CuttingOrderRecord::where('laying_planning_detail_id', $insertLayingDetail->id)->first();
+            if ($checkCuttingOrder != null) {
+                return redirect()->route('cutting-order.show', $checkCuttingOrder->id)->with('error', 'Cutting Order already exist.');
+            }
 
-        $checkCuttingOrder = CuttingOrderRecord::where('laying_planning_detail_id', $insertLayingDetail->id)->first();
-        if ($checkCuttingOrder != null) {
-            return redirect()->route('cutting-order.show', $checkCuttingOrder->id)->with('error', 'Cutting Order already exist.');
-        }
-
-        try {
-            $dataCuttingOrder = [
-                'serial_number' => $this->generate_serial_numberCor(LayingPlanningDetail::find($insertLayingDetail->id)),
-                'laying_planning_detail_id' => $insertLayingDetail->id,
-                'created_by' => auth()->user()->id,
-            ];
-            $cuttingOrder = CuttingOrderRecord::create($dataCuttingOrder);
-            return redirect()->route('laying-planning.show',$layingPlanning->id)
-                ->with('success', 'Data Detail Laying Planning berhasil diduplicate sebanyak '. $duplicate_qty .' kali.');
-        } catch (\Throwable $th) {
-            return redirect()->route('cutting-order.index')->with('error', $th->getMessage());
+            try {
+                $dataCuttingOrder = [
+                    'serial_number' => $this->generate_serial_numberCor(LayingPlanningDetail::find($insertLayingDetail->id)),
+                    'laying_planning_detail_id' => $insertLayingDetail->id,
+                    'created_by' => auth()->user()->id,
+                ];
+                $cuttingOrder = CuttingOrderRecord::create($dataCuttingOrder);
+            } catch (\Throwable $th) {
+                return redirect()->route('cutting-order.index')->with('error', $th->getMessage());
+            }
         }
 
         return redirect()->route('laying-planning.show',$layingPlanning->id)
@@ -663,15 +660,14 @@ class LayingPlanningsController extends Controller
         $fabric_cons = preg_replace('/[^A-Za-z0-9\-]/', '', $fabric_cons);
         $table_number = Str::padLeft($layingPlanningDetail->table_number, 3, '0');
         $getDuplicateSN = CuttingOrderRecord::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
-        $duplicateSN = count($getDuplicateSN) + 1;
-        $duplicateSN = Str::padLeft($duplicateSN, 2, '0');
         
-        $serial_number = "COR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-S{$style}-{$duplicateSN}-{$table_number}";
-        $checkDuplicateSN = CuttingOrderRecord::where('serial_number', $serial_number)->first();
-        if ($checkDuplicateSN != null) {
-            $serial_number = $serial_number . "-1";
+        if ($getDuplicateSN->count() > 0) {
+            $duplicate = $getDuplicateSN->count() + 1;
+            $duplicate = Str::padLeft($duplicate, 2, '0');
+            $serial_number = "COR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-S{$style}-{$duplicate}-{$table_number}";
+        } else {
+            $serial_number = "COR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-S{$style}-01-{$table_number}";
         }
-
         return $serial_number;
     }
 }

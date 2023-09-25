@@ -179,8 +179,8 @@
                         </div>
                         <div col-sm-12>
                             <div class="form-group">
-                                <label for="remark" class="form-label">Remark (Optional)</label>
-                                <textarea class="form-control" name="remark" id="remark" cols="30" rows="2"></textarea>
+                                <label for="remark" class="form-label">Remark</label> <i>(Optional)</i>
+                                <textarea class="form-control" name="remark" id="remark" cols="30" rows="2">{{ $layingPlanning->remark }}</textarea>
                             </div>
                         </div>
 
