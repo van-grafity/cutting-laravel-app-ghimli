@@ -311,10 +311,11 @@
                                 $string_to_double += (double)$cor_detail->balance_end;
                             }
                         ?>
-                        Balance End Total : {{ $string_to_double }} Yards
+                        Balance End Total :
+                        <p style="font-size: 11px;"> {{ $string_to_double }} Yards</p>
                         <br>
                         <br>
-                        Remarks
+                        Remarks : <p style="font-size: 11px;">{{ $data->remark }}</p>
                         </td>
                     </tr>
                     <tr>

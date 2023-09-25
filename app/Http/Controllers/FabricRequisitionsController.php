@@ -221,7 +221,7 @@ class FabricRequisitionsController extends Controller
         //     'data' => $fabric_requisition_record_detail
         // ], 200);
     }
-
+    
     function generate_serial_number($layingPlanningDetail){
         $gl_number = $layingPlanningDetail->layingPlanning->gl->gl_number;
         $color_code = $layingPlanningDetail->layingPlanning->color->color_code;
@@ -234,9 +234,15 @@ class FabricRequisitionsController extends Controller
         $fabric_cons = Str::upper($fabric_cons);
         $fabric_cons = preg_replace('/[^A-Za-z0-9\-]/', '', $fabric_cons);
         $table_number = Str::padLeft($layingPlanningDetail->table_number, 3, '0');
-        
-        $serial_number = "FBR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-{$table_number}";
-        return $serial_number;
+        $getDuplicateSN = FabricRequisition::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
+
+        if ($getDuplicateSN->count() > 0) {
+            $duplicate = $getDuplicateSN->count() + 1;
+            $duplicate = Str::padLeft($duplicate, 2, '0');
+            $serial_number = "FBR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-{$table_number}-{$duplicate}";
+        } else {
+            $serial_number = "FBR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-{$table_number}-01";
+        }
     }
 
     public function get_serial_number(Request $request){

@@ -304,7 +304,10 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td rowspan="6" colspan="4" style="border:none">Remarks</td>
+                        <td rowspan="6" colspan="4" style="border:none">
+                        <br>
+                        Remarks : <p style="font-size: 11px;">{{ $data->remark }}</p>
+                        </td>
                     </tr>
                     <tr>
                         <td style="font-size:10pt" > 8 </td>

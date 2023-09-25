@@ -89,7 +89,7 @@
             }
             
         @endphp
-        <table class="table table-bordered" style="width:100%; font-size: 10px; font-weight: bold; margin-bottom: 0 !important; padding-bottom: 28 !important;">
+        <table class="table table-bordered" style="width:100%; font-size: 10px; font-weight: bold; margin-bottom: 0 !important; padding: 0 !important;">
             <thead>
                 <tr>
                     <th rowspan="3">No</br>Laying</br>Sheet</th>
@@ -388,9 +388,12 @@
                 </tr>
             </tbody>
         </table>
-
-        <br>
-        <br>
+        <table width="100%" style="font-size: 10px; font-weight: bold; padding-bottom: 28 !important; margin: 0 !important;">
+            <tr>
+                <td width="10%">Remark</td>
+                <td width="90%">: {{ $data->remark }}</td>
+            </tr>
+        </table>
 
         <table width="100%" style="font-size: 10px; font-weight: bold;" hidden>
             <tr>
