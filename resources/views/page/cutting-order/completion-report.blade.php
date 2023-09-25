@@ -234,7 +234,7 @@
                     <th>Color</th>
                     <th width="6%">Fab. Req.</th>
                     <th width="6%">Fab. Received</th>
-                    <th width="6%">Fab. Issued</th>
+                    <th width="6%">Fab. Used</th>
                 </tr>
             </thead>
             
