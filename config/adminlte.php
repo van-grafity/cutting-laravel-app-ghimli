@@ -488,7 +488,7 @@ return [
             'can'   => 'warehouse',
         ],
         [
-            'text' => 'Fabric Issues',
+            'text' => 'Fabric Issuance',
             'url'  => '/fabric-issue',
             'icon' => 'fas fa-fw fa fa-tasks',
             'can'  => 'warehouse',
