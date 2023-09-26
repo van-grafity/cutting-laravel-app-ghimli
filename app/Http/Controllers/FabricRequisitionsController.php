@@ -243,6 +243,8 @@ class FabricRequisitionsController extends Controller
         } else {
             $serial_number = "FBR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-{$table_number}-01";
         }
+
+        return $serial_number;
     }
 
     public function get_serial_number(Request $request){
