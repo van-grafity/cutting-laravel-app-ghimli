@@ -137,7 +137,7 @@
                                 </td>
                                 <td>{{ $laying_planning->style }}</td>
                                 <td>{{ $laying_planning->gl_number }}</td>
-                                <td>{{ $laying_planning->color }} ({{$laying_planning->cons_name}})</td>
+                                <td>{{ $laying_planning->color }}</td>
                                 <td>{{ $laying_planning->order_qty }}</td>
                                 <td>{{ $laying_planning->previous_balance }}</td>
                                 @foreach($laying_planning->qty_per_groups as $key_group => $group)

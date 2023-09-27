@@ -27,13 +27,14 @@
     </style>
 </head>
 <body>
+
 @foreach ($pallets as $pallet)
 <div class="page-break">
 <table class="table table-nota">
     <div style="text-align: center;">
-        <h5 style="text-align: left; margin-left: 12px; font-size: 20px">PT. GHIM LI INDONESIA</h5>
-        <img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl={{ $pallet->serial_number }}&choe=UTF-8" title="Link to Google.com" style="margin : 0 !important; padding : 0 !important;"/>
-            <div class="serial-number" style="font-size: 32px; margin-top: 18px;"><b>{{ $pallet->serial_number }}</b></div>
+        <h5 style="text-align: left; margin-left: 12px; font-size: 24px; margin-top: 6px;">PT. GHIM LI INDONESIA</h5>
+        <img style="margin-top: 4px;" src="data:image/png;base64, {!! base64_encode(QrCode::size(290)->generate($pallet->serial_number)) !!} ">
+        <div class="serial-number" style="font-size: 32px; margin-top: 18px;"><b>{{ $pallet->serial_number }}</b></div>
     </div>
 </table>
 </div>

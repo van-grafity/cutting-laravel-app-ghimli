@@ -226,11 +226,12 @@ class FabricRequisitionsController extends Controller
         $gl_number = $layingPlanningDetail->layingPlanning->gl->gl_number;
         $color_code = $layingPlanningDetail->layingPlanning->color->color_code;
         $fabric_type = $layingPlanningDetail->layingPlanning->fabricType->name;
-        $fabric_type = Str::substr($fabric_type, 0, 2);
+        $style = $layingPlanningDetail->layingPlanning->style->id;
+        $fabric_type = Str::substr($fabric_type, 0, 4);
         $fabric_type = Str::upper($fabric_type);
         $fabric_type = preg_replace('/[^A-Za-z0-9\-]/', '', $fabric_type);
         $fabric_cons = $layingPlanningDetail->layingPlanning->fabricCons->name;
-        $fabric_cons = Str::substr($fabric_cons, 0, 2);
+        $fabric_cons = Str::substr($fabric_cons, 0, 4);
         $fabric_cons = Str::upper($fabric_cons);
         $fabric_cons = preg_replace('/[^A-Za-z0-9\-]/', '', $fabric_cons);
         $table_number = Str::padLeft($layingPlanningDetail->table_number, 3, '0');
@@ -239,11 +240,10 @@ class FabricRequisitionsController extends Controller
         if ($getDuplicateSN->count() > 0) {
             $duplicate = $getDuplicateSN->count() + 1;
             $duplicate = Str::padLeft($duplicate, 2, '0');
-            $serial_number = "FBR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-{$table_number}-{$duplicate}";
+            $serial_number = "FBR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-S{$style}-{$duplicate}-{$table_number}";
         } else {
-            $serial_number = "FBR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-{$table_number}-01";
+            $serial_number = "FBR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-S{$style}-01-{$table_number}";
         }
-
         return $serial_number;
     }
 
