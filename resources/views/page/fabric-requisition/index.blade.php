@@ -22,7 +22,7 @@
                                 <th scope="col" class="">No. </th>
                                 <th scope="col" class="">Serial Number</th>
                                 <th scope="col" class="">P/O No</th>
-                                <th width="10%" scope="col" class="">Status Cut</th>
+                                <th width="8%" scope="col" class="">Status</th>
                                 <th width="18%" scope="col" class="">Action</th>
                             </tr>
                         </thead>
