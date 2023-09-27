@@ -176,6 +176,17 @@
                             </tr>
                         </tfoot>
                     </table>
+
+                    <br/>
+                    <br/>
+                    <br/>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label for="remark">Remark</label>
+                            <textarea class="form-control" id="remark" name="remark" rows="3">{{ $fabric_requisition->remark }}</textarea>
+                        </div>
+                    </div>
                     
                 </div>
                 <div class="card-footer text-right">
@@ -296,6 +307,13 @@
                                         </tr>
                                     </tbody>
                                 </table>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label for="remark">Remark</label>
+                                        <textarea class="form-control" id="remark" name="remark" rows="3">{{ $fabric_requisition->remark }}</textarea>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -455,6 +473,23 @@
 
         $(document).on('click', '#btn_remove_issue', function() {
             $(this).closest('tr').remove();
+        });
+
+        // tidak boleh kosong roll_no, batch_number, weight, yard
+        $('#btn_submit_modal').click(function() {
+            var roll_no = $('#roll_no').val();
+            var batch_number = $('#batch_number').val();
+            var weight = $('#weight').val();
+            var yard = $('#yard').val();
+            if(roll_no == '' || batch_number == '' || weight == '' || yard == ''){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Data tidak boleh kosong!'
+                });
+            }else{
+                $('#fabric_issue_form').submit();
+            }
         });
     });
 </script>
