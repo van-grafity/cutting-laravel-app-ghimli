@@ -77,7 +77,10 @@ class FabricIssuesController extends Controller
         $batchNumberIds = $request->batch_number;
         $weightIds = $request->weight;
         $yardIds = $request->yard;
+        $remark = $request->remark;
         
+        $fabric_requisition->remark = $remark;
+        $fabric_requisition->save();
         foreach ($rollNoIds as $key => $rollNoId) {
             $fabric_issue = new FabricIssue;
             $fabric_issue->roll_no = $rollNoId;
@@ -85,8 +88,14 @@ class FabricIssuesController extends Controller
             $fabric_issue->weight = $weightIds[$key];
             $fabric_issue->yard = $yardIds[$key];
             $fabric_issue->fabric_request_id = $fabric_requisition_id;
+            // $fabric_issue->save();
+            // if null
+            if($fabric_issue->roll_no == null || $fabric_issue->batch_number == null || $fabric_issue->weight == null || $fabric_issue->yard == null){
+                return redirect()->back()->with('error', 'Fabric Issue '.$fabric_requisition->serial_number.' Failed to Create!');
+            }
             $fabric_issue->save();
         }
+        
 
         // return $fabric_issues->sum('yard') . " " . $fabric_requisition->layingPlanningDetail->total_length;
         
@@ -132,6 +141,7 @@ class FabricIssuesController extends Controller
             'quantity_required' => $layingPlanningDetail->total_length,
             'quantity_issued' => "-",
             'difference' => "-",
+            'remark' => $getFabricRequisition->remark,
         ];
 
         $fabric_requisition = (object)$fabric_requisition;
