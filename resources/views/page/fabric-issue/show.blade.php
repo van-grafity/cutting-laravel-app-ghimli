@@ -184,7 +184,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <label for="remark">Remark</label>
-                            <textarea class="form-control" id="remark" name="remark" rows="3">{{ $fabric_requisition->remark }}</textarea>
+                            <textarea class="form-control" id="remark" name="remark" rows="3" readonly>{{ $fabric_requisition->remark }}</textarea>
                         </div>
                     </div>
                     

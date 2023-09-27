@@ -116,7 +116,7 @@
                                         <tbody>
                                             <tr>
                                                 @if ($col == 0)
-                                                    <td style="text-align: left; width: 10%;">COLOR</td>
+                                                    <td style="text-align: left; width: 12%;">COLOR</td>
                                                 @endif
                                                 <td colspan="{{ $sizeCount + 1 }}" style="text-align: center;">{{ $currentPlanning->color->color }}</td>
                                             </tr>
