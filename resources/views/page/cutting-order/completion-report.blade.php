@@ -234,6 +234,7 @@
                     <th>Color</th>
                     <th width="6%">Fab. Req.</th>
                     <th width="6%">Fab. Received</th>
+                    <th width="6%">Diff</th>
                     <th width="6%">Fab. Used</th>
                 </tr>
             </thead>
@@ -286,6 +287,9 @@
                             }
                             echo $total_fab_used;
                         ?></td> 
+                        <td>
+                            {{ $total_fab_used - $total_fab_req }}
+                        </td>
                         <td><?php
                             $total_fab_used = 0;
                             foreach ($layingPlanning->layingPlanningDetail as $lpd)
