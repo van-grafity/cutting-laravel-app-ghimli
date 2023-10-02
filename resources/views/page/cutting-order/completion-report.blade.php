@@ -243,16 +243,69 @@
                     <tr>
                         <td style="text-align: center;">{{ $loop->iteration }}</td>
                         <td style="text-align: left; padding-left: 6px;">{{ $layingPlanning->color->color }}</td>
-                        @php
+                        <td><?php
                             $total_fab_req = 0;
                             foreach ($layingPlanning->layingPlanningDetail as $lpd)
                             {
-                                $total_fab_req += $lpd->layer_qty;
+                                $total_fab_req += $lpd->total_length;
                             }
-                        @endphp
-                        <td>{{ $total_fab_req }}</td>
-                        <td>-</td>
-                        <td>-</td>
+                            echo $total_fab_req;
+                        ?></td>
+                        <td><?php
+                            // $total_fab_received = 0;
+                            // foreach ($layingPlanning->layingPlanningDetail as $lpd)
+                            // {
+                            //     if ($lpd->fabricRequisition == null)
+                            //     {
+                            //         $total_fab_received += 0;
+                            //     }
+                            //     else
+                            //     {
+                            //         foreach ($lpd->fabricRequisition->fabricIssue as $fi)
+                            //         {
+                            //             $total_fab_received += $fi->yard;
+                            //         }
+                            //     }
+                            // }
+                            // echo $total_fab_received;
+                            $total_fab_used = 0;
+                            foreach ($layingPlanning->layingPlanningDetail as $lpd)
+                            {
+                                if ($lpd->cuttingOrderRecord == null)
+                                {
+                                    $total_fab_used += 0;
+                                }
+                                else
+                                {
+                                    foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                    {
+                                        $total_fab_used += $cord->yardage;
+                                        // $total_fab_used += $cord->layer;
+                                    }
+                                }
+                            }
+                            echo $total_fab_used;
+                        ?></td> 
+                        <td><?php
+                            $total_fab_used = 0;
+                            foreach ($layingPlanning->layingPlanningDetail as $lpd)
+                            {
+                                if ($lpd->cuttingOrderRecord == null)
+                                {
+                                    $total_fab_used += 0;
+                                }
+                                else
+                                {
+                                    foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                    {
+                                        $actual = $cord->layer * ($lpd->marker_yard + ($lpd->marker_inch / 36));
+                                        $actual = number_format($actual, 2, '.', '');
+                                        $total_fab_used += $actual;
+                                    }
+                                }
+                            }
+                            echo $total_fab_used;
+                        ?></td>
                     </tr>
                 @endforeach
             </tbody>
