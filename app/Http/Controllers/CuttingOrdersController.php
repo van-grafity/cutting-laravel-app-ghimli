@@ -439,33 +439,22 @@ class CuttingOrdersController extends Controller
         }
         $gl_number = $request->gl_number;
         $filename = 'Cutting Completion Report' . '.pdf';
-        $layingPlanning = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricCons', 'fabricType', 'layingPlanningSize', 'layingPlanningDetail.cuttingOrderRecord', 'layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail'])
-            ->whereHas('layingPlanningDetail.cuttingOrderRecord', function($query) use ($start_cut, $finish_cut, $gl_number) {
-                $query->whereDate('updated_at', '>=', $start_cut)
-                    ->whereDate('updated_at', '<=', $finish_cut)
-                    ->whereHas('layingPlanningDetail', function($query) use ($gl_number) {
-                        if ($gl_number != null) {
-                            $query->whereHas('layingPlanning', function($query) use ($gl_number) {
-                                $query->where('gl_id', $gl_number);
-                            });
-                        }
+        $layingPlanning = LayingPlanning::with(['gl', 'color', 'style', 'layingPlanningDetail', 'layingPlanningDetail.layingPlanningDetailSize', 'layingPlanningDetail.cuttingOrderRecord', 'layingPlanningDetail.fabricRequisition', 'layingPlanningDetail.fabricRequisition.fabricIssue', 'layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail'])
+                ->whereHas('gl', function($query) use ($gl_number) {
+                    if ($gl_number != null) {
+                        $query->where('id', $gl_number);
+                    }
+                })
+                ->whereHas('layingPlanningDetail', function($query) use ($start_cut, $finish_cut) {
+                    $query->whereHas('cuttingOrderRecord', function($query) use ($start_cut, $finish_cut) {
+                        $query->whereDate('updated_at', '>=', $start_cut)
+                            ->whereDate('updated_at', '<=', $finish_cut);
                     });
-            })
-            ->orderBy('id', 'asc')
-            ->get();
-        $layingPlanning->load('layingPlanningDetail.layingPlanningDetailSize');
-        // FabricRequisition->laying_planning_id = $layingPlanning->id;
-        // fabricIssue->fabric_requisition_id = $fabricRequisition->id;
-        // layingPlanning->layingPlanningDetail
-        // $fabric_requisition = FabricRequisition::fin
-        // $layingPlanningDetail = LayingPlanningDetail::with(['layingPlanning'])->where('laying_planning_id', $layingPlanning->first()->id)->get();
-        foreach ($layingPlanning as $key => $value) {
-            $value->layingPlanningDetail->load('fabricRequisition');
-        }
+                })
+                ->orderBy('id', 'asc')
+                ->get();
         // return $layingPlanning;
-        // $layingPlanning->load('layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail');
-        // return $layingPlanning;
-        // return $layingPlanning[0]->layingPlanningDetail[0]->cuttingOrderRecord->cuttingOrderRecordDetail;
+        
         $data = [
             'layingPlanning' => $layingPlanning,
             'start_cut' => $start_cut,
