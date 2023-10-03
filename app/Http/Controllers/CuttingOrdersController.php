@@ -502,14 +502,14 @@ class CuttingOrdersController extends Controller
                     $query->where('id', $status_cut);
                 }
             })
-            ->orderBy('serial_number', 'asc')
+            // ->orderBy('serial_number', 'asc')
             ->get();
         $cuttingOrderRecord = $cuttingOrderRecord->sortBy(function($item) {
             return $item->layingPlanningDetail->layingPlanning->color->color;
         });
-        $cuttingOrderRecord = $cuttingOrderRecord->sortBy(function($item) {
-            return $item->layingPlanningDetail->layingPlanning->style->style;
-        });
+        // $cuttingOrderRecord = $cuttingOrderRecord->sortBy(function($item) {
+        //     return $item->layingPlanningDetail->layingPlanning->style->style;
+        // });
         $data = [
             'cuttingOrderRecord' => $cuttingOrderRecord,
             'date_start' => $date_start,

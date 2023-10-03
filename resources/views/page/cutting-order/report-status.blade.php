@@ -136,6 +136,8 @@
                             @if ($data['gl_number'] == null)
                             <th>G/L Number</th>
                             @endif
+                            <!-- no -->
+                            <th>No</th>
                             <th>Serial Number</th>
                             <th>Color</th>
                             <th>Style</th>
@@ -157,24 +159,25 @@
                     </thead>
 
                     <tbody>
-                        @foreach ($data['cuttingOrderRecord'] as $item)
+                        @foreach ($data['cuttingOrderRecord'] as $item => $value)
                         <tr>
                             @if ($data['gl_number'] == null)
-                            <td>{{ $item->layingPlanningDetail->layingPlanning->gl->gl_number }}</td>
+                            <td>{{ $value->layingPlanningDetail->layingPlanning->gl->gl_number }}</td>
                             @endif
-                            <td>{{ $item->serial_number }}</td>
-                            <td>{{ $item->layingPlanningDetail->layingPlanning->color->color }}</td>
-                            <td>{{ $item->layingPlanningDetail->layingPlanning->style->style }}</td>
-                            <td>{{ $item->layingPlanningDetail->layingPlanning->order_qty }}</td>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $value->serial_number }}</td>
+                            <td>{{ $value->layingPlanningDetail->layingPlanning->color->color }}</td>
+                            <td>{{ $value->layingPlanningDetail->layingPlanning->style->style }}</td>
+                            <td>{{ $value->layingPlanningDetail->layingPlanning->order_qty }}</td>
                             <td>
                                 <?php
                                     $total_cutting_order_record = 0;
                                     $total_size_ratio = 0;
-                                    foreach ($item->cuttingOrderRecordDetail as $record_detail)
+                                    foreach ($value->cuttingOrderRecordDetail as $record_detail)
                                     {
                                         $total_cutting_order_record += $record_detail->layer;
                                     }
-                                    foreach ($item->layingPlanningDetail->layingPlanningDetailSize as $size)
+                                    foreach ($value->layingPlanningDetail->layingPlanningDetailSize as $size)
                                     {
                                         $total_size_ratio += $size->ratio_per_size;
                                     }
@@ -182,23 +185,23 @@
                                 ?>
                             </td>
                             <td>
-                                @if ($item->statusLayer->name == 'not completed')
+                                @if ($value->statusLayer->name == 'not completed')
                                     Belum Layer
-                                @elseif ($item->statusLayer->name == 'completed')
+                                @elseif ($value->statusLayer->name == 'completed')
                                     Sudah Layer
                                 @else
                                     Over Layer
                                 @endif
                             </td>
                             <td>
-                                @if ($item->statusCut->name == 'belum')
+                                @if ($value->statusCut->name == 'belum')
                                     Belum Potong
                                 @else
                                     Sudah Potong
                                 @endif
                             </td>
                             <td><?php
-                                foreach ($item->cuttingOrderRecordDetail as $detail) {
+                                foreach ($value->cuttingOrderRecordDetail as $detail) {
                                     if ($detail != null) {
                                         echo date('d/M/Y', strtotime($detail->updated_at));
                                         break;
@@ -206,14 +209,21 @@
                                 }
                             ?></td>
                             <td><?php
-                                foreach ($item->cuttingOrderRecordDetail as $detail) {
+                                foreach ($value->cuttingOrderRecordDetail as $detail) {
                                     if ($detail != null) {
-                                        echo date('d/M/Y', strtotime($item->updated_at));
+                                        echo date('d/M/Y', strtotime($value->updated_at));
                                         break;
                                     }
                                 }
                             ?></td>
                         </tr>
+                        @if($item != count($data['cuttingOrderRecord']) - 1)
+                            @if($value->layingPlanningDetail->layingPlanning->color->color != $data['cuttingOrderRecord'][$item + 1]->layingPlanningDetail->layingPlanning->color->color)
+                                <tr>
+                                    <th colspan="10" style="height: 10px; background-color: #d9d9d9;"></th>
+                                </tr>
+                            @endif
+                        @endif
                         @endforeach
                     </tbody>
                     <tfoot>
@@ -242,9 +252,8 @@
                                 }
                                 echo $sum == 0 ? '-' : $sum;
                                 ?>
-                                   
                             </th>
-                            <th colspan="4"></th>
+                            <th colspan="5"></th>
                         </tr>
                     </tfoot>
                 </table>
