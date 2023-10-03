@@ -131,7 +131,7 @@
         $('#btn_detail').click(function(){
             var fbr_number = $('#fbr_number').val();
             if(fbr_number != ''){
-                window.location.href = "{{ url('fabric-issue') }}/"+fbr_number;
+                window.location.href = "{{ url('fabric-requisition') }}/"+fbr_number;
             }else{
                 alert('Please select Fabric Request Number');
             }
