@@ -254,7 +254,7 @@
                                 ?>
                                    
                             </th>
-                            <th colspan="4"></th>
+                            <th colspan="5"></th>
                         </tr>
                     </tfoot>
                 </table>
