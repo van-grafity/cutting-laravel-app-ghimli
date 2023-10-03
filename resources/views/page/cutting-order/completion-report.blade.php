@@ -125,7 +125,7 @@
                                                     <td style="text-align: left;">SIZE</td>
                                                 @endif
                                                 @foreach ($currentPlanning->layingPlanningSize as $lps)
-                                                    <td>{{ $lps->size->size }}</td>
+                                                    <td width="18%">{{ $lps->size->size }}</td>
                                                 @endforeach
                                                 <td style="text-align: center;">TOTAL</td>
                                             </tr>
@@ -234,7 +234,9 @@
                     <th>Color</th>
                     <th width="6%">Fab. Req.</th>
                     <th width="6%">Fab. Received</th>
+                    <th width="6%">Diff</th>
                     <th width="6%">Fab. Used</th>
+                    <th width="6%">Diff (Bal. Fabric)</th>
                 </tr>
             </thead>
             
@@ -268,24 +270,27 @@
                             //     }
                             // }
                             // echo $total_fab_received;
-                            $total_fab_used = 0;
+                            $total_fab_received = 0;
                             foreach ($layingPlanning->layingPlanningDetail as $lpd)
                             {
                                 if ($lpd->cuttingOrderRecord == null)
                                 {
-                                    $total_fab_used += 0;
+                                    $total_fab_received += 0;
                                 }
                                 else
                                 {
                                     foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
                                     {
-                                        $total_fab_used += $cord->yardage;
-                                        // $total_fab_used += $cord->layer;
+                                        $total_fab_received += $cord->yardage;
+                                        // $total_fab_received += $cord->layer;
                                     }
                                 }
                             }
-                            echo $total_fab_used;
+                            echo $total_fab_received;
                         ?></td> 
+                        <td>
+                            {{ $total_fab_received - $total_fab_req }}
+                        </td>
                         <td><?php
                             $total_fab_used = 0;
                             foreach ($layingPlanning->layingPlanningDetail as $lpd)
@@ -306,6 +311,9 @@
                             }
                             echo $total_fab_used;
                         ?></td>
+                        <td>
+                            {{ $total_fab_received - $total_fab_used }}
+                        </td>
                     </tr>
                 @endforeach
             </tbody>
