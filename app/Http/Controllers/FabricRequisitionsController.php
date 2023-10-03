@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\FabricRequisition;
 use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanning;
+use App\Models\FabricIssue;
 
 use Illuminate\Support\Str;
 
@@ -32,9 +33,6 @@ class FabricRequisitionsController extends Controller
             })
             ->addColumn('fabric_po', function ($data){
                 return $data->layingPlanningDetail->layingPlanning->fabric_po;
-            })
-            ->addColumn('table_number', function ($data){
-                return $data->layingPlanningDetail->table_number;
             })
             ->addColumn('is_issue', function ($data){
                 return $data->is_issue == 1 ? '<span class="badge rounded-pill badge-success" style="padding: 1.2em; text-align: center;">Issued</span>' : '<span class="badge rounded-pill badge-danger" style="padding: 1.2em">Not Issued</span>';
@@ -80,9 +78,21 @@ class FabricRequisitionsController extends Controller
     public function show($id) {
         $getFabricRequisition = FabricRequisition::with(['layingPlanningDetail'])->find($id);
         $layingPlanningDetail = LayingPlanningDetail::find($getFabricRequisition->layingPlanningDetail->id);
+        $fabric_issues = FabricIssue::where('fabric_request_id', $id)->get();
         
+        $getFabricRequisition->is_issue = 1;
+        $max_min = $getFabricRequisition->layingPlanningDetail->total_length * 0.03;
+        if($fabric_issues->sum('yard') <= $getFabricRequisition->layingPlanningDetail->total_length + $max_min && $fabric_issues->sum('yard') >= $getFabricRequisition->layingPlanningDetail->total_length - $max_min && $fabric_issues->sum('yard') != 0){
+            $getFabricRequisition->is_issue = 1;
+        }else{
+            $getFabricRequisition->is_issue = 0;
+        }
+
+        $getFabricRequisition->save();
         $fabric_requisition = [
+            'id' => $getFabricRequisition->id,
             'serial_number'=> $layingPlanningDetail->fabricRequisition->serial_number,
+            'status' => $getFabricRequisition->is_issue,
             'no_laying_sheet' => $layingPlanningDetail->no_laying_sheet,
             'table_number' => $layingPlanningDetail->table_number,
             'gl_number' => $layingPlanningDetail->layingPlanning->gl->gl_number,
@@ -90,28 +100,15 @@ class FabricRequisitionsController extends Controller
             'color' => $layingPlanningDetail->layingPlanning->color->color,
             'fabric_po' => $layingPlanningDetail->layingPlanning->fabric_po,
             'fabric_type' => $layingPlanningDetail->layingPlanning->fabricType->name,
-            'quantity_required' => $layingPlanningDetail->total_length . " yards",
+            'quantity_required' => $layingPlanningDetail->total_length,
             'quantity_issued' => "-",
             'difference' => "-",
+            'remark' => $getFabricRequisition->remark,
         ];
-
-        // $cutting_order_detail = $getCuttingOrder->cuttingOrderRecordDetail;
-
-        // $total_width = 0;
-        // $total_weight = 0;
-        // $total_layer = 0;
-        // foreach( $cutting_order_detail as $key => $detail ){
-        //     $total_width += $detail->yardage;
-        //     $total_weight += $detail->weight;
-        //     $total_layer += $detail->layer;
-        // }
-        // $fabric_requisition = Arr::add($fabric_requisition, 'total_width', $total_width);
-        // $fabric_requisition = Arr::add($fabric_requisition, 'total_weight', $total_weight);
-        // $fabric_requisition = Arr::add($fabric_requisition, 'total_layer', $total_layer);
 
         $fabric_requisition = (object)$fabric_requisition;
 
-        return view('page.fabric-requisition.detail', compact('fabric_requisition'));
+        return view('page.fabric-requisition.detail', compact('fabric_requisition', 'fabric_issues'));
     }
 
     public function store(Request $request)
