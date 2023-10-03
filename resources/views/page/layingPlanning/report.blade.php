@@ -391,7 +391,11 @@
         <table width="100%" style="font-size: 10px; font-weight: bold; padding-bottom: 28 !important; margin: 0 !important;">
             <tr>
                 <td width="10%">Remark</td>
+                @if ($data->remark == null)
+                <td width="90%">: -</td>
+                @else
                 <td width="90%">: {{ $data->remark }}</td>
+                @endif
             </tr>
         </table>
 
