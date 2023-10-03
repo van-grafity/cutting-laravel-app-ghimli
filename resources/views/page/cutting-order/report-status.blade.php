@@ -252,7 +252,6 @@
                                 }
                                 echo $sum == 0 ? '-' : $sum;
                                 ?>
-                                   
                             </th>
                             <th colspan="5"></th>
                         </tr>
