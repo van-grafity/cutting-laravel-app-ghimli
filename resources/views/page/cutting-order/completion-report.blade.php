@@ -153,19 +153,25 @@
                                                 @endif
                                                 @foreach ($currentPlanning->layingPlanningSize as $lps)
                                                     @php
-                                                        $total_per_size = 0;
+                                                        $layer = 0;
+                                                        $ratio = 0;
                                                         foreach ($currentPlanning->layingPlanningDetail as $lpd)
                                                         {
                                                             foreach ($lpd->layingPlanningDetailSize as $lps2)
                                                             {
                                                                 if ($lps2->size_id == $lps->size_id)
                                                                 {
-                                                                    $total_per_size += $lps2->qty_per_size;
+                                                                    foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                                                    {
+                                                                        $layer += $cord->layer;
+                                                                    }
+                                                                    $ratio = $lps2->ratio_per_size;
                                                                 }
                                                             }
                                                         }
+                                                        $cut_qty = ($layer * $ratio) / 10;
                                                     @endphp
-                                                    <td>{{ $total_per_size }}</td>
+                                                    <td>{{ $cut_qty }}</td>
                                                 @endforeach
                                                 <td style="text-align: center;">
                                                     @php
@@ -199,7 +205,8 @@
                                                             }
                                                         }
                                                     @endphp
-                                                    <td>{{ $total_per_size - $lps->quantity }}</td>
+                                                    <!-- <td>{{ $total_per_size - $lps->quantity }}</td> -->
+                                                    <td>xx</td>
                                                 @endforeach
                                                 <td style="text-align: center;">
                                                     @php
