@@ -473,7 +473,7 @@ class CuttingOrdersController extends Controller
         $statusCut = StatusCut::all();
         return view('page.cutting-order.status-cutting-order-record', compact('gls', 'statusLayer', 'statusCut'));
     }
-
+    
     public function printStatusCuttingOrderRecord(Request $request)
     {
         $date_start = $request->date_start;
@@ -483,8 +483,6 @@ class CuttingOrdersController extends Controller
         $status_cut = $request->status_cut;
 
         $cuttingOrderRecord = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'CuttingOrderRecordDetail', 'layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.gl', 'layingPlanningDetail.layingPlanning.color', 'layingPlanningDetail.layingPlanning.style'])
-            ->whereDate('updated_at', '>=', $date_start)
-            ->whereDate('updated_at', '<=', $date_end)
             ->whereHas('layingPlanningDetail', function($query) use ($gl_number) {
                 $query->whereHas('layingPlanning', function($query) use ($gl_number) {
                     if ($gl_number != null) {
@@ -502,8 +500,13 @@ class CuttingOrdersController extends Controller
                     $query->where('id', $status_cut);
                 }
             })
-            // ->orderBy('serial_number', 'asc')
+            ->where(function($query) use ($date_start, $date_end) {
+                $query->whereDate('updated_at', '>=', [$date_start, Carbon::parse($date_start)->format('Y-m-d 08:00:00')])
+                    ->whereDate('updated_at', '<=', [$date_end, Carbon::parse($date_end)->format('Y-m-d 05:00:00')]);
+            })
+            ->orderBy('serial_number', 'asc')
             ->get();
+
         $cuttingOrderRecord = $cuttingOrderRecord->sortBy(function($item) {
             return $item->layingPlanningDetail->layingPlanning->color->color;
         });
