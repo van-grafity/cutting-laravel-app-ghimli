@@ -279,7 +279,7 @@
                                     <thead>
                                         <tr>
                                             <th>Roll No</th>
-                                            <th>Bath No</th>
+                                            <th>Batch No</th>
                                             <th>Weight</th>
                                             <th>Yard</th>
                                             <th class="text-center">Action</th>
@@ -380,7 +380,7 @@
             form = $('#fabric_issue_form');
         if (add) {
             $('#modal_form').modal('show');
-            $('#modal_formLabel').text('Create Fabric Issue Multiple');
+            $('#modal_formLabel').text('Create Fabric Issue');
             $.ajax({
                 url: "{{ url('fabric-issue') }}" + '/' + id + '/edit',
                 type: "GET",
