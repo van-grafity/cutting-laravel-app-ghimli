@@ -133,11 +133,10 @@
                 <table class="table table-nota">
                     <thead class="">
                         <tr>
+                        <th>No</th>
                             @if ($data['gl_number'] == null)
                             <th>G/L Number</th>
                             @endif
-                            <!-- no -->
-                            <th>No</th>
                             <th>Serial Number</th>
                             <th>Color</th>
                             <th>Style</th>
@@ -161,10 +160,10 @@
                     <tbody>
                         @foreach ($data['cuttingOrderRecord'] as $item => $value)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             @if ($data['gl_number'] == null)
                             <td>{{ $value->layingPlanningDetail->layingPlanning->gl->gl_number }}</td>
                             @endif
-                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $value->serial_number }}</td>
                             <td>{{ $value->layingPlanningDetail->layingPlanning->color->color }}</td>
                             <td>{{ $value->layingPlanningDetail->layingPlanning->style->style }}</td>
@@ -217,11 +216,17 @@
                                 }
                             ?></td>
                         </tr>
-                        @if($item != count($data['cuttingOrderRecord']) - 1)
-                            @if($value->layingPlanningDetail->layingPlanning->color->color != $data['cuttingOrderRecord'][$item + 1]->layingPlanningDetail->layingPlanning->color->color)
-                                <tr>
-                                    <th colspan="10" style="height: 10px; background-color: #d9d9d9;"></th>
-                                </tr>
+                        @if ($item != count($data['cuttingOrderRecord']) - 1)
+                            @if ($data['gl_number'] == null)
+                                @if ($value->layingPlanningDetail->layingPlanning->gl->gl_number != $data['cuttingOrderRecord'][$item + 1]->layingPlanningDetail->layingPlanning->gl->gl_number)
+                                    
+                                @endif
+                            @else
+                                @if ($value->layingPlanningDetail->layingPlanning->color->color != $data['cuttingOrderRecord'][$item + 1]->layingPlanningDetail->layingPlanning->color->color)
+                                    <tr>
+                                        <th colspan="10" style="height: 10px; background-color: #d9d9d9;"></th>
+                                    </tr>
+                                @endif
                             @endif
                         @endif
                         @endforeach
