@@ -473,18 +473,7 @@ class CuttingOrdersController extends Controller
         $statusCut = StatusCut::all();
         return view('page.cutting-order.status-cutting-order-record', compact('gls', 'statusLayer', 'statusCut'));
     }
-
-    // $prev_cutting_order_records = CuttingOrderRecord::select('cutting_order_records.*', DB::raw("SUM(cutting_order_record_details.layer) as total_layer"))
-    // ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
-    // ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
-    // ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
-    // // ->whereDate('cutting_order_record_details.created_at', '<', $date_filter)
-    // ->where(function($query) use ($date_filter_night_shift, $date_filter) {
-    //     $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
-    //     // ->whereDate('cutting_order_record_details.created_at', '=', $date_filter);
-    //     ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 00:07:00'), $date_filter_night_shift]);
-    // })
-
+    
     public function printStatusCuttingOrderRecord(Request $request)
     {
         $date_start = $request->date_start;
