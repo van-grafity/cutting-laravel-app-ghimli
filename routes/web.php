@@ -151,12 +151,8 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('print-multiple/{id}', [CuttingOrdersController::class,'print_multiple'])->name('cutting-order.print-multiple');
     Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
     Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');
-    Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
-    Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
     Route::resource('subcon-cutting', SubconCuttingController::class);
     Route::get('cutting-report-subcon/{id}', [SubconCuttingController::class,'cutting_report_subcon'])->name('subcon-cutting.cutting-report-subcon');
-    Route::get('summary-report-group-cutting-order-record', [SubconCuttingController::class,'summary_report_group_cutting_order_record'])->name('subcon-cutting.summary-report-group-cutting-order-record');
-    Route::get('cutting-print-subcon', [SubconCuttingController::class,'print'])->name('subcon-cutting.cutting-print-subcon');
 
     Route::resource('cutting-ticket', CuttingTicketsController::class);
     Route::prefix('cutting-ticket')->name('cutting-ticket.')->group(function(){
@@ -178,11 +174,21 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('fabric-requisition-print/{id}', [FabricRequisitionsController::class,'print_pdf'])->name('fabric-requisition.print');
     Route::get('fabric-requisition-detail/{id}', [FabricRequisitionsController::class,'fabric_requisition_detail'])->name('fabric-requisition.detail');
     Route::get('print-multiple-fabric-requisition/{id}', [FabricRequisitionsController::class,'print_multiple_fabric_requisition'])->name('fabric-requisition.print-multiple');    
+});
 
-
+Route::group(['middleware' => ['auth','can:cutting-record']], function () {
     Route::resource('daily-cutting-report', DailyCuttingReportsController::class);
     Route::get('daily-cutting-detail', [DailyCuttingReportsController::class,'dailyCuttingDetail'])->name('daily-cutting.detail');
     Route::get('daily-cutting-report-print', [DailyCuttingReportsController::class,'dailyCuttingReport'])->name('daily-cutting.print-report');
+
+    Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
+    Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');
+
+    Route::get('summary-report-group-cutting-order-record', [SubconCuttingController::class,'summary_report_group_cutting_order_record'])->name('subcon-cutting.summary-report-group-cutting-order-record');
+    Route::get('cutting-print-subcon', [SubconCuttingController::class,'print'])->name('subcon-cutting.cutting-print-subcon');
+    
+    Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
+    Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
 });
 
 // ## Route for Fetch Select2 Form
