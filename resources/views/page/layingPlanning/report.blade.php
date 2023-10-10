@@ -441,7 +441,7 @@
                     <p>Authorized by:</p>
                     <p></p>
                     <div style="display:inline-block; text-align:center;">
-                        <span>SUMI (36120)</span>
+                        <span>SUMIYATI (54057)</span>
                         <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 90px;">
                     </div>
                 </td>
