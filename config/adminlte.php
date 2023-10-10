@@ -456,9 +456,17 @@ return [
             'icon' => 'fas fa-fw fa fa-tasks',
             'can'  => 'clerk',
         ],
-        [   'header'=> 'Reports',
-            'can'   => 'clerk',
+        [
+            'header'=> 'Warehouse',
+            'can'   => 'warehouse',
         ],
+        [
+            'text' => 'Fabric Issuance',
+            'url'  => '/fabric-issue',
+            'icon' => 'fas fa-fw fa fa-tasks',
+            'can'  => 'warehouse',
+        ],
+        [   'header'=> 'Reports'],
         [
             'text' => 'Daily Cutting Report',
             'url'  => '/daily-cutting-report',
@@ -482,16 +490,6 @@ return [
             'url'  => '/cutting-order-completion',
             'icon' => 'fas fa-fw fa fa-database',
             'can'  => 'clerk',
-        ],
-        [
-            'header'=> 'Warehouse',
-            'can'   => 'warehouse',
-        ],
-        [
-            'text' => 'Fabric Issuance',
-            'url'  => '/fabric-issue',
-            'icon' => 'fas fa-fw fa fa-tasks',
-            'can'  => 'warehouse',
         ],
         [
             'header'=> 'Lain-lain',
