@@ -34,7 +34,6 @@ class AuthServiceProvider extends ServiceProvider
             }
         });
 
-        // set menu show using "can"
         Gate::define('admin-only', function ($user) {
             return $user->hasRole(['super_admin']);
         });
@@ -46,10 +45,6 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('clerk-cutting', function ($user) {
             return $user->hasRole(['super_admin','cutter','layer']);
         });
-
-        // Gate::define('clerk-cutting', function ($user) {
-        //     return $user->hasRole(['super_admin','layer']);
-        // });
 
         Gate::define('ppc', function ($user) {
             return $user->hasRole(['super_admin','ppc']);
