@@ -6,25 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Print PDF</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
-
     <style type="text/css">
         * {
-            font-family: Calibri, san-serif;
+            font-family: Arial;
         }
         @page {
             size: 21.8cm 13.8cm;
-            margin-top: 0.35cm;
-        }
-
-		table tr td,
-		table tr th{
-			font-size: 8pt;
-		}
-
-        .table-nota td, .table-nota th {
-            padding: 0rem 0.25rem;
-			font-size: 11.2px;
+            margin-left: 0.5cm;
+            margin-right: 0.5cm;
+            margin-top: 1cm;
+            margin-bottom: 1cm;
         }
 
         .company-name {
@@ -41,7 +32,7 @@
             clear:left;
             /* clear:right; */
             text-align: center;
-            font-weight: bold;
+            
             font-size: 14px;
         }
         
@@ -58,7 +49,7 @@
         }
 
         .header-subtitle {
-            font-weight: bold;
+            
             width: 100%;
         }
 
@@ -71,29 +62,23 @@
             border: none;
         }
 
-        .subtitle-right {
-            /* text-align: right */
-        }
-
-        .table-nota {
-            border: 2px solid;
-        }
-
-        .table-nota thead th {
-            border: 1px solid;
-            vertical-align: middle;
-        }
-        .table-nota tbody td {
-            border: 1px solid;
-            font-weight: bold;
-            font-size:6pt;
-        }
-
         .sparated-line {
             border: none;
             color: #333;
             background-color: #333;
             margin-top: 10px;
+        }
+
+        .hello-table {
+            border-collapse: collapse;
+            border: 1px solid black;
+            padding: 0 !important;
+        }
+        .hello-table td, .hello-table th {
+            border: 1px solid black;
+            padding: 2px;
+            font-size: 11.5px;
+            text-align: left;
         }
         
 	</style>
@@ -107,7 +92,7 @@
         padding-right: 0 !important;">
                 <tr>
                     <td width="20%;"></td>
-                    <td width="60%;" style="font-weight: bold; font-size: 14px; text-align: center; margin: 0 !important; padding: 0 !important;">
+                    <td width="60%;" style=" font-size: 14px; text-align: center; margin: 0 !important; padding: 0 !important;">
                         <span style="margin: 0 !important; padding: 0 !important;">PT. GHIM LI INDONESIA</span>
                     </td>
                     <td width="20%;" style="text-align: right; font-size: 10px;">
@@ -128,9 +113,9 @@
                 <thead>
                     <tr>
                         <td width="10" class="no-border">Dept</td>
-                        <td width="100" class="">: </td>
+                        <td width="100" class="no-border">: </td>
                         <td width="300" class="no-border" style="text-align: center;"> {{ $fbr['serial_number'] }} </td>
-                        <td width="80" class="subtitle-right"> 
+                        <td width="80" class="no-border"> 
                             No : {{ $fbr['no_laying_sheet']}} <br> 
                             Date : {{ $fbr['date'] }} 
                         </td>
@@ -138,7 +123,7 @@
                 </thead>
             </table>
 
-            <table class="table table-nota" style="margin: 0px 0px 0px 0px !important;">
+            <table class="hello-table" width="100%">
                 <thead class="">
                     <tr>
                         <th width="150" style="font-size: 13px !important;">GL  NO: {{ $fbr['gl_number'] }}</th>
@@ -175,7 +160,7 @@
                 </thead>
             </table>
 
-            <table width="100%" style="font-size: 11px; font-weight: bold; align-items: center; padding-top: 10px;">
+            <table width="100%" style="font-size: 11px;  align-items: center; padding-top: 10px;">
                 <thead>
                     <tr>
                         <td width="60" class="no-border">Prepared by</td>
@@ -222,7 +207,7 @@
                 </thead>
             </table>
 
-            <table class="table table-nota">
+            <table class="hello-table" width="100%">
                 <thead class="">
                     <tr>
                         <th style="text-align: center">Roll No / Nomor Roll</th>
