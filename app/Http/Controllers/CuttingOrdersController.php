@@ -510,9 +510,11 @@ class CuttingOrdersController extends Controller
         $cuttingOrderRecord = $cuttingOrderRecord->sortBy(function($item) {
             return $item->layingPlanningDetail->layingPlanning->color->color;
         });
-        // $cuttingOrderRecord = $cuttingOrderRecord->sortBy(function($item) {
-        //     return $item->layingPlanningDetail->layingPlanning->style->style;
-        // });
+        $cuttingOrderRecord = $gl_number == null ? $cuttingOrderRecord->sortBy(function($item) {
+            return $item->layingPlanningDetail->layingPlanning->gl->gl_number;
+        }) : $cuttingOrderRecord->sortBy(function($item) {
+            return $item->serial_number;
+        });
         $data = [
             'cuttingOrderRecord' => $cuttingOrderRecord,
             'date_start' => $date_start,

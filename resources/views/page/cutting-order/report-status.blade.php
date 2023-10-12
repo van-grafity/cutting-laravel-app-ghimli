@@ -133,25 +133,25 @@
                 <table class="table table-nota">
                     <thead class="">
                         <tr>
-                        <th>No</th>
+                            <th width="0.5%">No</th>
                             @if ($data['gl_number'] == null)
-                            <th>G/L Number</th>
+                            <th width="5%">GL</th>
                             @endif
                             <th>Serial Number</th>
                             <th>Color</th>
-                            <th>Style</th>
-                            <th>MI Qty</th>
-                            <th>Cut Qty</th>
+                            <th width="7%">Style</th>
+                            <th width="3%">MI Qty</th>
+                            <th width="3%">Cut Qty</th>
                             @if ($data['status_layer'] == null || $data['status_layer'] == null)
-                                <th>Status Layer</th>
-                                <th>Status Cut</th>
-                                <th>Date Layer</th>
-                                <th>Date Cut</th>
+                                <th width="7%">Status Layer</th>
+                                <th width="7.5%">Status Cut</th>
+                                <th width="7%">Date Layer</th>
+                                <th width="7%">Date Cut</th>
                             @else
-                                <th>Status Layer</th>
-                                <th>Status Cut</th>
-                                <th>Date Layer</th>
-                                <th>Date Cut</th>
+                                <th width="7%">Status Layer</th>
+                                <th width="7.5%">Status Cut</th>
+                                <th width="7%">Date Layer</th>
+                                <th width="7%">Date Cut</th>
                             @endif
                             
                         </tr>
@@ -164,9 +164,9 @@
                             @if ($data['gl_number'] == null)
                             <td>{{ $value->layingPlanningDetail->layingPlanning->gl->gl_number }}</td>
                             @endif
-                            <td>{{ $value->serial_number }}</td>
-                            <td>{{ $value->layingPlanningDetail->layingPlanning->color->color }}</td>
-                            <td>{{ $value->layingPlanningDetail->layingPlanning->style->style }}</td>
+                            <td style="text-align: left;">{{ $value->serial_number }}</td>
+                            <td style="text-align: left;">{{ $value->layingPlanningDetail->layingPlanning->color->color }}</td>
+                            <td style="text-align: left;">{{ $value->layingPlanningDetail->layingPlanning->style->style }}</td>
                             <td>{{ $value->layingPlanningDetail->layingPlanning->order_qty }}</td>
                             <td>
                                 <?php
@@ -216,27 +216,97 @@
                                 }
                             ?></td>
                         </tr>
-                        @if ($item != count($data['cuttingOrderRecord']) - 1)
-                            @if ($data['gl_number'] == null)
-                                @if ($value->layingPlanningDetail->layingPlanning->gl->gl_number != $data['cuttingOrderRecord'][$item + 1]->layingPlanningDetail->layingPlanning->gl->gl_number)
-                                    
-                                @endif
-                            @else
-                                @if ($value->layingPlanningDetail->layingPlanning->color->color != $data['cuttingOrderRecord'][$item + 1]->layingPlanningDetail->layingPlanning->color->color)
-                                    <tr>
-                                        <th colspan="10" style="height: 10px; background-color: #d9d9d9;"></th>
+                        @if ($item == count($data['cuttingOrderRecord']) - 1)
+                        @if ($data['gl_number'] == null)
+                        @if ($value->layingPlanningDetail->layingPlanning->color->color == $data['cuttingOrderRecord'][$item - 1]->layingPlanningDetail->layingPlanning->color->color)
+                                    <tr style="background-color: #d9d9d9;">
+                                        @if ($data['gl_number'] == null)
+                                        <td colspan="5" style="text-align: right;">Sub Total</td>
+                                        @else
+                                        <td colspan="4" style="text-align: right;">Sub Total</td>
+                                        @endif
+                                        <td style="text-align: center;">
+                                            <?php
+                                            $sum = 0;
+                                            foreach ($data['cuttingOrderRecord'] as $item)
+                                            {
+                                                $total_cutting_order_record = 0;
+                                                $total_size_ratio = 0;
+                                                foreach ($item->cuttingOrderRecordDetail as $record_detail)
+                                                {
+                                                    if ($item->layingPlanningDetail->layingPlanning->color->color == $value->layingPlanningDetail->layingPlanning->color->color)
+                                                    {
+                                                        $total_cutting_order_record += $record_detail->layer;
+                                                    }
+                                                }
+                                                foreach ($item->layingPlanningDetail->layingPlanningDetailSize as $size)
+                                                {
+                                                    $total_size_ratio += $size->ratio_per_size;
+                                                }
+                                                $sum += ($total_cutting_order_record * $total_size_ratio);
+                                            }
+                                            echo $sum == 0 ? '-' : $sum;
+                                            ?>
+                                        </td>
+                                        <td colspan="4"></td>
                                     </tr>
                                 @endif
+                        @else
+                                
+                                @endif
+                        @else
+                            @if ($value->layingPlanningDetail->layingPlanning->color->color == $data['cuttingOrderRecord'][$item + 1]->layingPlanningDetail->layingPlanning->color->color)
+                            @else
+                            @if ($data['gl_number'] == null)
+                            <tr style="background-color: #d9d9d9;">
+                                    @if ($data['gl_number'] == null)
+                                    <td colspan="6" style="text-align: right;">Sub Total</td>
+                                    @else
+                                    <td colspan="5" style="text-align: right;">Sub Total</td>
+                                    @endif
+                                    <td style="text-align: center;">
+                                        <?php
+                                        $sum = 0;
+                                        foreach ($data['cuttingOrderRecord'] as $item)
+                                        {
+                                            $total_cutting_order_record = 0;
+                                            $total_size_ratio = 0;
+                                            foreach ($item->cuttingOrderRecordDetail as $record_detail)
+                                            {
+                                                if ($item->layingPlanningDetail->layingPlanning->color->color == $value->layingPlanningDetail->layingPlanning->color->color)
+                                                {
+                                                    $total_cutting_order_record += $record_detail->layer;
+                                                }
+                                            }
+                                            foreach ($item->layingPlanningDetail->layingPlanningDetailSize as $size)
+                                            {
+                                                $total_size_ratio += $size->ratio_per_size;
+                                            }
+                                            $sum += ($total_cutting_order_record * $total_size_ratio);
+                                        }
+                                        echo $sum == 0 ? '-' : $sum;
+                                        ?>
+                                    </td>
+                                    
+                                    @if ($data['gl_number'] == null)
+                                        <td colspan="4"></td>
+                                    @else
+                                        <td colspan="4"></td>
+                                    @endif
+                                </tr>
+                            @else
+                                
+                            @endif
                             @endif
                         @endif
                         @endforeach
                     </tbody>
                     <tfoot>
-                        <tr>
+                        <tr style="background-color: #d9d9d9;">
                             @if ($data['gl_number'] == null)
-                            <th colspan="5" style="text-align: right;">Total</th>
+                            <th colspan="6" style="text-align: right;">Total</th>
                             @else
-                            <th colspan="4" style="text-align: right;">Total</th>
+                            <th colspan="5" style="text-align: right;">Total</th>
                             @endif
                             <th style="text-align: center;">
                                 <?php
@@ -258,7 +328,12 @@
                                 echo $sum == 0 ? '-' : $sum;
                                 ?>
                             </th>
-                            <th colspan="5"></th>
+                            <!-- <th colspan="5"></th> -->
+                            @if ($data['gl_number'] == null)
+                                <th colspan="4"></th>
+                            @else
+                                <th colspan="4"></th>
+                            @endif
                         </tr>
                     </tfoot>
                 </table>
