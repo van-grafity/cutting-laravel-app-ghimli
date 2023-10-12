@@ -133,15 +133,15 @@
                     </tr>
                     <tr>
                         <th>Fabric Detail / Uraian Kain</th>
-                        <th colspan="3"> {{ $fbr['fabric_type'] }} </th>
+                        <th colspan="3" style="padding-left: 6px !important;"> {{ $fbr['fabric_type'] }} </th>
                     </tr>
                     <tr>
                         <th>Color/ Warna</th>
-                        <th colspan="3"> {{ $fbr['color'] }} </th>
+                        <th colspan="3" style="padding-left: 6px !important;"> {{ $fbr['color'] }} </th>
                     </tr>
                     <tr>
                         <th style="font-size: 11.5px;">Quantity Required / Jumlah Permintaan</th>
-                        <th> {{ $fbr['quantity_required'] }} </th>
+                        <th style="font-size: 14px; padding-left: 6px !important;"> {{ $fbr['quantity_required'] }} </th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -160,7 +160,7 @@
                 </thead>
             </table>
 
-            <table width="100%" style="font-size: 11px;  align-items: center; padding-top: 10px;">
+            <table width="100%" style="font-size: 11px;  align-items: center; padding-top: 4px;">
                 <thead>
                     <tr>
                         <td width="60" class="no-border">Prepared by</td>
