@@ -219,7 +219,7 @@
                         @if ($item == count($data['cuttingOrderRecord']) - 1)
                         @if ($data['gl_number'] == null)
                         @if ($value->layingPlanningDetail->layingPlanning->color->color == $data['cuttingOrderRecord'][$item - 1]->layingPlanningDetail->layingPlanning->color->color)
-                                    <tr style="background-color: #d9d9d9;">
+                                    <tr style="background-color: #f2f2f2;">
                                         @if ($data['gl_number'] == null)
                                         <td colspan="5" style="text-align: right;">Sub Total</td>
                                         @else
@@ -258,7 +258,7 @@
                             @if ($value->layingPlanningDetail->layingPlanning->color->color == $data['cuttingOrderRecord'][$item + 1]->layingPlanningDetail->layingPlanning->color->color)
                             @else
                             @if ($data['gl_number'] == null)
-                            <tr style="background-color: #d9d9d9;">
+                            <tr style="background-color: #f0f0f0;">
                                     @if ($data['gl_number'] == null)
                                     <td colspan="6" style="text-align: right;">Sub Total</td>
                                     @else
