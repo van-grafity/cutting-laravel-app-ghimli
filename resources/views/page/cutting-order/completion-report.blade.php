@@ -82,7 +82,41 @@
                 <td style="text-align: left;">{{ $planning->style->style }}</td>
                 <td>DIFF</td>
                 <td>:</td>
-                <td style="text-align: left;">xxx pcs</td>
+                <td style="text-align: left;">
+                    @php
+                        $total_res_qty_ratio_layer = 0;
+                        foreach ($data['layingPlanning'] as $layingPlanning)
+                        {
+                            foreach ($layingPlanning->layingPlanningSize as $lps)
+                            {
+                                $layer = 0;
+                                $ratio = 0;
+                                foreach ($layingPlanning->layingPlanningDetail as $lpd)
+                                {
+                                    foreach ($lpd->layingPlanningDetailSize as $lps2)
+                                    {
+                                        if ($lps2->size_id == $lps->size_id)
+                                        {
+                                            if ($lpd->cuttingOrderRecord == null)
+                                            {
+                                                $layer += 0;
+                                            }
+                                            else
+                                            {
+                                                foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                                {
+                                                    $layer += $cord->layer;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                $total_res_qty_ratio_layer += $lps->quantity - ($ratio * $layer);
+                            }
+                        }
+                    @endphp
+                    {{ $total_res_qty_ratio_layer }} pcs
+                </td>
                 <td width="11%">Actual Marker Length</td>
                 <td>:</td>
                 <td style="text-align: left;">xx.xx</td>
@@ -169,22 +203,24 @@
                                                                 }
                                                             }
                                                         }
-                                                        $cut_qty = ($layer * $ratio) / 10;
                                                     @endphp
-                                                    <td>{{ $cut_qty }}</td>
+                                                    <td>{{ $ratio * $layer }}</td>
                                                 @endforeach
                                                 <td style="text-align: center;">
                                                     @php
-                                                        $total_per_size = 0;
+                                                        $total_ratio_layer = 0;
                                                         foreach ($currentPlanning->layingPlanningDetail as $lpd)
                                                         {
                                                             foreach ($lpd->layingPlanningDetailSize as $lps2)
                                                             {
-                                                                $total_per_size += $lps2->qty_per_size;
+                                                                foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                                                {
+                                                                    $total_ratio_layer += $cord->layer * $lps2->ratio_per_size;
+                                                                }
                                                             }
                                                         }
                                                     @endphp
-                                                    {{ $total_per_size }}
+                                                    {{ $total_ratio_layer }}
                                                 </td>
                                             </tr>
                                             <tr>
@@ -193,33 +229,50 @@
                                                 @endif
                                                 @foreach ($currentPlanning->layingPlanningSize as $lps)
                                                     @php
-                                                        $total_per_size = 0;
+                                                        $layer = 0;
+                                                        $ratio = 0;
                                                         foreach ($currentPlanning->layingPlanningDetail as $lpd)
                                                         {
                                                             foreach ($lpd->layingPlanningDetailSize as $lps2)
                                                             {
                                                                 if ($lps2->size_id == $lps->size_id)
                                                                 {
-                                                                    $total_per_size += $lps2->qty_per_size;
+                                                                    foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                                                    {
+                                                                        $layer += $cord->layer;
+                                                                    }
+                                                                    $ratio = $lps2->ratio_per_size;
                                                                 }
                                                             }
                                                         }
                                                     @endphp
-                                                    <!-- <td>{{ $total_per_size - $lps->quantity }}</td> -->
-                                                    <td>xx</td>
+                                                    <td>{{ $lps->quantity - ($ratio * $layer) }}</td>
                                                 @endforeach
                                                 <td style="text-align: center;">
                                                     @php
-                                                        $total_per_size = 0;
-                                                        foreach ($currentPlanning->layingPlanningDetail as $lpd)
+                                                        $total_res_qty_ratio_layer = 0;
+                                                        foreach ($currentPlanning->layingPlanningSize as $lps)
                                                         {
-                                                            foreach ($lpd->layingPlanningDetailSize as $lps2)
+                                                            $layer = 0;
+                                                            $ratio = 0;
+                                                            foreach ($currentPlanning->layingPlanningDetail as $lpd)
                                                             {
-                                                                $total_per_size += $lps2->qty_per_size;
+                                                                foreach ($lpd->layingPlanningDetailSize as $lps2)
+                                                                {
+                                                                    if ($lps2->size_id == $lps->size_id)
+                                                                    {
+                                                                        foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                                                        {
+                                                                            $layer += $cord->layer;
+                                                                        }
+                                                                        $ratio = $lps2->ratio_per_size;
+                                                                    }
+                                                                }
                                                             }
+                                                            $total_res_qty_ratio_layer += $lps->quantity - ($ratio * $layer);
                                                         }
                                                     @endphp
-                                                    {{ $total_per_size - $total_qty }}
+                                                    {{ $total_res_qty_ratio_layer }}
                                                 </td>
                                             </tr>
                                         </tbody>
