@@ -139,7 +139,7 @@
                             @endif
                             <th>Serial Number</th>
                             <th>Color</th>
-                            <th width="7%">Style</th>
+                            <th width="8%">Style</th>
                             <th width="3%">MI Qty</th>
                             <th width="3%">Cut Qty</th>
                             @if ($data['status_layer'] == null || $data['status_layer'] == null)
