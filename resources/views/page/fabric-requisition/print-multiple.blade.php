@@ -14,7 +14,7 @@
             size: 21.8cm 13.8cm;
             margin-left: 0.5cm;
             margin-right: 0.5cm;
-            margin-top: 1cm;
+            margin-top: 0.5cm;
             margin-bottom: 1cm;
         }
 
@@ -77,7 +77,7 @@
         .hello-table td, .hello-table th {
             border: 1px solid black;
             padding: 2px;
-            font-size: 11.5px;
+            font-size: 13px;
             text-align: left;
         }
         
@@ -126,7 +126,7 @@
             <table class="hello-table" width="100%">
                 <thead class="">
                     <tr>
-                        <th width="150" style="font-size: 13px !important;">GL  NO: {{ $fbr['gl_number'] }}</th>
+                        <th width="150">GL  NO: {{ $fbr['gl_number'] }}</th>
                         <th>Style No: {{ $fbr['style'] }}</th>
                         <th width="15%">P/O No: {{ $fbr['fabric_po'] }}</th>
                         <th width="20%">Lay No: {{ $fbr['no_laying_sheet'] }}</th>
@@ -140,13 +140,13 @@
                         <th colspan="3"> {{ $fbr['color'] }} </th>
                     </tr>
                     <tr>
-                        <th>Quantity Required / Jumlah Permintaan</th>
+                        <th style="font-size: 11.5px;">Quantity Required / Jumlah Permintaan</th>
                         <th> {{ $fbr['quantity_required'] }} </th>
                         <th></th>
                         <th></th>
                     </tr>
                     <tr>
-                        <th>Quantity Issued / Jumlah dikeluarkan</th>
+                        <th style="font-size: 11.5px;">Quantity Issued / Jumlah dikeluarkan</th>
                         <th> {{ $fbr['quantity_issued'] }} </th>
                         <th></th>
                         <th></th>
