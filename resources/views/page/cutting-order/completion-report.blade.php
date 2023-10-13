@@ -208,19 +208,19 @@
                                                 @endforeach
                                                 <td style="text-align: center;">
                                                     @php
-                                                        $total_ratio_layer = 0;
+                                                        $total_cut_qty = 0;
                                                         foreach ($currentPlanning->layingPlanningDetail as $lpd)
                                                         {
                                                             foreach ($lpd->layingPlanningDetailSize as $lps2)
                                                             {
                                                                 foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
                                                                 {
-                                                                    $total_ratio_layer += $cord->layer * $lps2->ratio_per_size;
+                                                                    $total_cut_qty += $cord->layer * $lps2->ratio_per_size;
                                                                 }
                                                             }
                                                         }
                                                     @endphp
-                                                    {{ $total_ratio_layer }}
+                                                    {{ $total_cut_qty }}
                                                 </td>
                                             </tr>
                                             <tr>
@@ -229,7 +229,7 @@
                                                 @endif
                                                 @foreach ($currentPlanning->layingPlanningSize as $lps)
                                                     @php
-                                                        $cut_qty = 0;
+                                                        $diff_order_cut_qty_per_size = 0;
                                                         foreach ($currentPlanning->layingPlanningDetail as $lpd)
                                                         {
                                                             foreach ($lpd->layingPlanningDetailSize as $lps2)
@@ -238,25 +238,25 @@
                                                                 {
                                                                     if ($lpd->cuttingOrderRecord == null)
                                                                     {
-                                                                        $cut_qty += 0;
+                                                                        $diff_order_cut_qty_per_size += 0;
                                                                     }
                                                                     else
                                                                     {
                                                                         foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
                                                                         {
-                                                                            $cut_qty += $cord->layer * $lps2->ratio_per_size;
+                                                                            $diff_order_cut_qty_per_size += $cord->layer * $lps2->ratio_per_size;
                                                                         }
                                                                     }
                                                                 }
                                                             }
                                                         }
                                                     @endphp
-                                                    <td>{{ $cut_qty - $lps->quantity }}</td>
+                                                    <td>{{ $diff_order_cut_qty_per_size - $lps->quantity }}</td>
                                                 @endforeach
                                                 <td style="text-align: center;">
                                                     @php
                                                         $total_ratio_layer = 0;
-                                                        $res_diff_cut_complete = 0;
+                                                        $total_diff_order_cut_qty = 0;
                                                         foreach ($currentPlanning->layingPlanningDetail as $lpd)
                                                         {
                                                             foreach ($lpd->layingPlanningDetailSize as $lps2)
@@ -267,9 +267,9 @@
                                                                 }
                                                             }
                                                         }
-                                                        $res_diff_cut_complete = $total_ratio_layer - $total_qty;
+                                                        $total_diff_order_cut_qty = $total_ratio_layer - $total_qty;
                                                     @endphp
-                                                    {{ $res_diff_cut_complete }}
+                                                    {{ $total_diff_order_cut_qty }}
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -311,22 +311,6 @@
                             echo $total_fab_req;
                         ?></td>
                         <td><?php
-                            // $total_fab_received = 0;
-                            // foreach ($layingPlanning->layingPlanningDetail as $lpd)
-                            // {
-                            //     if ($lpd->fabricRequisition == null)
-                            //     {
-                            //         $total_fab_received += 0;
-                            //     }
-                            //     else
-                            //     {
-                            //         foreach ($lpd->fabricRequisition->fabricIssue as $fi)
-                            //         {
-                            //             $total_fab_received += $fi->yard;
-                            //         }
-                            //     }
-                            // }
-                            // echo $total_fab_received;
                             $total_fab_received = 0;
                             foreach ($layingPlanning->layingPlanningDetail as $lpd)
                             {
@@ -339,7 +323,6 @@
                                     foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
                                     {
                                         $total_fab_received += $cord->yardage;
-                                        // $total_fab_received += $cord->layer;
                                     }
                                 }
                             }
