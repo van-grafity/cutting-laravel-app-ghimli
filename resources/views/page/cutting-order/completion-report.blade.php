@@ -84,7 +84,7 @@
                 <td>:</td>
                 <td style="text-align: left;">
                     @php
-                        $total_ratio_layer = 0;
+                        $xtotal_ratio_layer = 0;
                         $total_res_qty_ratio_layer = 0;
                         foreach ($data['layingPlanning'] as $layingPlanning)
                         {
@@ -106,10 +106,10 @@
                                         }
                                     }
                                 }
-                                $total_ratio_layer += ($ratio * $layer);
+                                $xtotal_ratio_layer += ($ratio * $layer);
                             }
                         }
-                        echo $total_ratio_layer - $total_order_qty;
+                        echo $xtotal_ratio_layer - $total_order_qty;
                     @endphp
                 </td>
                 <td width="11%">Actual Marker Length</td>
@@ -255,29 +255,21 @@
                                                 @endforeach
                                                 <td style="text-align: center;">
                                                     @php
-                                                        $total_res_qty_ratio_layer = 0;
-                                                        foreach ($currentPlanning->layingPlanningSize as $lps)
+                                                        $total_ratio_layer = 0;
+                                                        $res_diff_cut_complete = 0;
+                                                        foreach ($currentPlanning->layingPlanningDetail as $lpd)
                                                         {
-                                                            $layer = 0;
-                                                            $ratio = 0;
-                                                            foreach ($currentPlanning->layingPlanningDetail as $lpd)
+                                                            foreach ($lpd->layingPlanningDetailSize as $lps2)
                                                             {
-                                                                foreach ($lpd->layingPlanningDetailSize as $lps2)
+                                                                foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
                                                                 {
-                                                                    if ($lps2->size_id == $lps->size_id)
-                                                                    {
-                                                                        foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
-                                                                        {
-                                                                            $layer += $cord->layer;
-                                                                        }
-                                                                        $ratio = $lps2->ratio_per_size;
-                                                                    }
+                                                                    $total_ratio_layer += $cord->layer * $lps2->ratio_per_size;
                                                                 }
                                                             }
-                                                            $total_res_qty_ratio_layer += ($ratio * $layer) - $lps->quantity;
                                                         }
+                                                        $res_diff_cut_complete = $total_ratio_layer - $total_qty;
                                                     @endphp
-                                                    {{ $total_res_qty_ratio_layer }}
+                                                    {{ $res_diff_cut_complete }}
                                                 </td>
                                             </tr>
                                         </tbody>
