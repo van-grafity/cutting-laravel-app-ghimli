@@ -60,8 +60,35 @@
             <tr>
                 <td width="6%">GL</td>
                 <td>{{ $data->gl->gl_number }}</td>
-                <td width="6%">Total Qty</td>
-                <td>{{ $data->order_qty }}</td>
+                <td width="6%">Total Cut Qty</td>
+                <td>
+                    <?php
+                        $total_hasil_cut_qty = 0;
+                        foreach ($details as $detail)
+                        {
+                            $total_cutting_order_record = 0;
+                            $total_size_ratio = 0;
+                            $hasil_cut_qty = 0;
+                            foreach ($cuttingOrderRecord as $record)
+                            {
+                                if ($record->laying_planning_detail_id == $detail->id)
+                                {
+                                    foreach ($record->cuttingOrderRecordDetail as $record_detail)
+                                    {
+                                        $total_cutting_order_record += $record_detail->layer;
+                                    }
+                                }
+                            }
+                            foreach ($detail->layingPlanningDetailSize as $size)
+                            {
+                                $total_size_ratio += $size->ratio_per_size;
+                            }
+                            $hasil_cut_qty = $total_cutting_order_record * $total_size_ratio;
+                            $total_hasil_cut_qty += $hasil_cut_qty;
+                        }
+                        echo $total_hasil_cut_qty;
+                    ?>
+                </td>
                 <td width="8%">Fabric Cons</td>
                 <td>{{ $data->fabricCons->description }} {{ $data->fabric_cons_qty }}</td>
                 <td></td>
@@ -171,6 +198,7 @@
                         <?php
                          $total_cutting_order_record = 0;
                          $total_size_ratio = 0;
+                         $hasil_cut_qty = 0;
                          foreach ($cuttingOrderRecord as $record)
                          {
                              if ($record->laying_planning_detail_id == $detail->id)
@@ -185,7 +213,9 @@
                         {
                             $total_size_ratio += $size->ratio_per_size;
                         }
-                        echo ($total_cutting_order_record * $total_size_ratio) == 0 ? '-' : $total_cutting_order_record * $total_size_ratio;
+                        // echo ($total_cutting_order_record * $total_size_ratio) == 0 ? '-' : $total_cutting_order_record * $total_size_ratio;
+                        $hasil_cut_qty = $total_cutting_order_record * $total_size_ratio;
+                        echo $hasil_cut_qty == 0 ? '-' : $hasil_cut_qty;
                         ?>
                     </td>
                     <td width="5.2%">
