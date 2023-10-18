@@ -25,6 +25,8 @@ use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
 use PDF;
 
+use Illuminate\Support\Facades\DB;
+
 class CuttingOrdersController extends Controller
 {
     public function index()
@@ -33,13 +35,33 @@ class CuttingOrdersController extends Controller
     }
 
     public function dataCuttingOrder(){
-        $query = CuttingOrderRecord::orderBy('updated_at', 'desc')
-        ->select('serial_number', 'id', 'id_status_layer', 'id_status_cut', 'created_at')->get();
+        $query = DB::table('cutting_order_records')
+            ->join('laying_planning_details', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
+            ->join('laying_plannings', 'laying_planning_details.laying_planning_id', '=', 'laying_plannings.id')
+            ->join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
+            ->join('styles', 'laying_plannings.style_id', '=', 'styles.id')
+            ->join('colors', 'laying_plannings.color_id', '=', 'colors.id')
+            ->join('fabric_types', 'laying_plannings.fabric_type_id', '=', 'fabric_types.id')
+            ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
+            ->select('cutting_order_records.id', 'cutting_order_records.serial_number', 'cutting_order_records.is_pilot_run', 'cutting_order_records.id_status_layer', 'cutting_order_records.id_status_cut', 'styles.style', 'colors.color', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'cutting_order_records.created_at')
+            ->orderBy('cutting_order_records.updated_at', 'desc')
+            ->get();
             return Datatables::of($query)
-            ->addIndexColumn()
             ->escapeColumns([])
             ->addColumn('serial_number', function ($data){
                 return $data->serial_number;
+            })
+            ->addColumn('color', function ($data){
+                return $data->color;
+            })
+            ->addColumn('style', function ($data){
+                return $data->style;
+            })
+            ->addColumn('fabric_type', function ($data){
+                return $data->fabric_type;
+            })
+            ->addColumn('fabric_cons', function ($data){
+                return $data->fabric_cons;
             })
             ->addColumn('status', function($data){
                 $status = '';
@@ -72,6 +94,7 @@ class CuttingOrdersController extends Controller
                 // $action .= $data->cuttingOrderRecordDetail->isEmpty() ? '' : '<a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Report"><i class="fas fa-file-pdf"></i></a>';
                 return $action;
             })
+            ->addIndexColumn()
             ->make(true);
     }
 

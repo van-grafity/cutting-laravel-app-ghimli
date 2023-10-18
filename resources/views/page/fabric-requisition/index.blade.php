@@ -15,19 +15,20 @@
                     <div class="d-flex justify-content-end mb-1">
                         <a href="javascript:void(0);" class="btn btn-success mb-2 d-none" id="btn_modal_create">Create</a>
                     </div>
-
                     <table class="table table-bordered table-hover" id="fabric_requisition_table">
                         <thead class="">
                             <tr>
-                                <th scope="col" class="">No. </th>
-                                <th scope="col" class="">Serial Number</th>
+                                <th width="1.8%" scope="col" class="">No. </th>
+                                <th width="20%" scope="col" class="">Serial Number</th>
                                 <th scope="col" class="">P/O No</th>
-                                <th width="8%" scope="col" class="">Status</th>
-                                <th width="18%" scope="col" class="">Action</th>
+                                <th scope="col" class="">Color</th>
+                                <th scope="col" class="">Style</th>
+                                <th scope="col" class="">Fabric Type</th>
+                                <th scope="col" class="">Fabric Cons</th>
+                                <th width="6%" scope="col" class="">Status</th>
+                                <th width="8%" scope="col" class="">Action</th>
                             </tr>
                         </thead>
-                        <!-- <tbody>
-                        </tbody> -->
                     </table>    
                 </div>
             </div>
@@ -74,6 +75,10 @@
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'serial_number', name: 'serial_number'},
                 {data: 'fabric_po', name: 'fabric_po'},
+                {data: 'color', name: 'color'},
+                {data: 'style', name: 'style'},
+                {data: 'fabric_type', name: 'fabric_type'},
+                {data: 'fabric_cons', name: 'fabric_cons'},
                 {data: 'is_issue', name: 'is_issue'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],

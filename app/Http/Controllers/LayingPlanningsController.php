@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\LayingPlanning;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Gl;
 use App\Models\Color;
 use App\Models\Style;

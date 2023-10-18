@@ -15,6 +15,8 @@ use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
 use PDF;
 
+use Illuminate\Support\Facades\DB;
+
 class FabricRequisitionsController extends Controller
 {
     public function __construct()
@@ -29,16 +31,36 @@ class FabricRequisitionsController extends Controller
     }
 
     public function dataFabricRequisition(){
-        $query = FabricRequisition::with(['layingPlanningDetail'])
-            ->select('fabric_requisitions.id','laying_planning_detail_id', 'status_print','serial_number', 'is_issue')->get();
+            $query = DB::table('fabric_requisitions')
+            ->join('laying_planning_details', 'fabric_requisitions.laying_planning_detail_id', '=', 'laying_planning_details.id')
+            ->join('laying_plannings', 'laying_planning_details.laying_planning_id', '=', 'laying_plannings.id')
+            ->join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
+            ->join('styles', 'laying_plannings.style_id', '=', 'styles.id')
+            ->join('colors', 'laying_plannings.color_id', '=', 'colors.id')
+            ->join('fabric_types', 'laying_plannings.fabric_type_id', '=', 'fabric_types.id')
+            ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
+            ->select('fabric_requisitions.id', 'fabric_requisitions.serial_number', 'fabric_requisitions.is_issue', 'fabric_requisitions.status_print', 'fabric_requisitions.remark', 'laying_planning_details.table_number', 'styles.style', 'colors.color', 'laying_plannings.fabric_po', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'laying_planning_details.total_length')
+            ->orderBy('fabric_requisitions.updated_at', 'desc')
+            ->get();
             return Datatables::of($query)
-            ->addIndexColumn()
             ->escapeColumns([])
             ->addColumn('serial_number', function ($data){
                 return $data->serial_number;
             })
             ->addColumn('fabric_po', function ($data){
-                return $data->layingPlanningDetail->layingPlanning->fabric_po;
+                return $data->fabric_po;
+            })
+            ->addColumn('color', function ($data){
+                return $data->color;
+            })
+            ->addColumn('style', function ($data){
+                return $data->style;
+            })
+            ->addColumn('fabric_type', function ($data){
+                return $data->fabric_type;
+            })
+            ->addColumn('fabric_cons', function ($data){
+                return $data->fabric_cons;
             })
             ->addColumn('is_issue', function ($data){
                 return $data->is_issue == 1 ? '<span class="badge rounded-pill badge-success" style="padding: 1.2em; text-align: center;">Issued</span>' : '<span class="badge rounded-pill badge-danger" style="padding: 1.2em">Not Issued</span>';
@@ -46,27 +68,26 @@ class FabricRequisitionsController extends Controller
             ->addColumn('action', function($data){
                 if(auth()->user()->hasRole('super_admin')){
                     return '
-                    <a href="'.route('fabric-requisition.print', $data->id).'" class="btn btn-primary btn-sm" target="_blank">Print Nota</a>
-                    <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_fabricRequisition('.$data->id.')" data-id="'.$data->id.'">Delete</a>
-                    <a href="'.route('fabric-requisition.show', $data->id).'" class="btn btn-info btn-sm">Detail</a>
+                    <a href="'.route('fabric-requisition.print', $data->id).'" class="btn btn-primary btn-sm" target="_blank"><i class="fas fa-print"></i></a>
+                    <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_fabricRequisition('.$data->id.')" data-id="'.$data->id.'"><i class="fas fa-trash"></i></a>
+                    <a href="'.route('fabric-requisition.show', $data->id).'" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
                     ';
-
                 }else{
                     if($data->status_print == 0){
                         return '
-                        <a href="'.route('fabric-requisition.print', $data->id).'" class="btn btn-primary btn-sm" target="_blank">Print Nota</a>
-                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_fabricRequisition('.$data->id.')" data-id="'.$data->id.'">Delete</a>
-                        <a href="'.route('fabric-requisition.show', $data->id).'" class="btn btn-info btn-sm">Detail</a>
+                        <a href="'.route('fabric-requisition.print', $data->id).'" class="btn btn-primary btn-sm" target="_blank"><i class="fas fa-print"></i></a>
+                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_fabricRequisition('.$data->id.')" data-id="'.$data->id.'"><i class="fas fa-trash"></i></a>
+                        <a href="'.route('fabric-requisition.show', $data->id).'" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
                         ';
                     }else{
                         return '
-                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_fabricRequisition('.$data->id.')" data-id="'.$data->id.'">Delete</a>
-                        <a href="'.route('fabric-requisition.show', $data->id).'" class="btn btn-info btn-sm">Detail</a>
+                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_fabricRequisition('.$data->id.')" data-id="'.$data->id.'"><i class="fas fa-trash"></i></a>
+                        <a href="'.route('fabric-requisition.show', $data->id).'" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
                         ';
                     }
                 }
-                
             })
+            ->addIndexColumn()
             ->make(true);
     }
 

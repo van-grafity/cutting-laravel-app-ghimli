@@ -18,6 +18,7 @@ use Illuminate\Support\Arr;
 
 use Yajra\Datatables\Datatables;
 use PDF;
+use Illuminate\Support\Facades\DB;
 
 class CuttingTicketsController extends Controller
 {
@@ -55,19 +56,43 @@ class CuttingTicketsController extends Controller
     }
 
     public function dataCuttingTicket(){
-        $query = CuttingOrderRecord::whereHas('CuttingTicket')
-        ->get();
+        $query = DB::table('cutting_order_records')
+            
+            ->join('laying_planning_details', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
+            ->join('laying_plannings', 'laying_planning_details.laying_planning_id', '=', 'laying_plannings.id')
+            ->join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
+            ->join('styles', 'laying_plannings.style_id', '=', 'styles.id')
+            ->join('colors', 'laying_plannings.color_id', '=', 'colors.id')
+            ->join('fabric_types', 'laying_plannings.fabric_type_id', '=', 'fabric_types.id')
+            ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
+            ->whereRaw('cutting_order_records.id IN (SELECT cutting_order_record_id FROM cutting_tickets)')
+            ->select('cutting_order_records.id', 'cutting_order_records.serial_number', 'styles.style', 'colors.color', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'cutting_order_records.updated_at')
+            ->orderBy('cutting_order_records.updated_at', 'desc')
+            ->get();
+
             return Datatables::of($query)
             ->escapeColumns([])
             ->addColumn('ticket_number', function($data){
                 return $data->serial_number == null ? '-' : $data->serial_number;
             })
+            ->addColumn('color', function($data){
+                return $data->color;
+            })
+            ->addColumn('style', function($data){
+                return $data->style;
+            })
+            ->addColumn('fabric_type', function($data){
+                return $data->fabric_type;
+            })
+            ->addColumn('fabric_cons', function($data){
+                return $data->fabric_cons;
+            })
             ->addColumn('action', function($data){
                 return '
-                <a href="'.route('cutting-ticket.print-multiple', $data->id).'"  target="_blank"class="btn btn-primary btn-sm btn-print-ticket">Print Ticket</a>
-                <a href="'.route('cutting-ticket.detail', $data->id).'" class="btn btn-info btn-sm">Detail</a>
-                <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="delete_ticket('. $data->id .')">Delete</a>
-                <a href="javascript:void(0)" class="btn btn-warning btn-sm" onclick="refresh_ticket('. $data->id .')">Refresh</a>
+                <a href="'.route('cutting-ticket.print-multiple', $data->id).'"  target="_blank"class="btn btn-primary btn-sm btn-print-ticket"><i class="fa fa-print"></i></a>
+                <a href="'.route('cutting-ticket.detail', $data->id).'" class="btn btn-info btn-sm"><i class="fa fa-eye"></i></a>
+                <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="delete_ticket('. $data->id .')"><i class="fa fa-trash"></i></a>
+                <a href="javascript:void(0)" class="btn btn-warning btn-sm" onclick="refresh_ticket('. $data->id .')"><i class="fa fa-sync"></i></a>
                 ';
             })
             ->make(true);
