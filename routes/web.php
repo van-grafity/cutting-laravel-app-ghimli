@@ -168,7 +168,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
 });
 
 
-Route::group(['middleware' => ['auth','can:clerk']], function () {
+Route::group(['middleware' => ['auth','can:form']], function () {
     Route::resource('fabric-requisition', FabricRequisitionsController::class);
     Route::get('fabric-requisition-create/{id}', [FabricRequisitionsController::class,'createNota'])->name('fabric-requisition.createNota');
     Route::get('fabric-requisition-print/{id}', [FabricRequisitionsController::class,'print_pdf'])->name('fabric-requisition.print');

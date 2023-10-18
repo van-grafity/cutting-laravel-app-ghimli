@@ -448,13 +448,12 @@ return [
                 ],
             ],
         ],
-        [   'header'=> 'Forms',
-            'can'   => 'clerk'],
+        [   'header'=> 'Forms'],
         [
             'text' => 'Fabric Requisition',
             'url'  => '/fabric-requisition',
             'icon' => 'fas fa-fw fa fa-tasks',
-            'can'  => 'clerk',
+            'can'  => 'form',
         ],
         [
             'header'=> 'Warehouse',
