@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LayingPlanning\LayingPlanningsController;
+use App\Http\Controllers\LayingPlanningsController;
 use App\Http\Controllers\SizesController;
 use App\Http\Controllers\ColorsController;
 use App\Http\Controllers\FabricConssController;

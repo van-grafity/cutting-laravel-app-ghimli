@@ -19,8 +19,12 @@
                     <table class="table table-bordered table-hover" id="cutting_ticket_table">
                         <thead class="">
                             <tr>
-                                <th scope="col">Serial Number</th>
-                                <th scope="col" width="20%";>Action</th>
+                                <th width="20%" scope="col">Serial Number</th>
+                                <th scope="col">Color</th>
+                                <th scope="col">Style</th>
+                                <th scope="col">Fabric Type</th>
+                                <th scope="col">Fabric Cons</th>
+                                <th width="10%" scope="col">Action</th>
                             </tr>
                         </thead>
                         <!-- <tbody>
@@ -205,6 +209,10 @@
                 {data: 'ticket_number', name: 'ticket_number', render: function(data, type, row) {
                     return `<a href="{{ url('/cutting-ticket/detail') }}/${row.id}">${data}</a>`
                 }},
+                {data: 'color', name: 'color'},
+                {data: 'style', name: 'style'},
+                {data: 'fabric_type', name: 'fabric_type'},
+                {data: 'fabric_cons', name: 'fabric_cons'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
             lengthChange: true,

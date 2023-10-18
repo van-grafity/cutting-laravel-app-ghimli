@@ -31,12 +31,16 @@
                     <table class="table table-bordered table-hover" id="cutting_order_table">
                         <thead class="">
                             <tr>
-                                <th scope="col" class="">No. </th>
-                                <th scope="col" class="">Serial Number</th>
-                                <th width="10%" scope="col" class="">Created At</th>
-                                <th width="10%" scope="col" class="">Status Lay</th>
-                                <th width="10%" scope="col" class="">Status Cut</th>
-                                <th width="10%" scope="col" class="">Action</th>
+                                <th width="1.8%" scope="col" class="">No. </th>
+                                <th width="20%" scope="col" class="">Serial Number</th>
+                                <th scope="col" class="">Color</th>
+                                <th scope="col" class="">Style</th>
+                                <th scope="col" class="">Fabric Type</th>
+                                <th scope="col" class="">Fabric Cons</th>
+                                <th width="6%" scope="col" class="">Created</th>
+                                <th width="6%" scope="col" class="">Status Lay</th>
+                                <th width="6%" scope="col" class="">Status Cut</th>
+                                <th width="8%" scope="col" class="">Action</th>
                             </tr>
                         </thead>
                     </table>    
@@ -86,15 +90,15 @@
                 {data: 'serial_number', name: 'serial_number', render: function(data, type, row) {
                     return '<a href="{{ url("/cutting-order") }}/'+row.id+'">'+data+'</a>';
                 }},
+                {data: 'color', name: 'color'},
+                {data: 'style', name: 'style'},
+                {data: 'fabric_type', name: 'fabric_type'},
+                {data: 'fabric_cons', name: 'fabric_cons'},
                 {data: 'created_at', name: 'created_at'},
                 {data: 'status', name: 'status'},
                 {data: 'status_cut', name: 'status_cut'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
-            lengthChange: true,
-            searching: true,
-            autoWidth: false,
-            responsive: true,
         });
     });
 </script>
