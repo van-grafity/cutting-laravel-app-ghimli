@@ -200,6 +200,7 @@ class LayingPlanningsController extends Controller
             // cuttingOrderRecord->layingPlanningDetail-layingPlanning
             $details[$key]->cor_id = $value->cuttingOrderRecord ? $value->cuttingOrderRecord->id : '';
             $details[$key]->fr_id = $value->fabricRequisition ? $value->fabricRequisition->id : '';
+            $details[$key]->fr_status_print = $value->fabricRequisition ? $value->fabricRequisition->status_print : '';
             // $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
             //     $query->where('laying_planning_id', $id);
             // })->get();
@@ -575,7 +576,12 @@ class LayingPlanningsController extends Controller
 
             $checkCuttingOrder = CuttingOrderRecord::where('laying_planning_detail_id', $insertLayingDetail->id)->first();
             if ($checkCuttingOrder != null) {
-                return redirect()->route('cutting-order.show', $checkCuttingOrder->id)->with('error', 'Cutting Order already exist.');
+                return redirect()->route('laying-planning.show',$layingPlanning->id)->with('error', 'Cutting Order already exist.');
+            }
+
+            $checkFabricRequisition = FabricRequisition::where('laying_planning_detail_id', $insertLayingDetail->id)->first();
+            if ($checkFabricRequisition != null) {
+                return redirect()->route('laying-planning.show',$layingPlanning->id)->with('error', 'Fabric Requisition already exist.');
             }
 
             try {
@@ -585,6 +591,13 @@ class LayingPlanningsController extends Controller
                     'created_by' => auth()->user()->id,
                 ];
                 $cuttingOrder = CuttingOrderRecord::create($dataCuttingOrder);
+
+                $dataFabricRequisition = [
+                    'serial_number' => $this->generate_serial_numberFbr(LayingPlanningDetail::find($insertLayingDetail->id)),
+                    'laying_planning_detail_id' => $insertLayingDetail->id
+                ];
+                $insertFabricRequisition = FabricRequisition::create($dataFabricRequisition);
+            
             } catch (\Throwable $th) {
                 return redirect()->route('cutting-order.index')->with('error', $th->getMessage());
             }
@@ -671,4 +684,30 @@ class LayingPlanningsController extends Controller
         }
         return $serial_number;
     }
+
+    function generate_serial_numberFbr($layingPlanningDetail){
+        $gl_number = $layingPlanningDetail->layingPlanning->gl->gl_number;
+        $color_code = $layingPlanningDetail->layingPlanning->color->color_code;
+        $fabric_type = $layingPlanningDetail->layingPlanning->fabricType->name;
+        $style = $layingPlanningDetail->layingPlanning->style->id;
+        $fabric_type = Str::substr($fabric_type, 0, 4);
+        $fabric_type = Str::upper($fabric_type);
+        $fabric_type = preg_replace('/[^A-Za-z0-9\-]/', '', $fabric_type);
+        $fabric_cons = $layingPlanningDetail->layingPlanning->fabricCons->name;
+        $fabric_cons = Str::substr($fabric_cons, 0, 4);
+        $fabric_cons = Str::upper($fabric_cons);
+        $fabric_cons = preg_replace('/[^A-Za-z0-9\-]/', '', $fabric_cons);
+        $table_number = Str::padLeft($layingPlanningDetail->table_number, 3, '0');
+        $getDuplicateSN = FabricRequisition::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
+
+        if ($getDuplicateSN->count() > 0) {
+            $duplicate = $getDuplicateSN->count() + 1;
+            $duplicate = Str::padLeft($duplicate, 2, '0');
+            $serial_number = "FBR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-S{$style}-{$duplicate}-{$table_number}";
+        } else {
+            $serial_number = "FBR-{$gl_number}-{$color_code}{$fabric_type}{$fabric_cons}-S{$style}-01-{$table_number}";
+        }
+        return $serial_number;
+    }
+
 }

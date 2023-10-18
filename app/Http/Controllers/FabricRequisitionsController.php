@@ -17,6 +17,12 @@ use PDF;
 
 class FabricRequisitionsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('role:super_admin|planner|cutter|layer|ticketer|ppc|warehouse', ['only' => ['index', 'create', 'store', 'show', 'destroy']]);
+    }
+
     public function index()
     {
         return view('page.fabric-requisition.index');
@@ -24,7 +30,7 @@ class FabricRequisitionsController extends Controller
 
     public function dataFabricRequisition(){
         $query = FabricRequisition::with(['layingPlanningDetail'])
-            ->select('fabric_requisitions.id','laying_planning_detail_id','serial_number', 'is_issue')->get();
+            ->select('fabric_requisitions.id','laying_planning_detail_id', 'status_print','serial_number', 'is_issue')->get();
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
@@ -38,11 +44,28 @@ class FabricRequisitionsController extends Controller
                 return $data->is_issue == 1 ? '<span class="badge rounded-pill badge-success" style="padding: 1.2em; text-align: center;">Issued</span>' : '<span class="badge rounded-pill badge-danger" style="padding: 1.2em">Not Issued</span>';
             })
             ->addColumn('action', function($data){
-                return '
-                <a href="'.route('fabric-requisition.print', $data->id).'" class="btn btn-primary btn-sm" target="_blank">Print Nota</a>
-                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_fabricRequisition('.$data->id.')" data-id="'.$data->id.'">Delete</a>
-                <a href="'.route('fabric-requisition.show', $data->id).'" class="btn btn-info btn-sm">Detail</a>
-                ';
+                if(auth()->user()->hasRole('super_admin')){
+                    return '
+                    <a href="'.route('fabric-requisition.print', $data->id).'" class="btn btn-primary btn-sm" target="_blank">Print Nota</a>
+                    <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_fabricRequisition('.$data->id.')" data-id="'.$data->id.'">Delete</a>
+                    <a href="'.route('fabric-requisition.show', $data->id).'" class="btn btn-info btn-sm">Detail</a>
+                    ';
+
+                }else{
+                    if($data->status_print == 0){
+                        return '
+                        <a href="'.route('fabric-requisition.print', $data->id).'" class="btn btn-primary btn-sm" target="_blank">Print Nota</a>
+                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_fabricRequisition('.$data->id.')" data-id="'.$data->id.'">Delete</a>
+                        <a href="'.route('fabric-requisition.show', $data->id).'" class="btn btn-info btn-sm">Detail</a>
+                        ';
+                    }else{
+                        return '
+                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_fabricRequisition('.$data->id.')" data-id="'.$data->id.'">Delete</a>
+                        <a href="'.route('fabric-requisition.show', $data->id).'" class="btn btn-info btn-sm">Detail</a>
+                        ';
+                    }
+                }
+                
             })
             ->make(true);
     }
@@ -172,6 +195,10 @@ class FabricRequisitionsController extends Controller
         // $customPaper = array(0,0,612.00,380.00);
         $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
+
+        $fabric_requisition->status_print = 1;
+        $fabric_requisition->save();
+
         return $pdf->stream($filename);
     }
 
@@ -201,6 +228,13 @@ class FabricRequisitionsController extends Controller
 
         $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.fabric-requisition.print-multiple', compact('data'))->setPaper($customPaper, 'portrait');
+
+        foreach($laying_planning_laying_planning_detail_ids as $laying_planning_laying_planning_detail_id){
+            $fabric_requisition = FabricRequisition::where('laying_planning_detail_id', $laying_planning_laying_planning_detail_id)->first();
+            $fabric_requisition->status_print = 1;
+            $fabric_requisition->save();
+        }
+        
         return $pdf->stream('fabric-requisition.pdf');
     }
 
