@@ -443,6 +443,11 @@ class LayingPlanningsController extends Controller
             return redirect()->route('cutting-order.show', $checkCuttingOrder->id)->with('error', 'Cutting Order already exist.');
         }
 
+        $checkFabricRequisition = FabricRequisition::where('laying_planning_detail_id', $insertLayingDetail->id)->first();
+        if ($checkFabricRequisition != null) {
+            return redirect()->route('laying-planning.show',$layingPlanning->id)->with('error', 'Fabric Requisition already exist.');
+        }
+
         try {
             $dataCuttingOrder = [
                 'serial_number' => $this->generate_serial_numberCor(LayingPlanningDetail::find($insertLayingDetail->id)),
@@ -450,6 +455,13 @@ class LayingPlanningsController extends Controller
                 'created_by' => auth()->user()->id,
             ];
             $cuttingOrder = CuttingOrderRecord::create($dataCuttingOrder);
+
+            $dataFabricRequisition = [
+                'serial_number' => $this->generate_serial_numberFbr(LayingPlanningDetail::find($insertLayingDetail->id)),
+                'laying_planning_detail_id' => $insertLayingDetail->id
+            ];
+            $insertFabricRequisition = FabricRequisition::create($dataFabricRequisition);
+            
             return redirect()->route('laying-planning.show',$layingPlanning->id)
                 ->with('success', 'Data Detail Laying Planning berhasil dibuat.');
         } catch (\Throwable $th) {
