@@ -114,7 +114,8 @@
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
-                                <th scope="col">No. </th>
+                                <th scope="col">COR</th>
+                                <th scope="col">FBR</th>
                                 <th scope="col">Table No</th>
                                 <th scope="col">Marker Code</th>
                                 <th scope="col">Marker Length</th>
@@ -128,9 +129,23 @@
                             @foreach ($details as $detail)
                                 <tr>
                                     <td>
-                                        <div class="form-check">
+                                        
+                                    <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
                                         </div>
+
+                                    <td>
+                                        @can('super_admin')
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
+                                            </div>
+                                        @endcan
+                                        @if($detail->fr_status_print == 0)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
+                                            </div>
+                                        @endif
+
                                     <td>
                                         <a href="{{ route('cutting-order.show', $detail->cor_id) }}" class="text-decoration-none">{{ $detail->table_number }}</a>
                                     </td>

@@ -12,6 +12,7 @@ class FabricRequisition extends Model
     protected $fillable = [
         'serial_number',
         'laying_planning_detail_id',
+        'status_print',
         'is_issue',
     ];
 
