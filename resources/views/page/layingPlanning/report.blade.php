@@ -261,15 +261,15 @@
                         <td></td>
                         @endforeach
                         <td style="font-size: 11.2px;"><b><?php
-                        $total_layer = 0;
-                        foreach ($details as $detail)
-                        {
-                            if ($detail->marker_code == $details[$loop->iteration - 1]->marker_code)
-                            {
-                                $total_layer += $detail->layer_qty;
-                            }
-                        }
-                        echo $total_layer;
+                        // $total_layer = 0;
+                        // foreach ($details as $detail)
+                        // {
+                        //     if ($detail->marker_code == $details[$loop->iteration - 1]->marker_code)
+                        //     {
+                        //         $total_layer += $detail->layer_qty;
+                        //     }
+                        // }
+                        // echo $total_layer;
                         ?></br></td>
                         <td></td>
                         <td></td>
@@ -340,7 +340,32 @@
                         }
                         echo $total;
                     ?></td>
-                    <td></td>
+                    <td><?php
+                        $total_hasil_cut_qty = 0;
+                        foreach ($details as $detail)
+                        {
+                            $total_cutting_order_record = 0;
+                            $total_size_ratio = 0;
+                            $hasil_cut_qty = 0;
+                            foreach ($cuttingOrderRecord as $record)
+                            {
+                                if ($record->laying_planning_detail_id == $detail->id)
+                                {
+                                    foreach ($record->cuttingOrderRecordDetail as $record_detail)
+                                    {
+                                        $total_cutting_order_record += $record_detail->layer;
+                                    }
+                                }
+                            }
+                            foreach ($detail->layingPlanningDetailSize as $size)
+                            {
+                                $total_size_ratio += $size->ratio_per_size;
+                            }
+                            $hasil_cut_qty = $total_cutting_order_record * $total_size_ratio;
+                            $total_hasil_cut_qty += $hasil_cut_qty;
+                        }
+                        echo $total_hasil_cut_qty;
+                    ?></td>
                     <td></td>
                     <td></td>
                     <td></td>
