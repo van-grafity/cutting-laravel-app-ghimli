@@ -175,7 +175,7 @@
             <thead>
                 <tr>
                     <td width="60" class="no-border">Prepared by</td>
-                    <td width="100" class="">: Melda (58734)</td>
+                    <td width="100" class="">:</td>
                     <td width="30" class="no-border"></td>
                     <td width="60" class="no-border">Authorized by</td>
                     <td width="100" class="">:</td>

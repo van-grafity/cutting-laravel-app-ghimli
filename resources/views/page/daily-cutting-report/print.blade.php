@@ -258,7 +258,7 @@
                         <p>Prepared by:</p>
                         <p></p>
                         <div style="display:inline-block; text-align:center;">
-                            <span>MELDA (58734)</span>
+                            <div style="height: 18px;"></div>
                             <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 90px;">
                         </div>
                     </td>
@@ -266,7 +266,7 @@
                         <p>Authorized by:</p>
                         <p></p>
                         <div style="display:inline-block; text-align:center;">
-                            <span>SUMIYATI (54057)</span>
+                            <div style="height: 18px;"></div>
                             <hr style="border: none; height: 1px; background-color: black; margin-top: 0px; margin-bottom: 0px; width: 90px;">
                         </div>
                     </td>
