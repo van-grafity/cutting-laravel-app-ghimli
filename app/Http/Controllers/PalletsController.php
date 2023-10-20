@@ -74,7 +74,7 @@ class PalletsController extends Controller
     public function print()
     {
         // $pallets = Pallet::where('serial_number', 'like', 'PLT-A%')->take(10)->get();
-        $pallets = Pallet::where('serial_number', 'like', 'PLT-B%')->take(425)->get();
+        $pallets = Pallet::where('serial_number', 'like', 'PLT-A%')->skip(1500)->take(250)->get();
         $qrCodes = [];
         foreach ($pallets as $pallet) {
             $qrCodes[] = QrCode::size(100)->generate($pallet->serial_number);
