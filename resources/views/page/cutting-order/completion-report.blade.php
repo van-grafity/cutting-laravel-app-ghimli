@@ -251,7 +251,11 @@
                                                             }
                                                         }
                                                     @endphp
-                                                    <td>{{ $diff_order_cut_qty_per_size - $lps->quantity }}</td>
+                                                    @if(($diff_order_cut_qty_per_size - $lps->quantity) < 0)
+                                                        <td style="color:red;">{{ $diff_order_cut_qty_per_size - $lps->quantity }}</td>
+                                                    @else
+                                                        <td>{{ $diff_order_cut_qty_per_size - $lps->quantity }}</td>
+                                                    @endif
                                                 @endforeach
                                                 <td style="text-align: center;">
                                                     @php
