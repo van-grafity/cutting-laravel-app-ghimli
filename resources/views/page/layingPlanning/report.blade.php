@@ -281,7 +281,31 @@
                 @endif
                 @endforeach
                 <tr>
-                    <td colspan="2">Pcs FOR SAMPLE</td>
+                    <td colspan="2">PCS FOR SAMPLE</td>
+                    @foreach ($data->layingPlanningSize as $item)
+                    <td></td>
+                    @endforeach
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    @foreach ($data->layingPlanningSize as $item)
+                    <td></td>
+                    @endforeach
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                <td></td>
+                        <td></td>
                     @foreach ($data->layingPlanningSize as $item)
                     <td><?php
                         $total_per_size = 0;
@@ -325,21 +349,23 @@
                     @foreach ($data->layingPlanningSize as $item)
                     <td></td>
                     @endforeach
-                    <td style="font-size: 11.2px;"><?php
-                        $total = 0;
-                        foreach ($details as $detail)
-                        {
-                            try
-                            {
-                                $total += $detail->layer_qty;
-                            }
-                            catch (Exception $e)
-                            {
-                                $total += 0;
-                            }
-                        }
-                        echo $total;
-                    ?></td>
+                    <td style="font-size: 11.2px;">
+                    <?php
+                        // $total = 0;
+                        // foreach ($details as $detail)
+                        // {
+                        //     try
+                        //     {
+                        //         $total += $detail->layer_qty;
+                        //     }
+                        //     catch (Exception $e)
+                        //     {
+                        //         $total += 0;
+                        //     }
+                        // }
+                        // echo $total;
+                    ?>
+                    </td>
                     <td><?php
                         $total_hasil_cut_qty = 0;
                         foreach ($details as $detail)
