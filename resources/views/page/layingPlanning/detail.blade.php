@@ -648,7 +648,7 @@ $(document).ready(function(){
             form.find(`input[name="ratio_size[${detail_size.size_id}]"]`).val(detail_size.ratio_per_size);
             form.find(`input[name="qty_size[${detail_size.size_id}]"]`).val(detail_size.qty_per_size);
         });
-        form.find('input[name="marker_length"]').val(data.marker_length);
+        form.find('input[name="marker_length"]').val(parseFloat(data.marker_length).toFixed(2));
         form.find('input[name="marker_total_length"]').val(data.total_length);
         form.find('input[name="qty_size_all"]').val(data.total_all_size);
 
