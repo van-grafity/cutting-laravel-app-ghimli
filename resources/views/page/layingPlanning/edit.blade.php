@@ -62,8 +62,8 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="buyer" class="form-label">Buyer</label>
-                                    <input type="hidden" class="form-control" name="buyer" id="buyer"  value="{{ $layingPlanning->buyer->id }}">
-                                    <input type="text" class="form-control" name="buyer_name" id="buyer_name" readonly value="{{ $layingPlanning->buyer->name }}">
+                                    <input type="hidden" class="form-control" name="buyer" id="buyer"  value="{{ $layingPlanning->gl->buyer->id }}">
+                                    <input type="text" class="form-control" name="buyer_name" id="buyer_name" readonly value="{{ $layingPlanning->gl->buyer->name }}">
                                 </div>
                             </div>
                             
