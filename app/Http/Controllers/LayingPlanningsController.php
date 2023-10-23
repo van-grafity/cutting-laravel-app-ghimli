@@ -59,7 +59,7 @@ class LayingPlanningsController extends Controller
                 return $data->style->style;
             })
             ->addColumn('buyer', function ($data){
-                return $data->buyer->name;
+                return $data->gl->buyer->name;
             })
             ->addColumn('color', function ($data){
                 return $data->color->color;
