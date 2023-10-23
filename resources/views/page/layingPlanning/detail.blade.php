@@ -35,7 +35,7 @@
                                         <tr>
                                             <td>Buyer</td>
                                             <td class="pl-3">:</td>
-                                            <td>{{ $data->buyer->name }}</td>
+                                            <td>{{ $data->gl->buyer->name }}</td>
                                         </tr>
                                         <tr>
                                             <td>Style</td>
