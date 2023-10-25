@@ -147,7 +147,17 @@
                                         @endif
 
                                     <td>
-                                        <a href="{{ route('cutting-order.show', $detail->cor_id) }}" class="text-decoration-none">{{ $detail->table_number }}</a>
+                                        <div class="dropdown">
+                                            <a class="text-decoration-none dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{ $detail->table_number }}</a>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                @if($detail->fr_id != null)
+                                                    <li><a class="dropdown-item" href="{{ route('fabric-requisition.show', $detail->fr_id) }}">Nota Fabric</a></li>
+                                                @endif
+                                                @if($detail->cor_id != null)
+                                                    <li><a class="dropdown-item" href="{{ route('cutting-order.show', $detail->cor_id) }}">Nota Cutting</a></li>
+                                                @endif
+                                            </ul>
+                                        </div>
                                     </td>
                                     <td>{{ $detail->marker_code }}</td>
                                     <td>{{ $detail->marker_length }}</td>
@@ -157,12 +167,12 @@
                                     <td>
                                         <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
                                         <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
-                                        <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}">Create COR</a>
+                                        <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}" hidden>Create COR</a>
                                         <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
                                         @if($detail->fr_status == 'disabled')
-                                            <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail Fab</a>
+                                            <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info" hidden>Detail Fab</a>
                                         @else
-                                            <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}">Create Fab</a>
+                                            <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}" hidden>Create Fab</a>
                                         @endif
                                     </td>
                                 </tr>
