@@ -11,7 +11,7 @@
                     
                     <div class="detail-section my-5 px-5">
                         <div class="row mb-3">
-                            <div class="col-sm-12">
+                            <div class="col-sm-8">
                                 <table>
                                     <thead>
                                         <tr style="font-weight:700; font-size:20px;">
@@ -21,6 +21,19 @@
                                         </tr>
                                     </thead>
                                 </table>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <div class="btn-group">
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $data->id) }}">Duplicate</a>
+                                            <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -97,7 +110,6 @@
                                 </table>
                             </div>
                         </div>
-
                     </div>
 
                     <hr style="border-top:2px solid #bbb" class="py-3">
@@ -151,10 +163,10 @@
                                             <a class="text-decoration-none dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{ $detail->table_number }}</a>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                 @if($detail->fr_id != null)
-                                                    <li><a class="dropdown-item" href="{{ route('fabric-requisition.show', $detail->fr_id) }}">Nota Fabric</a></li>
+                                                    <li><a class="dropdown-item" href="{{ route('fabric-requisition.show', $detail->fr_id) }}">Detail Fabric</a></li>
                                                 @endif
                                                 @if($detail->cor_id != null)
-                                                    <li><a class="dropdown-item" href="{{ route('cutting-order.show', $detail->cor_id) }}">Nota Cutting</a></li>
+                                                    <li><a class="dropdown-item" href="{{ route('cutting-order.show', $detail->cor_id) }}">Detail Cutting</a></li>
                                                 @endif
                                             </ul>
                                         </div>
@@ -167,12 +179,12 @@
                                     <td>
                                         <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
                                         <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
-                                        <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}" hidden>Create COR</a>
+                                        <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}">Create COR</a>
                                         <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
                                         @if($detail->fr_status == 'disabled')
-                                            <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info" hidden>Detail Fab</a>
+                                            <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail Fab</a>
                                         @else
-                                            <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}" hidden>Create Fab</a>
+                                            <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}">Create Fab</a>
                                         @endif
                                     </td>
                                 </tr>

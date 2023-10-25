@@ -314,7 +314,45 @@ class LayingPlanningsController extends Controller
         $layingPlanningSizes = LayingPlanningSize::where('laying_planning_id', $layingPlanning->id)->get();
 
         return view('page.layingPlanning.edit', compact('gls', 'styles', 'colors', 'fabricTypes', 'fabricCons', 'sizes','layingPlanning','layingPlanningSizes'));
-    }   
+    }
+
+    public function duplicate(Request $request, $id)
+    {
+        $layingPlanning = LayingPlanning::find($id);
+        $gls = DB::table('gls')->get();
+        $styles = DB::table('styles')->where('gl_id',$layingPlanning->gl_id)->get();
+        $colors = DB::table('colors')->get();
+        $fabricTypes = DB::table('fabric_types')->get();
+        $fabricCons = DB::table('fabric_cons')->get();
+        $sizes = DB::table('sizes')->get();
+
+        // $layingPlanning->delivery_date = date('d/m/Y', strtotime($layingPlanning->delivery_date));
+        // $layingPlanning->plan_date = date('m/d/Y', strtotime($layingPlanning->plan_date));
+
+        $layingPlanningSizes = LayingPlanningSize::where('laying_planning_id', $layingPlanning->id)->get();
+
+        $layingPlanningData = [
+            'serial_number' => $this->generate_serial_number($layingPlanning->gl_id,$layingPlanning->color_id, $layingPlanning->style_id, $layingPlanning->fabric_type_id, $layingPlanning->fabric_cons_id),
+            'gl_id' => $layingPlanning->gl_id,
+            'style_id' => $layingPlanning->style_id,
+            'buyer_id' => $layingPlanning->buyer_id,
+            'color_id' => $layingPlanning->color_id,
+            'order_qty' => $layingPlanning->order_qty,
+            // DATE DEFAULT y-m-d 1945-08-17
+            'delivery_date' => Carbon::createFromFormat('Y-m-d', '1945-08-17')->format('y-m-d'),
+            'plan_date' => Carbon::now()->format('y-m-d'),
+            'fabric_po' => $layingPlanning->fabric_po,
+            'fabric_cons_id' => $layingPlanning->fabric_cons_id,
+            'fabric_type_id' => $layingPlanning->fabric_type_id,
+            'fabric_cons_qty' => $layingPlanning->fabric_cons_qty,
+            'fabric_cons_desc' => $layingPlanning->fabric_cons_desc,
+            'remark' => $layingPlanning->remark,
+        ];
+        $insertLayingData = LayingPlanning::create($layingPlanningData);
+
+        return redirect()->route('laying-planning.show',$insertLayingData->id)
+            ->with('success', 'Planning Successfully Duplicated.');
+    }
 
     /**
      * Update the specified resource in storage.
@@ -439,7 +477,7 @@ class LayingPlanningsController extends Controller
 
         $checkCuttingOrder = CuttingOrderRecord::where('laying_planning_detail_id', $insertLayingDetail->id)->first();
         if ($checkCuttingOrder != null) {
-            return redirect()->route('cutting-order.show', $checkCuttingOrder->id)->with('error', 'Cutting Order already exist.');
+            return redirect()->route('laying-planning.show',$layingPlanning->id)->with('error', 'Cutting Order already exist.');
         }
 
         $checkFabricRequisition = FabricRequisition::where('laying_planning_detail_id', $insertLayingDetail->id)->first();

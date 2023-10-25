@@ -139,6 +139,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
         route::delete('/{id}', 'detail_delete')->name('detail-delete');
         route::get('/{id}/edit', 'detail_edit')->name('detail-edit');
         route::post('/detail-duplicate','detail_duplicate')->name('detail-duplicate');
+        route::get('/{id}/duplication', 'duplicate')->name('duplicate');
     });
 
     Route::resource('cutting-order', CuttingOrdersController::class);
