@@ -212,7 +212,7 @@
                             <div class="row">
                                 <div class="col-md-2 col-sm-6">
                                     <label for="select_size" class="form-label">Add Size</label>
-                                    <select class="form-control" id="select_size" name="select_size" style="width: 100%;" data-placeholder="Select Size">
+                                    <select class="form-control select2" id="select_size" name="select_size" style="width: 100%;" data-placeholder="Select Size">
                                     <option value="">Select Size</option>
                                     @foreach ($sizes as $size)
                                         <option value="{{ $size->id }}">{{ $size->size }}</option>
@@ -280,6 +280,21 @@
         $('#select_size').select2({
             minimumResultsForSearch: Infinity
         })
+
+        $('#select_size').select2({
+            templateResult: function (data, container) {
+                if (data.id === '') {
+                    return data.text;
+                }
+                var $container = $(
+                    "<div class='select2-result-repository clearfix'>" +
+                    "<div class='select2-result-repository__title'></div>" +
+                    "</div>"
+                );
+                $container.find(".select2-result-repository__title").text(data.text);
+                return $container;
+            }
+        });
 
         $('#gl').on('change', function(e) {
             let gl_id = $(this).val();
