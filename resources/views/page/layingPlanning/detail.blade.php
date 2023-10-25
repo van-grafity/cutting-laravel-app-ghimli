@@ -11,7 +11,7 @@
                     
                     <div class="detail-section my-5 px-5">
                         <div class="row mb-3">
-                            <div class="col-sm-12">
+                            <div class="col-sm-8">
                                 <table>
                                     <thead>
                                         <tr style="font-weight:700; font-size:20px;">
@@ -21,6 +21,19 @@
                                         </tr>
                                     </thead>
                                 </table>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <div class="btn-group">
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $data->id) }}">Duplicate</a>
+                                            <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -97,7 +110,6 @@
                                 </table>
                             </div>
                         </div>
-
                     </div>
 
                     <hr style="border-top:2px solid #bbb" class="py-3">
@@ -147,7 +159,17 @@
                                         @endif
 
                                     <td>
-                                        <a href="{{ route('cutting-order.show', $detail->cor_id) }}" class="text-decoration-none">{{ $detail->table_number }}</a>
+                                        <div class="dropdown">
+                                            <a class="text-decoration-none dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{ $detail->table_number }}</a>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                @if($detail->fr_id != null)
+                                                    <li><a class="dropdown-item" href="{{ route('fabric-requisition.show', $detail->fr_id) }}">Detail Fabric</a></li>
+                                                @endif
+                                                @if($detail->cor_id != null)
+                                                    <li><a class="dropdown-item" href="{{ route('cutting-order.show', $detail->cor_id) }}">Detail Cutting</a></li>
+                                                @endif
+                                            </ul>
+                                        </div>
                                     </td>
                                     <td>{{ $detail->marker_code }}</td>
                                     <td>{{ $detail->marker_length }}</td>
