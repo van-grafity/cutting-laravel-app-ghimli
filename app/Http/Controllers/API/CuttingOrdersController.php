@@ -238,6 +238,11 @@ class CuttingOrdersController extends BaseController
         return $this->onSuccess($data, 'Cutting Order Record updated successfully.');
     }
     
+    public function uploadStickerFabric(Request $request)
+    {
+        return "upload sticker fabric";
+    }
+    
     public function destroy($id)
     {
         $cuttingOrderRecordDetail = CuttingOrderRecordDetail::find($id);

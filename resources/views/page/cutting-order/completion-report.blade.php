@@ -217,9 +217,16 @@
                                                         {
                                                             foreach ($lpd->layingPlanningDetailSize as $lps2)
                                                             {
-                                                                foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                                                if ($lpd->cuttingOrderRecord == null)
                                                                 {
-                                                                    $total_cut_qty += $cord->layer * $lps2->ratio_per_size;
+                                                                    $cut_qty += 0;
+                                                                }
+                                                                else
+                                                                {
+                                                                    foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                                                    {
+                                                                        $total_cut_qty += $cord->layer * $lps2->ratio_per_size;
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -269,9 +276,16 @@
                                                         {
                                                             foreach ($lpd->layingPlanningDetailSize as $lps2)
                                                             {
-                                                                foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                                                if ($lpd->cuttingOrderRecord == null)
                                                                 {
-                                                                    $total_ratio_layer += $cord->layer * $lps2->ratio_per_size;
+                                                                    $cut_qty += 0;
+                                                                }
+                                                                else
+                                                                {
+                                                                    foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                                                    {
+                                                                        $total_ratio_layer += $cord->layer * $lps2->ratio_per_size;
+                                                                    }
                                                                 }
                                                             }
                                                         }
