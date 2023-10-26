@@ -58,7 +58,7 @@
                     <th rowspan="2" width="6.5%">No</br>Laying</br>Sheet</th>
                     <th rowspan="2" width="6.2%">Date</th>
                     <th rowspan="2">Color</th>
-                    <th rowspan="2">Size/Ratio</th>
+                    <th rowspan="2" hidden>Size/Ratio</th>
                     <th colspan="{{ count($size_all) }}">Size/Ratio</th>
                     <th rowspan="2" width="3.2%">Layer</th>
                     <th rowspan="2" width="3.6%">Pcs</th>
@@ -84,7 +84,7 @@
                                 
                                 <td style="text-align: left; padding-left: 4px !important;">{{ $value->layingPlanning->color->color }}</td>
                                 <!-- size ratio 1 -->
-                                <td>
+                                <td hidden>
                                     @foreach ($value->layingPlanningDetailSize as $size)
                                             <span>{{ $size->size->size . '=' . $size->ratio_per_size }}</span>
                                     @endforeach
