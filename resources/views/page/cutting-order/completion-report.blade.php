@@ -84,32 +84,36 @@
                 <td>:</td>
                 <td style="text-align: left;">
                     @php
-                        $xtotal_ratio_layer = 0;
-                        $total_res_qty_ratio_layer = 0;
+                        $result = 0;
                         foreach ($data['layingPlanning'] as $layingPlanning)
                         {
                             foreach ($layingPlanning->layingPlanningSize as $lps)
                             {
-                                $layer = 0;
-                                $ratio = 0;
+                                $diff_order_cut_qty_per_size = 0;
                                 foreach ($layingPlanning->layingPlanningDetail as $lpd)
                                 {
                                     foreach ($lpd->layingPlanningDetailSize as $lps2)
                                     {
                                         if ($lps2->size_id == $lps->size_id)
                                         {
-                                            foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                            if ($lpd->cuttingOrderRecord == null)
                                             {
-                                                $layer += $cord->layer;
+                                                $diff_order_cut_qty_per_size += 0;
                                             }
-                                            $ratio = $lps2->ratio_per_size;
+                                            else
+                                            {
+                                                foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                                {
+                                                    $diff_order_cut_qty_per_size += $cord->layer * $lps2->ratio_per_size;
+                                                }
+                                            }
                                         }
                                     }
                                 }
-                                $xtotal_ratio_layer += ($ratio * $layer);
+                                $result += $diff_order_cut_qty_per_size - $lps->quantity;
                             }
                         }
-                        echo $xtotal_ratio_layer - $total_order_qty;
+                        echo $result;
                     @endphp
                 </td>
                 <td width="11%">Actual Marker Length</td>
