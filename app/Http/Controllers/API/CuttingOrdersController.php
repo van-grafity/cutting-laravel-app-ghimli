@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\API\BaseController as BaseController;
 use Illuminate\Http\Request;
 use App\Models\CuttingOrderRecord;
+use App\Models\CuttingOrderRecordSticker;
 use App\Models\CuttingOrderRecordDetail;
 use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanning;
@@ -130,6 +131,25 @@ class CuttingOrdersController extends BaseController
         );
         return $this->onSuccess($data, 'Cutting Order Record Detail created successfully.');
     }
+    
+    public function uploadStickerFabric(Request $request)
+    {
+        $input = $request->all();
+        $cuttingOrderRecord = CuttingOrderRecord::where('serial_number', $input['serial_number'])->first();
+        if ($cuttingOrderRecord == null) return $this->onError(404, 'Cutting Order Record not found.');
+        $cuttingOrderSticker = new CuttingOrderRecordSticker;
+        $cuttingOrderSticker->cutting_order_record_id = $cuttingOrderRecord->id;
+        $cuttingOrderSticker->photo = $request->photo->move(public_path('images'), $request->photo->getClientOriginalName());
+        $cuttingOrderSticker->save();
+        $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('cuttingOrderRecordSticker')
+            ->first();
+        $data = collect(
+            [
+                'cutting_order_record' => $data
+            ]
+        );
+        return $this->onSuccess($data, 'Sticker Fabric uploaded successfully.');
+    }
 
     public function checkRangeWithinRadius(Request $request)
     {
@@ -236,11 +256,6 @@ class CuttingOrdersController extends BaseController
             ]
         );
         return $this->onSuccess($data, 'Cutting Order Record updated successfully.');
-    }
-    
-    public function uploadStickerFabric(Request $request)
-    {
-        return "upload sticker fabric";
     }
     
     public function destroy($id)
