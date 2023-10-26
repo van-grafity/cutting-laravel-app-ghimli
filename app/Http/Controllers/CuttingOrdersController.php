@@ -463,7 +463,7 @@ class CuttingOrdersController extends Controller
         $gl_number = $request->gl_number;
         $filename = 'Cutting Completion Report' . '.pdf';
         $layingPlanning = LayingPlanning::with(['gl', 'color', 'style', 'layingPlanningDetail', 'layingPlanningDetail.layingPlanningDetailSize', 'layingPlanningDetail.cuttingOrderRecord', 'layingPlanningDetail.fabricRequisition', 'layingPlanningDetail.fabricRequisition.fabricIssue', 'layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail'])
-                ->where('remark', null)
+                // ->where('remark', null)
                 ->whereHas('gl', function($query) use ($gl_number) {
                     if ($gl_number != null) {
                         $query->where('id', $gl_number);
@@ -477,7 +477,7 @@ class CuttingOrdersController extends Controller
                 // })
                 ->orderBy('id', 'asc')
                 ->get();
-        // return $layingPlanning;
+        return $layingPlanning;
         
         $data = [
             'layingPlanning' => $layingPlanning,
