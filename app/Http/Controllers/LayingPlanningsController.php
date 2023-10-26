@@ -383,6 +383,8 @@ class LayingPlanningsController extends Controller
 
         $layingPlanning = LayingPlanning::find($request->laying_planning_id);
 
+        $layingPlanning->serial_number = $this->generate_serial_number($request->gl,$request->color, $request->style, $request->fabric_type, $request->fabric_cons);
+
         $layingPlanning->gl_id = $request->gl;
         $layingPlanning->style_id = $request->style;
         $layingPlanning->buyer_id = $request->buyer;
