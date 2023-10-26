@@ -39,6 +39,11 @@
                             @endforeach
                         </select>
                     </div>
+                    @if(session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
                     <div class="d-flex justify-content-center">
                         <a href="javascript:void(0);" class="btn btn-primary mb-2 mr-2" id="btn_print_report">Print</a>
                     </div>

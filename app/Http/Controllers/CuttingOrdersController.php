@@ -478,6 +478,9 @@ class CuttingOrdersController extends Controller
                 ->orderBy('id', 'asc')
                 ->get();
         // return $layingPlanning;
+        if($layingPlanning->isEmpty()){
+            return redirect()->route('cutting-order.cutting-completion')->with('error', 'Planning from the related gl was not found');
+        }
         
         $data = [
             'layingPlanning' => $layingPlanning,
