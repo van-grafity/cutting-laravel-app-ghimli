@@ -131,6 +131,17 @@ class CuttingOrdersController extends BaseController
         return $this->onSuccess($data, 'Cutting Order Record Detail created successfully.');
     }
 
+    public function uploadStickerFabric(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+        
+        $imageName = time().'.'.$request->image->extension();
+        $request->image->move(public_path('images/sticker-fabric'), $imageName);
+        return $this->onSuccess($imageName, 'Image uploaded successfully.');
+    }
+
     public function checkRangeWithinRadius(Request $request)
     {
         $currentLatitude = 1.107723; // $request->input('current_latitude')
@@ -236,11 +247,6 @@ class CuttingOrdersController extends BaseController
             ]
         );
         return $this->onSuccess($data, 'Cutting Order Record updated successfully.');
-    }
-    
-    public function uploadStickerFabric(Request $request)
-    {
-        return "upload sticker fabric";
     }
     
     public function destroy($id)
