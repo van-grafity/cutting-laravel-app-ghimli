@@ -46,4 +46,9 @@ class CuttingOrderRecord extends Model
     {
         return $this->belongsTo(User::class, 'created_by', 'id');
     }
+
+    public function cuttingOrderRecordSticker()
+    {
+        return $this->hasMany(CuttingOrderRecordSticker::class, 'cutting_order_record_id', 'id');
+    }
 }
