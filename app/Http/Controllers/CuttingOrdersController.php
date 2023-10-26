@@ -477,7 +477,7 @@ class CuttingOrdersController extends Controller
                 // })
                 ->orderBy('id', 'asc')
                 ->get();
-        return $layingPlanning;
+        // return $layingPlanning;
         
         $data = [
             'layingPlanning' => $layingPlanning,
