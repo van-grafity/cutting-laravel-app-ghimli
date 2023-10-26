@@ -52,7 +52,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('cutting-tickets', [CuttingTicketsController::class, 'index']);
     Route::get('cutting-tickets/{id}', [CuttingTicketsController::class, 'show']);
     
-
-    
-
+    Route::post('upload-sticker-fabric', [CuttingOrdersController::class, 'uploadStickerFabric']);
 });
