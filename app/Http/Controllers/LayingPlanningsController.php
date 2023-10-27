@@ -36,16 +36,18 @@ class LayingPlanningsController extends Controller
      */
     public function index()
     {
-        $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->get();
-        return view('page.layingPlanning.index', compact('data'));
+        return view('page.layingPlanning.index');
     }
 
     public function dataLayingPlanning (){
-        $query = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])
-            ->whereHas('style', function($query) {
-                $query->whereNull('deleted_at');
-            })
-            ->select('laying_plannings.id','laying_plannings.serial_number','laying_plannings.gl_id','laying_plannings.style_id','laying_plannings.buyer_id','laying_plannings.color_id','laying_plannings.fabric_type_id')->get();
+        $query = DB::table('laying_plannings')
+            ->join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
+            ->join('styles', 'laying_plannings.style_id', '=', 'styles.id')
+            ->join('colors', 'laying_plannings.color_id', '=', 'colors.id')
+            ->join('buyers', 'laying_plannings.buyer_id', '=', 'buyers.id')
+            ->join('fabric_types', 'laying_plannings.fabric_type_id', '=', 'fabric_types.id')
+            ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
+            ->select('laying_plannings.*', 'gls.gl_number', 'styles.style', 'colors.color', 'fabric_types.description as fabric_type', 'buyers.name as buyer', 'fabric_cons.description as fabric_cons')->get();
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
@@ -53,19 +55,19 @@ class LayingPlanningsController extends Controller
             //     return '<a href="'.route('laying-planning.show',$data->id).'">'.$data->serial_number.'</a>';
             // })
             ->addColumn('gl_number', function ($data){
-                return $data->gl->gl_number;
+                return $data->gl_number;
             })
             ->addColumn('style', function ($data){
-                return $data->style->style;
+                return $data->style;
             })
             ->addColumn('buyer', function ($data){
-                return $data->gl->buyer->name;
+                return $data->buyer;
             })
             ->addColumn('color', function ($data){
-                return $data->color->color;
+                return $data->color;
             })
             ->addColumn('fabric_type', function ($data){
-                return $data->fabricType->description;
+                return $data->fabric_type;
             })
             ->addColumn('action', function($data){
                 $action = '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm"">Edit</a>
