@@ -355,7 +355,7 @@ class LayingPlanningsController extends Controller
         return redirect()->route('laying-planning.show',$insertLayingData->id)
             ->with('success', 'Planning Successfully Duplicated.');
     }
-
+    
     /**
      * Update the specified resource in storage.
      *
@@ -400,6 +400,16 @@ class LayingPlanningsController extends Controller
         $layingPlanning->fabric_cons_desc = $request->fabric_cons_desc;
         $layingPlanning->remark = $request->remark;
 
+        $layingPlanningDetail = LayingPlanningDetail::where('laying_planning_id', $layingPlanning->id)->get();
+        
+        foreach ($layingPlanningDetail as $key => $value) {
+            $table_number = $value->table_number;
+            $gl = $layingPlanning->gl->gl_number;
+            $layingPlanningDetail[$key]->no_laying_sheet = $gl . "-" . str_pad($table_number, 3, "0", STR_PAD_LEFT);
+            $layingPlanningDetail[$key]->save();
+        }
+
+
         $layingPlanning->save();
 
         LayingPlanningSize::where('laying_planning_id', $layingPlanning->id)->delete();
@@ -413,6 +423,22 @@ class LayingPlanningsController extends Controller
                 'laying_planning_id' => $layingPlanning->id,
             ];
             $insertLayingSize = LayingPlanningSize::create($laying_planning_size);
+        }
+        
+        $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($layingPlanning) {
+            $query->where('laying_planning_id', $layingPlanning->id);
+        })->get();
+        foreach ($cutting_order_record as $key => $value) {
+            $value->serial_number = $this->generate_serial_numberCor($value->layingPlanningDetail);
+            $value->save();
+        }
+        
+        $fabric_requisition = FabricRequisition::with(['layingPlanningDetail'])->whereHas('layingPlanningDetail', function($query) use ($layingPlanning) {
+            $query->where('laying_planning_id', $layingPlanning->id);
+        })->get();
+        foreach ($fabric_requisition as $key => $value) {
+            $value->serial_number = $this->generate_serial_numberFbr($value->layingPlanningDetail);
+            $value->save();
         }
         
         return redirect('laying-planning')->with('success', 'Laying Planning '. $layingPlanning->serial_number . " successfully Updated!");
