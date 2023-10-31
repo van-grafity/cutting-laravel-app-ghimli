@@ -281,6 +281,21 @@
             minimumResultsForSearch: Infinity
         })
 
+        $('#select_size').select2({
+            templateResult: function (data, container) {
+                if (data.id === '') {
+                    return data.text;
+                }
+                var $container = $(
+                    "<div class='select2-result-repository clearfix'>" +
+                    "<div class='select2-result-repository__title'></div>" +
+                    "</div>"
+                );
+                $container.find(".select2-result-repository__title").text(data.text);
+                return $container;
+            }
+        });
+
         $('#gl').on('change', function(e) {
             let gl_id = $(this).val();
             let data_params = { gl_id }
