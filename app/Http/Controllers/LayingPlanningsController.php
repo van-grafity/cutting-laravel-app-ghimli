@@ -430,6 +430,7 @@ class LayingPlanningsController extends Controller
         })->get();
         foreach ($cutting_order_record as $key => $value) {
             $value->serial_number = $this->generate_serial_numberCor($value->layingPlanningDetail);
+            $value->serial_number = str_replace('--', '-', $value->serial_number);
             $value->save();
         }
         
@@ -438,6 +439,7 @@ class LayingPlanningsController extends Controller
         })->get();
         foreach ($fabric_requisition as $key => $value) {
             $value->serial_number = $this->generate_serial_numberFbr($value->layingPlanningDetail);
+            $value->serial_number = str_replace('--', '-', $value->serial_number);
             $value->save();
         }
         
