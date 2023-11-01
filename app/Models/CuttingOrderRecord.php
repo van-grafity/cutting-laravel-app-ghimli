@@ -15,6 +15,7 @@ class CuttingOrderRecord extends Model
         'id_status_layer',
         'id_status_cut',
         'created_by',
+        'status_print',
     ];
 
     public function layingPlanningDetail()

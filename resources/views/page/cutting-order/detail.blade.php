@@ -99,7 +99,7 @@
                                             <td>
                                                 @if($cutting_order->marker_code == 'PILOT RUN')
                                                     @if($cutting_order->is_pilot_run == true)
-                                                        <span class="badge badge-success"> {{ $cutting_order->marker_code }} </span> <b>Approved</b>
+                                                        <span class="badge badge-success"> {{ $cutting_order->marker_code }} </span> <b>Approved</b> ({{ $cutting_order->pilot_run }})
                                                     @else
                                                         <span class="badge badge-warning"> {{ $cutting_order->marker_code }} </span>
                                                     @endif

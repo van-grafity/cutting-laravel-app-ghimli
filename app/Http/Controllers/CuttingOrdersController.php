@@ -169,6 +169,7 @@ class CuttingOrdersController extends Controller
             'marker_code' => $layingPlanningDetail->marker_code,
             'is_pilot_run' => $getCuttingOrder->is_pilot_run,
             'created_by' => $getCuttingOrder->user->name,
+            'pilot_run' => $getCuttingOrder->pilot_run == null ? null : Carbon::createFromFormat('Y-m-d H:i:s', $getCuttingOrder->pilot_run)->format('d-m-Y H:i'),
             'layer' => $layingPlanningDetail->layer_qty,
             'status_layer' => $getCuttingOrder->statusLayer->name,  
             'status_cut' => $getCuttingOrder->statusCut->name,
@@ -273,6 +274,11 @@ class CuttingOrdersController extends Controller
         // dd($data);
         // return view('page.cutting-order.print', compact('data'));
         $pdf = PDF::loadview('page.cutting-order.print', compact('data'))->setPaper('a4', 'landscape');
+        
+        $cutting_order->status_print = true;
+        $cutting_order->save();
+
+        
         return $pdf->stream($filename);
     }
    
@@ -307,6 +313,13 @@ class CuttingOrdersController extends Controller
 
         // $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.cutting-order.print-multiple', compact('data'))->setPaper('a4', 'landscape');
+        
+        foreach($laying_planning_details as $laying_planning_detail){
+            $cutting_order = CuttingOrderRecord::where('laying_planning_detail_id', $laying_planning_detail->id)->first();
+            $cutting_order->status_print = true;
+            $cutting_order->save();
+        }
+        
         return $pdf->stream('cutting-order.pdf');
     }
 
@@ -321,11 +334,12 @@ class CuttingOrdersController extends Controller
             'data' => $cutting_order_record_detail
         ], 200);
     }
-
+    
     public function approve_pilot_run($id) {
         try {
             $cutting_order = CuttingOrderRecord::find($id);
             $cutting_order->is_pilot_run = !$cutting_order->is_pilot_run;
+            $cutting_order->pilot_run = Carbon::now();
             $cutting_order->save();
             
             return redirect()->route('cutting-order.show', $id)->with('success', 'Cutting Order created successfully.');
