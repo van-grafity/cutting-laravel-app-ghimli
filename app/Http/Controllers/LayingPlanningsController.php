@@ -201,6 +201,7 @@ class LayingPlanningsController extends Controller
             // cuttingOrderRecord->layingPlanningDetail-layingPlanning
             $details[$key]->cor_id = $value->cuttingOrderRecord ? $value->cuttingOrderRecord->id : '';
             $details[$key]->fr_id = $value->fabricRequisition ? $value->fabricRequisition->id : '';
+            $details[$key]->cor_status_print = $value->cuttingOrderRecord ? $value->cuttingOrderRecord->status_print : '';
             $details[$key]->fr_status_print = $value->fabricRequisition ? $value->fabricRequisition->status_print : '';
             // $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
             //     $query->where('laying_planning_id', $id);
