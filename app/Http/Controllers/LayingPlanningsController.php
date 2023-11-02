@@ -287,7 +287,10 @@ class LayingPlanningsController extends Controller
         //     });
         // })->get();
         $pdf = PDF::loadView('page.layingPlanning.report', compact('data', 'details', 'cuttingOrderRecord'))->setPaper('a4', 'landscape');
-        // return $pdf->stream();
+        
+        $data->status_print = true;
+        $data->save();
+
         return $pdf->stream('laying-planning-report.pdf');
     }
 

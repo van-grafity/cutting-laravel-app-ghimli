@@ -23,7 +23,9 @@ class LayingPlanning extends Model
         'fabric_type_id',
         'fabric_cons_qty',
         'fabric_cons_desc',
-        'remark'
+        'remark',
+        'created_by',
+        'status_print',
     ];
 
     public function layingPlanningSize()
