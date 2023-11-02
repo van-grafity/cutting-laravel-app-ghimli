@@ -29,11 +29,8 @@
                                             Action
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            @can('admin-only' || 'clerk-cutting')
-                                                <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $data->id) }}">Duplicate</a>
-                                                <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
-                                            @endcan
-                                            <a class="dropdown-item" href="{{ route('laying-planning.report', $data->id) }}" target="_blank">Report</a>
+                                            <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $data->id) }}">Duplicate</a>
+                                            <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
                                         </div>
                                     </div>
                                 </div>
@@ -121,9 +118,7 @@
                         <h3>Cutting Table List</h3>
                     </div>
                     <div class="d-flex justify-content-end mb-1">
-                        @can('admin-only' || 'clerk-cutting')
-                            <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
-                        @endcan
+                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
                         <a href="{{ route('cutting-order.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_nota">Print Nota</a>
                         <a href="{{ route('fabric-requisition.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_fabric">Print Fabric Req</a>
                     </div>
@@ -155,9 +150,7 @@
                                 <th scope="col">Total Pcs</th>
                                 <th scope="col">Total Yds Qty</th>
                                 <th scope="col">Layer Qty</th>
-                                @can('admin-only' || 'clerk-cutting')
-                                    <th scope="col">Action</th>
-                                @endcan
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -203,17 +196,15 @@
                                     <td>{{ $detail->total_length }}</td>
                                     <td>{{ $detail->layer_qty }}</td>
                                     <td>
-                                        @can('admin-only' || 'clerk-cutting')
-                                            <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
-                                            <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}">Create COR</a>
-                                            <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
-                                            @if($detail->fr_status == 'disabled')
-                                                <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail Fab</a>
-                                            @else
-                                                <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}">Create Fab</a>
-                                            @endif
-                                        @endcan
+                                        <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
+                                        <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}">Create COR</a>
+                                        <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
+                                        @if($detail->fr_status == 'disabled')
+                                            <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail Fab</a>
+                                        @else
+                                            <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}">Create Fab</a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

@@ -12,9 +12,7 @@
                         <h3>Laying Planning List</h3>
                     </div>
                     <div class="d-flex justify-content-end mb-1">
-                        @can('admin-only' || 'clerk-cutting')
-                            <a  href="{{ url('/laying-planning-create') }}" class="btn btn-success mb-2">Create</a>
-                        @endcan
+                        <a  href="{{ url('/laying-planning-create') }}" class="btn btn-success mb-2">Create</a>
                     </div>
                     <table class="table table-bordered table-hover" id="laying_planning_table">
                         <thead class="">

@@ -154,9 +154,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');
     Route::resource('subcon-cutting', SubconCuttingController::class);
     Route::get('cutting-report-subcon/{id}', [SubconCuttingController::class,'cutting_report_subcon'])->name('subcon-cutting.cutting-report-subcon');
-});
 
-Route::group(['middleware' => ['auth','can:clerk-cutting']], function () {
     Route::resource('cutting-ticket', CuttingTicketsController::class);
     Route::prefix('cutting-ticket')->name('cutting-ticket.')->group(function(){
         Route::post('/generate', [CuttingTicketsController::class, 'generate_ticket'])->name('generate');
@@ -169,6 +167,7 @@ Route::group(['middleware' => ['auth','can:clerk-cutting']], function () {
         Route::get('/refresh-ticket/{id}', [CuttingTicketsController::class, 'refresh_ticket'])->name('refresh-ticket');
     });
 });
+
 
 Route::group(['middleware' => ['auth','can:form']], function () {
     Route::resource('fabric-requisition', FabricRequisitionsController::class);
