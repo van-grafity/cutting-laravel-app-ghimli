@@ -52,6 +52,10 @@ class UserRolePermissionsSeeder extends Seeder
         $role_ppc->givePermissionTo('menu master');
         $role_ppc->givePermissionTo('menu ppc');
 
+        $role_pmr = Role::create(['name' => 'pmr']);
+        $role_pmr->givePermissionTo('menu master');
+        $role_pmr->givePermissionTo('menu pmr');
+
         // create demo users
         $user = \App\Models\User::factory()->create([
             'name' => 'User Admin',
@@ -122,5 +126,12 @@ class UserRolePermissionsSeeder extends Seeder
             'password' => Hash::make('123456789'),
         ]);
         $user->assignRole($role_ppc);
+
+        $user = \App\Models\User::factory()->create([
+            'name' => 'User PMR',
+            'email' => 'pmr@ghimli.com',
+            'password' => Hash::make('123456789'),
+        ]);
+        $user->assignRole($role_pmr);
     }
 }

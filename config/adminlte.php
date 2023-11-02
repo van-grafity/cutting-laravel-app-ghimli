@@ -448,7 +448,9 @@ return [
                 ],
             ],
         ],
-        [   'header'=> 'Forms'],
+        [   'header'=> 'Forms',
+            'can'   => 'form', 
+        ],
         [
             'text' => 'Fabric Requisition',
             'url'  => '/fabric-requisition',
