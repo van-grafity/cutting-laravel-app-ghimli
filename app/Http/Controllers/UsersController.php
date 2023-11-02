@@ -256,10 +256,9 @@ class UsersController extends Controller
         $user->email = $request->email;
         $user->save();
         
-        if($request->role != null){
-            $user->assignRole($request->role);
-        }
-
+        // update role
+        $user->syncRoles($request->role);
+        
         if($request->group == null){
             return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Updated!');
         }
