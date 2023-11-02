@@ -411,6 +411,7 @@ return [
                     'classes'   => 'ml-3',
                     'text' => 'Create Laying Planning',
                     'url' => '/laying-planning-create',
+                    'can'  => 'clerk-cutting',
                 ],
                 [
                     'classes'   => 'ml-3',
@@ -434,12 +435,13 @@ return [
         [
             'text' => 'Cutting Ticket',
             'icon' => 'fas fa-fw fa fa-object-ungroup',
-            'can'  => 'clerk',
+            'can'  => 'clerk-cutting',
             'submenu' => [
                 [
                     'classes'=> 'ml-3',
                     'text' => 'Create Cutting Ticket',
                     'url' => '/cutting-ticket/create',
+                    'can'  => 'clerk-cutting',
                 ],
                 [
                     'classes'=> 'ml-3',
