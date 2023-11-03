@@ -15,7 +15,12 @@
                                 <table>
                                     <thead>
                                         <tr style="font-weight:700; font-size:20px;">
-                                            <td>NO</td>
+                                            <td>
+                                                @if($data->status_print == 1)
+                                                    <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Nota Planning Sudah di Print"></span>
+                                                @endif
+                                                NO
+                                            </td>
                                             <td>:</td>
                                             <td>{{ $data->serial_number }}</td>
                                         </tr>
@@ -123,22 +128,6 @@
                         <a href="{{ route('fabric-requisition.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_fabric">Print Fabric Req</a>
                     </div>
 
-                    <style>
-                        .dot {
-                            height: 15px;
-                            width: 15px;
-                            border-radius: 50%;
-                            display: inline-block;
-                        }
-                        .dot-sm {
-                            height: 10px;
-                            width: 10px;
-                        }
-                        .dot-success {
-                            background-color: #28a745;
-                        }
-                    </style>
-
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
@@ -177,7 +166,7 @@
                                     <td>
                                         <div class="dropdown">
                                             @if($detail->cor_status_print == 1)
-                                                <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Nota Layer Sudah di Print"></span>
+                                                <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Nota Cutting Order Sudah di Print"></span>
                                             @endif
                                             <a class="text-decoration-none dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{ $detail->table_number }}</a>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">

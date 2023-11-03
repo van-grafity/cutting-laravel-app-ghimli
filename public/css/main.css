@@ -23,3 +23,28 @@
     width: 50px;
     text-align: center;
 }
+
+.dot {
+    height: 15px;
+    width: 15px;
+    /* background-color: #3498db; */
+    border-radius: 50%;
+    display: inline-block;
+    animation: bounce 1s infinite alternate;
+}
+.dot-sm {
+    height: 10px;
+    width: 10px;
+}
+.dot-success {
+    background-color: #28a745;
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-5px);
+    }
+}
