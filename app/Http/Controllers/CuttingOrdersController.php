@@ -31,6 +31,19 @@ class CuttingOrdersController extends Controller
 {
     public function index()
     {
+        // $cuttingOrder = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])->get();
+        // foreach ($cuttingOrder as $key => $item) {
+        //     if ($item->id_status_layer == 1 && $item->id_status_cut == 1) {
+        //         if ($item->cuttingOrderRecordDetail != null) {
+        //             $item->id_status_layer = 4;
+        //         } else {
+        //             $item->id_status_layer = 1;
+        //         }
+        //     } else {
+        //         $item->id_status_layer = $item->id_status_layer;
+        //     }
+        //     $item->save();
+        // }
         return view('page.cutting-order.index');
     }
 
@@ -46,6 +59,7 @@ class CuttingOrdersController extends Controller
             ->select('cutting_order_records.id', 'cutting_order_records.serial_number', 'cutting_order_records.is_pilot_run', 'cutting_order_records.id_status_layer', 'cutting_order_records.id_status_cut', 'styles.style', 'colors.color', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'cutting_order_records.created_at')
             ->orderBy('cutting_order_records.updated_at', 'desc')
             ->get();
+            
             return Datatables::of($query)
             ->escapeColumns([])
             ->addColumn('serial_number', function ($data){
@@ -63,25 +77,46 @@ class CuttingOrdersController extends Controller
             ->addColumn('fabric_cons', function ($data){
                 return $data->fabric_cons;
             })
+            // ->addColumn('status', function($data){
+            //     $status = '';
+            //     if ($data->id_status_layer == 2) {
+            //         $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
+            //     } else if ($data->id_status_layer == 3) {
+            //         $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
+            //     } else if ($data->id_status_layer == 4) {
+            //         $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">On Progress</span>';
+            //     } else {
+            //         $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
+            //     }
+            //     return $status;
+            // })
+            // ->addColumn('status_cut', function($data){
+            //     $status = '';
+            //     if ($data->id_status_cut == 2) {
+            //         $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Sudah Potong</span>';
+            //     } else {
+            //         $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Potong</span>';
+            //     }
+            //     return $status;
+            // })
             ->addColumn('status', function($data){
-                $status = '';
+                $html = '<div class="d-flex flex-row">';
                 if ($data->id_status_layer == 2) {
-                    $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Selesai Layer</span>';
+                    $html .= '<div class="p-2"><span class="badge rounded-pill badge-success" style="padding: 8px; margin: -2px;">Selesai Layer</span></div>';
                 } else if ($data->id_status_layer == 3) {
-                    $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
+                    $html .= '<div class="p-2"><span class="badge rounded-pill badge-danger" style="padding: 8px; margin: -2px;">Over layer</span></div>';
+                } else if ($data->id_status_layer == 4) {
+                    $html .= '<div class="p-2"><span class="badge rounded-pill badge-warning" style="padding: 8px; margin: -2px;">On Progress</span></div>';
                 } else {
-                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
+                    $html .= '<div class="p-2"><span class="badge rounded-pill badge-info" style="padding: 8px; margin: -2px;">Belum Layer</span></div>';
                 }
-                return $status;
-            })
-            ->addColumn('status_cut', function($data){
-                $status = '';
                 if ($data->id_status_cut == 2) {
-                    $status = '<span class="badge rounded-pill badge-success" style="padding: 1em">Sudah Potong</span>';
+                    $html .= '<div class="p-2"><span class="badge rounded-pill badge-success" style="padding: 8px; margin: -2px;">Sudah Potong</span></div>';
                 } else {
-                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Potong</span>';
+                    $html .= '<div class="p-2"><span class="badge rounded-pill badge-info" style="padding: 8px; margin: -2px;">Belum Potong</span></div>';
                 }
-                return $status;
+                $html .= '</div>';
+                return $html;
             })
             ->addColumn('created_at', function($data){
                 return Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('d-m-Y');
