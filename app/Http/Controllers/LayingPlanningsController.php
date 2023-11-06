@@ -73,7 +73,9 @@ class LayingPlanningsController extends Controller
                 $action = '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm"">Edit</a>
                 <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_layingPlanning('.$data->id.')">Delete</a>
                 <a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1">Detail</a>
-                <a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Report</a>';
+                <a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Report</a>
+                <a href="'.route('laying-planningv2.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Report v2</a>
+                <a href="'.route('cutting-orderv2.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Cutting Order v2</a>';
                 return $action;
             })
             ->make(true);
@@ -287,6 +289,48 @@ class LayingPlanningsController extends Controller
         $data->save();
 
         return $pdf->stream('laying-planning-report.pdf');
+    }
+
+    public function layingPlanningv2Report($id)
+    {
+        $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('id', $id)->first();
+        $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($id) {
+            $query->where('id', $id);
+        })->get();
+        $details->load('cuttingOrderRecord', 'cuttingOrderRecord.cuttingOrderRecordDetail', 'cuttingOrderRecord.cuttingOrderRecordDetail.color');
+        $cuttingOrderRecord = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
+            $query->whereHas('layingPlanning', function($query) use ($id) {
+                $query->where('id', $id);
+            });
+        })->get();
+        
+        $pdf = PDF::loadView('page.layingPlanning.report-laying-planning', compact('data', 'details', 'cuttingOrderRecord'))->setPaper('a4', 'landscape');
+        
+        $data->status_print = true;
+        $data->save();
+
+        return $pdf->stream('laying-planning-report.pdf');
+    }
+
+    public function cuttingOrderv2Report($id)
+    {
+        $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('id', $id)->first();
+        $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($id) {
+            $query->where('id', $id);
+        })->get();
+        $details->load('cuttingOrderRecord', 'cuttingOrderRecord.cuttingOrderRecordDetail', 'cuttingOrderRecord.cuttingOrderRecordDetail.color');
+        $cuttingOrderRecord = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
+            $query->whereHas('layingPlanning', function($query) use ($id) {
+                $query->where('id', $id);
+            });
+        })->get();
+        
+        $pdf = PDF::loadView('page.layingPlanning.report-cutting-order', compact('data', 'details', 'cuttingOrderRecord'))->setPaper('a4', 'landscape');
+        
+        $data->status_print = true;
+        $data->save();
+
+        return $pdf->stream('cutting-order-report.pdf');
     }
 
     public function layingQrcode($id)
