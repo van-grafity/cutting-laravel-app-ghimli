@@ -51,6 +51,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('pmr', function ($user) {
             return $user->hasRole(['super_admin','pmr']);
         });
+        Gate::define('packing', function ($user) {
+            return $user->hasRole(['super_admin','packing']);
+        });
 
         
         Gate::define('clerk', function ($user) {
@@ -67,7 +70,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('cutting-record', function ($user) {
-            return $user->hasRole(['super_admin','cutter','layer', 'warehouse','pmr','ppc']);
+            return $user->hasRole(['super_admin','cutter','layer', 'warehouse','pmr','ppc','packing']);
         });
 
         Gate::define('status-cutting-record', function ($user) {
