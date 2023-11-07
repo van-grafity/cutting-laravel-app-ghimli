@@ -31,7 +31,7 @@ class CuttingOrdersController extends Controller
 {
     public function index()
     {
-        $cuttingOrder = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])->get();
+        // $cuttingOrder = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])->get();
         // UPDATE `cutting_order_records` JOIN `cutting_order_record_details` ON `cutting_order_records`.`id` = `cutting_order_record_details`.`cutting_order_record_id` SET `cutting_order_records`.`id_status_layer` = 4 WHERE `cutting_order_records`.`id_status_layer` = 1 AND `cutting_order_records`.`id_status_cut` = 1;
         // foreach ($cuttingOrder as $key => $value) {
         //     if ($value->id_status_layer == 1 && $value->id_status_cut == 1) {
