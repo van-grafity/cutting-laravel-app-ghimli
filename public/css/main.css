@@ -40,6 +40,10 @@
     background-color: #28a745;
 }
 
+.dot-on-progress {
+    background-color: #ffc107;
+}
+
 @keyframes bounce {
     0% {
         transform: translateY(0);

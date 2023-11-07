@@ -52,7 +52,7 @@ class CuttingOrdersController extends BaseController
 
     public function show($serial_number)
     {
-        $getCuttingOrder = CuttingOrderRecord::where('serial_number', $serial_number)->latest()->first();
+        $getCuttingOrder = CuttingOrderRecord::with('CuttingOrderRecordDetail')->where('serial_number', $serial_number)->latest()->first();
         if ($getCuttingOrder == null) return $this->onError(404, 'Cutting Order Record not found.');
         $layingPlanningDetail = LayingPlanningDetail::where('id', $getCuttingOrder->laying_planning_detail_id)->first();
         // $layingPlanning = LayingPlanning::with('layingPlanningDetail.cuttingOrderRecord')->where('id', $layingPlanningDetail->laying_planning_id)->first();
@@ -66,6 +66,16 @@ class CuttingOrdersController extends BaseController
         $cuttingRecordDetail = CuttingOrderRecordDetail::with('CuttingOrderRecord')->whereHas('CuttingOrderRecord', function ($query) use ($serial_number) {
             $query->where('serial_number', $serial_number);
         })->get();
+
+        if ($getCuttingOrder->id_status_layer == 1 && $getCuttingOrder->id_status_cut == 1) {
+            if ($getCuttingOrder->cuttingOrderRecordDetail != null) {
+                $getCuttingOrder->id_status_layer = 4;
+            }
+        } else {
+            $getCuttingOrder->id_status_layer = $getCuttingOrder->id_status_layer;
+        }
+
+        $getCuttingOrder->save();
         
         $data = collect(
             [
@@ -134,6 +144,14 @@ class CuttingOrdersController extends BaseController
             $status = StatusLayer::where('name', 'not completed')->first();
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
             $cuttingOrderRecord->id_status_layer = $status->id;
+        }
+        
+        if ($cuttingOrderRecord->id_status_layer == 1 && $cuttingOrderRecord->id_status_cut == 1) {
+            if ($cuttingOrderRecord->cuttingOrderRecordDetail != null) {
+                $cuttingOrderRecord->id_status_layer = 4;
+            }
+        } else {
+            $cuttingOrderRecord->id_status_layer = $cuttingOrderRecord->id_status_layer;
         }
         
         $cuttingOrderRecordDetail->save();
