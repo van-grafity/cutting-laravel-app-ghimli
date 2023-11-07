@@ -38,7 +38,7 @@
                                 <th scope="col" class="">Fabric Type</th>
                                 <th scope="col" class="">Fabric Cons</th>
                                 <th width="6%" scope="col" class="">Created</th>
-                                <th width="6%" scope="col" class="">Status Lay</th>
+                                <th width="6%" scope="col" class="">Status Layer</th>
                                 <th width="6%" scope="col" class="">Status Cut</th>
                                 <th width="8%" scope="col" class="">Action</th>
                             </tr>
@@ -95,7 +95,7 @@
                 {data: 'fabric_type', name: 'fabric_type'},
                 {data: 'fabric_cons', name: 'fabric_cons'},
                 {data: 'created_at', name: 'created_at'},
-                {data: 'status', name: 'status'},
+                {data: 'status_layer', name: 'status_layer'},
                 {data: 'status_cut', name: 'status_cut'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
