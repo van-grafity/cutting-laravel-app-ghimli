@@ -124,8 +124,8 @@
                     <th colspan="{{ $length }}">Size/Order</th>
                     <th rowspan="2">Total</th>
                     <th rowspan="3">Yds</br>Qty</th>
-                    <th rowspan="3" hidden>Marker</br>Code</th>
-                    <th rowspan="3" hidden>LOT</th>
+                    <th rowspan="3">Marker</br>Code</th>
+                    <th rowspan="3">LOT</th>
                     <th colspan="3">Marker</th>
                     <th colspan="{{ $length }}">Ratio</th>
                     <th rowspan="3" style="color: red;">Actual</br>Lay</br>Qty</th>
@@ -190,7 +190,7 @@
                     </td>
                     @endif
                     @endforeach
-                    <td>
+                    <td style="color: red;">
                     <?php
                          $total_cutting_order_record = 0;
                          $total_size_ratio = 0;
@@ -214,9 +214,26 @@
                         echo $hasil_cut_qty == 0 ? '-' : $hasil_cut_qty;
                         ?>
                     </td>
-                    <td>{{ $detail->total_length }}</td>
-                    <td hidden>{{ $detail->marker_code }}</td>
-                    <td hidden>{{ $detail->table_number }}</td>
+                    <td style="color: red;">
+                        <?php
+                        $actual_length = 0;
+                        $total_actual_length = 0;
+                        foreach ($cuttingOrderRecord as $record)
+                        {
+                            if ($record->laying_planning_detail_id == $detail->id)
+                            {
+                                foreach ($record->cuttingOrderRecordDetail as $record_detail)
+                                {
+                                    $actual_length = $record_detail->layer * ($detail->marker_yard + ($detail->marker_inch / 36));
+                                    $total_actual_length += $actual_length;
+                                }
+                            }
+                        }
+                        echo number_format($total_actual_length, 2, '.', '');
+                        ?>
+                    </td>
+                    <td>{{ $detail->marker_code }}</td>
+                    <td>{{ $detail->table_number }}</td>
                     <td>{{ $detail->marker_length }}</td>
                     <td>{{ $detail->marker_yard }}</td>
                     <td>{{ $detail->marker_inch }}</td>
@@ -304,6 +321,8 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
+                        <td></td>
                         @foreach ($data->layingPlanningSize as $item)
                         <td></td>
                         @endforeach
@@ -332,6 +351,8 @@
                     @foreach ($data->layingPlanningSize as $item)
                     <td></td>
                     @endforeach
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -382,24 +403,42 @@
                         echo $total_hasil_cut_qty_per_size;
                     ?></td>
                     @endforeach
-                    <td><?php
-                        $total_all_size = 0;
+                    <td style="color: red;"><?php
+                        $total_hasil_cut_qty = 0;
                         foreach ($details as $detail)
                         {
+                            $total_cutting_order_record = 0;
+                            $total_size_ratio = 0;
+                            $hasil_cut_qty = 0;
+                            foreach ($cuttingOrderRecord as $record)
+                            {
+                                if ($record->laying_planning_detail_id == $detail->id)
+                                {
+                                    foreach ($record->cuttingOrderRecordDetail as $record_detail)
+                                    {
+                                        $total_cutting_order_record += $record_detail->layer;
+                                    }
+                                }
+                            }
                             foreach ($detail->layingPlanningDetailSize as $size)
                             {
-                                $total_all_size += $size->qty_per_size;
+                                $total_size_ratio += $size->ratio_per_size;
+                            }
+                            $hasil_cut_qty = $total_cutting_order_record * $total_size_ratio;
+                            $total_hasil_cut_qty += $hasil_cut_qty;
+                        }
+                        echo $total_hasil_cut_qty;
+                    ?></td>
+                    <td style="color: red;"><?php
+                        $total_total_actual_length = 0;
+                        foreach ($cuttingOrderRecord as $record)
+                        {
+                            foreach ($record->cuttingOrderRecordDetail as $record_detail)
+                            {
+                                $total_total_actual_length += $record_detail->layer * ($detail->marker_yard + ($detail->marker_inch / 36));
                             }
                         }
-                        echo $total_all_size;
-                    ?></td>
-                    <td><?php
-                        $total_length = 0;
-                        foreach ($details as $detail)
-                        {
-                            $total_length += $detail->total_length;
-                        }
-                        echo $total_length;
+                        echo number_format($total_total_actual_length, 2, '.', '');
                     ?></td>
                     <td></td>
                     <td></td>
@@ -407,6 +446,8 @@
                     @foreach ($data->layingPlanningSize as $item)
                     <td></td>
                     @endforeach
+                    <td></td>
+                    <td></td>
                     <td style="font-size: 11.2px;">
                     <?php
                         // $total = 0;
@@ -461,39 +502,38 @@
                     <td></td>
                     @foreach ($data->layingPlanningSize as $item)
                     <td style="color: red;"><?php
-                        $total_all_size = 0;
-                        $sisa = 0;
+                        // item->quantity - total_hasil_cut_qty_per_size
+                        $total_hasil_cut_qty_per_size = 0;
                         foreach ($details as $detail)
                         {
+                            $total_cutting_order_record = 0;
+                            $total_size_ratio = 0;
+                            $hasil_cut_qty = 0;
+                            foreach ($cuttingOrderRecord as $record)
+                            {
+                                if ($record->laying_planning_detail_id == $detail->id)
+                                {
+                                    foreach ($record->cuttingOrderRecordDetail as $record_detail)
+                                    {
+                                        $total_cutting_order_record += $record_detail->layer;
+                                    }
+                                }
+                            }
                             foreach ($detail->layingPlanningDetailSize as $size)
                             {
-                                $total_all_size += $size->qty_per_size;
+                                if ($size->size_id == $item->size_id)
+                                {
+                                    $total_size_ratio += $size->ratio_per_size;
+                                }
                             }
+                            $hasil_cut_qty = $total_cutting_order_record * $total_size_ratio;
+                            $total_hasil_cut_qty_per_size += $hasil_cut_qty;
                         }
-                        foreach ($data->layingPlanningSize as $item)
-                        {
-                            $sisa += $item->quantity;
-                        }
-                        echo $total_all_size -  $sisa;
+                        echo $total_hasil_cut_qty_per_size - $item->quantity;
                     ?></td>
                     @endforeach
-                    <td><?php
-                        $total_all_size = 0;
-                        $sisa = 0;
-                        foreach ($details as $detail)
-                        {
-                            foreach ($detail->layingPlanningDetailSize as $size)
-                            {
-                                $total_all_size += $size->qty_per_size;
-                            }
-                        }
-                        foreach ($data->layingPlanningSize as $item)
-                        {
-                            $sisa += $item->quantity;
-                        }
-                        echo $total_all_size -  $sisa;
-                    ?></td>
-                    <td><?php
+                    <td style="color: red;">{{ ($total_hasil_cut_qty - $total) == 0 ? '-' : $total_hasil_cut_qty - $total }}</td>
+                    <td style="color: red;"><?php
                         $total = 0;
                         foreach ($data->layingPlanningSize as $item)
                         {
@@ -516,7 +556,8 @@
                     @foreach ($data->layingPlanningSize as $item)
                     <td></td>
                     @endforeach
-                    {{-- @endforeach --}} 
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
