@@ -31,7 +31,7 @@ class CuttingOrdersController extends Controller
 {
     public function index()
     {
-        $cuttingOrder = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])->get();
+        // $cuttingOrder = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])->get();
         // UPDATE `cutting_order_records` JOIN `cutting_order_record_details` ON `cutting_order_records`.`id` = `cutting_order_record_details`.`cutting_order_record_id` SET `cutting_order_records`.`id_status_layer` = 4 WHERE `cutting_order_records`.`id_status_layer` = 1 AND `cutting_order_records`.`id_status_cut` = 1;
         // foreach ($cuttingOrder as $key => $value) {
         //     if ($value->id_status_layer == 1 && $value->id_status_cut == 1) {
@@ -93,9 +93,9 @@ class CuttingOrdersController extends Controller
                 } else if ($data->id_status_layer == 3) {
                     $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
                 } else if ($data->id_status_layer == 4) {
-                    $status = '<span class="badge rounded-pill badge-info" style="padding: 1em">Sedang di Kerjakan</span>';
+                    $status = '<span class="badge rounded-pill badge-info" style="padding: 1em">Sedang di Layer</span>';
                 } else {
-                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
+                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Layer</span>';
                 }
                 return $status;
             })
