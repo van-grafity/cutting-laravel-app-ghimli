@@ -69,6 +69,7 @@
                 <td>:</td>
                 <td style="text-align: left;">{{ $planning->buyer->name }}</td>
                 <td>QTY REQ : {{ $total_order_qty }}</td>
+                <td></td>
                 <td>QTY CUT : 
                     @php
                         $total_cut_qty = 0;
@@ -95,6 +96,16 @@
                         echo $total_cut_qty;
                     @endphp
                 </td>
+                <td>PO Marker</td>
+                <td>:</td>
+                <td style="text-align: left;">xx.xx</td>
+            </tr>
+
+            <tr>
+                <td>STYLE</td>
+                <td>:</td>
+                <td style="text-align: left;">{{ $planning->style->style }}</td>
+                <td></td>
                 <td>DIFF : 
                     @php
                         $result = 0;
@@ -129,17 +140,6 @@
                         echo $result;
                     @endphp
                 </td>
-                <td>PO Marker</td>
-                <td>:</td>
-                <td style="text-align: left;">xx.xx</td>
-            </tr>
-
-            <tr>
-                <td>STYLE</td>
-                <td>:</td>
-                <td style="text-align: left;">{{ $planning->style->style }}</td>
-                <td></td>
-                <td></td>
                 <td style="text-align: left;">
                     
                 </td>
