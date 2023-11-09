@@ -93,9 +93,9 @@ class CuttingOrdersController extends Controller
                 } else if ($data->id_status_layer == 3) {
                     $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
                 } else if ($data->id_status_layer == 4) {
-                    $status = '<span class="badge rounded-pill badge-info" style="padding: 1em">Sedang di Kerjakan</span>';
+                    $status = '<span class="badge rounded-pill badge-info" style="padding: 1em">Sedang di Layer</span>';
                 } else {
-                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
+                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Layer</span>';
                 }
                 return $status;
             })
