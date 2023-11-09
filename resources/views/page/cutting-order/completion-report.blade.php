@@ -44,7 +44,7 @@
                 <td width="1.5%">:</td>
                 <td style="text-align: left;">{{ $planning->gl->gl_number }}</td>
                 <td width="11%">TYPE OF FABRIC</td>
-                <td width="1.5%">:</td>
+                <td width="10%">:</td>
                 <td style="text-align: left;">{{ $planning->fabricType->name }}</td>
                 <td>DATE</td>
                 <td width="1.5%">:</td>
@@ -68,21 +68,34 @@
                 <td width="6%">BUYER</td>
                 <td>:</td>
                 <td style="text-align: left;">{{ $planning->buyer->name }}</td>
-                <td>QTY REQ</td>
-                <td>:</td>
-                <td style="text-align: left;">{{ $total_order_qty }} pcs</td>
-                <td>PO Marker</td>
-                <td>:</td>
-                <td style="text-align: left;">xx.xx</td>
-            </tr>
-
-            <tr>
-                <td>STYLE</td>
-                <td>:</td>
-                <td style="text-align: left;">{{ $planning->style->style }}</td>
-                <td>DIFF</td>
-                <td>:</td>
-                <td style="text-align: left;">
+                <td>QTY REQ : {{ $total_order_qty }}</td>
+                <td>QTY CUT : 
+                    @php
+                        $total_cut_qty = 0;
+                        foreach ($data['layingPlanning'] as $layingPlanning)
+                        {
+                            foreach ($layingPlanning->layingPlanningDetail as $lpd)
+                            {
+                                foreach ($lpd->layingPlanningDetailSize as $lps2)
+                                {
+                                    if ($lpd->cuttingOrderRecord == null)
+                                    {
+                                        $total_cut_qty += 0;
+                                    }
+                                    else
+                                    {
+                                        foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
+                                        {
+                                            $total_cut_qty += $cord->layer * $lps2->ratio_per_size;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        echo $total_cut_qty;
+                    @endphp
+                </td>
+                <td>DIFF : 
                     @php
                         $result = 0;
                         foreach ($data['layingPlanning'] as $layingPlanning)
@@ -116,7 +129,21 @@
                         echo $result;
                     @endphp
                 </td>
-                <td width="11%">Actual Marker Length</td>
+                <td>PO Marker</td>
+                <td>:</td>
+                <td style="text-align: left;">xx.xx</td>
+            </tr>
+
+            <tr>
+                <td>STYLE</td>
+                <td>:</td>
+                <td style="text-align: left;">{{ $planning->style->style }}</td>
+                <td></td>
+                <td></td>
+                <td style="text-align: left;">
+                    
+                </td>
+                <td width="12%">Actual Marker Length</td>
                 <td>:</td>
                 <td style="text-align: left;">xx.xx</td>
             </tr>
