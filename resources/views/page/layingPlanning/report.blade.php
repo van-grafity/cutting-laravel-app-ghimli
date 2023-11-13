@@ -230,6 +230,7 @@
                                     if ($record_detail->layer != 0)
                                     {
                                         $updated_at = $record->updated_at;
+                                        // $record->cut
                                     }
                                 }
                             }
