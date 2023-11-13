@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
 
@@ -283,8 +284,10 @@ class LayingPlanningsController extends Controller
         // })->get();
         $pdf = PDF::loadView('page.layingPlanning.report', compact('data', 'details', 'cuttingOrderRecord'))->setPaper('a4', 'landscape');
         
-        $data->status_print = true;
-        $data->save();
+        if(!Auth::user()->hasRole('super_admin')){
+            $data->status_print = true;
+            $data->save();
+        }
 
         return $pdf->stream('laying-planning-report.pdf');
     }

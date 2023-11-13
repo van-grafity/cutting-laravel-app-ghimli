@@ -25,6 +25,8 @@ use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
 use PDF;
 
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\DB;
 
 class CuttingOrdersController extends Controller
@@ -372,9 +374,10 @@ class CuttingOrdersController extends Controller
         // return view('page.cutting-order.print', compact('data'));
         $pdf = PDF::loadview('page.cutting-order.print', compact('data'))->setPaper('a4', 'landscape');
         
-        $cutting_order->status_print = true;
-        $cutting_order->save();
-
+        if(!Auth::user()->hasRole('super_admin')){
+            $cutting_order->status_print = true;
+            $cutting_order->save();
+        }
         
         return $pdf->stream($filename);
     }
@@ -410,11 +413,13 @@ class CuttingOrdersController extends Controller
 
         // $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.cutting-order.print-multiple', compact('data'))->setPaper('a4', 'landscape');
-        
-        foreach($laying_planning_details as $laying_planning_detail){
-            $cutting_order = CuttingOrderRecord::where('laying_planning_detail_id', $laying_planning_detail->id)->first();
-            $cutting_order->status_print = true;
-            $cutting_order->save();
+
+        if(!Auth::user()->hasRole('super_admin')){
+            foreach($laying_planning_details as $laying_planning_detail){
+                $cutting_order = CuttingOrderRecord::where('laying_planning_detail_id', $laying_planning_detail->id)->first();
+                $cutting_order->status_print = true;
+                $cutting_order->save();
+            }
         }
         
         return $pdf->stream('cutting-order.pdf');
