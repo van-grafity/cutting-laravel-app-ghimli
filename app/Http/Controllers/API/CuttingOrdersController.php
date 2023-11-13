@@ -15,6 +15,8 @@ use App\Models\StatusLayer;
 use App\Models\StatusCut;
 use App\Http\Traits\ApiHelpers;
 
+use Carbon\Carbon;
+
 class CuttingOrdersController extends BaseController
 {
     use ApiHelpers;
@@ -119,8 +121,9 @@ class CuttingOrdersController extends BaseController
             $status = StatusLayer::where('name', 'completed')->first();
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
             $cuttingOrderRecord->id_status_layer = $status->id;
+            $cuttingOrderRecord->layer = Carbon::now();
         } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
-            return $this->onSuccess(null, 'Layer Cut tidak boleh lebih dari Layer Qty.');
+            return $this->onSuccess(null, 'Jumlah layer tidak boleh lebih dari layer planning.');
             $status = StatusLayer::where('name', 'over layer')->first();
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
             $cuttingOrderRecord->id_status_layer = $status->id;
@@ -282,6 +285,7 @@ class CuttingOrdersController extends BaseController
         $statusCut = StatusCut::where('name', $input['name'])->first();
         if ($statusCut == null) return $this->onError(404, 'Status Cut not found.'); // not relation
         $cuttingOrderRecord->id_status_cut = $statusCut->id;
+        $cuttingOrderRecord->cut = Carbon::now();
         $cuttingOrderRecord->save();
         $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('statusCut')
             ->first();
