@@ -35,7 +35,27 @@
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $data->id) }}">Duplicate</a>
-                                            <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
+                                            @can('clerk-cutting')
+                                                @if($details->isEmpty())
+                                                <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
+                                                @else
+                                                    @foreach($details as $detail)
+                                                        @if($detail->cuttingOrderRecord == null) @break @endif
+                                                        @if($detail->cuttingOrderRecord->status_print == 1)
+                                                            <a hidden class="dropdown-item disabled" href="javascript:void(0);">Edit</a>
+                                                            @break
+                                                        @else
+                                                            <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
+                                                            @break
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                                
+                                            @endcan
+
+                                            @can('super_admin')
+                                                <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
+                                            @endcan
                                         </div>
                                     </div>
                                 </div>
@@ -146,20 +166,27 @@
                             @foreach ($details as $detail)
                                 <tr>
                                     <td>
-                                        
-                                    <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
-                                        </div>
-
-                                    <td>
                                         @can('super_admin')
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
                                             </div>
                                         @endcan
-                                        @if($detail->fr_status_print == 0)
+                                         @if($detail->cor_status_print == 0)
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
+                                            </div>
+                                        @endif
+                                    </td>
+                                    
+                                    <td>
+                                        @can('super_admin')
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="fabric_ids[]" value="{{ $detail->id }}">
+                                            </div>
+                                        @endcan
+                                        @if($detail->fr_status_print == 0)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="fabric_ids[]" value="{{ $detail->id }}">
                                             </div>
                                         @endif
 
@@ -185,15 +212,38 @@
                                     <td>{{ $detail->total_length }}</td>
                                     <td>{{ $detail->layer_qty }}</td>
                                     <td>
+                                        @if($detail->cuttingOrderRecord == null)
                                         <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
-                                        <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}">Create COR</a>
-                                        <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
+                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
+                                        @else
+                                            @if($detail->cuttingOrderRecord->status_print == 1)
+                                                <!-- <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
+                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
+                                                <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}">Create COR</a>
+                                                <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
+                                                @if($detail->fr_status == 'disabled')
+                                                    <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail Fab</a>
+                                                @else
+                                                    <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}">Create Fab</a>
+                                                @endif -->
+                                                @can('super_admin')
+                                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
+                                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
+                                                @endcan
+                                            @else
+
+                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
+                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
+                                            @endif
+                                        @endif
                                         @if($detail->fr_status == 'disabled')
                                             <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail Fab</a>
                                         @else
                                             <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}">Create Fab</a>
                                         @endif
+                                        <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}">Create COR</a>
+                                        <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
+                                        
                                     </td>
                                 </tr>
                             @endforeach
@@ -534,16 +584,16 @@ $(document).ready(function(){
     });
 
     $('#print_multi_fabric').on('click', function(e){
-        let laying_planning_laying_planning_detail_ids = [];
-        $('input[name="laying_planning_laying_planning_detail_ids[]"]:checked').each(function() {
-            laying_planning_laying_planning_detail_ids.push($(this).val());
+        let fabric_ids = [];
+        $('input[name="fabric_ids[]"]:checked').each(function() {
+            fabric_ids.push($(this).val());
         });
-        if(laying_planning_laying_planning_detail_ids.length == 0){
+        if(fabric_ids.length == 0){
             swal_failed({ title: "Please select cutting table" });
             return false;
         }
         let url = $(this).attr('href');
-        url = url + '?laying_planning_laying_planning_detail_ids=' + laying_planning_laying_planning_detail_ids;
+        url = url + '?fabric_ids=' + fabric_ids;
         $(this).attr('href', url);
     });
 

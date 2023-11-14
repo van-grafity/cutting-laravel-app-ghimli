@@ -117,29 +117,11 @@ class CuttingOrdersController extends BaseController
         $cuttingOrderRecordDetail->user_id = $input['user_id'];
 
         $sum_layer += $input['layer'];
-        if ($sum_layer == $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
-            $status = StatusLayer::where('name', 'completed')->first();
-            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
-            $cuttingOrderRecord->id_status_layer = $status->id;
-            $cuttingOrderRecord->layer = Carbon::now();
-        } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
-            return $this->onSuccess(null, 'Jumlah layer tidak boleh lebih dari layer planning.');
-            $status = StatusLayer::where('name', 'over layer')->first();
-            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
-            $cuttingOrderRecord->id_status_layer = $status->id;
-        } else {
-            $status = StatusLayer::where('name', 'not completed')->first();
-            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
-            $cuttingOrderRecord->id_status_layer = $status->id;
-        }
-
-        // $max_min = $cuttingOrderRecord->layingPlanningDetail->layer_qty * 0.03;
-        // $max_min = round($max_min, 0, PHP_ROUND_HALF_UP);
-        // if ($sum_layer <= $cuttingOrderRecord->layingPlanningDetail->layer_qty + $max_min && $sum_layer >= $cuttingOrderRecord->layingPlanningDetail->layer_qty - $max_min && $sum_layer != 0) {
+        // if ($sum_layer == $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
         //     $status = StatusLayer::where('name', 'completed')->first();
         //     if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
         //     $cuttingOrderRecord->id_status_layer = $status->id;
-        // } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty + $max_min) {
+        // } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
         //     return $this->onSuccess(null, 'Layer Cut tidak boleh lebih dari Layer Qty.');
         //     $status = StatusLayer::where('name', 'over layer')->first();
         //     if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
@@ -149,6 +131,24 @@ class CuttingOrdersController extends BaseController
         //     if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
         //     $cuttingOrderRecord->id_status_layer = $status->id;
         // }
+
+        $max_min = $cuttingOrderRecord->layingPlanningDetail->layer_qty * 0.03;
+        $max_min = round($max_min, 0, PHP_ROUND_HALF_UP);
+        if ($sum_layer <= $cuttingOrderRecord->layingPlanningDetail->layer_qty + $max_min && $sum_layer >= $cuttingOrderRecord->layingPlanningDetail->layer_qty - $max_min && $sum_layer != 0) {
+            $status = StatusLayer::where('name', 'completed')->first();
+            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
+            $cuttingOrderRecord->id_status_layer = $status->id;
+             $cuttingOrderRecord->layer = Carbon::now();
+        } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty + $max_min) {
+            return $this->onSuccess(null, 'Jumlah layer tidak boleh lebih, max 3% dari layer planning.');
+            $status = StatusLayer::where('name', 'over layer')->first();
+            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
+            $cuttingOrderRecord->id_status_layer = $status->id;
+        } else {
+            $status = StatusLayer::where('name', 'not completed')->first();
+            if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
+            $cuttingOrderRecord->id_status_layer = $status->id;
+        }
         
         if ($cuttingOrderRecord->id_status_layer == 1 && $cuttingOrderRecord->id_status_cut == 1) {
             if ($cuttingOrderRecord->cuttingOrderRecordDetail != null) {
