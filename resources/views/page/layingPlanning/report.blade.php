@@ -230,6 +230,7 @@
                                     if ($record_detail->layer != 0)
                                     {
                                         $updated_at = $record->updated_at;
+                                        // $record->cut
                                     }
                                 }
                             }
@@ -351,19 +352,19 @@
                     @endforeach
                     <td style="font-size: 11.2px;">
                     <?php
-                        // $total = 0;
-                        // foreach ($details as $detail)
-                        // {
-                        //     try
-                        //     {
-                        //         $total += $detail->layer_qty;
-                        //     }
-                        //     catch (Exception $e)
-                        //     {
-                        //         $total += 0;
-                        //     }
-                        // }
-                        // echo $total;
+                        $total = 0;
+                        foreach ($details as $detail)
+                        {
+                            try
+                            {
+                                $total += $detail->layer_qty;
+                            }
+                            catch (Exception $e)
+                            {
+                                $total += 0;
+                            }
+                        }
+                        echo $total;
                     ?>
                     </td>
                     <td><?php

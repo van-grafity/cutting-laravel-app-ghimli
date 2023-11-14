@@ -312,7 +312,7 @@
                             }
                         ?>
                         Balance End Total :
-                        <p style="font-size: 11px;"> {{ $string_to_double }} Yards</p>
+                        <p style="font-size: 11px;"> {{ $string_to_double == 0 ? '' : $string_to_double.' Yards' }} </p>
                         <br>
                         <br>
                         Remarks : <p style="font-size: 11px;">{{ $data->remark }}</p>

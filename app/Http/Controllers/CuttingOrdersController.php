@@ -25,6 +25,8 @@ use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
 use PDF;
 
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\DB;
 
 class CuttingOrdersController extends Controller
@@ -93,9 +95,9 @@ class CuttingOrdersController extends Controller
                 } else if ($data->id_status_layer == 3) {
                     $status = '<span class="badge rounded-pill badge-danger" style="padding: 1em">Over layer</span>';
                 } else if ($data->id_status_layer == 4) {
-                    $status = '<span class="badge rounded-pill badge-info" style="padding: 1em">Sedang di Kerjakan</span>';
+                    $status = '<span class="badge rounded-pill badge-info" style="padding: 1em">Sedang di Layer</span>';
                 } else {
-                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Selesai</span>';
+                    $status = '<span class="badge rounded-pill badge-warning" style="padding: 1em">Belum Layer</span>';
                 }
                 return $status;
             })
@@ -132,7 +134,7 @@ class CuttingOrdersController extends Controller
             })
             ->addColumn('action', function($data){
                 $action = '
-                <a href="'.route('cutting-order.print', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Nota"><i class="fas fa-print"></i></a>
+                <a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Nota"><i class="fas fa-print"></i></a>
                 <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></a>
                 <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-eye"></i></a>';
                 // $action .= $data->cuttingOrderRecordDetail->isEmpty() ? '' : '<a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Report"><i class="fas fa-file-pdf"></i></a>';
@@ -372,9 +374,10 @@ class CuttingOrdersController extends Controller
         // return view('page.cutting-order.print', compact('data'));
         $pdf = PDF::loadview('page.cutting-order.print', compact('data'))->setPaper('a4', 'landscape');
         
-        $cutting_order->status_print = true;
-        $cutting_order->save();
-
+        if(!Auth::user()->hasRole('super_admin')){
+            $cutting_order->status_print = true;
+            $cutting_order->save();
+        }
         
         return $pdf->stream($filename);
     }
@@ -410,11 +413,13 @@ class CuttingOrdersController extends Controller
 
         // $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.cutting-order.print-multiple', compact('data'))->setPaper('a4', 'landscape');
-        
-        foreach($laying_planning_details as $laying_planning_detail){
-            $cutting_order = CuttingOrderRecord::where('laying_planning_detail_id', $laying_planning_detail->id)->first();
-            $cutting_order->status_print = true;
-            $cutting_order->save();
+
+        if(!Auth::user()->hasRole('super_admin')){
+            foreach($laying_planning_details as $laying_planning_detail){
+                $cutting_order = CuttingOrderRecord::where('laying_planning_detail_id', $laying_planning_detail->id)->first();
+                $cutting_order->status_print = true;
+                $cutting_order->save();
+            }
         }
         
         return $pdf->stream('cutting-order.pdf');
@@ -501,19 +506,19 @@ class CuttingOrdersController extends Controller
         // if null
         $name = $cutting_order_detail[0]->operator ?? null;
         if($name == null){
-            $name = 'Name Team not found';
+            $name = '';
         } else {
             $user = User::where('name', $name)->first();
             if($user == null){
-                $name = 'Name Team not found';
+                $name = '';
             } else {
                 $user_group = UserGroups::where('user_id', $user->id)->first();
                 if($user_group == null){
-                    $name = 'Name Team not found';
+                    $name = '';
                 } else {
                     $group = Groups::where('id', $user_group->group_id)->first();
                     if($group == null){
-                        $name = 'Name Team not found';
+                        $name = '';
                     } else {
                         $name = $group->group_name;
                     }
@@ -538,11 +543,11 @@ class CuttingOrdersController extends Controller
             'total_size_ratio' => $this->print_total_size_ratio($cutting_order->layingPlanningDetail),
             'color' => $cutting_order->layingPlanningDetail->layingPlanning->color->color,
             'layer' => $cutting_order->layingPlanningDetail->layer_qty,
-            'total_size_ratio_layer' => $this->print_total_size_ratio($cutting_order->layingPlanningDetail) * $cutting_order->layingPlanningDetail->layer_qty,
+            'total_size_ratio_layer' => $cutting_order_detail->isEmpty() ? "" : $this->print_total_size_ratio($cutting_order->layingPlanningDetail) * $cutting_order->layingPlanningDetail->layer_qty,
             'total_layer' => $this->print_total_layer($cutting_order_detail),
-            'total_yardage' => $this->print_total_yardage($cutting_order_detail),
+            'total_yardage' => $cutting_order_detail->isEmpty() ? "" : $this->print_total_yardage($cutting_order_detail),
             'group' => $name,
-            'manpower' => count($this->manpower($name)),
+            'manpower' => count($cutting_order_detail) == 0 ? "" : count($this->manpower($name)),
             'spread_time' => $this->updated_at_status_layer($cutting_order->id),
             'cutting_time' => $this->updated_at_status_cut($cutting_order->id),
             'date' => Carbon::now()->format('d-m-Y'),
@@ -826,7 +831,7 @@ class CuttingOrdersController extends Controller
         foreach( $cutting_order_detail as $key => $detail ) {
             $total_layer += $detail->layer;
         }
-        return $total_layer;
+        return $total_layer == 0 ? "" : $total_layer;
     }
 
     public function print_total_yardage($cutting_order_detail) {
@@ -857,9 +862,13 @@ class CuttingOrdersController extends Controller
         })
         ->where('id', $cutting_order_id)
         ->first();
-        
-        $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order->updated_at)->format('d-m-Y H:i:s');
-        return $updated_at;
+        if ($cutting_order->cut == null) {
+            $updated_at = "";
+            return $updated_at;
+        } else {
+            $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order->cut)->format('d-m-Y H:i:s');
+            return $updated_at;
+        }
     }
 
     public function updated_at_status_layer($cutting_order_id) {
@@ -871,9 +880,15 @@ class CuttingOrdersController extends Controller
         ->first();
 
         $cutting_order_detail = CuttingOrderRecordDetail::where('cutting_order_record_id', $cutting_order_id)->get();
-        // if null
-        $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', ($cutting_order_detail->first()->updated_at ?? Carbon::now())
-        )->format('d-m-Y H:i:s');
+        
+        if ($cutting_order_detail->isEmpty()) {
+            $updated_at = "";
+            return $updated_at;
+        } else {
+            $updated_at = Carbon::createFromFormat('Y-m-d H:i:s', ($cutting_order_detail->first()->updated_at ?? Carbon::now())
+            )->format('d-m-Y H:i:s');
+            return $updated_at;
+        }
         return $updated_at;
     }
 
