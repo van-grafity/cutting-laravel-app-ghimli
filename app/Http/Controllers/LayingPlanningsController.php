@@ -74,11 +74,11 @@ class LayingPlanningsController extends Controller
                 $action = '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm"">Edit</a>
                 <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_layingPlanning('.$data->id.')">Delete</a>
                 <a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1">Detail</a>
-                <a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Report</a>
-                <a href="'.route('laying-planningv2.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Report v2</a>
-                <a href="'.route('cutting-orderv2.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Cutting Order v2</a>';
+                <a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Report</a>';
                 return $action;
             })
+            // <a href="'.route('laying-planningv2.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Report v2</a>
+            //     <a href="'.route('cutting-orderv2.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Cutting Order v2</a>
             ->make(true);
     }
 
