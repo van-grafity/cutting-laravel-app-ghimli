@@ -225,7 +225,7 @@ class FabricRequisitionsController extends Controller
 
     public function print_multiple_fabric_requisition($id, Request $request)
     {
-        $laying_planning_laying_planning_detail_ids = $request->laying_planning_laying_planning_detail_ids;
+        $laying_planning_laying_planning_detail_ids = $request->fbr_ids;
         $laying_planning_laying_planning_detail_ids = explode(',', $laying_planning_laying_planning_detail_ids);
         $laying_planning_details = LayingPlanningDetail::whereIn('id', $laying_planning_laying_planning_detail_ids)->get();
         $data = [];
