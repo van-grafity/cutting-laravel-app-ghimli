@@ -236,10 +236,28 @@
                                 <td>{{ $detail->cutting_date }}</td>
                                 <td>
                                     <a href="javascript:void(0);" class="btn btn-info btn-sm" onclick="show_detail({{ $detail->id }})">Detail</a>
+                                    @can('super_admin')
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_cutting_order_detail({{ $detail->id }})">Delete</a>
+                                    @endcan
                                 </td>
                                 <td class="d-none">
                                     <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
-                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-delete-layingPlanning">Delete</a>
+                                    
+                                    <!-- public function delete_cor_detail($id) {
+                                        try {
+                                            $cutting_order_detail = CuttingOrderRecordDetail::find($id);
+                                            $cutting_order_detail->delete();
+                                            return response()->json([
+                                                'status' => 'success',
+                                                'message' => 'Data Cutting Order Detail berhasil di hapus'
+                                            ], 200);
+                                        } catch (\Throwable $th) {
+                                            return response()->json([
+                                                'status' => 'error',
+                                                'message' => $th->getMessage()
+                                            ], 500);
+                                        }
+                                    } -->
                                 </td>
                             </tr>
                             @endforeach
@@ -397,12 +415,33 @@ $(document).ready(function(){
 </script>
 
 <script type="text/javascript">
+    let delete_cutting_order_detail_url = '{{ route("cutting-order.detail-delete",":id") }}';
+
     function reset_form(data = {}) {
         $('#modal_create_form').text(data.title);
         $('#btn_submit').text(data.btn_text);
         $('#create_form').find("input[type=text], textarea").val("");
         $('#create_form').find('input[name="_method"]').remove();
         $('#modal_form').modal('show')
+    }
+
+    async function delete_cutting_order_detail(id) {
+        Swal.fire({
+            title: 'Apakah anda yakin?',
+            text: "Data Roll akan di hapus dari Cutting Order Record ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let url_delete_cutting_order_detail = delete_cutting_order_detail_url.replace(':id',id);
+                using_fetch(url_delete_cutting_order_detail,'', "GET");
+                window.location.reload();
+            }
+        })
     }
 
     async function show_detail(id) {

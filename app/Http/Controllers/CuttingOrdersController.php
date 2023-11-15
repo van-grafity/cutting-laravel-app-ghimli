@@ -326,6 +326,26 @@ class CuttingOrdersController extends Controller
         $getCuttingOrder->save();
         return view('page.cutting-order.detail', compact('cutting_order','cutting_order_detail'));
     }
+    
+    public function delete_cor_detail($id) {
+        try {
+            $cutting_order_detail = CuttingOrderRecordDetail::with(['cuttingOrderRecord'])->find($id);
+            $cutting_order_detail->delete();
+            $cutting_order = $cutting_order_detail->cuttingOrderRecord;
+            $cutting_order->id_status_layer = 1;
+            $cutting_order->id_status_cut = 1;
+            $cutting_order->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data Cutting Order Detail berhasil di hapus'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 
     public function destroy($id)
     {
