@@ -242,22 +242,6 @@
                                 </td>
                                 <td class="d-none">
                                     <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
-                                    
-                                    <!-- public function delete_cor_detail($id) {
-                                        try {
-                                            $cutting_order_detail = CuttingOrderRecordDetail::find($id);
-                                            $cutting_order_detail->delete();
-                                            return response()->json([
-                                                'status' => 'success',
-                                                'message' => 'Data Cutting Order Detail berhasil di hapus'
-                                            ], 200);
-                                        } catch (\Throwable $th) {
-                                            return response()->json([
-                                                'status' => 'error',
-                                                'message' => $th->getMessage()
-                                            ], 500);
-                                        }
-                                    } -->
                                 </td>
                             </tr>
                             @endforeach
