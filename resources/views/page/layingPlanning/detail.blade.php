@@ -166,7 +166,7 @@
                             @foreach ($details as $detail)
                                 <tr>
                                     <td>
-                                        @can('super_admin')
+                                        <!-- @can('super_admin')
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
                                             </div>
@@ -175,21 +175,26 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
                                             </div>
-                                        @endif
+                                        @endif -->
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
+                                        </div>
                                     </td>
                                     
                                     <td>
-                                        @can('super_admin')
+                                        <!-- @can('super_admin')
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="fabric_ids[]" value="{{ $detail->id }}">
+                                                <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
                                             </div>
                                         @endcan
                                         @if($detail->fr_status_print == 0)
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="fabric_ids[]" value="{{ $detail->id }}">
+                                                <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
                                             </div>
-                                        @endif
-
+                                        @endif -->
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
+                                        </div>
                                     <td>
                                         <div class="dropdown">
                                             @if($detail->cor_status_print == 1)
@@ -584,16 +589,16 @@ $(document).ready(function(){
     });
 
     $('#print_multi_fabric').on('click', function(e){
-        let fabric_ids = [];
-        $('input[name="fabric_ids[]"]:checked').each(function() {
-            fabric_ids.push($(this).val());
+        let laying_planning_laying_planning_detail_ids = [];
+        $('input[name="laying_planning_laying_planning_detail_ids[]"]:checked').each(function() {
+            laying_planning_laying_planning_detail_ids.push($(this).val());
         });
-        if(fabric_ids.length == 0){
+        if(laying_planning_laying_planning_detail_ids.length == 0){
             swal_failed({ title: "Please select cutting table" });
             return false;
         }
         let url = $(this).attr('href');
-        url = url + '?fabric_ids=' + fabric_ids;
+        url = url + '?laying_planning_laying_planning_detail_ids=' + laying_planning_laying_planning_detail_ids;
         $(this).attr('href', url);
     });
 
