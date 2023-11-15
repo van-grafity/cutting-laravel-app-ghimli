@@ -134,8 +134,7 @@ class CuttingOrdersController extends BaseController
 
         $max_min = $cuttingOrderRecord->layingPlanningDetail->layer_qty * 0.03;
         $max_min = round($max_min, 0, PHP_ROUND_HALF_UP);
-        // $sum_layer <= $cuttingOrderRecord->layingPlanningDetail->layer_qty + $max_min && && $sum_layer != 0 
-        if ($sum_layer >= $cuttingOrderRecord->layingPlanningDetail->layer_qty + $max_min || $sum_layer == $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
+        if ($sum_layer < $cuttingOrderRecord->layingPlanningDetail->layer_qty + $max_min && $sum_layer >= $cuttingOrderRecord->layingPlanningDetail->layer_qty || $sum_layer == $cuttingOrderRecord->layingPlanningDetail->layer_qty || $sum_layer == $cuttingOrderRecord->layingPlanningDetail->layer_qty + $max_min) {
             $status = StatusLayer::where('name', 'completed')->first();
             if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
             $cuttingOrderRecord->id_status_layer = $status->id;
