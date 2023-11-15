@@ -591,6 +591,10 @@ $(document).ready(function(){
             swal_failed({ title: "Please select cutting table" });
             return false;
         }
+        if(fbr_ids.length > 25){
+            swal_failed({ title: "Maximal 25 request form fabric" });
+            return false;
+        }
         let url = $(this).attr('href');
         url = url + '?fbr_ids=' + fbr_ids;
         $(this).attr('href', url);
@@ -603,6 +607,10 @@ $(document).ready(function(){
         });
         if(laying_planning_laying_planning_detail_ids.length == 0){
             swal_failed({ title: "Please select cutting table" });
+            return false;
+        }
+        if(laying_planning_laying_planning_detail_ids.length > 25){
+            swal_failed({ title: "Maximal 25 cutting table" });
             return false;
         }
         let url = $(this).attr('href');
