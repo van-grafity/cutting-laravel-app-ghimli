@@ -166,7 +166,7 @@
                             @foreach ($details as $detail)
                                 <tr>
                                     <td>
-                                        <!-- @can('super_admin')
+                                        @can('super_admin')
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
                                             </div>
@@ -175,30 +175,24 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
                                             </div>
-                                        @endif -->
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
-                                        </div>
+                                        @endif
                                     </td>
                                     
                                     <td>
-                                        <!-- @can('super_admin')
+                                        @can('super_admin')
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
+                                                <input class="form-check-input" type="checkbox" name="fbr_ids[]" value="{{ $detail->id }}">
                                             </div>
                                         @endcan
                                         @if($detail->fr_status_print == 0)
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
+                                                <input class="form-check-input" type="checkbox" name="fbr_ids[]" value="{{ $detail->id }}">
                                             </div>
-                                        @endif -->
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
-                                        </div>
+                                        @endif
                                     <td>
                                         <div class="dropdown">
-                                            @if($detail->cor_status_print == 1)
-                                                <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Nota Cutting Order Sudah di Print"></span>
+                                            @if($detail->cor_status_print == 1 && $detail->fr_status_print == 1)
+                                                <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Nota Cutting Order dan Nota Fabric Sudah di Print"></span>
                                             @endif
                                             <a class="text-decoration-none dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{ $detail->table_number }}</a>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -589,16 +583,16 @@ $(document).ready(function(){
     });
 
     $('#print_multi_fabric').on('click', function(e){
-        let laying_planning_laying_planning_detail_ids = [];
-        $('input[name="laying_planning_laying_planning_detail_ids[]"]:checked').each(function() {
-            laying_planning_laying_planning_detail_ids.push($(this).val());
+        let fbr_ids = [];
+        $('input[name="fbr_ids[]"]:checked').each(function() {
+            fbr_ids.push($(this).val());
         });
-        if(laying_planning_laying_planning_detail_ids.length == 0){
+        if(fbr_ids.length == 0){
             swal_failed({ title: "Please select cutting table" });
             return false;
         }
         let url = $(this).attr('href');
-        url = url + '?laying_planning_laying_planning_detail_ids=' + laying_planning_laying_planning_detail_ids;
+        url = url + '?fbr_ids=' + fbr_ids;
         $(this).attr('href', url);
     });
 
