@@ -24,13 +24,7 @@ class CuttingTicketsController extends Controller
 {
     public function index()
     {
-        $ticket = CuttingTicket::get();
-        foreach ($ticket as $key => $value) {
-            $value->serial_number = $this->generate_ticket_number($value->id);
-            $value->save();
-        }
-        return "Test";
-        // return view('page.cutting-ticket.index');
+        return view('page.cutting-ticket.index');
     }
 
     public function ticketListByCOR($id)
