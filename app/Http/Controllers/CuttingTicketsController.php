@@ -258,9 +258,6 @@ class CuttingTicketsController extends Controller
             $q->where('cutting_order_record_id', $id);
         })->first();
         $cuttingTickets = $cuttingOrderRecord->cuttingTicket;
-        foreach ($cuttingTickets as $ticket) {
-            $ticket->ticket_number = $this->generate_ticket_number($ticket->id);
-        }
         $cuttingOrderRecordDetail = $cuttingOrderRecord->cuttingOrderRecordDetail;
         $layingPlanningDetailSize = $cuttingOrderRecord->layingPlanningDetail->layingPlanningDetailSize;
         $layingPlanningDetailSize = $layingPlanningDetailSize->toArray();
@@ -299,7 +296,7 @@ class CuttingTicketsController extends Controller
 
 
         $data = (object)[
-            'serial_number' => $this->generate_ticket_number($ticket->id),
+            'serial_number' => $ticket->serial_number,
             'buyer' => $layingPlanningDetail->layingPlanning->gl->buyer->name,
             'size' => $ticket->size->size,
             'color' => $layingPlanningDetail->layingPlanning->color->color,
@@ -321,7 +318,7 @@ class CuttingTicketsController extends Controller
         foreach ($cutting_tickets as $ticket) {
             $layingPlanningDetail = $ticket->cuttingOrderRecord->layingPlanningDetail;
             $data[] = (object)[
-                'serial_number' => $this->generate_ticket_number($ticket->id),
+                'serial_number' => $ticket->serial_number,
                 'gl_number' => $layingPlanningDetail->layingPlanning->gl->gl_number,
                 'buyer' => $layingPlanningDetail->layingPlanning->gl->buyer->name,
                 'size' => $ticket->size->size,
@@ -330,8 +327,6 @@ class CuttingTicketsController extends Controller
                 'style' => $layingPlanningDetail->layingPlanning->style->style,
                 'layer' => $ticket->layer,
             ];
-            $ticket->serial_number = $this->generate_ticket_number($ticket->id);
-            $ticket->save();
         }
         
         // 10.1 cm x 6.3 cm

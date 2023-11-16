@@ -124,7 +124,7 @@
                                 @foreach($data['cutting_order_record']->layingPlanningDetail->layingPlanningDetailSize as $sz)
                                         @foreach($data['cutting_order_record']->cuttingTicket as $ctt)
                                             @if($ctt->size_id == $sz->size_id && $ctt->cutting_order_record_detail_id == $ct->id)
-                                            <td> {{ $ctt->ticket_number }} </td>
+                                            <td> {{ $ctt->serial_number }} </td>
                                             <td style="width: 2%;"> {{ $ctt->layer }} </td>
                                             @endif
                                         @endforeach
