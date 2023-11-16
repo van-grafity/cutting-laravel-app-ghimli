@@ -24,6 +24,13 @@ class CuttingTicketsController extends Controller
 {
     public function index()
     {
+        // $ticket = CuttingTicket::get();
+        // foreach ($ticket as $key => $value) {
+        //     $value->serial_number = $this->generate_ticket_number($value->id);
+        //     $value->save();
+        // }
+        // return "Test";
+        // SELECT serial_number FROM cutting_tickets;
         return view('page.cutting-ticket.index');
     }
 
@@ -220,14 +227,6 @@ class CuttingTicketsController extends Controller
         }
     }
 
-    // ***************************************************************
-        /*  1. Ambil Semua Size yang ada di cutting order record ini
-            2. Lalu ambil nilai rasio tiap masing masing size
-            3. Ambil data detail di Cutting Order Record ini. karena setiap detail di input berdasarkan fabric roll
-            4. Tikcet digunakan untuk menandakan atau mengikat kain dari tiap tiap roll.
-            5. Ticket di generate berdasarkam Cutting Order Recordnya
-        */
-    // ***************************************************************
     public function generate_ticket(Request $request)
     {
         try {
@@ -249,8 +248,9 @@ class CuttingTicketsController extends Controller
                             'table_number'=> $cutting_order_detail->cuttingOrderRecord->layingPlanningDetail->table_number,
                             'fabric_roll'=> $cutting_order_detail->fabric_roll,
                         ];
-                        // return $data_ticket;
                         $insertCuttingTicket = CuttingTicket::create($data_ticket);
+                        $insertCuttingTicket->serial_number = $this->generate_ticket_number($insertCuttingTicket->id);
+                        $insertCuttingTicket->save();
                         $next_ticket_number++;
                     }
                 }
@@ -320,7 +320,6 @@ class CuttingTicketsController extends Controller
             'ticket_number' => Str::padLeft($ticket->ticket_number, 3, '0'),
             'layer' => $ticket->layer,
         ];
-
         // return view('page.cutting-ticket.print',compact('data'));
         $customPaper = array(0,0,210.24, 302.00);
         $pdf = PDF::loadview('page.cutting-ticket.print', compact('data'))->setPaper($customPaper, 'landscape');
@@ -331,25 +330,7 @@ class CuttingTicketsController extends Controller
         $cutting_order_record = CuttingOrderRecord::where('id', $id)->first();
         $cutting_tickets = CuttingTicket::where('cutting_order_record_id', $cutting_order_record->id)->get();
         $filename = $cutting_tickets[0]->cuttingOrderRecord->serial_number . '.pdf';
-        // $data = [
-        //     (object)[
-        //         "serial_number"=> "CT-62843-MHG-001-001",
-        //         "buyer"=> "Aeropostale",
-        //         "size"=> "XS",
-        //         "color"=> "MHG",
-        //         "ticket_number"=> "001",
-        //         "layer"=> 11
-        //     ],
-        //     (object)[
-        //         "serial_number"=> "CT-62843-MHG-001-004",
-        //         "buyer"=> "Aeropostale",
-        //         "size"=> "XS",
-        //         "color"=> "MHG",
-        //         "ticket_number"=> "004",
-        //         "layer"=> 13
-        //     ],
-        // ];
-
+        
         $data = [];
         foreach ($cutting_tickets as $ticket) {
             $layingPlanningDetail = $ticket->cuttingOrderRecord->layingPlanningDetail;
@@ -363,6 +344,8 @@ class CuttingTicketsController extends Controller
                 'style' => $layingPlanningDetail->layingPlanning->style->style,
                 'layer' => $ticket->layer,
             ];
+            $ticket->serial_number = $this->generate_ticket_number($ticket->id);
+            $ticket->save();
         }
         
         // 10.1 cm x 6.3 cm
@@ -382,7 +365,6 @@ class CuttingTicketsController extends Controller
     //         $size->size->size = $size->size->size ."". $gl_combine_name;
     //     }
 
-    // private function
     function generate_ticket_number($ticket_id) {
         $ticket = CuttingTicket::find($ticket_id);
 
@@ -474,6 +456,8 @@ class CuttingTicketsController extends Controller
                             'fabric_roll'=> $cutting_order_detail->fabric_roll,
                         ];
                         $insertCuttingTicket = CuttingTicket::create($data_ticket);
+                        $insertCuttingTicket->serial_number = $this->generate_ticket_number($insertCuttingTicket->id);
+                        $insertCuttingTicket->save();
                         $next_ticket_number++;
                     }
                 }
