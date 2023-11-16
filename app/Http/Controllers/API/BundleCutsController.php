@@ -42,7 +42,24 @@ class BundleCutsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input_bundle_cut = $request->all();
+        $cutting_ticket = CuttingTicket::where('serial_number', $input_bundle_cut['serial_number'])->first();
+        if ($cutting_ticket == null) return $this->onError(404, 'Cutting Ticket not found.');
+        $bundle_cut = new BundleCut;
+        $bundle_cut->ticket_id = $cutting_ticket->id;
+        $bundle_status = BundleStatus::where('status', $input_bundle_cut['status'])->first();
+        if ($bundle_status == null) return $this->onError(404, 'Bundle Status not found.');
+        $bundle_cut->status_id = $bundle_status->id;
+        $bundle_cut->remarks = $input_bundle_cut['remarks'];
+        $bundle_cut->save();
+
+        $data = BundleCut::where('bundle_cuts.id', $bundle_cut->id)->with('ticket', 'status')->first();
+        $data = collect(
+            [
+                'bundle_cut' => $data
+            ]
+        );
+        return $this->onSuccess($data, 'Bundle Cut created successfully.');
     }
 
     /**
