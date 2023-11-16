@@ -10,6 +10,7 @@ use App\Http\Controllers\API\LayingPlanningController;
 use App\Http\Controllers\API\ColorController;
 use App\Http\Controllers\API\RemarksController;
 use App\Http\Controllers\API\CuttingTicketsController;
+use App\Http\Controllers\API\BundleCutsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,4 +54,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('cutting-tickets/{id}', [CuttingTicketsController::class, 'show']);
     
     Route::post('upload-sticker-fabric', [CuttingOrdersController::class, 'uploadStickerFabric']);
+
+    Route::get('bundle-cuts', [BundleCutsController::class, 'index']);
 });

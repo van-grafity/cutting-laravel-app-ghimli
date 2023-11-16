@@ -11,6 +11,7 @@ class CuttingTicket extends Model
 
     protected $fillable = [
         'ticket_number',
+        'serial_number',
         'size_id',
         'layer',
         'cutting_order_record_id',
