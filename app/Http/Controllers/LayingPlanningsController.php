@@ -761,8 +761,8 @@ class LayingPlanningsController extends Controller
         $gl = Gl::find($gl_id);
         $gl_number = $gl->gl_number;
         $color = Color::find($color_id);
-        $style = Style::find($style_id);
-        $style_serial = $style->style;
+        $style = DB::table('styles')->where('gl_id',$gl_id)->get();
+        $style_serial = $style->where('id',$style_id)->first()->style;
         $style_serial = substr($style_serial, 0, 2).substr($style_serial, 4, 2);
         $style_serial = $style_serial . Str::padLeft(rand(0, 99), 2, '0');
         $fabric_type = FabricType::find($fabric_type_id);
