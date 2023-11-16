@@ -43,9 +43,11 @@
                                     <label for="style" class="form-label">Style</label>
                                     <select class="form-control select2" id="style" name="style" style="width: 100%;" data-placeholder="Choose Style">
                                         <option value=""> Choose Style</option>
-                                        @foreach ($styles as $style)
-                                            <option value="{{ $style->id }}" {{ $style->id == $layingPlanning->style->id ? 'selected' : '' }}>{{ $style->style }}</option>
-                                        @endforeach
+                                        @if ($styles != null)
+                                            @foreach ($styles as $style)
+                                                <option value="{{ $style->id }}" {{ $style->id == $layingPlanning->style_id ? 'selected' : '' }}>{{ $style->style }}</option>
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                             </div>
@@ -53,7 +55,7 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="style_desc" class="form-label">Description</label>
-                                    <textarea class="form-control" name="style_desc" id="style_desc" cols="30" rows="2" disabled>{{ $layingPlanning->style->description }}</textarea>
+                                    <textarea class="form-control" name="style_desc" id="style_desc" cols="30" rows="2" disabled>{{ $layingPlanning->style->description ?? '' }}</textarea>
                                 </div>
                             </div>
                         </div>
