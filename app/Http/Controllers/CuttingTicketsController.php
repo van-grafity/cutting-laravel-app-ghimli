@@ -39,14 +39,7 @@ class CuttingTicketsController extends Controller
         $tickets = [];
         foreach ($get_cutting_tickets as $key => $ticket) {
             $tickets[] = (object)[
-                'id' => $ticket->id,
-                'no' => Str::padleft($key + 1,2, '0', true),
-                'ticket_number' => $this->generate_ticket_number($ticket->id),
-                'no_laying_sheet' => $ticket->cuttingOrderRecord->layingPlanningDetail->no_laying_sheet,
-                'table_number' => Str::padLeft($ticket->cuttingOrderRecord->layingPlanningDetail->table_number, 3, '0'),
-                'color' => $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->color->color,
-                'size' => $ticket->size->size,
-                'layer' => $ticket->layer,
+                'id' => $ticket->id
             ];
         }
 
