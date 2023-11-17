@@ -233,7 +233,8 @@ class LayingPlanningsController extends Controller
             }
             $size->size->size = $size->size->size ."". $gl_combine_name;
         }
-        return view('page.layingPlanning.detail', compact('data', 'details','size_list'));
+        $styles = DB::table('styles')->where('gl_id',$data->gl_id)->get();
+        return view('page.layingPlanning.detail', compact('data', 'details','size_list','styles'));
     }
 
     public function dataLayingPlanningDetail($id){
