@@ -78,7 +78,13 @@
                                         <tr>
                                             <td>Style</td>
                                             <td class="pl-3">:</td>
-                                            <td>{{ $data->style->style ?? '-' }}</td>
+                                            <td>
+                                                @foreach ($styles as $style)
+                                                    @if($style->id == $data->style_id)
+                                                        {{ $style->style }}
+                                                    @endif
+                                                @endforeach
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Color</td>
@@ -119,7 +125,13 @@
                                         <tr>
                                             <td>Description</td>
                                             <td class="pl-3">:</td>
-                                            <td>{{ $data->style->description ?? '-' }}</td>
+                                            <td>
+                                                @foreach ($styles as $style)
+                                                    @if($style->id == $data->style_id)
+                                                        {{ $style->description }}
+                                                    @endif
+                                                @endforeach
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Delivery Date</td>

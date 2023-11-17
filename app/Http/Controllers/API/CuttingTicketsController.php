@@ -50,18 +50,10 @@ class CuttingTicketsController extends BaseController
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(Request $request)
     {
-        $data = CuttingTicket::with('size','cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color', 'cuttingOrderRecord.layingPlanningDetail', 'cuttingOrderRecord.layingPlanningDetail.layingPlanning', 'cuttingOrderRecord.layingPlanningDetail.layingPlanning.buyer','cuttingOrderRecord.layingPlanningDetail.layingPlanning.gl', 'cuttingOrderRecord.layingPlanningDetail.layingPlanning.style', 'cuttingOrderRecord.layingPlanningDetail.layingPlanning.color', 'cuttingOrderRecord.layingPlanningDetail.layingPlanning.fabricType', 'cuttingOrderRecord.layingPlanningDetail.layingPlanning.fabricCons')->find($id);
-    
+        $data = CuttingTicket::with('bundleCut', 'bundleCut.bundleStatus', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->where('serial_number', $request->serial_number)->first();
         if ($data == null) return $this->onError(404, 'Cutting Ticket not found.');
-
         $data = collect(
             [
                 'cutting_ticket' => $data
