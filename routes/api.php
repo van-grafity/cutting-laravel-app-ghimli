@@ -56,4 +56,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('upload-sticker-fabric', [CuttingOrdersController::class, 'uploadStickerFabric']);
 
     Route::resource('bundle-cuts', BundleCutsController::class);
+    Route::get('bundle-status', [BundleCutsController::class, 'bundleStatusIndex']);
 });

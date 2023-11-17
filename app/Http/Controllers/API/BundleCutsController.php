@@ -119,4 +119,15 @@ class BundleCutsController extends Controller
     {
         //
     }
+
+    public function bundleStatusIndex()
+    {
+        $bundle_status = BundleStatus::all();
+        $data = collect(
+            [
+                'bundle_status' => $bundle_status
+            ]
+        );
+        return $this->onSuccess($data, 'Bundle Status retrieved successfully.');
+    }
 }
