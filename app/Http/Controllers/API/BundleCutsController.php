@@ -21,7 +21,13 @@ class BundleCutsController extends Controller
      */
     public function index()
     {
-        return "test";
+            $bundle_cut = BundleCut::with('bundleStatus', 'cuttingTicket')->get();
+            $data = collect(
+                [
+                    'bundle_cuts' => $bundle_cut
+                ]
+            );
+            return $this->onSuccess($data, 'Bundle Cut retrieved successfully.');
     }
 
     /**
@@ -53,7 +59,7 @@ class BundleCutsController extends Controller
         $bundle_cut->remarks = $input_bundle_cut['remarks'];
         $bundle_cut->save();
 
-        $data = BundleCut::where('bundle_cuts.id', $bundle_cut->id)->with('ticket', 'status')->first();
+        $data = BundleCut::where('bundle_cuts.id', $bundle_cut->id)->with('cuttingTicket', 'bundleStatus')->first();
         $data = collect(
             [
                 'bundle_cut' => $data
@@ -70,7 +76,14 @@ class BundleCutsController extends Controller
      */
     public function show($id)
     {
-        //
+            $bundle_cut = BundleCut::where('bundle_cuts.id', $id)->with('cuttingTicket', 'bundleStatus')->first();
+            if ($bundle_cut == null) return $this->onError(404, 'Bundle Cut not found.');
+            $data = collect(
+                [
+                    'bundle_cut' => $bundle_cut
+                ]
+            );
+            return $this->onSuccess($data, 'Bundle Cut retrieved successfully.');
     }
 
     /**
