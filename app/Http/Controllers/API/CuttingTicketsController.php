@@ -52,7 +52,7 @@ class CuttingTicketsController extends BaseController
 
     public function show(Request $request)
     {
-        $data = CuttingTicket::with('bundleCut', 'bundleCut.bundleStatus', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->where('serial_number', $request->serial_number)->first();
+        $data = CuttingTicket::with('bundleCuts.bundleStatus', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->where('serial_number', $request->serial_number)->first();
         if ($data == null) return $this->onError(404, 'Cutting Ticket not found.');
         $data = collect(
             [
