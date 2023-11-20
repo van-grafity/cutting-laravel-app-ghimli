@@ -8,8 +8,10 @@ use App\Models\BundleCut;
 use App\Models\BundleStatus;
 use App\Models\CuttingTicket;
 use App\Models\Gl;
+use App\Models\LayingPlanning;
 use Illuminate\Support\Arr;
 use PDF;
+use DB;
 
 class BundleCutsController extends Controller
 {
@@ -86,6 +88,23 @@ class BundleCutsController extends Controller
     public function cut_piece_stock_report() {
         return "Cut Piece Stock Report";
     }
+    
+    public function cut_piece_stock_detail() {
+        return view('page.bundle-cut.cut-piece-stock-detail');
+    }
+    
+    public function cut_piece_stock_detail_data() {
+        $query = DB::table('laying_plannings')
+        ->join('laying_planning_details', 'laying_plannings.id', '=', 'laying_planning_details.laying_planning_id')
+        ->join('cutting_order_records', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
+        ->join('cutting_order_record_details', 'cutting_order_records.id', '=', 'cutting_order_record_details.cutting_order_record_id')
+        ->join('cutting_tickets', 'cutting_order_records.id', '=', 'cutting_tickets.cutting_order_record_id')
+        ->join('bundle_cuts', 'cutting_tickets.id', '=', 'bundle_cuts.ticket_id')
+        ->join('bundle_statuses', 'bundle_cuts.status_id', '=', 'bundle_statuses.id')
+        ->get();
+        return $query;
+    }
+        
 
     /**
      * Remove the specified resource from storage.

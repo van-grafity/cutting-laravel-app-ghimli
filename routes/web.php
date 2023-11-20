@@ -172,8 +172,10 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
         Route::get('/refresh-ticket/{id}', [CuttingTicketsController::class, 'refresh_ticket'])->name('refresh-ticket');
     });
 
+    Route::get('/cut-piece-stock-detail-data', [BundleCutsController::class, 'cut_piece_stock_detail_data'])->name('cut-piece-stock-detail-data');
     Route::get('/cut-piece-stock', [BundleCutsController::class, 'cut_piece_stock'])->name('cut-piece-stock');
     Route::get('/cut-piece-stock-report', [BundleCutsController::class, 'cut_piece_stock_report'])->name('cut-piece-stock-report');
+    Route::get('/cut-piece-stock-detail', [BundleCutsController::class, 'cut_piece_stock_detail'])->name('cut-piece-stock-detail'); 
 });
 
 
