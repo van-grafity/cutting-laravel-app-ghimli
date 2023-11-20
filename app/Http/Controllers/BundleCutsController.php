@@ -94,13 +94,22 @@ class BundleCutsController extends Controller
     }
     
     public function cut_piece_stock_detail_data() {
-        $query = DB::table('laying_plannings')
-        ->join('laying_planning_details', 'laying_plannings.id', '=', 'laying_planning_details.laying_planning_id')
-        ->join('cutting_order_records', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
-        ->join('cutting_order_record_details', 'cutting_order_records.id', '=', 'cutting_order_record_details.cutting_order_record_id')
-        ->join('cutting_tickets', 'cutting_order_records.id', '=', 'cutting_tickets.cutting_order_record_id')
-        ->join('bundle_cuts', 'cutting_tickets.id', '=', 'bundle_cuts.ticket_id')
-        ->join('bundle_statuses', 'bundle_cuts.status_id', '=', 'bundle_statuses.id')
+        // $query = DB::table('laying_plannings')
+        // ->join('laying_planning_details', 'laying_plannings.id', '=', 'laying_planning_details.laying_planning_id')
+        // ->join('cutting_order_records', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
+        // ->join('cutting_order_record_details', 'cutting_order_records.id', '=', 'cutting_order_record_details.cutting_order_record_id')
+        // ->join('cutting_tickets', 'cutting_order_records.id', '=', 'cutting_tickets.cutting_order_record_id')
+        // ->join('bundle_cuts', 'cutting_tickets.id', '=', 'bundle_cuts.ticket_id')
+        // ->join('bundle_statuses', 'bundle_cuts.status_id', '=', 'bundle_statuses.id')
+        // ->get();
+        // return $query;
+
+        $query = LayingPlanning::with('gl', 'layingPlanningDetail', 'layingPlanningDetail.cuttingOrderRecord', 'layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail', 'layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail.cuttingTicket', 'layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail.cuttingTicket.bundleCuts', 'layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail.cuttingTicket.bundleCuts.bundleStatus')
+        // where gl 63788-00 dummy
+        // ->where('gl_number', 'like', '%' . '63788-00' . '%')
+        ->whereHas('gl', function($q) {
+            $q->where('gl_number', 'like', '%' . '63788-00' . '%');
+        })
         ->get();
         return $query;
     }
