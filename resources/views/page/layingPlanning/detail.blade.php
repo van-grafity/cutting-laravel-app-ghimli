@@ -37,24 +37,23 @@
                                             <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $data->id) }}">Duplicate</a>
                                             @can('clerk-cutting')
                                                 @if($details->isEmpty())
-                                                <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
-                                                @else
+                                                    <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
+                                                @elseif($details->isNotEmpty())
                                                     @foreach($details as $detail)
-                                                        @if($detail->cuttingOrderRecord == null) @break @endif
+                                                        @if($detail->cuttingOrderRecord == null)
+                                                            <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
+                                                        @endif
                                                         @if($detail->cuttingOrderRecord->status_print == 1)
                                                             <a hidden class="dropdown-item disabled" href="javascript:void(0);">Edit</a>
-                                                            @break
+                                                            @can('super_admin')
+                                                                <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
+                                                            @endcan
                                                         @else
                                                             <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
-                                                            @break
                                                         @endif
                                                     @endforeach
                                                 @endif
                                                 
-                                            @endcan
-
-                                            @can('super_admin')
-                                                <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
                                             @endcan
                                         </div>
                                     </div>
@@ -248,11 +247,15 @@
                                             @endif
                                         @endif
                                         @if($detail->fr_status == 'disabled')
-                                            <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail Fab</a>
+                                            <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail FBR</a>
                                         @else
                                             <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}">Create Fab</a>
                                         @endif
-                                        <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}">Create COR</a>
+                                        @if($detail->cor_status == 'disabled')
+                                            <a href="{{ route('cutting-order.show', $detail->cor_id) }}" class="btn btn-sm btn-outline-info">Detail COR</a>
+                                        @else
+                                            <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->cor_status }}">Create COR</a>
+                                        @endif
                                         <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
                                         
                                     </td>
