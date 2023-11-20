@@ -3,6 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\CuttingOrderRecord;
+use App\Models\BundleCut;
+use App\Models\BundleStatus;
+use App\Models\CuttingTicket;
+use App\Models\Gl;
+use Illuminate\Support\Arr;
+use PDF;
 
 class BundleCutsController extends Controller
 {
@@ -69,6 +76,15 @@ class BundleCutsController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+    
+    public function cut_piece_stock() {
+        $gls = Gl::select('id', 'gl_number')->get();
+        return view('page.bundle-cut.cut-piece-stock', compact('gls'));
+    }
+
+    public function cut_piece_stock_report() {
+        return "Cut Piece Stock Report";
     }
 
     /**
