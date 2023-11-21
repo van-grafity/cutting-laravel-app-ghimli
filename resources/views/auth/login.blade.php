@@ -26,7 +26,7 @@
 
         {{-- Email field --}}
         <div class="input-group mb-3">
-            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" autocomplete="off"
                    value="{{ old('email') }}" placeholder="{{ __('adminlte::adminlte.email') }}" autofocus>
 
             <div class="input-group-append">
@@ -44,7 +44,7 @@
 
         {{-- Password field --}}
         <div class="input-group mb-3">
-            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
+            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" autocomplete="off"
                    placeholder="{{ __('adminlte::adminlte.password') }}">
 
             <div class="input-group-append">
@@ -62,7 +62,7 @@
 
         {{-- Login field --}}
         <div class="row">
-            <div class="col-7">
+            <!-- <div class="col-7">
                 <div class="icheck-primary" title="{{ __('adminlte::adminlte.remember_me_hint') }}">
                     <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
 
@@ -70,9 +70,9 @@
                         {{ __('adminlte::adminlte.remember_me') }}
                     </label>
                 </div>
-            </div>
+            </div> -->
 
-            <div class="col-5">
+            <div class="col-12">
                 <button type=submit class="btn btn-block {{ config('adminlte.classes_auth_btn', 'btn-flat btn-primary') }}">
                     <span class="fas fa-sign-in-alt"></span>
                     {{ __('adminlte::adminlte.sign_in') }}
