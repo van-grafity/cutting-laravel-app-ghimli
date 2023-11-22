@@ -474,12 +474,12 @@ return [
             'can'  => 'warehouse',
         ],
         [   'header'=> 'Reports'],
-        // [
-        //     'text' => 'Cut Piece Stock',
-        //     'url'  => '/cut-piece-stock',
-        //     'icon' => 'fas fa-fw fa fa-journal-whills',
-        //     'can'  => 'cutting-record',
-        // ],
+        [
+            'text' => 'Cut Piece Stock',
+            'url'  => '/cut-piece-stock',
+            'icon' => 'fas fa-fw fa fa-journal-whills',
+            'can'  => 'cutting-record',
+        ],
         [
             'text' => 'Daily Cutting Report',
             'url'  => '/daily-cutting-report',
