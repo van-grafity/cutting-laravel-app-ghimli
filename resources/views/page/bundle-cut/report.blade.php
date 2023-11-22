@@ -11,7 +11,7 @@
         @page {
             margin-top: 1cm;
             margin-left: 1.5cm;
-            margin-right: 1.5cm;
+            margin-right: 2cm;
             margin-bottom: 1cm;
         }
 
@@ -78,13 +78,15 @@
                     <h3>Cut Piece Stock Report</h3>
                 </div>
 
+                </br>
+
                 <table class="table" id="cut_piece_stock_table">
                     <thead class="">
                         <tr>
                             <th scope="col" rowspan="2">No.</th>
                             <th scope="col" rowspan="2">GL No.</th>
                             <th scope="col" rowspan="2">Color</th>
-                            <th scope="col" colspan="{{ $sizeCount }}">Size</th>
+                            <th scope="col" colspan="{{ count($size_all) }}">Size</th>
                             <th scope="col" rowspan="2">Total</th>
                         </tr>
                         <tr>

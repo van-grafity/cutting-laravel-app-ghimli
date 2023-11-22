@@ -76,6 +76,18 @@ class LayingPlanningsController extends Controller
                 <a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1">Detail</a>
                 <a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Report</a>';
                 return $action;
+
+                // if(Auth::user()->hasRole('clerk-cutting')){
+                //     if($data->status_print == 1){
+                //         $edit = '<a hidden href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm"">Edit</a>';
+                //         $delete = '<a hidden href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_layingPlanning('.$data->id.')">Delete</a>';
+                //     }
+                // }
+                // if(Auth::user()->hasRole('super_admin')){
+                //     $edit = '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm"">Edit</a>';
+                //     $delete = '<a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_layingPlanning('.$data->id.')">Delete</a>';
+                // }
+                // return $edit . $delete . $detail . $report;
             })
             // <a href="'.route('laying-planningv2.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Report v2</a>
             //     <a href="'.route('cutting-orderv2.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Cutting Order v2</a>
