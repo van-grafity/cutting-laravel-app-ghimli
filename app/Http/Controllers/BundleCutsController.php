@@ -91,6 +91,8 @@ class BundleCutsController extends Controller
         ->where('gl_id', $gl_number)
         ->get();
         $bundle_cuts = BundleCut::with('cuttingTicket', 'bundleStatus')->get();
+        // convert merge if same size all color
+        // layingPlanningSize.size.size
         return view('page.bundle-cut.report', compact('data', 'bundle_cuts'));
     }
     
