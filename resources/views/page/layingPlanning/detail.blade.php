@@ -43,13 +43,15 @@
                                                         @if($detail->cuttingOrderRecord == null)
                                                             <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
                                                         @endif
-                                                        @if($detail->cuttingOrderRecord->status_print == 1)
-                                                            <a hidden class="dropdown-item disabled" href="javascript:void(0);">Edit</a>
-                                                            @can('super_admin')
+                                                        @if($detail->cuttingOrderRecord != null)
+                                                            @if($detail->cuttingOrderRecord->status_print == 1)
+                                                                <a hidden class="dropdown-item disabled" href="javascript:void(0);">Edit</a>
+                                                                @can('super_admin')
+                                                                    <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
+                                                                @endcan
+                                                            @else
                                                                 <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
-                                                            @endcan
-                                                        @else
-                                                            <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
+                                                            @endif
                                                         @endif
                                                     @endforeach
                                                 @endif
