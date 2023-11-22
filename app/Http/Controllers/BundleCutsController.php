@@ -81,19 +81,20 @@ class BundleCutsController extends Controller
     }
     
     public function cut_piece_stock() {
+        // gl dimana cutting_order_record_id tidak null di table cutting_tickets
         $gls = Gl::select('id', 'gl_number')->get();
         return view('page.bundle-cut.cut-piece-stock', compact('gls'));
     }
 
     public function cut_piece_stock_report(Request $request) {
         $gl_number = $request->gl_number;
-        $data = LayingPlanning::with('gl', 'layingPlanningSize', 'layingPlanningDetail.layingPlanningDetailSize', 'layingPlanningDetail.cuttingOrderRecord.cuttingTicket.bundleCuts', 'layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail')
+        $data = LayingPlanning::with('gl', 'layingPlanningSize.size', 'layingPlanningDetail.layingPlanningDetailSize', 'layingPlanningDetail.cuttingOrderRecord.cuttingTicket.bundleCuts', 'layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail')
         ->where('gl_id', $gl_number)
         ->get();
         $bundle_cuts = BundleCut::with('cuttingTicket', 'bundleStatus')->get();
-        // convert merge if same size all color
-        // layingPlanningSize.size.size
-        return view('page.bundle-cut.report', compact('data', 'bundle_cuts'));
+        $pdf = PDF::loadView('page.bundle-cut.report', compact('data', 'bundle_cuts'));
+        return $pdf->stream();
+        // return view('page.bundle-cut.report', compact('data', 'bundle_cuts'));
     }
     
     public function cut_piece_stock_detail() {

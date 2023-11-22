@@ -5,8 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cut Piece Stock Report</title>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <style type="text/css">
         @page {
@@ -17,23 +16,23 @@
         }
 
 		  table > thead > tr > th{
-            border : 1px dashed black;
+            border : 1px black solid;
         }
 
         .table thead th {
-            border: 1px dashed black;
+            border: 1px black solid;
             text-align: center;
             vertical-align: middle;
-            font-size: 8px;
+            font-size: 14px;
             padding-top: 2 !important;
             padding-bottom: 2 !important;
         }
         
         .table tbody td {
-            border: 1px dashed black;
+            border: 1px black solid;
             vertical-align: middle;
             font-weight: bold;
-            font-size: 8px;
+            font-size: 14px;
             padding-top: 2 !important;
             padding-bottom: 2 !important;
             padding-left: 5 !important;
@@ -45,6 +44,31 @@
 @php
     foreach ($data as $key => $item) {
         $sizeCount = $item->layingPlanningSize->count();
+    }
+    $size_all = [];
+    foreach ($data as $key => $item)
+    {
+        foreach ($item->layingPlanningDetail as $key => $detail)
+        {
+            foreach ($detail->layingPlanningDetailSize as $size)
+            {
+                if (!in_array($size->size->size, $size_all))
+                {
+                    array_push($size_all, $size->size->size);
+                }
+            }
+        }
+    }
+    $layer = 0;
+    foreach ($data as $key => $item)
+    {
+        foreach ($item->layingPlanningDetail as $key => $detail)
+        {
+            foreach ($detail->cuttingOrderRecord->cuttingTicket as $key => $ticket)
+            {
+                $layer += $ticket->layer;
+            }
+        }
     }
 @endphp
 <body>
@@ -58,17 +82,15 @@
                 <table class="table table-bordered table-hover" id="cut_piece_stock_table">
                     <thead class="">
                         <tr>
-                            <th scope="col" rowspan="2" width="4%">No.</th>
-                            <th scope="col" rowspan="2" width="6%">GL No.</th>
-                            <th scope="col" rowspan="2">Color</th>
+                            <th scope="col" rowspan="2" width="2%">No.</th>
+                            <th scope="col" rowspan="2" width="8%">GL No.</th>
+                            <th scope="col" rowspan="2" width="14%">Color</th>
                             <th scope="col" colspan="{{ $sizeCount }}">Size</th>
                             <th scope="col" rowspan="2" width="4%">Total</th>
                         </tr>
                         <tr>
-                            @foreach ($data as $key => $item)
-                                @foreach ($item->layingPlanningSize as $key => $size)
-                                    <th scope="col" width="4%">{{ $size->size->size }}</th>
-                                @endforeach
+                            @foreach ($size_all as $key => $size)
+                                <th scope="col">{{ $size }}</th>
                             @endforeach
                         </tr>
                     </thead>
@@ -98,7 +120,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->gl->gl_number }}</td>
                                 <td>{{ $item->color->color }}</td>
-                                @foreach ($item->layingPlanningSize as $key => $size)
+                                @foreach ($size_all as $key => $size)
                                     <td>
                                         @php
                                             $total = 0;
@@ -107,9 +129,9 @@
                                             @foreach ($detail->cuttingOrderRecord->cuttingTicket as $key => $ticket)
                                                 @foreach ($bundle_cuts as $key => $bundle)
                                                     @if ($ticket->id == $bundle->ticket_id)
-                                                        @if ($size->size_id == $ticket->size_id)
+                                                        @if ($size == $ticket->size->size)
                                                             @foreach ($detail->layingPlanningDetailSize as $key => $layingSize)
-                                                                @if ($layingSize->size_id == $size->size_id)
+                                                                @if ($layingSize->size_id == $ticket->size_id)
                                                                     @php
                                                                         $total += $ticket->layer * $layingSize->ratio_per_size;
                                                                     @endphp
@@ -132,9 +154,11 @@
                                             @foreach ($bundle_cuts as $key => $bundle)
                                                 @if ($ticket->id == $bundle->ticket_id)
                                                     @foreach ($detail->layingPlanningDetailSize as $key => $layingSize)
-                                                        @php
-                                                            $total += $ticket->layer * $layingSize->ratio_per_size;
-                                                        @endphp
+                                                        @if ($layingSize->size_id == $ticket->size_id)
+                                                            @php
+                                                                $total += $ticket->layer * $layingSize->ratio_per_size;
+                                                            @endphp
+                                                        @endif
                                                     @endforeach
                                                 @endif
                                             @endforeach
