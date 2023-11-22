@@ -457,12 +457,12 @@ return [
             'icon' => 'fas fa-fw fa fa-tasks',
             'can'  => 'form',
         ],
-        [
-            'text' => 'Fabric Request Piping',
-            'url'  => '/fabric-request-piping',
-            'icon' => 'fas fa-fw fa fa-tasks',
-            'can'  => 'form',
-        ],
+        // [
+        //     'text' => 'Fabric Request Piping',
+        //     'url'  => '/fabric-request-piping',
+        //     'icon' => 'fas fa-fw fa fa-tasks',
+        //     'can'  => 'form',
+        // ],
         [
             'header'=> 'Warehouse',
             'can'   => 'warehouse',
@@ -474,12 +474,12 @@ return [
             'can'  => 'warehouse',
         ],
         [   'header'=> 'Reports'],
-        [
-            'text' => 'Cut Piece Stock',
-            'url'  => '/cut-piece-stock',
-            'icon' => 'fas fa-fw fa fa-journal-whills',
-            'can'  => 'cutting-record',
-        ],
+        // [
+        //     'text' => 'Cut Piece Stock',
+        //     'url'  => '/cut-piece-stock',
+        //     'icon' => 'fas fa-fw fa fa-journal-whills',
+        //     'can'  => 'cutting-record',
+        // ],
         [
             'text' => 'Daily Cutting Report',
             'url'  => '/daily-cutting-report',
