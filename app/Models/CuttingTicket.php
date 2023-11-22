@@ -34,7 +34,7 @@ class CuttingTicket extends Model
         return $this->belongsTo(Size::class, 'size_id', 'id');
     }
     
-    public function bundleCut()
+    public function bundleCuts()
     {
         return $this->hasMany(BundleCut::class, 'ticket_id', 'id');
     }

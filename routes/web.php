@@ -21,6 +21,7 @@ use App\Http\Controllers\FabricIssuesController;
 use App\Http\Controllers\DailyCuttingReportsController;
 use App\Http\Controllers\PalletsController;
 use App\Http\Controllers\MachineController;
+use App\Http\Controllers\BundleCutsController;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Crypt;
 
@@ -166,10 +167,18 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
         Route::get('/detail/{id}', [CuttingTicketsController::class, 'ticketListByCOR'])->name('detail');
 
         Route::get('/report/{id}', [CuttingTicketsController::class, 'print_report_pdf'])->name('report');
+        
         Route::delete('/delete/{id}', [CuttingTicketsController::class, 'delete_ticket'])->name('delete-ticket');
         Route::get('/refresh-ticket/{id}', [CuttingTicketsController::class, 'refresh_ticket'])->name('refresh-ticket');
     });
+
+    Route::get('/cut-piece-stock-detail-data/{gl_number}', [BundleCutsController::class, 'cut_piece_stock_detail_data'])->name('cut-piece-stock-detail-data');
+    Route::get('/cut-piece-stock', [BundleCutsController::class, 'cut_piece_stock'])->name('cut-piece-stock');
+    Route::get('/cut-piece-stock-report', [BundleCutsController::class, 'cut_piece_stock_report'])->name('cut-piece-stock-report');
+    Route::get('/cut-piece-stock-detail', [BundleCutsController::class, 'index'])->name('cut-piece-stock-detail');
 });
+
+
 
 
 Route::group(['middleware' => ['auth','can:form']], function () {

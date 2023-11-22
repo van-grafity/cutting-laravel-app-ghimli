@@ -31,7 +31,7 @@ class DailyCuttingReportsController extends Controller
         // result date filter
         $date_filter = $request->date;
         $date_filter_night_shift = Carbon::parse($date_filter)->addDay()->format('Y-m-d H:i:s');
-        $date_filter_night_shift = Carbon::parse($date_filter_night_shift)->format('Y-m-d 00:05:00');
+        $date_filter_night_shift = Carbon::parse($date_filter_night_shift)->format('Y-m-d 05:00:00');
     
         // get data group yang ada potong hari ini
         $groups = Groups::select('groups.id', 'group_name')
@@ -40,12 +40,12 @@ class DailyCuttingReportsController extends Controller
         ->join('cutting_order_record_details', 'cutting_order_record_details.user_id', '=', 'users.id')
         ->where(function($query) use ($date_filter_night_shift, $date_filter) {
             $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
-            ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 00:07:00'), $date_filter_night_shift]);
+            ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 07:00:00'), $date_filter_night_shift]);
         })
         ->groupBy('groups.id')
         ->orderBy('groups.id')
         ->get();
-
+        
         // get buyer yang potong hari ini
         $buyers = CuttingOrderRecord::select('buyers.*')
         ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
@@ -55,7 +55,7 @@ class DailyCuttingReportsController extends Controller
         ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
         ->where(function($query) use ($date_filter_night_shift, $date_filter) {
             $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
-            ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 00:07:00'), $date_filter_night_shift]);
+            ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 07:00:00'), $date_filter_night_shift]);
         })
         ->groupBy('buyers.id')
         ->get();
@@ -75,7 +75,7 @@ class DailyCuttingReportsController extends Controller
             ->join('fabric_cons', 'fabric_cons.id', '=', 'laying_plannings.fabric_cons_id')
             ->where(function($query) use ($date_filter_night_shift, $date_filter) {
                 $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
-                ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 00:07:00'), $date_filter_night_shift]);
+                ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 07:00:00'), $date_filter_night_shift]);
             })
             ->where('gls.buyer_id', '=', $buyer->id)
             ->groupBy('laying_plannings.id')
@@ -99,7 +99,7 @@ class DailyCuttingReportsController extends Controller
                     ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
                     ->where(function($query) use ($date_filter_night_shift, $date_filter) {
                         $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
-                        ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 00:07:00'), $date_filter_night_shift]);
+                        ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 07:00:00'), $date_filter_night_shift]);
                     })
                     ->where('groups.id', '=', $group->id)
                     ->get();
@@ -132,7 +132,7 @@ class DailyCuttingReportsController extends Controller
                 ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
                 ->where(function($query) use ($date_filter_night_shift, $date_filter) {
                     $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
-                    ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 00:07:00'), $date_filter_night_shift]);
+                    ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 07:00:00'), $date_filter_night_shift]);
                 })
                 ->groupBy('cutting_order_records.id')
                 ->get();
@@ -160,7 +160,7 @@ class DailyCuttingReportsController extends Controller
                 ->where(function($query) use ($date_filter_night_shift, $date_filter) {
                     $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
                     // ->whereDate('cutting_order_record_details.created_at', '=', $date_filter);
-                    ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 00:07:00'), $date_filter_night_shift]);
+                    ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 07:00:00'), $date_filter_night_shift]);
                 })
                 ->groupBy('cutting_order_records.id')
                 ->get();
