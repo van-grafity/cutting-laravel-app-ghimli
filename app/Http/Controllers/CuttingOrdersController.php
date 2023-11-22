@@ -67,7 +67,7 @@ class CuttingOrdersController extends Controller
             ->join('colors', 'laying_plannings.color_id', '=', 'colors.id')
             ->join('fabric_types', 'laying_plannings.fabric_type_id', '=', 'fabric_types.id')
             ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
-            ->select('cutting_order_records.id', 'cutting_order_records.serial_number', 'cutting_order_records.is_pilot_run', 'cutting_order_records.id_status_layer', 'cutting_order_records.id_status_cut', 'styles.style', 'colors.color', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'cutting_order_records.created_at')
+            ->select('cutting_order_records.id', 'cutting_order_records.serial_number', 'cutting_order_records.is_pilot_run', 'cutting_order_records.id_status_layer', 'cutting_order_records.id_status_cut', 'styles.style', 'colors.color', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'cutting_order_records.created_at', 'cutting_order_records.status_print')
             ->orderBy('cutting_order_records.updated_at', 'desc')
             ->get();
             
@@ -133,11 +133,22 @@ class CuttingOrdersController extends Controller
                 return Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('d-m-Y');
             })
             ->addColumn('action', function($data){
-                $action = '
-                <a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Nota"><i class="fas fa-print"></i></a>
-                <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></a>
-                <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-eye"></i></a>';
-                // $action .= $data->cuttingOrderRecordDetail->isEmpty() ? '' : '<a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Report"><i class="fas fa-file-pdf"></i></a>';
+                // $action = '
+                // <a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Nota"><i class="fas fa-print"></i></a>
+                // <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></a>
+                // <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-eye"></i></a>';
+                // return $action;
+                $action = '';
+                if ($data->status_print == 0) {
+                    $action = '
+                    <a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Nota"><i class="fas fa-print"></i></a>
+                    <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></a>
+                    <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-eye"></i></a>';
+                } else {
+                    $action = '
+                    <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></a>
+                    <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-eye"></i></a>';
+                }
                 return $action;
             })
             ->addIndexColumn()
@@ -219,6 +230,7 @@ class CuttingOrdersController extends Controller
             'layer' => $layingPlanningDetail->layer_qty,
             'status_layer' => $getCuttingOrder->statusLayer->name,  
             'status_cut' => $getCuttingOrder->statusCut->name,
+            'status_print' => $getCuttingOrder->status_print,
         ];
 
         $size_ratio = $this->print_size_ratio($layingPlanningDetail);

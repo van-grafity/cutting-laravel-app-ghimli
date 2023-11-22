@@ -161,12 +161,17 @@
                                             Action
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <!-- <a class="dropdown-item" href="{{ route('cutting-order.print', $cutting_order->id) }}" target="_blank">Print Report</a> -->
-                                            <a class="dropdown-item" href="{{ route('cutting-order.report', $cutting_order->id) }}" target="_blank">Print Nota</a>
-                                            <!-- <a class="dropdown-item" href="{{ route('cutting-order.report', $cutting_order->id) }}" target="_blank">Print Report</a>
+                                             <!-- <a class="dropdown-item" href="{{ route('cutting-order.print', $cutting_order->id) }}" target="_blank">Print Report</a>
+                                             <a class="dropdown-item" href="{{ route('cutting-order.report', $cutting_order->id) }}" target="_blank">Print Nota</a>
+                                            <a class="dropdown-item" href="{{ route('cutting-order.report', $cutting_order->id) }}" target="_blank">Print Report</a>
                                             @can('clerk')
                                                 <a class="dropdown-item" href="javascript:void(0);" onclick="delete_cuttingOrder({{ $cutting_order->id }})" data-id="{{ $cutting_order->id }}">Delete</a>
                                             @endcan -->
+                                            @if($cutting_order->status_print == 1)
+                                            <a class="dropdown-item" href="javascript:void(0);" onclick="print_nota()">Print Ulang</a>
+                                            @else
+                                                <a class="dropdown-item" href="{{ route('cutting-order.report', $cutting_order->id) }}" target="_blank">Print</a>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -383,7 +388,6 @@
 @push('js')
 <script type="text/javascript">
     const cutting_order_detail_url ='{{ route("cutting-order.detail",":id") }}';
-    const approve_pilot_run_url ='{{ route("cutting-order.approve-pilot-run",":id") }}';
     
 </script>
 <script type="text/javascript">
@@ -400,6 +404,18 @@ $(document).ready(function(){
 
 <script type="text/javascript">
     let delete_cutting_order_detail_url = '{{ route("cutting-order.detail-delete",":id") }}';
+    let print_nota_url = '{{ route("cutting-order.report",":id") }}';
+
+    async function print_nota() {
+        Swal.fire({
+            title: 'Nota ini sudah pernah di print!',
+            text: "Segera hubungi admin untuk mencetak ulang!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'OK'
+        }).then((result) => {})
+    }
 
     function reset_form(data = {}) {
         $('#modal_create_form').text(data.title);
