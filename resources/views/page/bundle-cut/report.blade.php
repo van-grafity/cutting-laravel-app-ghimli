@@ -16,14 +16,13 @@
         }
 
 		  table > thead > tr > th{
-            border : 1px black solid;
         }
 
         .table thead th {
             border: 1px black solid;
             text-align: center;
             vertical-align: middle;
-            font-size: 14px;
+            font-size: 10px;
             padding-top: 2 !important;
             padding-bottom: 2 !important;
         }
@@ -32,7 +31,7 @@
             border: 1px black solid;
             vertical-align: middle;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 10px;
             padding-top: 2 !important;
             padding-bottom: 2 !important;
             padding-left: 5 !important;
@@ -79,14 +78,14 @@
                     <h3>Cut Piece Stock Report</h3>
                 </div>
 
-                <table class="table table-bordered table-hover" id="cut_piece_stock_table">
+                <table class="table" id="cut_piece_stock_table">
                     <thead class="">
                         <tr>
-                            <th scope="col" rowspan="2" width="2%">No.</th>
-                            <th scope="col" rowspan="2" width="8%">GL No.</th>
-                            <th scope="col" rowspan="2" width="14%">Color</th>
+                            <th scope="col" rowspan="2">No.</th>
+                            <th scope="col" rowspan="2">GL No.</th>
+                            <th scope="col" rowspan="2">Color</th>
                             <th scope="col" colspan="{{ $sizeCount }}">Size</th>
-                            <th scope="col" rowspan="2" width="4%">Total</th>
+                            <th scope="col" rowspan="2">Total</th>
                         </tr>
                         <tr>
                             @foreach ($size_all as $key => $size)
@@ -117,11 +116,11 @@
                                 @endforeach
                             @endforeach -->
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->gl->gl_number }}</td>
+                                <td width="1%">{{ $loop->iteration }}</td>
+                                <td width="12%">{{ $item->gl->gl_number }}</td>
                                 <td>{{ $item->color->color }}</td>
                                 @foreach ($size_all as $key => $size)
-                                    <td>
+                                    <td width="4%">
                                         @php
                                             $total = 0;
                                         @endphp
@@ -145,7 +144,7 @@
                                         {{ $total }}
                                     </td>
                                 @endforeach
-                                <td>
+                                <td width="4%">
                                     @php
                                         $total = 0;
                                     @endphp
