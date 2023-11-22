@@ -38,7 +38,7 @@
                     @endif
                     <div class="d-flex justify-content-center">
                         <a href="javascript:void(0);" class="btn btn-primary mb-2 mr-2" id="btn_print_report">Print</a>
-                        <a href="javascript:void(0);" class="btn btn-primary mb-2 mr-2" id="btn_detail_report">Detail</a>
+                        <a href="javascript:void(0);" class="btn btn-primary mb-2 mr-2" id="btn_detail_report" hidden>Detail</a>
                     </div>
                 </div>
             </div>
@@ -57,13 +57,11 @@
     $(document).ready(function(){
         $('#gl_number').select2();
         
-        // btn report print report
         $('#btn_print_report').click(function(){
             var gl_number = $('#gl_number').val();
             window.open(url + '?gl_number=' + gl_number, '_blank');
         });
 
-        // btn detail show index
         $('#btn_detail_report').click(function(){
             var gl_number = $('#gl_number').val();
             window.location.href = "{{ route('cut-piece-stock-detail') }}" + '?gl_number=' + gl_number;

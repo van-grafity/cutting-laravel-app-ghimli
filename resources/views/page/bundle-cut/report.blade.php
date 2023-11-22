@@ -11,7 +11,7 @@
         @page {
             margin-top: 1cm;
             margin-left: 1.5cm;
-            margin-right: 1.5cm;
+            margin-right: 2cm;
             margin-bottom: 1cm;
         }
 
@@ -78,13 +78,15 @@
                     <h3>Cut Piece Stock Report</h3>
                 </div>
 
+                </br>
+
                 <table class="table" id="cut_piece_stock_table">
                     <thead class="">
                         <tr>
                             <th scope="col" rowspan="2">No.</th>
                             <th scope="col" rowspan="2">GL No.</th>
                             <th scope="col" rowspan="2">Color</th>
-                            <th scope="col" colspan="{{ $sizeCount }}">Size</th>
+                            <th scope="col" colspan="{{ count($size_all) }}">Size</th>
                             <th scope="col" rowspan="2">Total</th>
                         </tr>
                         <tr>
@@ -116,11 +118,11 @@
                                 @endforeach
                             @endforeach -->
                             <tr>
-                                <td width="1%">{{ $loop->iteration }}</td>
-                                <td width="12%">{{ $item->gl->gl_number }}</td>
+                                <td width="1%" style="text-align: center;">{{ $loop->iteration }}</td>
+                                <td width="12%" style="text-align: center;">{{ $item->gl->gl_number }}</td>
                                 <td>{{ $item->color->color }}</td>
                                 @foreach ($size_all as $key => $size)
-                                    <td width="4%">
+                                    <td width="4%" style="text-align: center;">
                                         @php
                                             $total = 0;
                                         @endphp
@@ -144,7 +146,7 @@
                                         {{ $total }}
                                     </td>
                                 @endforeach
-                                <td width="4%">
+                                <td width="4%" style="text-align: center;">
                                     @php
                                         $total = 0;
                                     @endphp

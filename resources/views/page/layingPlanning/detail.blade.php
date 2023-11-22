@@ -204,8 +204,8 @@
                                         @endif
                                     <td>
                                         <div class="dropdown">
-                                            @if($detail->cor_status_print == 1 && $detail->fr_status_print == 1)
-                                                <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Nota Cutting Order dan Nota Fabric Sudah di Print"></span>
+                                            @if($detail->cor_status_print == 1 || $detail->fr_status_print == 1)
+                                                <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Salah satu nota Layer atau Fabric Requisition sudah di print"></span>
                                             @endif
                                             <a class="text-decoration-none dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{ $detail->table_number }}</a>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
