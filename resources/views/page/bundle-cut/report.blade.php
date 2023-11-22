@@ -116,11 +116,11 @@
                                 @endforeach
                             @endforeach -->
                             <tr>
-                                <td width="1%">{{ $loop->iteration }}</td>
-                                <td width="12%">{{ $item->gl->gl_number }}</td>
+                                <td width="1%" style="text-align: center;">{{ $loop->iteration }}</td>
+                                <td width="12%" style="text-align: center;">{{ $item->gl->gl_number }}</td>
                                 <td>{{ $item->color->color }}</td>
                                 @foreach ($size_all as $key => $size)
-                                    <td width="4%">
+                                    <td width="4%" style="text-align: center;">
                                         @php
                                             $total = 0;
                                         @endphp
@@ -144,7 +144,7 @@
                                         {{ $total }}
                                     </td>
                                 @endforeach
-                                <td width="4%">
+                                <td width="4%" style="text-align: center;">
                                     @php
                                         $total = 0;
                                     @endphp
