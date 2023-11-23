@@ -35,7 +35,7 @@
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $data->id) }}">Duplicate</a>
-                                            @can('clerk-cutting')
+                                            <!-- @can('clerk-cutting')
                                                 @if($details->isEmpty())
                                                     <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
                                                 @elseif($details->isNotEmpty())
@@ -56,7 +56,23 @@
                                                     @endforeach
                                                 @endif
                                                 
-                                            @endcan
+                                            @endcan -->
+                                            @php
+                                                $cor_status = '';
+                                                foreach($details as $detail)
+                                                {
+                                                    if($detail->cuttingOrderRecord != null){
+                                                        if($detail->cuttingOrderRecord->status_print == 1){
+                                                            if(Auth::user()->can('admin-only')){
+                                                                $cor_status = '';
+                                                            } else {
+                                                                $cor_status = 'hidden';
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            @endphp
+                                            <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}" {{ $cor_status }}>Edit</a>
                                         </div>
                                     </div>
                                 </div>
@@ -205,7 +221,7 @@
                                     <td>
                                         <div class="dropdown">
                                             @if($detail->cor_status_print == 1 || $detail->fr_status_print == 1)
-                                                <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Salah satu nota Layer atau Fabric Requisition sudah di print"></span>
+                                                <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Salah satu nota Layer atau Fabric Req sudah di print"></span>
                                             @endif
                                             <a class="text-decoration-none dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{ $detail->table_number }}</a>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
