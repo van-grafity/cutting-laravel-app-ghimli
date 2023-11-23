@@ -399,7 +399,8 @@ class CuttingOrdersController extends Controller
             'size_ratio' => $this->print_size_ratio($cutting_order->layingPlanningDetail),   
             'color' => $cutting_order->layingPlanningDetail->layingPlanning->color->color,
             'layer' => $cutting_order->layingPlanningDetail->layer_qty,
-            'date' => Carbon::now()->format('d-m-Y'),
+            'date' => Carbon::now()->format('d-m-Y H:i:s'),
+            'printed_by' => Auth::user()->name,
         ];
 
         // dd($data);
@@ -438,8 +439,9 @@ class CuttingOrdersController extends Controller
                 'size_ratio' => $this->print_size_ratio($cutting_order->layingPlanningDetail),   
                 'color' => $cutting_order->layingPlanningDetail->layingPlanning->color->color,
                 'layer' => $cutting_order->layingPlanningDetail->layer_qty,
-                'date' => Carbon::now()->format('d-m-Y'),
-                'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order->created_at)->format('d-m-Y')
+                'date' => Carbon::now()->format('d-m-Y H:i:s'),
+                'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order->created_at)->format('d-m-Y'),
+                'printed_by' => Auth::user()->name,
             ];
         }
 
@@ -582,11 +584,17 @@ class CuttingOrdersController extends Controller
             'manpower' => count($cutting_order_detail) == 0 ? "" : count($this->manpower($name)),
             'spread_time' => $this->updated_at_status_layer($cutting_order->id),
             'cutting_time' => $this->updated_at_status_cut($cutting_order->id),
-            'date' => Carbon::now()->format('d-m-Y'),
+            'date' => Carbon::now()->format('d-m-Y H:i:s'),
             'laid_by' => $name,
-            'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order->created_at)->format('d-m-Y')
+            'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order->created_at)->format('d-m-Y'),
+            'printed_by' => Auth::user()->name,
             
         ];
+
+        if(!Auth::user()->hasRole('super_admin')){
+            $cutting_order->status_print = true;
+            $cutting_order->save();
+        }
 
         $pdf = PDF::loadview('page.cutting-order.report', compact('data','cor_details'))->setPaper('a4', 'landscape');
         return $pdf->stream($filename);

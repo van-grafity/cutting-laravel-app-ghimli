@@ -475,7 +475,7 @@
                 </tbody>
             </table>    
             <div style="font-size: 10px; margin-top: 0">
-                Date Printed : {{ $data->date }} 
+                Date Print : {{ $data->date }} | Print By : {{ $data->printed_by }}
             </div>
         </div>
     </div>

@@ -143,7 +143,7 @@
             </thead>
         </table>
         <div class="body-nota">
-            <table class="table table-nota">
+            <table class="table table-nota" style="margin-bottom: 0px !important">
                 <thead class="">
                     <tr>
                         <th width="40">Fabric P/O No. </th>
@@ -465,7 +465,10 @@
                         <td></td>
                     </tr>
                 </tbody>
-            </table>    
+            </table>
+            <div style="font-size: 10px; margin-top: 0">
+                Date Print : {{ $cor['date'] }} | Print By : {{ $cor['printed_by'] }}
+            </div>
         </div>
         @endforeach
     </div>
