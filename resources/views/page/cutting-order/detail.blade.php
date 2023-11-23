@@ -167,10 +167,18 @@
                                             @can('clerk')
                                                 <a class="dropdown-item" href="javascript:void(0);" onclick="delete_cuttingOrder({{ $cutting_order->id }})" data-id="{{ $cutting_order->id }}">Delete</a>
                                             @endcan -->
-                                            @if($cutting_order->status_print == 1)
-                                            <a class="dropdown-item" href="javascript:void(0);" onclick="print_nota()">Print Ulang</a>
-                                            @else
-                                                <a class="dropdown-item" href="{{ route('cutting-order.report', $cutting_order->id) }}" target="_blank">Print</a>
+                                            @if(Auth::user()->hasRole('super_admin'))
+                                                <a class="dropdown-item" href="{{ route('cutting-order.print', $cutting_order->id) }}" target="_blank">Print</a>
+                                            @endif
+                                            @if(Auth::user()->hasRole('clerk-cutting'))
+                                                @if($cutting_order->status_print == 1)
+                                                    <a class="dropdown-item" href="javascript:void(0);" onclick="print_nota()">Print Ulang</a>
+                                                @else
+                                                    <a class="dropdown-item" href="{{ route('cutting-order.report', $cutting_order->id) }}" target="_blank">Print</a>
+                                                @endif
+                                            @endif
+                                            @if(count($cutting_order_detail) > 0)
+                                                <a class="dropdown-item" href="{{ route('cutting-order.report', $cutting_order->id) }}" target="_blank">Report</a>
                                             @endif
                                         </div>
                                     </div>
