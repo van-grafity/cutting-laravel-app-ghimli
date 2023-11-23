@@ -416,8 +416,8 @@ $(document).ready(function(){
 
     async function print_nota() {
         Swal.fire({
-            title: 'Nota ini sudah pernah di print!',
-            text: "Segera hubungi admin untuk mencetak ulang!",
+            title: 'Nota ini sudah pernah di print !',
+            text: "Segera hubungi Cutting Manager mencetak ulang.",
             icon: 'warning',
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
