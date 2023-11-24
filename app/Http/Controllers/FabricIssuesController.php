@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\FabricRequisition;
 use App\Models\FabricIssue;
 use App\Models\LayingPlanningDetail;
+use App\Models\Gl;
 
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
@@ -234,6 +235,12 @@ class FabricIssuesController extends Controller
         $customPaper = array(0,0,612.00,400.00);
         $pdf = PDF::loadview('page.fabric-issue.print', compact('data', 'fabric_issues', 'header'))->setPaper($customPaper, 'portrait');
         return $pdf->stream($filename);
+    }
+
+    public function trackingFabricUsage()
+    {
+        $gls = Gl::all();
+        return view('page.fabric-issue.tracking-fabric-usage', compact('gls'));
     }
 
     /**
