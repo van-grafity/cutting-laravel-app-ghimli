@@ -8,6 +8,7 @@ use App\Models\FabricRequisition;
 use App\Models\FabricIssue;
 use App\Models\LayingPlanningDetail;
 use App\Models\Gl;
+use App\Models\CuttingOrderRecordDetail;
 
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
@@ -241,6 +242,38 @@ class FabricIssuesController extends Controller
     {
         $gls = Gl::all();
         return view('page.fabric-issue.tracking-fabric-usage', compact('gls'));
+    }
+
+    public function trackingFabricUsageReport(Request $request)
+    {
+        $gl_ids = $request->gl_ids;
+        $gl_ids = explode(',', $gl_ids);
+        $gl_ids = array_map('intval', $gl_ids);
+        $gl_ids = array_unique($gl_ids);
+        
+        foreach ($gl_ids as $key => $gl_id) {
+            $gl = Gl::find($gl_id);
+            if($gl == null){
+                return redirect()->back()->with('error', 'GL Number not found!');
+            }
+        }
+
+        $gls = Gl::whereIn('id', $gl_ids)->get();
+        
+        $cutting_order_record_details = CuttingOrderRecordDetail::select('cutting_order_record_details.id as cor_detail_id', 'gls.gl_number', 'cutting_order_records.serial_number as cor_number', 'colors.color', 'cutting_order_record_details.fabric_batch as batch_number', 'cutting_order_record_details.fabric_roll as roll_number', 'laying_planning_details.marker_length', 'cutting_order_record_details.layer', 'cutting_order_record_details.yardage as sticker_yardage', 'cutting_order_record_details.balance_end')
+        ->join('cutting_order_records', 'cutting_order_records.id', '=', 'cutting_order_record_details.cutting_order_record_id')
+        ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
+        ->join('laying_plannings', 'laying_plannings.id', '=', 'laying_planning_details.laying_planning_id')
+        ->join('gls', 'gls.id', '=', 'laying_plannings.gl_id')
+        ->join('colors', 'colors.id', '=', 'laying_plannings.color_id')
+        ->whereIn('gls.id', $gls->pluck('id'))
+        ->orderBy('gls.id')
+        ->orderBy('laying_plannings.id')
+        ->orderBy('cutting_order_records.serial_number')
+        ->get();
+        $filename = 'Tracking Fabric Usage Report.pdf';
+        $pdf = PDF::loadview('page.fabric-issue.tracking-fabric-usage-report', compact('cutting_order_record_details', 'gls'));
+        return $pdf->stream($filename);
     }
 
     /**
