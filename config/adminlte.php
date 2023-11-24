@@ -505,6 +505,12 @@ return [
             'can'  => 'cutting-record',
         ],
         [
+            'text' => 'Tracking Fabric Usage',
+            'url'  => '/tracking-fabric-usage',
+            'icon' => 'fas fa-fw fa fa-database',
+            'can'  => 'cutting-record',
+        ],
+        [
             'header'=> 'Lain-lain',
             'can'   => 'admin-only',
         ],

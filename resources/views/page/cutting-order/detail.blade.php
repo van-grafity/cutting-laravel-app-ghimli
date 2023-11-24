@@ -230,6 +230,14 @@
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
+                        <!-- const set_marker_length = () => {
+                            let marker_yard = $('#marker_yard').val() ? parseFloat($('#marker_yard').val()) : 0;
+                            let marker_inch = $('#marker_inch').val() ? parseFloat($('#marker_inch').val()) : 0;
+                            let marker_length = (marker_yard + ((marker_inch + parseFloat($('#marker_allowence').val())) / 36)).toFixed(2);
+                            $('#marker_length').val(marker_length);
+                            set_marker_total_length();
+                        }; -->
+
                         <tbody>
                             @foreach( $cutting_order_detail as $key => $detail )
                             <tr>
@@ -240,7 +248,7 @@
                                 <td>{{ $detail->weight }}</td>
                                 <td>{{ $detail->layer }}</td>
                                 <td><?php
-                                    $actual = $detail->layer * ($cutting_order->marker_yards + ($cutting_order->marker_inches / 36));
+                                    $actual = $detail->layer * ($cutting_order->marker_yards + (($cutting_order->marker_inches + 1) / 36));
                                     $actual = number_format($actual, 2, '.', '');
                                     echo $actual;
                                 ?></td>
