@@ -39,7 +39,6 @@
         <table width="100%" class="table-tracking">
             <thead>
                 <tr>
-                    <!-- No -->
                     <th rowspan="2" width="5%">No.</th>
                     <th rowspan="2" width="10%">GL No.</th>
                     <th rowspan="2">Color</th>
@@ -74,21 +73,49 @@
                         <td style="text-align: right;">{{ $item->balance_end }}</td>
                         
                     </tr>
+                    @php
+                        $total_sticker_yardage_per_color = 0;
+                        $total_actual_yardage_per_color = 0;
+                        $total_balance_end_per_color = 0;
+                        
+                        foreach ($cutting_order_record_details as $key => $item2)
+                        {
+                            if ($item->color == $cutting_order_record_details[$key]->color)
+                            {
+                                $total_sticker_yardage_per_color += $cutting_order_record_details[$key]->sticker_yardage;
+                                $total_actual_yardage_per_color += $cutting_order_record_details[$key]->marker_length * $cutting_order_record_details[$key]->layer;
+                                $total_balance_end_per_color += $cutting_order_record_details[$key]->balance_end;
+                            }
+                        }
+                    @endphp
+                    @if ($loop->iteration == $cutting_order_record_details->count() || $item->color != $cutting_order_record_details[$loop->iteration]->color)
+                    <tr style="background-color: #f2f2f2;">
+                            <td colspan="5" style="text-align: right; padding-right: 5px;">Sub Total</td>
+                            <td style="text-align: center;">{{ $total_sticker_yardage_per_color }}</td>
+                            <td style="text-align: center;">{{ $total_actual_yardage_per_color }}</td>
+                            <td colspan="2">Balance End</td>
+                            <td style="text-align: center;">{{ $total_balance_end_per_color }}</td>
+                        </tr>
+                    @endif
                 @endforeach
+                
                 @php
                     $total_sticker_ydz = 0;
                     $total_usage_ydz = 0;
+                    $total_balance_end = 0;
                     foreach ($cutting_order_record_details as $key => $item)
                     {
                         $total_sticker_ydz += $item->sticker_yardage;
                         $total_usage_ydz += $item->marker_length * $item->layer;
+                        $total_balance_end += $item->balance_end;
                     }
                 @endphp
-                <tr>
-                    <td colspan="5" style="text-align: center;">Total</td>
+                <tr style="background-color: #d9d9d9;">
+                    <td colspan="5" style="text-align: right; padding-right: 5px;">Total</td>
                     <td style="text-align: center;">{{ $total_sticker_ydz }}</td>
                     <td style="text-align: center;">{{ $total_usage_ydz }}</td>
-                    <td colspan="3"></td>
+                    <td colspan="2">Balance End</td>
+                    <td style="text-align: center;">{{ $total_balance_end }}</td>
                 </tr>
             </tbody>
         </table>
