@@ -25,26 +25,26 @@ class CuttingOrdersController extends BaseController
     // {
     //     $this->middleware('auth:api');
     // }
-    public function index()
+    public function index(Request $request)
     {
-        $data = CuttingOrderRecord::with('statusLayer', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')->latest()->paginate(50);
-        // get latest base on data cuttingOrderRecordDetail
-        // $data = CuttingOrderRecord::with('statusLayer', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color')
-        //     ->whereHas('cuttingOrderRecordDetail', function ($query) {
-        //         $query->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-2 day')));
-        //     })
-        //     ->latest()
-        //     ->paginate(50);
+        $input = $request->all();
+        $limit = $request->input('limit');
+        $page = $request->input('page');
+        $search = $request->input('s');
+        $cuttingOrderRecord = CuttingOrderRecord::with('statusLayer', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color', 'layingPlanningDetail')
+        ->where('serial_number', 'like', '%' . $search . '%')
+        ->paginate($limit, ['*'], 'page', $page);
+        
         $pagination = [
-            'current_page' => $data->currentPage(),
-            'last_page' => $data->lastPage(),
-            'prev_page_url' => $data->previousPageUrl(),
-            'next_page_url' => $data->nextPageUrl(),
-            'total' => $data->total(),
+            'current_page' => $cuttingOrderRecord->currentPage(),
+            'last_page' => $cuttingOrderRecord->lastPage(),
+            'prev_page_url' => $cuttingOrderRecord->previousPageUrl(),
+            'next_page_url' => $cuttingOrderRecord->nextPageUrl(),
+            'total' => $cuttingOrderRecord->total(),
         ];
         
         $cuttingOrderRecords = [
-            'cutting_order_records' => $data->items()
+            'cutting_order_records' => $cuttingOrderRecord->items()
         ];
 
         $result = array_merge($cuttingOrderRecords, $pagination);
