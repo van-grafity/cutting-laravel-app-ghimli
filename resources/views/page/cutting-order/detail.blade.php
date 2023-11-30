@@ -226,7 +226,7 @@
                                 </span>
                                 </th>
                                 <th scope="col">Operator</th>
-                                <th scope="col">Cutting Date</th>
+                                <th scope="col">Layer Date</th>
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -380,7 +380,7 @@
                                         <td id="operator"></td>
                                     </tr>
                                     <tr>
-                                        <td>Cutting Date</td>
+                                        <td>Layer Date</td>
                                         <td class="pl-4">:</td>
                                         <td id="cutting_date"></td>
                                     </tr>

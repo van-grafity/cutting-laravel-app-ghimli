@@ -282,7 +282,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th class="text-center" colspan="2">Total :</th>
+                                <th class="text-left" colspan="5">Total :</th>
                                 <th class="" colspan="1">{{ $data->total_pcs_all_table }} Pcs </th>
                                 <th class="" colspan="1">{{ $data->total_length_all_table }} Yd </th>
                                 <th></th>
