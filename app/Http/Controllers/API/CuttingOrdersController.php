@@ -33,6 +33,7 @@ class CuttingOrdersController extends BaseController
         $search = $request->input('s');
         $cuttingOrderRecord = CuttingOrderRecord::with('statusLayer', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color', 'layingPlanningDetail')
         ->where('serial_number', 'like', '%' . $search . '%')
+        ->latest()
         ->paginate($limit, ['*'], 'page', $page);
         
         $pagination = [
