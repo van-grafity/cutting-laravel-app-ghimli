@@ -121,13 +121,8 @@ class BundleStocksController extends Controller
 
         $laying_planning_id = $bundle_stock_transaction->cuttingTicket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->id;
         $size_id = $bundle_stock_transaction->cuttingTicket->size_id;
-
-        $ticket_layer = $bundle_stock_transaction->cuttingTicket->layer;
-        // $size_ratio = $bundle_stock_transaction->cuttingTicket->cuttingOrderRecord->layingPlanningDetail->layingPlanningDetailSize->where('size_id',$size_id)->first()->ratio_per_size;
+        $cut_piece_qty = $bundle_stock_transaction->cuttingTicket->layer;
         
-        // $cut_piece_qty =  $ticket_layer * $size_ratio;
-        $cut_piece_qty =  $ticket_layer;
-
         $bundle_stock = BundleStock::where('laying_planning_id', $laying_planning_id)
             ->where('size_id', $size_id)
             ->first();

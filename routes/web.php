@@ -181,6 +181,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
 
 
     Route::controller(BundleStocksController::class)->prefix('bundle-stock')->name('bundle-stock.')->group(function(){
+        route::get('/', 'index')->name('index');
         route::get('/report', 'report')->name('report');
     });
 });

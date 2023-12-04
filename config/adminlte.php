@@ -476,7 +476,7 @@ return [
         [   'header'=> 'Reports'],
         [
             'text' => 'Cut Piece Stock',
-            'url'  => '/cut-piece-stock',
+            'url'  => '/bundle-stock',
             'icon' => 'fas fa-fw fa fa-journal-whills',
             'can'  => 'cutting-record',
         ],

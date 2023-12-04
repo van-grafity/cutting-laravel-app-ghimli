@@ -20,21 +20,23 @@ class BundleStocksController extends Controller
      */
     public function index()
     {
-        return view('page.index');
+        $gls = Gl::select('id', 'gl_number')->get();
+        return view('page.bundle-stock.index', compact('gls'));
     }
 
-    public function report()
+    public function report(Request $request)
     {
-        $gl_id = '376';
+        $gl_id = $request->gl_id;
         $gl = Gl::find($gl_id);
         $filename = 'Cut Piece Stock #GL'.$gl->gl_number.'.pdf';
+        $gl_number = 'GL-' . $gl->gl_number;
 
         $stock_item_list = $this->getStocItemkList($gl_id); // ## this is laying plannings
         
         $laying_planning_id_list = array_column($stock_item_list, 'laying_planning_id');
         $size_list = $this->getSizeList($laying_planning_id_list);
         $total_size = count($size_list);
-
+        
         // ## get qty per stock item
         foreach ($stock_item_list as $key => $item) {
             $qty_per_size = $this->getQtyPerSize($item['laying_planning_id'], $size_list);
@@ -47,6 +49,7 @@ class BundleStocksController extends Controller
         }
 
         $data = [
+            'gl_number' => $gl_number,
             'filename' => $filename,
             'stock_item_list' => $stock_item_list,
             'size_list' => $size_list,

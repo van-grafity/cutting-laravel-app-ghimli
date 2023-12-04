@@ -15,7 +15,8 @@
             margin-bottom: 1cm;
         }
 
-		  table > thead > tr > th{
+        .table td, .table th {
+            padding: 0.50rem;
         }
 
         .table thead th {
@@ -23,19 +24,28 @@
             text-align: center;
             vertical-align: middle;
             font-size: 10px;
-            padding-top: 2 !important;
-            padding-bottom: 2 !important;
         }
         
         .table tbody td {
+            text-align: center;
             border: 1px black solid;
             vertical-align: middle;
             font-weight: bold;
             font-size: 10px;
-            padding-top: 2 !important;
-            padding-bottom: 2 !important;
-            padding-left: 5 !important;
-            padding-right: 5 !important;
+            padding-top: .25rem;
+            padding-bottom: .25rem;
+        }
+
+        .report-title {
+            font-weight: bold;
+            font-size: 24px;
+        }
+        .report-subtitle {
+            font-size: 18px;
+        }
+
+        .size-column {
+            width: 20px;
         }
         
 	</style>
@@ -45,7 +55,11 @@
         <div class="row">
             <div class="col-12">
                 <div class="content-title text-center">
-                    <h3 class="">Cut Piece Stock Report</h3>
+                    <div class="report-title">
+                        Cut Piece Stock Report
+                        <br>
+                        <div class="report-subtitle">{{ $gl_number }}</div>
+                    </div>
                 </div>
 
                 </br>
@@ -53,24 +67,29 @@
                 <table class="table" id="cut_piece_stock_table">
                     <thead class="">
                         <tr>
-                            <th scope="col" rowspan="2">No.</th>
-                            <th scope="col" rowspan="2">GL No.</th>
-                            <th scope="col" rowspan="2">Color</th>
-                            <th scope="col" colspan="{{ $total_size }}">Size</th>
-                            <th scope="col" rowspan="2">Total</th>
+                            <th rowspan="2" style="width:10px">No.</th>
+                            <th rowspan="2" style="width:50px">GL No.</th>
+                            <th rowspan="2">Color</th>
+                            <th rowspan="1" colspan="{{ $total_size }}">Size</th>
+                            <th rowspan="2" class="size-column">Total</th>
                         </tr>
                         <tr>
                             @foreach ($size_list as $key => $size)
-                                <th scope="col">{{ $size['size'] }}</th>
+                                <th class="size-column">{{ $size['size'] }}</th>
                             @endforeach
                         </tr>
                     </thead>
                     <tbody>
+                        @if(!$stock_item_list)
+                            <tr>
+                                <td colspan="5"> No Data</td>
+                            </tr>
+                        @endif
                         @foreach($stock_item_list as $key => $stock_item)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $stock_item['gl_number'] }}</td>
-                                <td>{{ $stock_item['color'] }}</td>
+                                <td class="text-left">{{ $stock_item['color'] }}</td>
                                 @foreach ($stock_item['qty_per_size'] as $key_size => $qty_size)
                                     <td>{{ $qty_size['qty'] }}</td>
                                 @endforeach
