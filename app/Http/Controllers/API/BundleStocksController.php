@@ -134,18 +134,10 @@ class BundleStocksController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function stock_out(Request $request)
+    public function store_multiple(Request $request)
     {
         $data_input = $request->all();
 
-        if($data_input['transaction_type'] != 'OUT'){
-            $data_return = [
-                'status' => 'error',
-                'message_data' => 'transaction_type must be IN'
-            ];
-            return $this->onSuccess($data_return, "Action failed");
-        }
-        
         $checked_tickets = $this->checkTicketlist($data_input['serial_number']);
         if($checked_tickets['status'] == 'error'){
             $data_return = [

@@ -60,15 +60,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('bundle-cuts', BundleCutsController::class);
     Route::get('bundle-status', [BundleCutsController::class, 'bundleStatusIndex']);
 
-
-
-    Route::get('bundle-stocks', [BundleStocksController::class, 'index']);
-    Route::post('bundle-stocks', [BundleStocksController::class, 'store']);
-    Route::post('bundle-stocks', [BundleStocksController::class, 'store']);
-
+    
     Route::controller(BundleStocksController::class)->prefix('bundle-stocks')->name('bundle-stocks.')->group(function(){
-        route::post('/stock-in', 'stock_in')->name('stock-in');
-        route::post('/stock-out', 'stock_out')->name('stock-out');
+        Route::get('/', [BundleStocksController::class, 'index']);
+        Route::post('/', [BundleStocksController::class, 'store']);
+        route::post('store-multiple', 'store_multiple')->name('store-multiple');
     });
     
     Route::get('bundle-locations', [BundleLocationsController::class,'index']);
