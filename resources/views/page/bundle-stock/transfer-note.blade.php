@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Cut Piece Stock')
+@section('title', 'Cut Piece Transfer Note')
 
 @section('content')
 <style>
@@ -11,16 +11,19 @@
             <div class="card">
                 <div class="card-body">
                     <div class="content-title text-center">
-                        <h3>Cut Piece Stock List</h3>
+                        <h3>Cut Piece Transfer Note List</h3>
                     </div>
-                    <table class="table table-bordered table-hover text-center" id="bundle_stock_table">
+                    <table class="table table-bordered table-hover text-center" id="transfer_note_table">
                         <thead class="">
                             <tr>
-                                <th width="10px;">No. </th>
-                                <th width="100px">GL Number</th>
-                                <th width="">Color</th>
-                                <th width="">Total</th>
-                                <th width="">Action</th>
+                                <th wihth="5%;">No.</th>
+                                <th wihth="20%;">Serial Number</th>
+                                <th wihth="10%;">GL Number</th>
+                                <th wihth="10%;">Location</th>
+                                <th wihth="10%;">Date</th>
+                                <th wihth="5%;">Total Bundle</th>
+                                <th wihth="5%;">Total Pcs</th>
+                                <th wihth="10%;">Action</th>
                             </tr>
                         </thead>
                     </table>    
@@ -42,14 +45,16 @@
             </div>
             <div class="modal-body">
                 <div class="card-body">
-                    <table class="table table-bordered table-hover text-center" id="detail_bundle_stock_table">
+                    <table class="table table-bordered table-hover text-center" id="detail_transfer_note_table">
                         <thead class="bg-dark">
                             <tr>
                                 <th wihth="10px;">No.</th>
-                                <th wihth="10px;">GL Number</th>
-                                <th wihth="50px;">Color</th>
-                                <th wihth="10px;">Size</th>
-                                <th wihth="10px;">Qty</th>
+                                <th wihth="10px;">Serial Number</th>
+                                <th wihth="50px;">GL Number</th>
+                                <th wihth="50px;">Location</th>
+                                <th wihth="50px;">Hate</th>
+                                <th wihth="50px;">Total Bunhle</th>
+                                <th wihth="10px;">Total Pcs</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -89,8 +94,8 @@
     };
 
     const insert_detail_stock_to_table = (detail_stock) => {
-        $('#detail_bundle_stock_table tbody').html('');
-        $('#detail_bundle_stock_table tfoot').html('');
+        $('#detail_transfer_note_table tbody').html('');
+        $('#detail_transfer_note_table tfoot').html('');
         
         let total = 0;
 
@@ -104,7 +109,7 @@
                     <td>${data.current_qty}</td>
                 </tr>
             `;
-            $('#detail_bundle_stock_table tbody').append(row);
+            $('#detail_transfer_note_table tbody').append(row);
             
             total += parseInt(data.current_qty);
         });
@@ -114,22 +119,25 @@
                 <td colspan="1">${total}</td>
             </tr>
         `;
-        $('#detail_bundle_stock_table tfoot').html(row_footer);
+        $('#detail_transfer_note_table tfoot').html(row_footer);
     }
 
 </script>
 
 <script type="text/javascript">
     $(function (e) {
-        $('#bundle_stock_table').DataTable({
+        $('#transfer_note_table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ url('bundle-stock/dtable') }}",
+            ajax: "{{ url('bundle-stock/transfer-note-dtable') }}",
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                {data: 'serial_number', name: 'serial_number'},
                 {data: 'gl_number', name: 'gl_number'},
-                {data: 'color', name: 'color'},
-                {data: 'total', name: 'total'},
+                {data: 'location', name: 'location'},
+                {data: 'date', name: 'date'},
+                {data: 'total_bundle', name: 'total_bundle'},
+                {data: 'total_pcs', name: 'total_pcs'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
         });

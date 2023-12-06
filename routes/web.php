@@ -76,7 +76,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/fabric-issue-data', [FabricIssuesController::class, 'dataFabricIssue']);
     Route::get('/daily-cutting-data', [DailyCuttingReportsController::class, 'dataDailyCutting']);
 
-    Route::get('bundle-stock-data', [BundleStocksController::class, 'dataBundleStock']);
 });
 
 // ## Route for Master Data (Admin)
@@ -189,8 +188,13 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
 
     Route::controller(BundleStocksController::class)->prefix('bundle-stock')->name('bundle-stock.')->group(function(){
         route::get('/', 'index')->name('index');
+        route::get('/dtable', 'dataBundleStock')->name('bundle-stock-data');
+        
         route::get('/detail', 'detail')->name('detail');
         route::get('/report', 'report')->name('report');
+
+        route::get('/transfer-note', 'transfer_note_list')->name('transfer-note-list');
+        route::get('/transfer-note-dtable', 'dataTransferNote')->name('transfer-note-data');
     });
 });
 
