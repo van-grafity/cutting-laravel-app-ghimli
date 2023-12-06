@@ -10,9 +10,12 @@ use App\Models\BundleStock;
 use App\Models\BundleLocation;
 use App\Models\BundleStockTransaction;
 use App\Models\CuttingTicket;
+use App\Models\BundleTransferNote;
+use App\Models\BundleTransferNoteDetail;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class BundleStocksController extends Controller
 {
@@ -53,7 +56,7 @@ class BundleStocksController extends Controller
             if($checkBundle['status'] == 'error'){
                 return $this->onSuccess($checkBundle, 'Action failed');
             }
-            
+
             DB::beginTransaction();
             
             // ## Create New Bundle Transaction 
@@ -73,13 +76,7 @@ class BundleStocksController extends Controller
             return $this->onError(500, $th->getMessage());
         }
 
-        $message = 'Okeee';
-        if($data_input['transaction_type'] == 'IN') {
-            $message = "Berhasil memasukkan bundle ke dalam rack";
-        } else if($data_input['transaction_type'] == 'OUT') {
-            $message = "Berhasil mengeluarkan bundle dari rack";
-        }
-
+        $message = $this->getSuccessMessage($data_input['transaction_type']);
         $data_return = [
             'status' => "success",
             'new_bundle' => $new_bundle,
@@ -180,6 +177,10 @@ class BundleStocksController extends Controller
                 $bundle_stock_list[] = $this->updateBundleStock($bundle_stock_transaction);
             }
 
+            if($data_input['transaction_type'] == 'OUT'){
+                $this->createTransferNote($new_bundle_list, $data_input['location']);
+            }
+
             DB::commit();
 
         } catch (\Throwable $th) {
@@ -187,13 +188,7 @@ class BundleStocksController extends Controller
             return $this->onError(500, $th->getMessage());
         }
 
-        $message = 'Okeee';
-        if($data_input['transaction_type'] == 'IN') {
-            $message = "Berhasil memasukkan bundle ke dalam rack";
-        } else if($data_input['transaction_type'] == 'OUT') {
-            $message = "Berhasil mengeluarkan bundle dari rack";
-        }
-
+        $message = $this->getSuccessMessage($data_input['transaction_type']);
         $data_return = [
             'status' => "success",
             'new_bundle' => $new_bundle_list,
@@ -294,6 +289,59 @@ class BundleStocksController extends Controller
         return ($bundle_stock_transaction->transaction_type == $transaction_type) ?
             ['status' => 'error', 'message_data' => 'Bundle dengan nomor ticket ' . $cutting_ticket->serial_number . ' ' . $message] :
             $success_condition;
+    }
+
+    private function getSuccessMessage($transaction_type)
+    {
+        if($transaction_type == 'IN') {
+            $message = "Berhasil memasukkan bundle ke dalam rack";
+        } else if($transaction_type == 'OUT') {
+            $message = "Berhasil mengeluarkan bundle dari rack";
+        } else {
+            $message = "No Message Provided";
+        }
+        return $message;
+    }
+
+    private function createTransferNote($bundle_transaction_list, $location_id)
+    {
+        // ## Create New Bundle Transfer Note 
+        $transfer_note = new BundleTransferNote;
+        $transfer_note->serial_number = $this->generate_transfer_note_serial_number();
+        $transfer_note->location_from_id = 1;
+        $transfer_note->location_to_id = $location_id;
+        $transfer_note->save();
+        
+        // ## Create Bundle Transfer Note Details 
+        $this->createTransferNoteDetail($bundle_transaction_list, $transfer_note->id);
+    }
+
+    private function createTransferNoteDetail($bundle_transaction_list, $transfer_note_id)
+    {
+        foreach ($bundle_transaction_list as $key => $bundle_transaction) {
+            $transfer_note_detail = new BundleTransferNoteDetail;
+            $transfer_note_detail->bundle_transfer_note_id = $transfer_note_id;
+            $transfer_note_detail->bundle_transaction_id = $bundle_transaction->id;
+            $transfer_note_detail->save();
+        }
+    }
+
+    private function generate_transfer_note_serial_number()
+    {
+        $this_year = date('Y');
+        $this_month = date('m');
+        $time_code = date('ym');
+
+        $count_transfer_note_this_month = BundleTransferNote::whereYear('created_at',$this_year)->whereMonth('created_at',$this_month)->get()->count();
+        
+        if($count_transfer_note_this_month) {
+            $next_number = $count_transfer_note_this_month + 1;
+        } else {
+            $next_number = 1;
+        }
+        $transfer_note_number = Str::padLeft($next_number, 4, '0');
+        $serial_number = "CPTN-{$time_code}-{$transfer_note_number}";
+        return $serial_number;
     }
 
     
