@@ -75,6 +75,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/fabric-requisition-serial-number', [FabricRequisitionsController::class, 'get_serial_number'])->name('fabric-requisition-serial-number');
     Route::get('/fabric-issue-data', [FabricIssuesController::class, 'dataFabricIssue']);
     Route::get('/daily-cutting-data', [DailyCuttingReportsController::class, 'dataDailyCutting']);
+
+    Route::get('bundle-stock-data', [BundleStocksController::class, 'dataBundleStock']);
 });
 
 // ## Route for Master Data (Admin)
@@ -180,8 +182,14 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('/cut-piece-stock-detail', [BundleCutsController::class, 'index'])->name('cut-piece-stock-detail');
 
 
+    Route::controller(BundleStocksController::class)->prefix('bundle-stock-report')->name('bundle-stock-report.')->group(function(){
+        route::get('/', 'filter')->name('filter');
+        route::get('/print', 'print')->name('print');
+    });
+
     Route::controller(BundleStocksController::class)->prefix('bundle-stock')->name('bundle-stock.')->group(function(){
         route::get('/', 'index')->name('index');
+        route::get('/detail', 'detail')->name('detail');
         route::get('/report', 'report')->name('report');
     });
 });

@@ -448,6 +448,23 @@ return [
                 ],
             ],
         ],
+        [
+            'text' => 'Cut Piece Stock',
+            'icon' => 'fas fa-tshirt',
+            'can'  => 'clerk',
+            'submenu' => [
+                [
+                    'classes'=> 'ml-3',
+                    'text' => 'Cut Piece Stock List',
+                    'url' => '/bundle-stock',
+                ],
+                [
+                    'classes'=> 'ml-3',
+                    'text' => 'Cut Piece Transfer Notes',
+                    'url' => '/bundle-stock/transfer-note',
+                ],
+            ],
+        ],
         [   'header'=> 'Forms',
             'can'   => 'form', 
         ],
@@ -475,8 +492,8 @@ return [
         ],
         [   'header'=> 'Reports'],
         [
-            'text' => 'Cut Piece Stock',
-            'url'  => '/bundle-stock',
+            'text' => 'Cut Piece Stock Report',
+            'url'  => '/bundle-stock-report',
             'icon' => 'fas fa-fw fa fa-journal-whills',
             'can'  => 'cutting-record',
         ],

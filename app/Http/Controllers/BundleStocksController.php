@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 
 use App\Models\Gl;
 use App\Models\LayingPlanning;
+use App\Models\BundleStock;
 use Illuminate\Support\Arr;
+
+use Yajra\Datatables\Datatables;
 
 use PDF;
 use DB;
@@ -20,11 +23,70 @@ class BundleStocksController extends Controller
      */
     public function index()
     {
-        $gls = Gl::select('id', 'gl_number')->get();
-        return view('page.bundle-stock.index', compact('gls'));
+        $bundle_stock_list = BundleStock::get();
+        $data = [
+            'bundle_stock_list' => $bundle_stock_list,
+        ];
+        return view('page.bundle-stock.index', $data);
     }
 
-    public function report(Request $request)
+
+    public function dataBundleStock()
+    {
+        $query = DB::table('bundle_stocks')
+            ->join('laying_plannings', 'laying_plannings.id', '=', 'bundle_stocks.laying_planning_id')
+            ->join('gls', 'gls.id', '=', 'laying_plannings.gl_id')
+            ->join('colors', 'colors.id', '=', 'laying_plannings.color_id')
+            ->join('sizes', 'sizes.id', '=', 'bundle_stocks.size_id')
+            ->groupBy('bundle_stocks.laying_planning_id')
+            ->orderBy('gls.gl_number')
+            ->select('laying_plannings.id as laying_planning_id','gls.id as gl_id','gls.gl_number', 'colors.color', DB::raw('SUM(bundle_stocks.current_qty) as total'))
+            ->get();
+
+            return Datatables::of($query)
+            ->escapeColumns([])
+            ->addColumn('action', function($data){
+                $action = '<a href="javascript:void(0)" class="btn btn-info btn-sm mb-1" onclick="detail_stock('. $data->laying_planning_id .')" data-toggle="tooltip" data-placement="top" title="Detail" >Detail</a>';
+                return $action;
+            })
+            ->addIndexColumn()
+            ->make(true);
+    }
+
+    public function detail(Request $request)
+    {
+        try {
+            $laying_planning_id = $request->laying_planning_id;
+            $detail_stock = BundleStock::join('laying_plannings','laying_plannings.id','=', 'bundle_stocks.laying_planning_id')
+                ->join('gls', 'gls.id', '=', 'laying_plannings.gl_id')
+                ->join('colors', 'colors.id', '=', 'laying_plannings.color_id')
+                ->join('sizes', 'sizes.id', '=', 'bundle_stocks.size_id')
+                ->where('laying_planning_id', $laying_planning_id)
+                ->select('gls.gl_number','colors.color','sizes.size','bundle_stocks.current_qty')
+                ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Successfully Get Data Stock',
+                'data' => [
+                    'detail_stock' => $detail_stock,
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
+    public function filter()
+    {
+        $gls = Gl::select('id', 'gl_number')->get();
+        return view('page.bundle-stock.filter', compact('gls'));
+    }
+
+    public function print(Request $request)
     {
         $gl_id = $request->gl_id;
         $gl = Gl::find($gl_id);
@@ -109,8 +171,9 @@ class BundleStocksController extends Controller
                 $filter_result = array_filter($getBundleStock, function ($bundle) use ($size_id) {
                     return $bundle['size_id'] === $size_id;
                 });
+                
                 if($filter_result){
-                    $size_list[$key]['qty'] = $filter_result[0]['current_qty']; 
+                    $size_list[$key]['qty'] = reset($filter_result)['current_qty']; 
                 } else {
                     $size_list[$key]['qty'] = 0; 
                 }
