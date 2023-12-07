@@ -24,6 +24,18 @@
                                     </thead>
                                 </table>
                             </div>
+                            <div class="col-md-4 text-right">
+                                <div class="btn-group">
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                                            <a class="dropdown-item" href="{{ route('bundle-transfer-note.print', $transfer_note_header->transfer_note_id) }}" target="_blank">Print Transfer Note</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-5">
@@ -70,15 +82,15 @@
                     <table class="table table-bordered table-hover text-center" id="transfer_note_detail_table">
                         <thead class="">
                             <tr>
-                                <th colspan="1" rowspan="2" width="5%;" class="align-middle">No.</th>
-                                <th colspan="1" rowspan="2" width="10%;" class="align-middle">Color</th>
-                                <th colspan="1" rowspan="2" width="10%;" class="align-middle">Table Number</th>
+                                <th colspan="1" rowspan="2" class="align-middle">No.</th>
+                                <th colspan="1" rowspan="2" class="align-middle">Color</th>
+                                <th colspan="1" rowspan="2" class="align-middle">Table Number</th>
                                 <th colspan="{{ count($size_list) }}" rowspan="1" width="10%;" class="align-middle">Size</th>
-                                <th colspan="1" rowspan="2" width="10%;" class="align-middle">Total</th>
+                                <th colspan="1" rowspan="2" class="align-middle">Total</th>
                             </tr>
                             <tr>
                                 @foreach($size_list as $size)
-                                <th colspan="1" rowspan="1" width="10%;" class="align-middle">{{ $size['size'] }}</th>
+                                <th colspan="1" rowspan="1" width="10%;" class="align-middle">{{ $size->size }}</th>
                                 @endforeach
                             </tr>
                         </thead>

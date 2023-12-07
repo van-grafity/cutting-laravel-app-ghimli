@@ -121,12 +121,30 @@ class BundleTransferNotesController extends Controller
         return $style;
     }
 
-    public function detail(Request $request, $id)
+    public function detail(Request $request, $transfer_note_id)
     {
-        $transfer_note = BundleTransferNote::with('bundleLocationTo')->find($id);
+        $data = $this->getTransferNoteData($transfer_note_id);
+        return view('page.bundle-transfer-note.detail', $data);
+    }
+    
+    public function print(Request $request, $transfer_note_id)
+    {
+        $data = $this->getTransferNoteData($transfer_note_id);
+        $filename = 'Cut Piece Transfer Note No. '.$data['transfer_note_header']->serial_number.'.pdf';
+        $data['filename'] = $filename;
+        // return view('page.bundle-transfer-note.print', $data);
+        
+        $pdf = PDF::loadView('page.bundle-transfer-note.print', $data)->setPaper('a5', 'landscape');
+        return $pdf->stream($filename);
+    }
+
+    private function getTransferNoteData($transfer_note_id)
+    {
+        $transfer_note = BundleTransferNote::with('bundleLocationTo')->find($transfer_note_id);
         $size_list = $this->getSizeList($transfer_note->id);
         
         $transfer_note_header = (object)[
+            'transfer_note_id' => $transfer_note->id,
             'serial_number' => $transfer_note->serial_number,
             'location' => $transfer_note->bundleLocationTo->location,
             'style_no' => $this->getStyleFromTrasnferNoteID($transfer_note->id),
@@ -142,30 +160,35 @@ class BundleTransferNotesController extends Controller
             ->join('colors','colors.id','=','laying_plannings.color_id')
             ->where('bundle_transfer_note_id', $transfer_note->id)
             ->groupBy('cutting_order_records.id')
-            ->select('bundle_transfer_note_id','laying_planning_details.id as laying_planning_detail_id','laying_planning_details.table_number','cutting_order_records.serial_number as cor_number', 'colors.color')->get();
+            ->select('bundle_transfer_note_id','laying_planning_details.id as laying_planning_detail_id','laying_planning_details.table_number','cutting_order_records.id as cor_id','cutting_order_records.serial_number as cor_number', 'colors.color')->get();
 
         foreach ($transfer_note_detail as $key => $cor) {
 
             $summary_per_size = BundleTransferNoteDetail::join('bundle_stock_transactions','bundle_stock_transactions.id','=','bundle_transfer_note_details.bundle_transaction_id')
                 ->join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
                 ->join('sizes','sizes.id','=','cutting_tickets.size_id')
+                ->where('cutting_tickets.cutting_order_record_id', $cor->cor_id)
                 ->groupBy('sizes.id')
                 ->select('sizes.id as size_id','sizes.size', DB::raw('SUM(cutting_tickets.layer) as qty'))->get();
 
             foreach ($size_list as $key_size => $size) {
+                $qty_per_size[$key_size] = (object)[
+                    'id' => $size->id,
+                    'size' => $size->size
+                ];
                 $size_id = $size->id;
                 $filtered_result = $summary_per_size->filter(function ($summary, $key) use ($size_id) {
                     return $summary->size_id === $size_id;
                 });
-
-
-                if($filtered_result){
-                    $size_list[$key_size]->qty = $filtered_result->first()->qty; 
+                
+                if($filtered_result->isNotEmpty()){
+                    $qty_per_size[$key_size]->qty = $filtered_result->first()->qty; 
                 } else {
-                    $size_list[$key_size]->qty = 0; 
+                    $qty_per_size[$key_size]->qty = 0; 
                 }
             }
-            $transfer_note_detail[$key]->qty_per_size = $size_list;
+            
+            $transfer_note_detail[$key]->qty_per_size = $qty_per_size;
             
             $total_qty_all_size = $summary_per_size->reduce(function ($carry, $item) {
                 return $carry + $item->qty;
@@ -179,8 +202,7 @@ class BundleTransferNotesController extends Controller
             'transfer_note_detail' => $transfer_note_detail,
         ];
 
-        return view('page.bundle-transfer-note.detail', $data);
-        
+        return $data;
     }
 
     private function getSizeList($transfer_note_id) : object

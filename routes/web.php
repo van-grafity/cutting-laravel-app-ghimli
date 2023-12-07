@@ -200,6 +200,7 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
         route::get('/', 'index')->name('index');
         route::get('/dtable', 'dataTransferNote')->name('dtable');
         route::get('/detail/{id}', 'detail')->name('detail');
+        route::get('/print/{id}', 'print')->name('print');
     });
 });
 
