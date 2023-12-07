@@ -62,7 +62,15 @@ class AuthServiceProvider extends ServiceProvider
         });
         
         Gate::define('clerk', function ($user) {
-            return $user->hasRole(['super_admin','planner','cutter', 'layer','ticketer','ppc']);
+            return $user->hasRole(['super_admin','planner','cutter', 'layer','ticketer','ppc', 'merchandiser']);
+        });
+
+        Gate::define('editor', function ($user) {
+            return $user->hasRole(['super_admin','cutter']);
+        });
+
+        Gate::define('viewer', function ($user) {
+            return $user->hasRole(['super_admin','cutter', 'pmr', 'ppc', 'warehouse', 'packing', 'merchandiser']);
         });
         
         Gate::define('clerk-cutting', function ($user) {
@@ -75,7 +83,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('cutting-record', function ($user) {
-            return $user->hasRole(['super_admin','cutter','layer', 'warehouse','pmr','ppc','packing', 'labtest']);
+            return $user->hasRole(['super_admin','cutter','layer', 'warehouse','pmr','ppc','packing', 'labtest',  'merchandiser']);
         });
 
         Gate::define('status-cutting-record', function ($user) {

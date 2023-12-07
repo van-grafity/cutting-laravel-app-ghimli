@@ -133,20 +133,18 @@ class CuttingOrdersController extends Controller
                 return Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('d-m-Y');
             })
             ->addColumn('action', function($data){
-                // $action = '
-                // <a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Nota"><i class="fas fa-print"></i></a>
-                // <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></a>
-                // <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-eye"></i></a>';
-                // return $action;
-                $action = '';
+                $action_delete = '';
+                if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter')){
+                    $action_delete = '<a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></a>';
+                }
                 if ($data->status_print == 0) {
                     $action = '
                     <a href="'.route('cutting-order.report', $data->id).'" class="btn btn-primary btn-sm mb-1" target="_blank" data-toggle="tooltip" data-placement="top" title="Print Nota"><i class="fas fa-print"></i></a>
-                    <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></a>
+                    '.$action_delete.'
                     <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-eye"></i></a>';
                 } else {
                     $action = '
-                    <a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></a>
+                    '.$action_delete.'
                     <a href="'.route('cutting-order.show', $data->id).'" class="btn btn-info btn-sm mb-1" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fas fa-eye"></i></a>';
                 }
                 return $action;
@@ -406,8 +404,7 @@ class CuttingOrdersController extends Controller
         // dd($data);
         // return view('page.cutting-order.print', compact('data'));
         $pdf = PDF::loadview('page.cutting-order.print', compact('data'))->setPaper('a4', 'landscape');
-        
-        if(!Auth::user()->hasRole('super_admin')){
+        if(!Auth::user()->hasRole('super_admin') || !Auth::user()->hasRole('merchandiser')){
             $cutting_order->status_print = true;
             $cutting_order->save();
         }
@@ -448,7 +445,7 @@ class CuttingOrdersController extends Controller
         // $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.cutting-order.print-multiple', compact('data'))->setPaper('a4', 'landscape');
 
-        if(!Auth::user()->hasRole('super_admin')){
+        if(!Auth::user()->hasRole('super_admin') || !Auth::user()->hasRole('merchandiser')){
             foreach($laying_planning_details as $laying_planning_detail){
                 $cutting_order = CuttingOrderRecord::where('laying_planning_detail_id', $laying_planning_detail->id)->first();
                 $cutting_order->status_print = true;
