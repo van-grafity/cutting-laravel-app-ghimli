@@ -19,9 +19,9 @@
                                 <th wihth="5%;">No.</th>
                                 <th wihth="20%;">Serial Number</th>
                                 <th wihth="10%;">GL Number</th>
+                                <th wihth="10%;">Color</th>
                                 <th wihth="10%;">Location</th>
                                 <th wihth="10%;">Date</th>
-                                <th wihth="5%;">Total Bundle</th>
                                 <th wihth="5%;">Total Pcs</th>
                                 <th wihth="10%;">Action</th>
                             </tr>
@@ -129,14 +129,14 @@
         $('#transfer_note_table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ url('bundle-stock/transfer-note-dtable') }}",
+            ajax: "{{ url('bundle-transfer-note/dtable') }}",
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'serial_number', name: 'serial_number'},
                 {data: 'gl_number', name: 'gl_number'},
+                {data: 'color', name: 'color'},
                 {data: 'location', name: 'location'},
                 {data: 'date', name: 'date'},
-                {data: 'total_bundle', name: 'total_bundle'},
                 {data: 'total_pcs', name: 'total_pcs'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],

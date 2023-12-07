@@ -461,7 +461,7 @@ return [
                 [
                     'classes'=> 'ml-3',
                     'text' => 'Cut Piece Transfer Notes',
-                    'url' => '/bundle-stock/transfer-note',
+                    'url' => '/bundle-transfer-note',
                 ],
             ],
         ],

@@ -23,6 +23,7 @@ use App\Http\Controllers\PalletsController;
 use App\Http\Controllers\MachineController;
 use App\Http\Controllers\BundleCutsController;
 use App\Http\Controllers\BundleStocksController;
+use App\Http\Controllers\BundleTransferNotesController;
 
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Crypt;
@@ -188,13 +189,17 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
 
     Route::controller(BundleStocksController::class)->prefix('bundle-stock')->name('bundle-stock.')->group(function(){
         route::get('/', 'index')->name('index');
-        route::get('/dtable', 'dataBundleStock')->name('bundle-stock-data');
+        route::get('/dtable', 'dataBundleStock')->name('dtable');
         
         route::get('/detail', 'detail')->name('detail');
         route::get('/report', 'report')->name('report');
 
-        route::get('/transfer-note', 'transfer_note_list')->name('transfer-note-list');
-        route::get('/transfer-note-dtable', 'dataTransferNote')->name('transfer-note-data');
+    });
+
+    Route::controller(BundleTransferNotesController::class)->prefix('bundle-transfer-note')->name('bundle-transfer-note.')->group(function(){
+        route::get('/', 'index')->name('index');
+        route::get('/dtable', 'dataTransferNote')->name('dtable');
+        route::get('/detail/{id}', 'detail')->name('detail');
     });
 });
 

@@ -11,15 +11,16 @@ class BundleTransferNote extends Model
     
     protected $fillable = [
         'serial_number',
-        'location_id',
+        'location_from_id',
+        'location_to_id',
         'issued_by',
         'authorized_by',
         'received_by',
     ];
 
-    public function bundleLocation()
+    public function bundleLocationTo()
     {
-        return $this->belongsTo(BundleLocation::class, 'location_id', 'id');
+        return $this->belongsTo(BundleLocation::class, 'location_to_id', 'id');
     }
 
 }

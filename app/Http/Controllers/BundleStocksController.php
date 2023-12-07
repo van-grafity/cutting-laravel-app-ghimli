@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\Gl;
 use App\Models\LayingPlanning;
 use App\Models\BundleStock;
-use App\Models\BundleTransferNoteDetail;
 use Illuminate\Support\Arr;
 
 use Yajra\Datatables\Datatables;
@@ -182,59 +181,5 @@ class BundleStocksController extends Controller
             }
         }
         return $size_list;
-    }
-
-    public function transfer_note_list()
-    {
-        return view('page.bundle-stock.transfer-note');
-
-    }
-
-    public function dataTransferNote()
-    {
-        $query = DB::table('bundle_transfer_notes')
-            ->join('bundle_locations','bundle_locations.id','=','bundle_transfer_notes.location_to_id')
-            ->select('bundle_transfer_notes.id as transfer_note_id','bundle_transfer_notes.serial_number','bundle_locations.location as location','bundle_transfer_notes.created_at')
-            ->get();
-
-            return Datatables::of($query)
-            ->escapeColumns([])
-            ->addColumn('action', function($data){
-                $action = '<a href="javascript:void(0)" class="btn btn-info btn-sm mb-1" onclick="" data-toggle="tooltip" data-placement="top" title="Detail" >Detail</a>';
-                return $action;
-            
-            })->addColumn('date', function($data){
-                return Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('d-m-Y');
-            
-            })->addColumn('gl_number', function($data){
-                return $this->getGlFromTransferNoteID($data->transfer_note_id);
-                
-            })->addColumn('total_bundle', function($data){
-                return "total_bundle";
-                
-            })->addColumn('total_pcs', function($data){
-                return "total_pcs";
-                
-            })
-            ->addIndexColumn()
-            ->make(true);
-    }
-
-    private function getGlFromTransferNoteID($transfer_note_id)
-    {
-        $transfer_note_detail = BundleTransferNoteDetail::join('bundle_stock_transactions','bundle_stock_transactions.id','=','bundle_transfer_note_details.bundle_transaction_id')
-            ->join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
-            ->join('cutting_order_records','cutting_order_records.id','=','cutting_tickets.cutting_order_record_id')
-            ->join('laying_planning_details','laying_planning_details.id','=','cutting_order_records.laying_planning_detail_id')
-            ->join('laying_plannings','laying_plannings.id','=','laying_planning_details.laying_planning_id')
-            ->join('gls','gls.id','=','laying_plannings.gl_id')
-            ->where('bundle_transfer_note_id',$transfer_note_id)
-            ->groupBy('gls.id')
-            ->select('gls.gl_number')->get()->toArray();
-
-        $gl_number_list = array_column($transfer_note_detail,'gl_number');
-        $gl_number_list = implode(', ',$gl_number_list);
-
-        return $gl_number_list;
     }
 }
