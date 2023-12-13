@@ -137,7 +137,7 @@
                     <td colspan="2" width="80" class="no-border text-right"> GL No </td>
                     <td colspan="2" width="110" class="" >: {{ $cor['gl_number']}} </td>
                     <td colspan="2" width="25" class="no-border"></td>
-                    <td colspan="1" width="80" class="subtitle-right"> 
+                    <td colspan="1" width="120" class="subtitle-right"> 
                         No : {{ $cor['no_laying_sheet']}} <br> 
                     </td>
                 </tr>
