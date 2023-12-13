@@ -25,14 +25,33 @@ class CuttingOrdersController extends BaseController
     // {
     //     $this->middleware('auth:api');
     // }
+
     public function index(Request $request)
     {
         $input = $request->all();
         $limit = $request->input('limit');
         $page = $request->input('page');
         $search = $request->input('s');
-        $cuttingOrderRecord = CuttingOrderRecord::with('statusLayer', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color', 'layingPlanningDetail')
-        ->where('serial_number', 'like', '%' . $search . '%')
+        $status_layer = $request->input('status_layer');
+        $status_cut = $request->input('status_cut');
+        
+        $cuttingOrderRecord = CuttingOrderRecord::with('statusLayer', 'statusCut', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail', 'layingPlanningDetail.layingPlanning.style.gl.buyer', 'layingPlanningDetail.layingPlanning.color')
+        ->where(function ($query) use ($search) {
+            $query->where('serial_number', 'like', '%' . $search . '%');
+        })
+        ->where(function ($query) use ($status_layer) {
+            if ($status_layer != null) {
+                $query->where('id_status_layer', $status_layer);
+            }
+        })
+        ->where(function ($query) use ($status_cut) {
+            if ($status_cut != null) {
+                $query->where('id_status_cut', $status_cut);
+            }
+        })
+        // ->where(function ($query) {
+        //     $query->where('created_at', '>=', Carbon::create(2023, 9, 1, 0, 0, 0));
+        // })
         ->latest()
         ->paginate($limit, ['*'], 'page', $page);
         
