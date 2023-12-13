@@ -144,10 +144,10 @@
                         <thead class="">
                             <tr>
                                 <th scope="col" class="">No. </th>
-                                <th scope="col" class="">Roll No</th>
                                 <th scope="col" class="">Batch No</th>
-                                <th scope="col" class="">Weight</th>
+                                <th scope="col" class="">Roll No</th>
                                 <th scope="col" class="">Yard</th>
+                                <th scope="col" class="">Weight</th>
                                 <th scope="col" class="">Action</th>
                             </tr>
                         </thead>
@@ -156,10 +156,10 @@
                                 @foreach($fabric_issues as $fabric_issue)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $fabric_issue->roll_no }}</td>
                                     <td>{{ $fabric_issue->batch_number }}</td>
-                                    <td>{{ $fabric_issue->weight }}</td>
+                                    <td>{{ $fabric_issue->roll_no }}</td>
                                     <td>{{ $fabric_issue->yard }}</td>
+                                    <td>{{ $fabric_issue->weight }}</td>
                                     <td>
                                         <a href="#" class="btn btn-sm btn-danger" onclick="delete_fabricIssue({{ $fabric_issue->id }})">
                                             <i class="fas fa-trash"></i>
@@ -219,26 +219,26 @@
                     <input type="hidden" name="fabric_requisition_id" value="{{ $fabric_requisition->id }}">
                     <div class="row mt-3">
                         <div class="col-sm-12">
-                            <label for="roll_no">Roll No</label>
-                            <input type="text" class="form-control" id="roll_no" name="roll_no" placeholder="Roll No">
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-sm-12">
                             <label for="batch_number">Batch No</label>
                             <input type="text" class="form-control" id="batch_number" name="batch_number" placeholder="Batch No">
                         </div>
                     </div>
                     <div class="row mt-3">
                         <div class="col-sm-12">
-                            <label for="weight">Weight</label>
-                            <input type="text" class="form-control" id="weight" name="weight" placeholder="Weight">
+                            <label for="roll_no">Roll No</label>
+                            <input type="text" class="form-control" id="roll_no" name="roll_no" placeholder="Roll No">
                         </div>
                     </div>
                     <div class="row mt-3">
                         <div class="col-sm-12">
                             <label for="yard">Yard</label>
                             <input type="text" class="form-control" id="yard" name="yard" placeholder="Yard">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <label for="weight">Weight</label>
+                            <input type="text" class="form-control" id="weight" name="weight" placeholder="Weight">
                         </div>
                     </div>
                 </div>
@@ -276,10 +276,10 @@
                                 <table class="table table-bordered table-hover" id="table_issue">
                                     <thead>
                                         <tr>
-                                            <th>Roll No</th>
                                             <th>Batch No</th>
-                                            <th>Weight</th>
+                                            <th>Roll No</th>
                                             <th>Yard</th>
+                                            <th>Weight</th>
                                             <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
@@ -288,12 +288,17 @@
                                             <input type="hidden" name="fabric_requisition_id" value="{{ $fabric_requisition->id }}">
                                             <td>
                                                 <div class="form-group">
+                                                    <input type="text" class="form-control" id="batch_number" name="batch_number[]">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
                                                     <input type="text" class="form-control" id="roll_no" name="roll_no[]">
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="batch_number" name="batch_number[]">
+                                                    <input type="text" class="form-control" id="yard" name="yard[]">
                                                 </div>
                                             </td>
                                             <td>
@@ -301,11 +306,7 @@
                                                     <input type="text" class="form-control" id="weight" name="weight[]">
                                                 </div>
                                             </td>
-                                            <td>
-                                            <div class="form-group">
-                                                    <input type="text" class="form-control" id="yard" name="yard[]">
-                                                </div>
-                                            </td>
+                                            
                                             <td class="text-center" style="vertical-align: middle;">
                                                 <button type="button" class="btn btn-sm btn-danger" id="btn_remove_issue">
                                                     <i class="fas fa-minus"></i>
@@ -469,10 +470,10 @@
         $('#btn_add_issue').click(function() {
             var html = '';
             html += '<tr>';
-            html += '<td><input type="text" class="form-control" id="roll_no" name="roll_no[]"></td>';
             html += '<td><input type="text" class="form-control" id="batch_number" name="batch_number[]"></td>';
-            html += '<td><input type="text" class="form-control" id="weight" name="weight[]"></td>';
+            html += '<td><input type="text" class="form-control" id="roll_no" name="roll_no[]"></td>';
             html += '<td><input type="text" class="form-control" id="yard" name="yard[]"></td>';
+            html += '<td><input type="text" class="form-control" id="weight" name="weight[]"></td>';
             html += '<td class="text-center"><button type="button" class="btn btn-sm btn-danger" id="btn_remove_issue"><i class="fas fa-minus"></i></button></td>';
             html += '</tr>';
             $('#table_issue').append(html);
@@ -481,8 +482,7 @@
         $(document).on('click', '#btn_remove_issue', function() {
             $(this).closest('tr').remove();
         });
-
-        // tidak boleh kosong roll_no, batch_number, weight, yard
+        
         $('#btn_submit_modal').click(function() {
             var roll_no = $('#roll_no').val();
             var batch_number = $('#batch_number').val();
