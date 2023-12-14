@@ -60,8 +60,7 @@ class CuttingTicketsController extends Controller
             ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
             ->whereRaw('cutting_order_records.id IN (SELECT cutting_order_record_id FROM cutting_tickets)')
             ->select('cutting_order_records.id', 'cutting_order_records.serial_number', 'styles.style', 'colors.color', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'cutting_order_records.updated_at')
-            ->orderBy('cutting_order_records.updated_at', 'desc')
-            ->get();
+            ->orderBy('cutting_order_records.updated_at', 'desc');
 
             return Datatables::of($query)
             ->escapeColumns([])

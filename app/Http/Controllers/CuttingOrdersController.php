@@ -68,8 +68,7 @@ class CuttingOrdersController extends Controller
             ->join('fabric_types', 'laying_plannings.fabric_type_id', '=', 'fabric_types.id')
             ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
             ->select('cutting_order_records.id', 'cutting_order_records.serial_number', 'cutting_order_records.is_pilot_run', 'cutting_order_records.id_status_layer', 'cutting_order_records.id_status_cut', 'styles.style', 'colors.color', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'cutting_order_records.created_at', 'cutting_order_records.status_print')
-            ->orderBy('cutting_order_records.updated_at', 'desc')
-            ->get();
+            ->orderBy('cutting_order_records.updated_at', 'desc');
             
             return Datatables::of($query)
             ->escapeColumns([])
@@ -149,7 +148,6 @@ class CuttingOrdersController extends Controller
                 }
                 return $action;
             })
-            ->addIndexColumn()
             ->make(true);
     }
 
