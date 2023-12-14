@@ -40,7 +40,7 @@ class FabricRequisitionsController extends Controller
             ->join('fabric_types', 'laying_plannings.fabric_type_id', '=', 'fabric_types.id')
             ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
             ->select('fabric_requisitions.id', 'fabric_requisitions.serial_number', 'fabric_requisitions.is_issue', 'fabric_requisitions.status_print', 'fabric_requisitions.remark', 'laying_planning_details.table_number', 'styles.style', 'colors.color', 'laying_plannings.fabric_po', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'laying_planning_details.total_length')
-            ->orderBy('fabric_requisitions.updated_at', 'desc');
+            ->orderBy('fabric_requisitions.updated_at', 'desc')->get();
             return Datatables::of($query)
             ->escapeColumns([])
             ->addColumn('serial_number', function ($data){
