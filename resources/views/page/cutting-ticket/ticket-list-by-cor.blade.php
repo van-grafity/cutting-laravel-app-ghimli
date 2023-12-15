@@ -19,7 +19,6 @@
                     <table class="table table-bordered table-hover" id="cutting_ticket_table">
                         <thead class="">
                             <tr>
-                                <th scope="col">No. </th>
                                 <th scope="col" style="width: 20%;">Ticket Number</th>
                                 <th scope="col">No. Laying Sheet</th>
                                 <th scope="col">Table No.</th>
@@ -46,7 +45,6 @@
             serverSide: true,
             ajax: "{{ route('cutting-ticket-detail-data', $id) }}",
             columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'ticket_number', name: 'ticket_number'},
                 {data: 'no_laying_sheet', name: 'no_laying_sheet'},
                 {data: 'table_number', name: 'table_number'},

@@ -159,12 +159,18 @@ class MachineController extends Controller
 
     public function qr_code(Request $request)
     {
-        $machines = Machine::with('machine_type', 'brand')
-        ->whereBetween('id', [1, 821])
-        ->get();
+        // $machines = Machine::with('machine_type', 'brand')
+        // ->whereBetween('id', [1, 821])
+        // ->get();
         // $machines = Machine::with('machine_type', 'brand')
         // ->whereBetween('id', [822, 1642])
         // ->get();
+
+        $machines = Machine::with('machine_type', 'brand')
+        ->orderBy('id', 'desc')
+        ->take(50)
+        ->get();
+
         $data = [];
         $serial_numbers = [];
         foreach ($machines as $key => $machine) {

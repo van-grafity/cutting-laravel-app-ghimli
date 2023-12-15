@@ -27,6 +27,7 @@
                                     </thead>
                                 </table>
                             </div>
+                            @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
                             <div class="col-md-4 text-right">
                                 <div class="btn-group">
                                     <div class="dropdown">
@@ -35,28 +36,6 @@
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                             <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $data->id) }}">Duplicate</a>
-                                            <!-- @can('clerk-cutting')
-                                                @if($details->isEmpty())
-                                                    <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
-                                                @elseif($details->isNotEmpty())
-                                                    @foreach($details as $detail)
-                                                        @if($detail->cuttingOrderRecord == null)
-                                                            <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
-                                                        @endif
-                                                        @if($detail->cuttingOrderRecord != null)
-                                                            @if($detail->cuttingOrderRecord->status_print == 1)
-                                                                <a hidden class="dropdown-item disabled" href="javascript:void(0);">Edit</a>
-                                                                @can('super_admin')
-                                                                    <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
-                                                                @endcan
-                                                            @else
-                                                                <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}">Edit</a>
-                                                            @endif
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                                
-                                            @endcan -->
                                             @php
                                                 $cor_status = '';
                                                 foreach($details as $detail)
@@ -77,6 +56,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
                         </div>
                         <div class="row">
                             <div class="col-md-5">
@@ -171,12 +151,13 @@
                     <div class="content-title text-center">
                         <h3>Cutting Table List</h3>
                     </div>
+                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
                     <div class="d-flex justify-content-end mb-1">
                         <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
                         <a href="{{ route('cutting-order.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_nota">Print Nota</a>
                         <a href="{{ route('fabric-requisition.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_fabric">Print Fabric Req</a>
                     </div>
-
+                    @endif
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
@@ -219,6 +200,7 @@
                                             </div>
                                         @endif
                                     <td>
+                                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
                                         <div class="dropdown">
                                             @if($detail->cor_status_print == 1 || $detail->fr_status_print == 1)
                                                 <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Salah satu nota Layer atau Fabric Req sudah di print"></span>
@@ -233,6 +215,9 @@
                                                 @endif
                                             </ul>
                                         </div>
+                                        @else
+                                            {{ $detail->table_number }}
+                                        @endif
                                     </td>
                                     <td>{{ $detail->marker_code }}</td>
                                     <td>{{ $detail->marker_length }}</td>
@@ -241,8 +226,10 @@
                                     <td>{{ $detail->layer_qty }}</td>
                                     <td>
                                         @if($detail->cuttingOrderRecord == null)
-                                        <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
+                                            @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
+                                            <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
+                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
+                                            @endif
                                         @else
                                             @if($detail->cuttingOrderRecord->status_print == 1)
                                                 <!-- <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
@@ -259,22 +246,27 @@
                                                     <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
                                                 @endcan
                                             @else
-
-                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
+                                                @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
+                                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
+                                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
+                                                @endif
                                             @endif
                                         @endif
+                                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
                                         @if($detail->fr_status == 'disabled')
                                             <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail FBR</a>
                                         @else
                                             <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}">Create Fab</a>
+                                        @endif
                                         @endif
                                         @if($detail->cor_status == 'disabled')
                                             <a href="{{ route('cutting-order.show', $detail->cor_id) }}" class="btn btn-sm btn-outline-info">Detail COR</a>
                                         @else
                                             <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->cor_status }}">Create COR</a>
                                         @endif
+                                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
                                         <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
+                                        @endif
                                         
                                     </td>
                                 </tr>
@@ -282,7 +274,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th class="text-center" colspan="2">Total :</th>
+                                <th class="text-left" colspan="5">Total :</th>
                                 <th class="" colspan="1">{{ $data->total_pcs_all_table }} Pcs </th>
                                 <th class="" colspan="1">{{ $data->total_length_all_table }} Yd </th>
                                 <th></th>

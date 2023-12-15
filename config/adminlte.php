@@ -411,11 +411,13 @@ return [
                     'classes'   => 'ml-3',
                     'text' => 'Create Laying Planning',
                     'url' => '/laying-planning-create',
+                    'can' => 'editor'
                 ],
                 [
                     'classes'   => 'ml-3',
                     'text' => 'Laying Planning List',
                     'url' => '/laying-planning',
+                    'can' => 'viewer'
                 ],
             ],
         ],
@@ -434,7 +436,7 @@ return [
         [
             'text' => 'Cutting Ticket',
             'icon' => 'fas fa-fw fa fa-object-ungroup',
-            'can'  => 'clerk',
+            'can'  => 'editor',
             'submenu' => [
                 [
                     'classes'=> 'ml-3',

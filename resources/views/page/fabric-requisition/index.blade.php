@@ -18,7 +18,6 @@
                     <table class="table table-bordered table-hover" id="fabric_requisition_table">
                         <thead class="">
                             <tr>
-                                <th width="1.8%" scope="col" class="">No. </th>
                                 <th width="20%" scope="col" class="">Serial Number</th>
                                 <th scope="col" class="">P/O No</th>
                                 <th scope="col" class="">Color</th>
@@ -72,7 +71,6 @@
             serverSide: true,
             ajax: "{{ url('/fabric-requisition-data') }}",
             columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'serial_number', name: 'serial_number'},
                 {data: 'fabric_po', name: 'fabric_po'},
                 {data: 'color', name: 'color'},

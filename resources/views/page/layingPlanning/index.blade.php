@@ -11,8 +11,11 @@
                     <div class="content-title text-center">
                         <h3>Laying Planning List</h3>
                     </div>
+                    <!-- if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter')){ -->
                     <div class="d-flex justify-content-end mb-1">
+                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
                         <a  href="{{ url('/laying-planning-create') }}" class="btn btn-success mb-2">Create</a>
+                        @endif
                     </div>
                     <table class="table table-bordered table-hover" id="laying_planning_table">
                         <thead class="">
@@ -23,7 +26,7 @@
                                 <th scope="col">Buyer</th>
                                 <th scope="col">Color</th>
                                 <th scope="col">Fabric Type</th>
-                                <th scope="col" style="width: 18%;" width="120">Action</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                     </table>

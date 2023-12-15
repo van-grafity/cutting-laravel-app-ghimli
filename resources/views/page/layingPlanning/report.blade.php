@@ -160,7 +160,7 @@
             <tbody>
                 @foreach ($details as $detail)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $detail->table_number }}</td>
                     <td></td>
                     @foreach ($detail->layingPlanningDetailSize as $item)
                     @if ($item->qty_per_size == 0)
