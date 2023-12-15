@@ -411,11 +411,13 @@ return [
                     'classes'   => 'ml-3',
                     'text' => 'Create Laying Planning',
                     'url' => '/laying-planning-create',
+                    'can' => 'editor'
                 ],
                 [
                     'classes'   => 'ml-3',
                     'text' => 'Laying Planning List',
                     'url' => '/laying-planning',
+                    'can' => 'viewer'
                 ],
             ],
         ],
@@ -434,7 +436,7 @@ return [
         [
             'text' => 'Cutting Ticket',
             'icon' => 'fas fa-fw fa fa-object-ungroup',
-            'can'  => 'clerk',
+            'can'  => 'editor',
             'submenu' => [
                 [
                     'classes'=> 'ml-3',
@@ -445,6 +447,23 @@ return [
                     'classes'=> 'ml-3',
                     'text' => 'Cutting Ticket List',
                     'url' => '/cutting-ticket',
+                ],
+            ],
+        ],
+        [
+            'text' => 'Cut Piece Stock',
+            'icon' => 'fas fa-tshirt',
+            'can'  => 'clerk',
+            'submenu' => [
+                [
+                    'classes'=> 'ml-3',
+                    'text' => 'Cut Piece Stock List',
+                    'url' => '/bundle-stock',
+                ],
+                [
+                    'classes'=> 'ml-3',
+                    'text' => 'Cut Piece Transfer Notes',
+                    'url' => '/bundle-transfer-note',
                 ],
             ],
         ],
@@ -475,8 +494,8 @@ return [
         ],
         [   'header'=> 'Reports'],
         [
-            'text' => 'Cut Piece Stock',
-            'url'  => '/cut-piece-stock',
+            'text' => 'Cut Piece Stock Report',
+            'url'  => '/bundle-stock-report',
             'icon' => 'fas fa-fw fa fa-journal-whills',
             'can'  => 'cutting-record',
         ],

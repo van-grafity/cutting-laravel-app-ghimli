@@ -22,6 +22,9 @@ use App\Http\Controllers\DailyCuttingReportsController;
 use App\Http\Controllers\PalletsController;
 use App\Http\Controllers\MachineController;
 use App\Http\Controllers\BundleCutsController;
+use App\Http\Controllers\BundleStocksController;
+use App\Http\Controllers\BundleTransferNotesController;
+
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Crypt;
 
@@ -73,6 +76,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/fabric-requisition-serial-number', [FabricRequisitionsController::class, 'get_serial_number'])->name('fabric-requisition-serial-number');
     Route::get('/fabric-issue-data', [FabricIssuesController::class, 'dataFabricIssue']);
     Route::get('/daily-cutting-data', [DailyCuttingReportsController::class, 'dataDailyCutting']);
+
 });
 
 // ## Route for Master Data (Admin)
@@ -176,6 +180,28 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('/cut-piece-stock', [BundleCutsController::class, 'cut_piece_stock'])->name('cut-piece-stock');
     Route::get('/cut-piece-stock-report', [BundleCutsController::class, 'cut_piece_stock_report'])->name('cut-piece-stock-report');
     Route::get('/cut-piece-stock-detail', [BundleCutsController::class, 'index'])->name('cut-piece-stock-detail');
+
+
+    Route::controller(BundleStocksController::class)->prefix('bundle-stock-report')->name('bundle-stock-report.')->group(function(){
+        route::get('/', 'filter')->name('filter');
+        route::get('/print', 'print')->name('print');
+    });
+
+    Route::controller(BundleStocksController::class)->prefix('bundle-stock')->name('bundle-stock.')->group(function(){
+        route::get('/', 'index')->name('index');
+        route::get('/dtable', 'dataBundleStock')->name('dtable');
+        
+        route::get('/detail', 'detail')->name('detail');
+        route::get('/report', 'report')->name('report');
+
+    });
+
+    Route::controller(BundleTransferNotesController::class)->prefix('bundle-transfer-note')->name('bundle-transfer-note.')->group(function(){
+        route::get('/', 'index')->name('index');
+        route::get('/dtable', 'dataTransferNote')->name('dtable');
+        route::get('/detail/{id}', 'detail')->name('detail');
+        route::get('/print/{id}', 'print')->name('print');
+    });
 });
 
 

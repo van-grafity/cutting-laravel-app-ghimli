@@ -11,6 +11,8 @@ use App\Http\Controllers\API\ColorController;
 use App\Http\Controllers\API\RemarksController;
 use App\Http\Controllers\API\CuttingTicketsController;
 use App\Http\Controllers\API\BundleCutsController;
+use App\Http\Controllers\API\BundleStocksController;
+use App\Http\Controllers\API\BundleLocationsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,4 +59,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::resource('bundle-cuts', BundleCutsController::class);
     Route::get('bundle-status', [BundleCutsController::class, 'bundleStatusIndex']);
+
+    
+    Route::controller(BundleStocksController::class)->prefix('bundle-stocks')->name('bundle-stocks.')->group(function(){
+        Route::get('/', [BundleStocksController::class, 'index']);
+        Route::post('/', [BundleStocksController::class, 'store']);
+        route::post('store-multiple', 'store_multiple')->name('store-multiple');
+    });
+    
+    Route::get('bundle-locations', [BundleLocationsController::class,'index']);
 });

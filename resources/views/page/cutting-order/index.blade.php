@@ -31,7 +31,6 @@
                     <table class="table table-bordered table-hover" id="cutting_order_table">
                         <thead class="">
                             <tr>
-                                <th width="1.8%" scope="col" class="">No. </th>
                                 <th width="20%" scope="col" class="">Serial Number</th>
                                 <th scope="col" class="">Color</th>
                                 <th scope="col" class="">Style</th>
@@ -86,7 +85,6 @@
             serverSide: true,
             ajax: "{{ url('/cutting-order-data') }}",
             columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'serial_number', name: 'serial_number', render: function(data, type, row) {
                     return '<a href="{{ url("/cutting-order") }}/'+row.id+'">'+data+'</a>';
                 }},
