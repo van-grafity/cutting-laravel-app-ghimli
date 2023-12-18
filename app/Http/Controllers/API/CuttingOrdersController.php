@@ -35,7 +35,7 @@ class CuttingOrdersController extends BaseController
         $status_layer = $request->input('status_layer');
         $status_cut = $request->input('status_cut');
         
-        $cuttingOrderRecord = CuttingOrderRecord::with('statusLayer', 'statusCut', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail', 'layingPlanningDetail.layingPlanning.style.gl.buyer', 'layingPlanningDetail.layingPlanning.color')
+        $cuttingOrderRecord = CuttingOrderRecord::with('statusLayer', 'statusCut', 'cuttingOrderRecordDetail.color', 'layingPlanningDetail.layingPlanning.style.gl.buyer', 'layingPlanningDetail.layingPlanning.color')
         ->where(function ($query) use ($search) {
             $query->where('serial_number', 'like', '%' . $search . '%');
         })
