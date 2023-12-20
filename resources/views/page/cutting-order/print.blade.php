@@ -130,13 +130,14 @@
                     <td> Date : {{ $data->date }} </td>
                 </tr>
                 <tr>
-                    <td colspan="2" width="35" class="no-border"> Style No</td>
-                    <td colspan="2" width="80">: {{ $data->style }} </td>
-                    <td colspan="2" width="60" class="no-border text-right"> {{ $data->marker_code }} </td>
-                    <td colspan="2" width="80" class="no-border text-right"> GL No </td>
-                    <td colspan="2" width="110" class="" >: {{ $data->gl_number}} </td>
-                    <td colspan="2" width="25" class="no-border"></td>
-                    <td colspan="1" width="80" class="subtitle-right"> 
+                    <td colspan="1" class="no-border"> Style No</td>
+                    <td colspan="4" class="text-left">: {{ $data->style }} </td>
+                    <td colspan="1" class="no-border text-right">Marker Code</td>
+                    <td colspan="1" width="50" class="no-border"> {{ $data->marker_code }} </td>
+                    <td colspan="2" class="no-border text-right"> GL No </td>
+                    <td colspan="1" width="50">: {{ $data->gl_number}} </td>
+                    <td colspan="2" class="no-border"></td>
+                    <td colspan="1" class="subtitle-right">
                         No : {{ $data->no_laying_sheet}} <br> 
                     </td>
                 </tr>
