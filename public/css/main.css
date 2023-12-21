@@ -44,6 +44,10 @@
     background-color: #ffc107;
 }
 
+.printed-by {
+    font-size: 8px;
+}
+
 @keyframes bounce {
     0% {
         transform: translateY(0);
