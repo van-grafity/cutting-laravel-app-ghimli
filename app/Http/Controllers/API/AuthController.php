@@ -39,8 +39,8 @@ class AuthController extends BaseController
 
             $user = json_encode(array(
                 'token' => $success['token'],
-                // ->load('role')
-                'user' => $authUser
+                'user' => array_merge($authUser->toArray(), ['role' => Auth::user()->roles()->first()])
+                // 'role' => Auth::user()->roles()->first()
             ));
             $user = json_decode($user, true);
             return $this->onSuccess($user, 'User logged in successfully');
