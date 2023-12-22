@@ -469,7 +469,7 @@
                 </tbody>
             </table>
             <div style="font-size: 10px; margin-top: 0">
-                Date Print : {{ $cor['date'] }} | Print By : {{ $cor['printed_by'] }}
+            Print By : {{ $cor['printed_by'] }} | Date : {{ $cor['date'] }}
             </div>
         </div>
         @endforeach

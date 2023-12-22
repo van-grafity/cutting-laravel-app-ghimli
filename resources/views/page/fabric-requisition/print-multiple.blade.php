@@ -15,7 +15,7 @@
             margin-left: 0.5cm;
             margin-right: 0.5cm;
             margin-top: 0.5cm;
-            margin-bottom: 1cm;
+            margin-bottom: 0.5cm;
         }
 
         .company-name {
@@ -280,6 +280,10 @@
                     </tr>
                 </thead>
             </table>
+
+            <div style="font-size: 10px; margin-top: 0; text-align: right;">
+                Print By : {{ Auth::user()->name }}
+            </div>
         @endforeach
     </div>
 </body>
