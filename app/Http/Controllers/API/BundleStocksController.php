@@ -84,7 +84,7 @@ class BundleStocksController extends Controller
             'message_data' => $message,
         ];
         
-        return $this->onSuccess($data_return, "Bundle Transaction Data Inserted Successfully");
+        return $this->onSuccess($data_return, $message);
     }
 
 
@@ -141,7 +141,7 @@ class BundleStocksController extends Controller
                 'status' => 'error',
                 'message_data' => $checked_tickets['message_data'],
             ];
-            return $this->onSuccess($data_return, "Action failed");
+            return $this->onSuccess($data_return, $checked_tickets['message_data']);
         }
 
         $ticket_list = CuttingTicket::whereIn('serial_number', $data_input['serial_number'])->get();
@@ -157,7 +157,8 @@ class BundleStocksController extends Controller
         if($error_bundles){
             // ## Get First Error
             $first_error_bundle = reset($error_bundles);
-            return $this->onSuccess($first_error_bundle, 'Action failed');
+            return $this->onSuccess($first_error_bundle, $first_error_bundle['message_data']);
+
         }
 
         try {
@@ -196,7 +197,7 @@ class BundleStocksController extends Controller
             'message_data' => $message,
         ];
         
-        return $this->onSuccess($data_return, "Bundle Transaction Data Inserted Successfully");
+        return $this->onSuccess($data_return, $message);
     }
 
     /**
