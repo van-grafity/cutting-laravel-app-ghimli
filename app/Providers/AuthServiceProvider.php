@@ -62,19 +62,19 @@ class AuthServiceProvider extends ServiceProvider
         });
         
         Gate::define('clerk', function ($user) {
-            return $user->hasRole(['super_admin','planner','cutter', 'layer','ticketer','ppc', 'merchandiser']);
+            return $user->hasRole(['super_admin','planner','cutter', 'layer','ticketer','ppc', 'merchandiser', 'bundle']);
         });
 
         Gate::define('editor', function ($user) {
-            return $user->hasRole(['super_admin','cutter']);
+            return $user->hasRole(['super_admin','cutter', 'bundle']);
         });
 
         Gate::define('viewer', function ($user) {
-            return $user->hasRole(['super_admin','cutter', 'pmr', 'ppc', 'warehouse', 'packing', 'merchandiser']);
+            return $user->hasRole(['super_admin','cutter', 'pmr', 'ppc', 'warehouse', 'packing', 'merchandiser', 'bundle']);
         });
         
         Gate::define('clerk-cutting', function ($user) {
-            return $user->hasRole(['super_admin','cutter','layer', 'clerk']);
+            return $user->hasRole(['super_admin','cutter','layer', 'clerk', 'bundle']);
         });
 
         // form
