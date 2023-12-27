@@ -131,13 +131,14 @@
                     <td> Date : {{ $cor['created_at'] }} </td>
                 </tr>
                 <tr>
-                    <td colspan="2" width="35" class="no-border"> Style No</td>
-                    <td colspan="2" width="80">: {{ $cor['style'] }} </td>
-                    <td colspan="2" width="60" class="no-border text-right"> {{ $cor['marker_code'] }} </td>
-                    <td colspan="2" width="80" class="no-border text-right"> GL No </td>
-                    <td colspan="2" width="110" class="" >: {{ $cor['gl_number']}} </td>
-                    <td colspan="2" width="25" class="no-border"></td>
-                    <td colspan="1" width="120" class="subtitle-right"> 
+                    <td colspan="1" class="no-border"> Style No</td>
+                    <td colspan="4" class="text-left">: {{ $cor['style'] }} </td>
+                    <td colspan="1" class="no-border text-right">Marker Code</td>
+                    <td colspan="1" width="50" class="no-border">: {{ $cor['marker_code'] }} </td>
+                    <td colspan="2" class="no-border text-right"> GL No </td>
+                    <td colspan="1" width="50">: {{ $cor['gl_number']}} </td>
+                    <td colspan="2" class="no-border"></td>
+                    <td colspan="1" class="subtitle-right"> 
                         No : {{ $cor['no_laying_sheet']}} <br> 
                     </td>
                 </tr>
@@ -468,7 +469,7 @@
                 </tbody>
             </table>
             <div style="font-size: 10px; margin-top: 0">
-                Date Print : {{ $cor['date'] }} | Print By : {{ $cor['printed_by'] }}
+            Print By : {{ $cor['printed_by'] }} | Date : {{ $cor['date'] }}
             </div>
         </div>
         @endforeach

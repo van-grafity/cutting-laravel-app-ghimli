@@ -243,6 +243,10 @@
                 </tr>
             </thead>
         </table>
+
+        <div style="font-size: 10px; margin-top: 0; text-align: right;">
+            Print By : {{ Auth::user()->name }}
+        </div>
     </div>
 </body>
 </html>

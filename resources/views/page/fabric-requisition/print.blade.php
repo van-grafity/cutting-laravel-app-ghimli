@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Print PDF</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     
     <style type="text/css">
         @page {
@@ -105,6 +106,7 @@
             <tr>
                 <td width="50%" style="font-weight: bold; font-size: 14px;">
                     <div style="font-size: 10px;">{{ $data->serial_number }}</div>
+                    <div class="printed-by">Printed By: {{ auth()->user()->name }}</div>
                 </td>
                 <td width="50%" style="text-align: right; font-size: 10px;">
                     RP-GLA-CUT-002-00<br>
