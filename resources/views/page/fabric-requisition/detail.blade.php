@@ -131,7 +131,7 @@
                                     <a hidden href="javascript:void(0);" class="dropdown-item" id="btn_modal_create" onclick="showModalFabricIssue(true)">
                                         <i class="fas fa-plus"></i> Single Issue
                                     </a>
-                                    <a href="javascript:void(0);" class="dropdown-item" id="btn_modal_create" onclick="showModalFabricIssueMultiple(true)">
+                                    <a href="javascript:void(0);" class="dropdown-item d-none" id="btn_modal_create" onclick="showModalFabricIssueMultiple(true)">
                                         <i class="fas fa-plus"></i> Add Issue
                                     </a>
                                     <a type="button" class="dropdown-item" href="{{ route('fabric-issue.print', $fabric_requisition->id) }}" target="_blank">
