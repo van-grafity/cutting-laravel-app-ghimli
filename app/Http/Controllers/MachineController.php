@@ -168,7 +168,7 @@ class MachineController extends Controller
 
         $machines = Machine::with('machine_type', 'brand')
         ->orderBy('id', 'desc')
-        ->take(15)
+        ->take(4)
         ->get();
 
         $data = [];
