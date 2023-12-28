@@ -158,9 +158,7 @@ class DailyCuttingReportsController extends Controller
                 ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
                 // ->whereDate('cutting_order_record_details.created_at', '<', $date_filter)
                 ->where(function($query) use ($date_filter_night_shift, $date_filter) {
-                    $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift)
-                    // ->whereDate('cutting_order_record_details.created_at', '=', $date_filter);
-                    ->whereBetween('cutting_order_record_details.created_at', [Carbon::parse($date_filter)->format('Y-m-d 07:00:00'), $date_filter_night_shift]);
+                    $query->whereDate('cutting_order_record_details.created_at', '<=', $date_filter_night_shift);
                 })
                 ->groupBy('cutting_order_records.id')
                 ->get();
@@ -178,8 +176,8 @@ class DailyCuttingReportsController extends Controller
                 }
 
                 $layingPlannings[$key_lp]->total_previous_cutting = $total_previous_cutting;
-                $layingPlannings[$key_lp]->previous_balance = $layingPlannings[$key_lp]->order_qty - $total_previous_cutting;
-                $layingPlannings[$key_lp]->accumulation = $total_previous_cutting + $total_qty_per_day;
+                $layingPlannings[$key_lp]->previous_balance = $total_previous_cutting - $layingPlannings[$key_lp]->order_qty;
+                $layingPlannings[$key_lp]->accumulation = ($total_previous_cutting - $layingPlannings[$key_lp]->order_qty) + $total_qty_per_day;
                 $layingPlannings[$key_lp]->completed = round(($layingPlannings[$key_lp]->accumulation / $layingPlannings[$key_lp]->order_qty * 100), 2) . "%" ;
             }
 
