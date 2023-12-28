@@ -136,7 +136,7 @@
                     <td colspan="1" class="no-border text-right">Marker Code</td>
                     <td colspan="1" width="50" class="no-border">: {{ $cor['marker_code'] }} </td>
                     <td colspan="2" class="no-border text-right"> GL No </td>
-                    <td colspan="1" width="50">: {{ $cor['gl_number']}} </td>
+                    <td colspan="1" width="70">: {{ $cor['gl_number']}} </td>
                     <td colspan="2" class="no-border"></td>
                     <td colspan="1" class="subtitle-right"> 
                         No : {{ $cor['no_laying_sheet']}} <br> 
