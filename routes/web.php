@@ -24,6 +24,7 @@ use App\Http\Controllers\MachineController;
 use App\Http\Controllers\BundleCutsController;
 use App\Http\Controllers\BundleStocksController;
 use App\Http\Controllers\BundleTransferNotesController;
+use App\Http\Controllers\UpdateDatabasesController;
 
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Crypt;
@@ -248,4 +249,9 @@ Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(
 // ## Route for Fetch
 Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(function(){
     Route::get('cutting-table', [FetchController::class, 'cutting_table'])->name('cutting-table');
+});
+
+Route::middleware(['auth','can:admin-only'])->controller(UpdateDatabasesController::class)->prefix('update-database')->name('update-database.')->group(function(){
+    route::get('', 'index')->name('index');
+    route::get('cor-cut-datetime', 'update_cor_cut_datetime')->name('cor-cut-datetime');
 });
