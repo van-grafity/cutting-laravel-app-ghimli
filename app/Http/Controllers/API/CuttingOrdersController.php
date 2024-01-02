@@ -305,7 +305,9 @@ class CuttingOrdersController extends BaseController
         $statusCut = StatusCut::where('name', $input['name'])->first();
         if ($statusCut == null) return $this->onError(404, 'Status Cut not found.'); // not relation
         $cuttingOrderRecord->id_status_cut = $statusCut->id;
-        $cuttingOrderRecord->cut = Carbon::now();
+        if ($cuttingOrderRecord->id_status_cut == 2) {
+            $cuttingOrderRecord->cut = Carbon::now();
+        }
         $cuttingOrderRecord->save();
         $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('statusCut')
             ->first();
