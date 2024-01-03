@@ -256,7 +256,6 @@ class DailyCuttingReportsController extends Controller
                 'styles.style', 
                 'gls.gl_number', 
                 'colors.color', 
-                //!! 'fabric_cons.name as cons_name', 
                 'laying_plannings.order_qty', 
                 'laying_plannings.id as laying_planning_id'
             )
@@ -266,9 +265,6 @@ class DailyCuttingReportsController extends Controller
             ->join('styles', 'styles.id', '=', 'laying_plannings.style_id')
             ->join('gls', 'gls.id', '=', 'laying_plannings.gl_id')
             ->join('colors', 'colors.id', '=', 'laying_plannings.color_id')
-
-            //!! ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
-            //!! ->join('fabric_cons', 'fabric_cons.id', '=', 'laying_plannings.fabric_cons_id')
             ->where(function($query) use ($start_datetime, $end_datetime){
                 $query->where('cutting_order_records.cut', '>=', $start_datetime)
                       ->where('cutting_order_records.cut', '<=', $end_datetime);
