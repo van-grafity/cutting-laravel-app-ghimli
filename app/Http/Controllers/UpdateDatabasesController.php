@@ -35,9 +35,15 @@ class UpdateDatabasesController extends Controller
 
         try {
             $cor_list = CuttingOrderRecord::select('cutting_order_records.*')
-                ->where('cut',null)
-                ->whereMonth('created_at',$month)
-                ->whereYear('created_at',$year)
+                ->leftJoin('cutting_order_record_details','cutting_order_record_details.cutting_order_record_id','=','cutting_order_records.id')
+                ->whereMonth('cutting_order_records.created_at',$month)
+                ->whereYear('cutting_order_records.created_at',$year)
+                ->where('cutting_order_records.id_status_cut','2')
+                ->where('cutting_order_records.created_at','<=','2023-11-13')
+                ->whereNull('cutting_order_records.cut')
+                ->whereNotNull('cutting_order_record_details.cutting_order_record_id')
+                ->limit(500)
+                ->groupBy('cutting_order_records.id')
                 ->get();
             
             foreach ($cor_list as $key => $cor) {
