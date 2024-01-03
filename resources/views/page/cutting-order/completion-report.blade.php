@@ -27,8 +27,6 @@
             </tr>
         </table>
         <br/>
-        <br/>
-        <br/>
         @php
             $total_order_qty = 0;
 
@@ -171,14 +169,15 @@
                                     $sizeCount = count($currentPlanning->layingPlanningSize);
                                 @endphp
                                 
-                                <td>
+                                <td width="55%">
                                     <table class="table table-completion" style="width: 100%;">
                                         <tbody>
                                             <tr>
                                                 @if ($col == 0)
-                                                    <td style="text-align: left; width: 12%;">COLOR</td>
+                                                    <td style="text-align: left; width: 15%;">COLOR</td>
                                                 @endif
-                                                <td colspan="{{ $sizeCount + 1 }}" style="text-align: center;">{{ $currentPlanning->color->color }}</td>
+                                                <td colspan="{{ $sizeCount }}" style="text-align: center;">{{ $currentPlanning->color->color }}</td>
+                                                <td style="color:{{ $currentPlanning->diff_percentage_color }};">{{ $currentPlanning->diff_percentage }} %</td>
                                             </tr>
                                             <tr>
                                                 @if ($col == 0)
@@ -187,7 +186,7 @@
                                                 @foreach ($currentPlanning->layingPlanningSize as $lps)
                                                     <td width="18%">{{ $lps->size->size }}</td>
                                                 @endforeach
-                                                <td style="text-align: center;">TOTAL</td>
+                                                <td width="10%" style="text-align: center;">TOTAL</td>
                                             </tr>
                                             <tr>
                                                 @if ($col == 0)
@@ -211,115 +210,27 @@
                                                 @if ($col == 0)
                                                     <td style="text-align: left;">CUT QTY</td>
                                                 @endif
-                                                @foreach ($currentPlanning->layingPlanningSize as $lps)
-                                                    @php
-                                                        $cut_qty = 0;
-                                                        foreach ($currentPlanning->layingPlanningDetail as $lpd)
-                                                        {
-                                                            foreach ($lpd->layingPlanningDetailSize as $lps2)
-                                                            {
-                                                                if ($lps2->size_id == $lps->size_id)
-                                                                {
-                                                                    if ($lpd->cuttingOrderRecord == null)
-                                                                    {
-                                                                        $cut_qty += 0;
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
-                                                                        {
-                                                                            $cut_qty += $cord->layer * $lps2->ratio_per_size;
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    @endphp
-                                                    <td>{{ $cut_qty }}</td>
+                                                
+                                                @foreach ($currentPlanning->cut_qty_per_size as $cut_qty)
+                                                    <td> {{ $cut_qty }}</td>
                                                 @endforeach
+
                                                 <td style="text-align: center;">
-                                                    @php
-                                                        $total_cut_qty = 0;
-                                                        foreach ($currentPlanning->layingPlanningDetail as $lpd)
-                                                        {
-                                                            foreach ($lpd->layingPlanningDetailSize as $lps2)
-                                                            {
-                                                                if ($lpd->cuttingOrderRecord == null)
-                                                                {
-                                                                    $cut_qty += 0;
-                                                                }
-                                                                else
-                                                                {
-                                                                    foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
-                                                                    {
-                                                                        $total_cut_qty += $cord->layer * $lps2->ratio_per_size;
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    @endphp
-                                                    {{ $total_cut_qty }}
+                                                    {{ $currentPlanning->cut_qty_all_size }}
                                                 </td>
                                             </tr>
                                             <tr>
                                                 @if ($col == 0)
                                                     <td style="text-align: left;">DIFF</td>
                                                 @endif
-                                                @foreach ($currentPlanning->layingPlanningSize as $lps)
-                                                    @php
-                                                        $diff_order_cut_qty_per_size = 0;
-                                                        foreach ($currentPlanning->layingPlanningDetail as $lpd)
-                                                        {
-                                                            foreach ($lpd->layingPlanningDetailSize as $lps2)
-                                                            {
-                                                                if ($lps2->size_id == $lps->size_id)
-                                                                {
-                                                                    if ($lpd->cuttingOrderRecord == null)
-                                                                    {
-                                                                        $diff_order_cut_qty_per_size += 0;
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
-                                                                        {
-                                                                            $diff_order_cut_qty_per_size += $cord->layer * $lps2->ratio_per_size;
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    @endphp
-                                                    @if(($diff_order_cut_qty_per_size - $lps->quantity) < 0)
-                                                        <td style="color:red;">{{ $diff_order_cut_qty_per_size - $lps->quantity }}</td>
-                                                    @else
-                                                        <td>{{ $diff_order_cut_qty_per_size - $lps->quantity }}</td>
-                                                    @endif
+                                                @foreach ($currentPlanning->diff_qty_per_size as $diff_qty)
+                                                    <td style="{{ ($diff_qty < 0) ? 'color:red;' : '' }}"> {{ $diff_qty }} </td>
                                                 @endforeach
-                                                <td style="text-align: center;">
-                                                    @php
-                                                        $total_ratio_layer = 0;
-                                                        $total_diff_order_cut_qty = 0;
-                                                        foreach ($currentPlanning->layingPlanningDetail as $lpd)
-                                                        {
-                                                            foreach ($lpd->layingPlanningDetailSize as $lps2)
-                                                            {
-                                                                if ($lpd->cuttingOrderRecord == null)
-                                                                {
-                                                                    $cut_qty += 0;
-                                                                }
-                                                                else
-                                                                {
-                                                                    foreach ($lpd->cuttingOrderRecord->cuttingOrderRecordDetail as $cord)
-                                                                    {
-                                                                        $total_ratio_layer += $cord->layer * $lps2->ratio_per_size;
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                        $total_diff_order_cut_qty = $total_ratio_layer - $total_qty;
-                                                    @endphp
-                                                    {{ $total_diff_order_cut_qty }}
+
+                                                <td style="text-align: center; {{ ($currentPlanning->diff_qty_all_size < 0) ? 'color:red;' : '' }}">
+                                                    {{ $currentPlanning->diff_qty_all_size }}
                                                 </td>
+
                                             </tr>
                                         </tbody>
                                     </table>

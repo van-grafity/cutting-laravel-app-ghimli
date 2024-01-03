@@ -100,8 +100,7 @@
                         <th rowspan="2" style="width: 7%;">Style</th>
                         <th rowspan="2" style="width: 5%;">GL#</th>
                         <th rowspan="2" style="width: 10%;">COLOR</th>
-                        <th rowspan="2" style="width: 3%;">MI QTY</th>
-                        <th rowspan="1">{{ $date_filter }}</th>
+                        <th rowspan="1" colspan="2">{{ $date_filter }}</th>
                         <th colspan="{{ count($groups) }}">Cutting Output (Group)</th>
                         <th rowspan="2">Total Qty </br> per day</th>
                         <th rowspan="2">Previous Acumulation </br> (pcs)</th>
@@ -110,7 +109,8 @@
                         <th rowspan="2">Replacement for </br> Sewing</th>
                     </tr>
                     <tr>
-                        <th rowspan="1">Balance to Cut</th>
+                        <th rowspan="1" style="width: 3%;">MI QTY</th>
+                        <th rowspan="1">MI Balance <br> (pcs)</th>
                         @foreach($groups as $key_group => $group)
                             <th rowspan="1" colspan="1"> {{ $group->group_name_show }}</th>
                         @endforeach
@@ -126,7 +126,10 @@
                                 <td>{{ $item->buyer }} </td>
                                 <td>{{ $laying_planning->style }}</td>
                                 <td>{{ $laying_planning->gl_number }}</td>
-                                <td style="text-align: left; padding-left: 2 !important;">{{ $laying_planning->color }}</td>
+                                <td style="text-align: left; padding-left: 2 !important;">
+                                    {{ $laying_planning->color }}
+                                    <!-- {{ (strlen($laying_planning->color) > 30) ? substr($laying_planning->color,0,30).'...' : $laying_planning->color }} -->
+                                </td>
                                 <td>{{ $laying_planning->order_qty }}</td>
                                 <td>{{ $laying_planning->balance_to_cut }}</td>
                                 @foreach($laying_planning->qty_per_groups as $key_group => $group)

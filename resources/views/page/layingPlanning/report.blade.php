@@ -217,7 +217,7 @@
                         echo $hasil_cut_qty == 0 ? '-' : $hasil_cut_qty;
                         ?>
                     </td>
-                    <td width="5.2%"> {{ $detail->cuttingOrderRecord->cut ? date('d-M', strtotime($detail->cuttingOrderRecord->cut)) : '-' }} </td>
+                    <td width="5.2%"> {{ $detail->cut_date ? date('d-M', strtotime($detail->cut_date)) : '-' }} </td>
                     <td></td>
                     <td></td>
                     <td></td>
