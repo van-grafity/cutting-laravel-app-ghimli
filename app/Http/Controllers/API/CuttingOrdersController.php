@@ -187,7 +187,7 @@ class CuttingOrdersController extends BaseController
                 'cutting_order_record' => $data
             ]
         );
-        return $this->onSuccess($data, 'Cutting Order Record Detail created successfully.');
+        return $this->onSuccess($data, 'Fabric roll berhasil di masukkan ke cutting order record.');
     }
     
     public function uploadStickerFabric(Request $request)
