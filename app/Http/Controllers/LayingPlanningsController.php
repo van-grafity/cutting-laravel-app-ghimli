@@ -294,20 +294,25 @@ class LayingPlanningsController extends Controller
         // ## Adjust Cut Date using Shift instead real cut date
         foreach ($details as $key => $lp_detail) {
             $cut_date = $lp_detail->cuttingOrderRecord->cut;
-            
-            $carbon_real_cut_datetime = Carbon::parse($cut_date);
-            $real_cut_date_only = Carbon::parse(date($carbon_real_cut_datetime))->format('Y-m-d');
-            
-            $start_shift_datetime =  Carbon::parse($real_cut_date_only)->format('Y-m-d 07:00:00');
-            
-            if($carbon_real_cut_datetime->lt($start_shift_datetime)){
-                $shift_date = $carbon_real_cut_datetime->subDays();
+            if($cut_date) {
+                $carbon_real_cut_datetime = Carbon::parse($cut_date);
+                $real_cut_date_only = Carbon::parse(date($carbon_real_cut_datetime))->format('Y-m-d');
+                
+                $start_shift_datetime =  Carbon::parse($real_cut_date_only)->format('Y-m-d 07:00:00');
+                
+                if($carbon_real_cut_datetime->lt($start_shift_datetime)){
+                    $shift_date = $carbon_real_cut_datetime->subDays();
+                } else {
+                    $shift_date = $carbon_real_cut_datetime;
+                }
+    
+                $lp_detail->cut_date = $shift_date->format('Y-m-d');
             } else {
-                $shift_date = $carbon_real_cut_datetime;
+                $lp_detail->cut_date = null;
             }
-
-            $lp_detail->cut_date = $shift_date->format('Y-m-d');
         }
+        
+        
 
         $pdf = PDF::loadView('page.layingPlanning.report', compact('data', 'details', 'cuttingOrderRecord'))->setPaper('a4', 'landscape');
         
