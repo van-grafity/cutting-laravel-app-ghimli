@@ -614,25 +614,77 @@ class CuttingOrdersController extends Controller
         $gl_number = $request->gl_number;
         $filename = 'Cutting Completion Report' . '.pdf';
         $layingPlanning = LayingPlanning::with(['gl', 'color', 'style', 'layingPlanningDetail', 'layingPlanningDetail.layingPlanningDetailSize', 'layingPlanningDetail.cuttingOrderRecord', 'layingPlanningDetail.fabricRequisition', 'layingPlanningDetail.fabricRequisition.fabricIssue', 'layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail'])
-                // ->where('remark', null)
                 ->whereHas('gl', function($query) use ($gl_number) {
                     if ($gl_number != null) {
                         $query->where('id', $gl_number);
                     }
                 })
-                // ->whereHas('layingPlanningDetail', function($query) use ($start_cut, $finish_cut) {
-                //     $query->whereHas('cuttingOrderRecord', function($query) use ($start_cut, $finish_cut) {
-                //         $query->whereDate('updated_at', '>=', $start_cut)
-                //             ->whereDate('updated_at', '<=', $finish_cut);
-                //     });
-                // })
                 ->orderBy('id', 'asc')
                 ->get();
-        // return $layingPlanning;
+        
         if($layingPlanning->isEmpty()){
             return redirect()->route('cutting-order.cutting-completion')->with('error', 'Planning from the related gl was not found');
         }
         
+        $total_mi_qty = array_sum(array_column($layingPlanning->toArray(), 'order_qty'));
+        $total_cut_qty = 0;
+        $total_diff_order_and_actual = 0;
+
+        foreach ($layingPlanning as $key_lp => $lp) {
+            $cut_qty_per_lp = 0;
+            $cut_qty_per_size = [];
+            $cut_qty_all_size = 0;
+            
+            $diff_qty_per_size = [];
+            $diff_qty_all_size = 0;
+
+            $diff_percentage;
+            
+            foreach ($lp->layingPlanningSize as $key_lp_size => $lp_size) {
+                $cut_qty_size = 0;
+                $diff_qty_size = 0;
+
+                foreach ($lp->layingPlanningDetail as $lp_detail) {
+                    foreach($lp_detail->layingPlanningDetailSize as $lp_detail_size) {
+                        if ($lp_detail_size->size_id == $lp_size->size_id) {
+                            if(!$lp_detail->cuttingOrderRecord){
+                                $cut_qty_size += 0; 
+                            } else {
+                                if(!$lp_detail->cuttingOrderRecord->cut){
+                                    $cut_qty_size += 0;
+                                } else {
+                                    foreach ($lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail as $cor_detail)
+                                    {
+                                        $cut_qty_size += $cor_detail->layer * $lp_detail_size->ratio_per_size;
+                                    }
+                                }
+                            }
+                            
+                        }
+                    }
+                }
+                
+                $cut_qty_per_size[$key_lp_size] = $cut_qty_size;
+                $diff_qty_size = $cut_qty_size - $lp_size->quantity;
+                $diff_qty_per_size[$key_lp_size] = ($diff_qty_size > 0) ? '+' . $diff_qty_size : $diff_qty_size;
+            }
+
+            $cut_qty_all_size = array_sum($cut_qty_per_size);
+            $diff_qty_all_size = array_sum($diff_qty_per_size);
+
+            $layingPlanning[$key_lp]->cut_qty_per_size = $cut_qty_per_size;
+            $layingPlanning[$key_lp]->cut_qty_all_size = $cut_qty_all_size;
+
+            $layingPlanning[$key_lp]->diff_qty_per_size = $diff_qty_per_size;
+            $layingPlanning[$key_lp]->diff_qty_all_size = ($diff_qty_all_size > 0) ? '+' . $diff_qty_all_size : $diff_qty_all_size;
+            
+            $diff_percentage = round((($cut_qty_all_size / $lp->order_qty) * 100) , 1);
+            $diff_percentage_color = $diff_percentage < 100 ? 'red' : ($diff_percentage > 100 ? 'blue' : '');
+            $layingPlanning[$key_lp]->diff_percentage = $diff_percentage;
+            $layingPlanning[$key_lp]->diff_percentage_color = $diff_percentage_color;
+            
+        }
+
         $data = [
             'layingPlanning' => $layingPlanning,
             'start_cut' => $start_cut,
@@ -640,6 +692,7 @@ class CuttingOrdersController extends Controller
             'gl_number' => $gl_number
         ];
 
+        // return view('page.cutting-order.completion-report', compact('data'));
         $pdf = PDF::loadview('page.cutting-order.completion-report', compact('data'))->setPaper('a4', 'landscape');
         return $pdf->stream($filename);
     }

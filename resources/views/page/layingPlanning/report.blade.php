@@ -217,26 +217,7 @@
                         echo $hasil_cut_qty == 0 ? '-' : $hasil_cut_qty;
                         ?>
                     </td>
-                    <td width="5.2%">
-                        <?php
-                        $updated_at = '';
-                        foreach ($cuttingOrderRecord as $record)
-                        {
-                            if ($record->laying_planning_detail_id == $detail->id)
-                            {
-                                foreach ($record->cuttingOrderRecordDetail as $record_detail)
-                                {
-                                    if ($record_detail->layer != 0)
-                                    {
-                                        $updated_at = $record->updated_at;
-                                        // $record->cut
-                                    }
-                                }
-                            }
-                        }
-                        echo $updated_at == '' ? '-' : date('d-M', strtotime($updated_at));
-                        ?>
-                    </td>
+                    <td width="5.2%"> {{ $detail->cut_date ? date('d-M', strtotime($detail->cut_date)) : '-' }} </td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -281,7 +262,7 @@
                 @endif
                 @endforeach
                 <tr>
-                    <td colspan="2">PCS FOR SAMPLE</td>
+                    <td colspan="2">.</td>
                     @foreach ($data->layingPlanningSize as $item)
                     <td></td>
                     @endforeach
@@ -291,10 +272,10 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
                     @foreach ($data->layingPlanningSize as $item)
                     <td></td>
                     @endforeach
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -304,8 +285,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                <td></td>
-                        <td></td>
+                    <td colspan="2">Total</td>
                     @foreach ($data->layingPlanningSize as $item)
                     <td><?php
                         $total_per_size = 0;
@@ -399,8 +379,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td></td>
-                    <td></td>
+                    <td colspan="2">( + / - )</td>
                     @foreach ($data->layingPlanningSize as $item)
                     <td><?php
                         $total_per_size = 0;

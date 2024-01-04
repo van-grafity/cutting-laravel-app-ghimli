@@ -290,11 +290,35 @@ class LayingPlanningsController extends Controller
                 $query->where('id', $id);
             });
         })->get();
-        // $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($serial_number) {
-        //     $query->whereHas('layingPlanning', function($query) use ($serial_number) {
-        //         $query->where('serial_number', $serial_number);
-        //     });
-        // })->get();
+
+        // ## Adjust Cut Date using Shift instead real cut date
+        foreach ($details as $key => $lp_detail) {
+            if(!$lp_detail->cuttingOrderRecord) {
+                $lp_detail->cut_date = null;
+                continue;
+            }
+            
+            $cut_date = $lp_detail->cuttingOrderRecord->cut;
+            if($cut_date) {
+                $carbon_real_cut_datetime = Carbon::parse($cut_date);
+                $real_cut_date_only = Carbon::parse(date($carbon_real_cut_datetime))->format('Y-m-d');
+                
+                $start_shift_datetime =  Carbon::parse($real_cut_date_only)->format('Y-m-d 07:00:00');
+                
+                if($carbon_real_cut_datetime->lt($start_shift_datetime)){
+                    $shift_date = $carbon_real_cut_datetime->subDays();
+                } else {
+                    $shift_date = $carbon_real_cut_datetime;
+                }
+    
+                $lp_detail->cut_date = $shift_date->format('Y-m-d');
+            } else {
+                $lp_detail->cut_date = null;
+            }
+        }
+        
+        
+
         $pdf = PDF::loadView('page.layingPlanning.report', compact('data', 'details', 'cuttingOrderRecord'))->setPaper('a4', 'landscape');
         
         if(!Auth::user()->hasRole('super_admin') || !Auth::user()->hasRole('merchandiser')){
