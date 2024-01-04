@@ -210,7 +210,7 @@
                             <td><?php
                                 foreach ($value->cuttingOrderRecordDetail as $detail) {
                                     if ($detail != null) {
-                                        echo date('d/M/Y', strtotime($value->updated_at));
+                                        echo date('d/M/Y', strtotime($value->cut));
                                         break;
                                     }
                                 }

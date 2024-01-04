@@ -54,7 +54,7 @@
                 <tr>
                     <th rowspan="2" width="2%">No</th>
                     <th rowspan="2">COR Serial No.</th>
-                    <th rowspan="2" width="6.5%">No</br>Laying</br>Sheet</th>
+                    <th rowspan="2" width="7%">No</br>Laying</br>Sheet</th>
                     <th rowspan="2" width="6.2%">Date</th>
                     <th rowspan="2">Color</th>
                     <th rowspan="2" hidden>Size/Ratio</th>
@@ -79,7 +79,7 @@
                                 <td>{{ $key + 1 }}</td>
                                 <td style="text-align: left; padding-left: 4px !important;">{{ $value2->serial_number }}</td>
                                 <td>{{ $value->no_laying_sheet }}</td>
-                                <td>{{ date('d-m-Y', strtotime($value2->updated_at)) }}</td>
+                                <td>{{ date('d-m-Y', strtotime($value2->cut)) }}</td>
                                 
                                 <td style="text-align: left; padding-left: 4px !important;">{{ $value->layingPlanning->color->color }}</td>
                                 <!-- size ratio 1 -->

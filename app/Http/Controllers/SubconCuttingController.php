@@ -261,23 +261,29 @@ class SubconCuttingController extends Controller
             ->select('laying_plannings.id','laying_plannings.serial_number')->get();
         return view('page.subcon.print', compact('laying_plannings', 'group'));
     }
-
+    
     public function summary_report_group_cutting_order_record(Request $request)
     {
         $date_start = $request->date_start;
         $date_end = $request->date_end;
         $group_id = $request->group_id;
 
+        $date_filter_night_shift = Carbon::parse($date_end)->addDay()->format('Y-m-d H:i:s');
+        $date_filter_night_shift = Carbon::parse($date_filter_night_shift)->format('Y-m-d 05:00:00');
+
         $cuttingOrderRecordDetail = CuttingOrderRecordDetail::with(['user'])->whereIn('user_id', $this->getUserIdByGroup($group_id))->get();
         $cuttingOrderRecordDetailIds = [];
         foreach ($cuttingOrderRecordDetail as $key => $value) {
             $cuttingOrderRecordDetailIds[] = $value->cutting_order_record_id;
         }
-        $cuttingOrderRecord = CuttingOrderRecord::whereIn('id', $cuttingOrderRecordDetailIds)
+        
+        $cuttingOrderRecord = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])->whereIn('id', $cuttingOrderRecordDetailIds)
             ->whereDate('updated_at', '>=', $date_start)
-            ->whereDate('updated_at', '<=', $date_end)
+            ->whereDate('updated_at', '<=', $date_filter_night_shift)
+            ->whereNotNull('cut')
             ->orderBy('updated_at', 'asc')
             ->get();
+
         
         $cuttingOrderRecordIds = [];
         foreach ($cuttingOrderRecord as $key => $value) {

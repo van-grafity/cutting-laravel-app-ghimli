@@ -651,7 +651,7 @@ class CuttingOrdersController extends Controller
         $statusCut = StatusCut::all();
         return view('page.cutting-order.status-cutting-order-record', compact('gls', 'statusLayer', 'statusCut'));
     }
-    
+
     public function printStatusCuttingOrderRecord(Request $request)
     {
         $date_start = $request->date_start;
@@ -659,6 +659,9 @@ class CuttingOrdersController extends Controller
         $gl_number = $request->gl_number;
         $status_layer = $request->status_layer;
         $status_cut = $request->status_cut;
+
+        $date_filter_night_shift = Carbon::parse($date_end)->addDay()->format('Y-m-d H:i:s');
+        $date_filter_night_shift = Carbon::parse($date_filter_night_shift)->format('Y-m-d 05:00:00');
 
         $cuttingOrderRecord = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'CuttingOrderRecordDetail', 'layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.gl', 'layingPlanningDetail.layingPlanning.color', 'layingPlanningDetail.layingPlanning.style'])
             ->whereHas('layingPlanningDetail', function($query) use ($gl_number) {
@@ -678,9 +681,9 @@ class CuttingOrdersController extends Controller
                     $query->where('id', $status_cut);
                 }
             })
-            ->where(function($query) use ($date_start, $date_end) {
+            ->where(function($query) use ($date_start, $date_end, $date_filter_night_shift) {
                 $query->whereDate('updated_at', '>=', [$date_start, Carbon::parse($date_start)->format('Y-m-d 08:00:00')])
-                    ->whereDate('updated_at', '<=', [$date_end, Carbon::parse($date_end)->format('Y-m-d 05:00:00')]);
+                    ->whereDate('updated_at', '<=', [$date_filter_night_shift, Carbon::parse($date_filter_night_shift)->format('Y-m-d 05:00:00')]);
             })
             ->orderBy('serial_number', 'asc')
             ->get();
@@ -702,33 +705,6 @@ class CuttingOrdersController extends Controller
             'status_cut' => $status_cut == null ? '' : $this->getStatusCut($status_cut),
         ];
 
-        // $layingPlanningDetail = LayingPlanningDetail::with(['layingPlanning', 'layingPlanning.gl', 'layingPlanning.color', 'layingPlanning.style', 'cuttingOrderRecord', 'cuttingOrderRecord.cuttingOrderRecordDetail', 'cuttingOrderRecord.statusLayer', 'cuttingOrderRecord.statusCut'])
-        //     ->whereHas('layingPlanning', function($query) use ($gl_number) {
-        //         $query->whereHas('gl', function($query) use ($gl_number) {
-        //             if ($gl_number != null) {
-        //                 $query->where('id', $gl_number);
-        //             }
-        //         });
-        //     })
-        //     ->whereHas('cuttingOrderRecord', function($query) use ($date_start, $date_end, $status_layer, $status_cut) {
-        //         $query->whereDate('updated_at', '>=', $date_start)
-        //             ->whereDate('updated_at', '<=', $date_end)
-        //             ->whereHas('statusLayer', function($query) use ($status_layer) {
-        //                 if ($status_layer != null) {
-        //                     $query->where('id', $status_layer);
-        //                 }
-        //             })
-        //             ->whereHas('statusCut', function($query) use ($status_cut) {
-        //                 if ($status_cut != null) {
-        //                     $query->where('id', $status_cut);
-        //                 }
-        //             });
-        //     })
-        //     ->orderBy('id', 'asc')
-        //     ->get();
-        
-        // return $layingPlanningDetail;
-        
         $pdf = PDF::loadview('page.cutting-order.report-status', compact('data'))->setPaper('a4', 'landscape');
         return $pdf->stream('Report Status Cutting Order Record.pdf');
     }
