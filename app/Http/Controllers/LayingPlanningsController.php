@@ -293,6 +293,11 @@ class LayingPlanningsController extends Controller
 
         // ## Adjust Cut Date using Shift instead real cut date
         foreach ($details as $key => $lp_detail) {
+            if(!$lp_detail->cuttingOrderRecord) {
+                $lp_detail->cut_date = null;
+                continue;
+            }
+            
             $cut_date = $lp_detail->cuttingOrderRecord->cut;
             if($cut_date) {
                 $carbon_real_cut_datetime = Carbon::parse($cut_date);
