@@ -187,7 +187,7 @@ class CuttingOrdersController extends BaseController
                 'cutting_order_record' => $data
             ]
         );
-        return $this->onSuccess($data, 'Cutting Order Record Detail created successfully.');
+        return $this->onSuccess($data, 'Fabric roll berhasil di masukkan ke cutting order record.');
     }
     
     public function uploadStickerFabric(Request $request)
@@ -305,7 +305,9 @@ class CuttingOrdersController extends BaseController
         $statusCut = StatusCut::where('name', $input['name'])->first();
         if ($statusCut == null) return $this->onError(404, 'Status Cut not found.'); // not relation
         $cuttingOrderRecord->id_status_cut = $statusCut->id;
-        $cuttingOrderRecord->cut = Carbon::now();
+        if ($cuttingOrderRecord->id_status_cut == 2) {
+            $cuttingOrderRecord->cut = Carbon::now();
+        }
         $cuttingOrderRecord->save();
         $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('statusCut')
             ->first();

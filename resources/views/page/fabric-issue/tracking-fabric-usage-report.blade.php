@@ -43,7 +43,7 @@
                     <th rowspan="2" width="10%">GL No.</th>
                     <th rowspan="2">Color</th>
                     <th rowspan="2" width="12%">Batch No.</th>
-                    <th rowspan="2" width="6.5%">Roll</br>No.</th>
+                    <th rowspan="2" width="8.2%">Roll</br>No.</th>
                     <th rowspan="2" width="6.5%">Sticker</br>Ydz</th>
                     <th colspan="3">Usage</th>
                     <th rowspan="2" width="6.5%">Balance End</th>
