@@ -39,7 +39,7 @@ class UpdateDatabasesController extends Controller
                 ->whereMonth('cutting_order_records.created_at',$month)
                 ->whereYear('cutting_order_records.created_at',$year)
                 ->where('cutting_order_records.id_status_cut','2')
-                ->where('cutting_order_records.created_at','<=','2023-11-13')
+                ->where('cutting_order_records.created_at','<=','2023-11-14')
                 ->whereNull('cutting_order_records.cut')
                 ->whereNotNull('cutting_order_record_details.cutting_order_record_id')
                 ->limit(500)

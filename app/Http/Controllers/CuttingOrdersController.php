@@ -679,7 +679,7 @@ class CuttingOrdersController extends Controller
             $layingPlanning[$key_lp]->diff_qty_all_size = ($diff_qty_all_size > 0) ? '+' . $diff_qty_all_size : $diff_qty_all_size;
             
             $diff_percentage = round((($cut_qty_all_size / $lp->order_qty) * 100) , 1);
-            $diff_percentage_color = $diff_percentage < 100 ? 'red' : ($diff_percentage > 100 ? 'green' : '');
+            $diff_percentage_color = $diff_percentage < 100 ? 'red' : ($diff_percentage > 100 ? 'blue' : '');
             $layingPlanning[$key_lp]->diff_percentage = $diff_percentage;
             $layingPlanning[$key_lp]->diff_percentage_color = $diff_percentage_color;
             
