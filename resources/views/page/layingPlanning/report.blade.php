@@ -262,7 +262,7 @@
                 @endif
                 @endforeach
                 <tr>
-                    <td colspan="2">PCS FOR SAMPLE</td>
+                    <td colspan="2">.</td>
                     @foreach ($data->layingPlanningSize as $item)
                     <td></td>
                     @endforeach
@@ -272,10 +272,10 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
                     @foreach ($data->layingPlanningSize as $item)
                     <td></td>
                     @endforeach
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -285,8 +285,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                <td></td>
-                        <td></td>
+                    <td colspan="2">Total</td>
                     @foreach ($data->layingPlanningSize as $item)
                     <td><?php
                         $total_per_size = 0;
@@ -380,8 +379,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td></td>
-                    <td></td>
+                    <td colspan="2">( + / - )</td>
                     @foreach ($data->layingPlanningSize as $item)
                     <td><?php
                         $total_per_size = 0;
