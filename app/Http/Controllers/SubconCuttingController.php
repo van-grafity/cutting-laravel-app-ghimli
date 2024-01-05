@@ -12,6 +12,7 @@ use App\Models\LayingPlanning;
 use App\Models\LayingPlanningDetail;
 use App\Models\LayingPlanningSize;
 use App\Models\FabricRequisition;
+use App\Models\Gl;
 use App\Models\GlCombine;
 use App\Models\GlCombineDetail;
 use Carbon\Carbon;
@@ -267,31 +268,131 @@ class SubconCuttingController extends Controller
         $date_start = $request->date_start;
         $date_end = $request->date_end;
         $group_id = $request->group_id;
+        $group = Groups::find($group_id);
+        
+
+
+        $datetime_filter_start =  Carbon::parse($date_start)->format('Y-m-d 07:00:00');
+        $datetime_filter_end =  Carbon::parse($date_end)->addDay()->format('Y-m-d 06:59:00');
 
         $date_filter_night_shift = Carbon::parse($date_end)->addDay()->format('Y-m-d H:i:s');
         $date_filter_night_shift = Carbon::parse($date_filter_night_shift)->format('Y-m-d 05:00:00');
-
-        $cuttingOrderRecordDetail = CuttingOrderRecordDetail::with(['user'])->whereIn('user_id', $this->getUserIdByGroup($group_id))->get();
-        $cuttingOrderRecordDetailIds = [];
-        foreach ($cuttingOrderRecordDetail as $key => $value) {
-            $cuttingOrderRecordDetailIds[] = $value->cutting_order_record_id;
-        }
         
-        $cuttingOrderRecord = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])->whereIn('id', $cuttingOrderRecordDetailIds)
-            ->whereDate('updated_at', '>=', $date_start)
-            ->whereDate('updated_at', '<=', $date_filter_night_shift)
-            ->whereNotNull('cut')
-            ->orderBy('updated_at', 'asc')
+        
+        $gl_list = GL::select('gls.*')
+            ->join('laying_plannings','laying_plannings.gl_id','=','gls.id')
+            ->join('laying_planning_details','laying_planning_details.laying_planning_id','=','laying_plannings.id')
+            ->join('cutting_order_records','cutting_order_records.laying_planning_detail_id','=','laying_planning_details.id')
+            ->join('cutting_order_record_details','cutting_order_record_details.cutting_order_record_id','=','cutting_order_records.id')
+            ->whereIn('cutting_order_record_details.user_id',$this->getUserIdByGroup($group_id))
+            ->where('cutting_order_records.cut', '>=', $datetime_filter_start)
+            ->where('cutting_order_records.cut', '<', $datetime_filter_end)
+            ->groupBy('gls.id')
+            ->orderBy('gls.gl_number')
+            ->get();
+            
+        
+        $all_size_in_summary = GL::select('sizes.*')
+            ->join('laying_plannings','laying_plannings.gl_id','=','gls.id')
+            ->join('laying_planning_details','laying_planning_details.laying_planning_id','=','laying_plannings.id')
+            ->join('laying_planning_detail_sizes','laying_planning_detail_sizes.laying_planning_detail_id','=','laying_planning_details.id')
+            ->join('sizes','sizes.id','=','laying_planning_detail_sizes.size_id')
+            ->join('cutting_order_records','cutting_order_records.laying_planning_detail_id','=','laying_planning_details.id')
+            ->join('cutting_order_record_details','cutting_order_record_details.cutting_order_record_id','=','cutting_order_records.id')
+            ->whereIn('cutting_order_record_details.user_id',$this->getUserIdByGroup($group_id))
+            ->where('cutting_order_records.cut', '>=', $datetime_filter_start)
+            ->where('cutting_order_records.cut', '<', $datetime_filter_end)
+            ->groupBy('sizes.id')
+            ->orderBy('laying_planning_detail_sizes.id')
             ->get();
 
         
-        $cuttingOrderRecordIds = [];
-        foreach ($cuttingOrderRecord as $key => $value) {
-            $cuttingOrderRecordIds[] = $value->laying_planning_detail_id;
-        }
-        $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereIn('id', $cuttingOrderRecordIds)->get();
+        $cutting_summary = [];
+        $general_total_pcs = 0;
+        $general_total_dozen = 0;
+        
+        foreach ($gl_list as $key_lp => $gl) {
+            
+            $cor_list = CuttingOrderRecord::select(
+                    'cutting_order_records.id as cor_id',
+                    'cutting_order_records.serial_number as cor_serial_number',
+                    'cutting_order_records.cut as cut_date',
+                    'laying_planning_details.no_laying_sheet',
+                    'cutting_order_records.laying_planning_detail_id',
+                    'colors.color',
+                )
+                ->join('laying_planning_details','laying_planning_details.id','=','cutting_order_records.laying_planning_detail_id')
+                ->join('laying_plannings','laying_plannings.id','=','laying_planning_details.laying_planning_id')
+                ->join('cutting_order_record_details','cutting_order_record_details.cutting_order_record_id','=','cutting_order_records.id')
+                ->join('colors','colors.id','=','laying_plannings.color_id')
+                ->where('laying_plannings.gl_id', $gl->id)
+                ->whereIn('cutting_order_record_details.user_id',$this->getUserIdByGroup($group_id))
+                ->where('cutting_order_records.cut', '>=', $datetime_filter_start)
+                ->where('cutting_order_records.cut', '<', $datetime_filter_end)
+                ->groupBy('cutting_order_records.id')
+                ->get();
 
-        $pdf = PDF::loadView('page.subcon.report2', compact('cuttingOrderRecord', 'cuttingOrderRecordDetail', 'details', 'date_start', 'date_end'))->setPaper('a4', 'landscape');
+            
+            $subtotal_pcs_per_gl = 0;
+            $subtotal_dozen_per_gl = 0;
+            foreach ($cor_list as $key_cor => $cor) {
+                
+                $cutting_order_record_detail = CuttingOrderRecordDetail::where('cutting_order_record_id', $cor->cor_id)->get();
+                $cor_layer = $cutting_order_record_detail->sum('layer');
+                $cor_total_ratio = 0;
+
+                $ratio_per_size_in_summary = [];
+                $cor_size_list = $cor->layingPlanningDetail->layingPlanningDetailSize;
+                
+                foreach ($all_size_in_summary as $key_summary_size => $summary_size) {
+                    $ratio = 0;
+                    foreach ($cor_size_list as $key_cor_size => $cor_size){
+                        if ($summary_size->id == $cor_size->size_id){
+                            $ratio = $cor_size->ratio_per_size;
+                            $cor_total_ratio += $ratio;
+                        }
+                    }
+                    $ratio_per_size_in_summary[] = $ratio > 0 ? $ratio : '-';
+                }
+                $cor->ratio_per_size_in_summary = $ratio_per_size_in_summary;
+                $cor->cor_layer = $cor_layer;
+                $cor->cor_total_ratio = $cor_total_ratio;
+                $cor->cor_pcs = $cor_layer * $cor_total_ratio;
+                $cor->cor_dozen =  number_format((float) ($cor->cor_pcs / 12), 2, '.', '');
+
+                $subtotal_pcs_per_gl += $cor->cor_pcs;
+                $subtotal_dozen_per_gl += $cor->cor_dozen;
+
+
+
+                $carbon_real_cut_datetime = Carbon::parse($cor->cut_date);
+                $real_cut_date_only = Carbon::parse(date($carbon_real_cut_datetime))->format('Y-m-d');
+                $start_shift_datetime =  Carbon::parse($real_cut_date_only)->format('Y-m-d 07:00:00');
+                
+                if($carbon_real_cut_datetime->lt($start_shift_datetime)){
+                    $cor->shift_date = $carbon_real_cut_datetime->subDays()->format('d-m-Y');
+                } else {
+                    $cor->shift_date = $carbon_real_cut_datetime->format('d-m-Y');
+                }
+            }
+
+            $cor_per_gl = (object) [
+                'gl' => $gl,
+                'cor_list' => $cor_list,
+                'subtotal_pcs_per_gl' => $subtotal_pcs_per_gl,
+                'subtotal_dozen_per_gl' => $subtotal_dozen_per_gl,
+            ];
+            $cutting_summary[] = $cor_per_gl;
+            $general_total_pcs += $subtotal_pcs_per_gl;
+            $general_total_dozen += $subtotal_dozen_per_gl;
+        }
+
+        // dd($cutting_summary);
+        
+        // return view('page.subcon.report_clean', compact('group','date_start', 'date_end','cutting_summary','all_size_in_summary','general_total_pcs','general_total_dozen'));
+
+        // !! file view subcon.report2 bisa di hapus next nya
+        $pdf = PDF::loadView('page.subcon.report_clean', compact('group','date_start', 'date_end','cutting_summary','all_size_in_summary','general_total_pcs','general_total_dozen'))->setPaper('a4', 'landscape');
         return $pdf->stream('Summary Group Cutting.pdf');
     }
 
