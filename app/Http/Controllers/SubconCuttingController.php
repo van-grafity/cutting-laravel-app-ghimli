@@ -270,15 +270,9 @@ class SubconCuttingController extends Controller
         $group_id = $request->group_id;
         $group = Groups::find($group_id);
         
-
-
         $datetime_filter_start =  Carbon::parse($date_start)->format('Y-m-d 07:00:00');
         $datetime_filter_end =  Carbon::parse($date_end)->addDay()->format('Y-m-d 06:59:00');
 
-        $date_filter_night_shift = Carbon::parse($date_end)->addDay()->format('Y-m-d H:i:s');
-        $date_filter_night_shift = Carbon::parse($date_filter_night_shift)->format('Y-m-d 05:00:00');
-        
-        
         $gl_list = GL::select('gls.*')
             ->join('laying_plannings','laying_plannings.gl_id','=','gls.id')
             ->join('laying_planning_details','laying_planning_details.laying_planning_id','=','laying_plannings.id')
@@ -318,6 +312,7 @@ class SubconCuttingController extends Controller
                     'cutting_order_records.serial_number as cor_serial_number',
                     'cutting_order_records.cut as cut_date',
                     'laying_planning_details.no_laying_sheet',
+                    'laying_planning_details.marker_code',
                     'cutting_order_records.laying_planning_detail_id',
                     'colors.color',
                 )

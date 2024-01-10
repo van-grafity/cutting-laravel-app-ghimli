@@ -31,6 +31,7 @@
                     <th rowspan="2" width="6%">Gl Number</th>
                     <th rowspan="2" width="7%">No</br>Laying</br>Sheet</th>
                     <th rowspan="2">COR Serial No.</th>
+                    <th rowspan="2" width="7%">Marker Code</th>
                     <th rowspan="2" width="6.2%">Date</th>
                     <th rowspan="2">Color</th>
                     <th rowspan="2" hidden>Size/Ratio</th>
@@ -55,6 +56,7 @@
                         <td>{{ $summary_by_gl->gl->gl_number }}</td>
                         <td>{{ $cor->no_laying_sheet }}</td>
                         <td>{{ $cor->cor_serial_number }}</td>
+                        <td>{{ $cor->marker_code }}</td>
                         <td>{{ $cor->shift_date }}</td>
                         <td style="text-align: left; padding-left:10px !important;">{{ $cor->color }}</td>
                         @foreach($cor->ratio_per_size_in_summary as $key_ratio_size => $ratio_per_size)
@@ -66,13 +68,13 @@
                     </tr>
                     @endforeach
                     <tr style="background-color: #d9d9d9;">
-                        <td colspan="{{ count($all_size_in_summary) + 7 }}" style="text-align: left; font-weight: bold; padding-left:10px !important"> Subtotal</td>
+                        <td colspan="{{ count($all_size_in_summary) + 8 }}" style="text-align: left; font-weight: bold; padding-left:10px !important"> Subtotal</td>
                         <td>{{ $summary_by_gl->subtotal_pcs_per_gl }}</td>
                         <td>{{ $summary_by_gl->subtotal_dozen_per_gl }}</td>
                     </tr>
                 @endforeach
                 <tr style="background-color: #bfbfbf;">
-                    <td colspan="{{ count($all_size_in_summary) + 7 }}" style="text-align: left; font-weight: bold; padding-left:10px !important"> Total</td>
+                    <td colspan="{{ count($all_size_in_summary) + 8 }}" style="text-align: left; font-weight: bold; padding-left:10px !important"> Total</td>
                     <td>{{ $general_total_pcs }}</td>
                     <td>{{ $general_total_dozen }}</td>
                 </tr>

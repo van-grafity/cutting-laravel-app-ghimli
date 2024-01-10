@@ -518,6 +518,12 @@ return [
             'can'  => 'cutting-record',
         ],
         [
+            'text' => 'Output Report per GL',
+            'url'  => '/cutting-output-report',
+            'icon' => 'fas fa-fw fa fa-file-alt',
+            'can'  => 'cutting-record',
+        ],
+        [
             'text' => 'Cutting Order Completion',
             'url'  => '/cutting-order-completion',
             'icon' => 'fas fa-fw fa fa-database',

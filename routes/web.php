@@ -25,6 +25,7 @@ use App\Http\Controllers\BundleCutsController;
 use App\Http\Controllers\BundleStocksController;
 use App\Http\Controllers\BundleTransferNotesController;
 use App\Http\Controllers\UpdateDatabasesController;
+use App\Http\Controllers\CuttingOutputReportController;
 
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Crypt;
@@ -232,6 +233,9 @@ Route::group(['middleware' => ['auth','can:cutting-record']], function () {
     
     Route::get('tracking-fabric-usage', [FabricIssuesController::class,'trackingFabricUsage'])->name('fabric-issue.tracking-fabric-usage');
     Route::get('tracking-fabric-usage-report', [FabricIssuesController::class,'trackingFabricUsageReport'])->name('fabric-issue.tracking-fabric-usage-report');
+
+    Route::get('cutting-output-report', [CuttingOutputReportController::class,'index'])->name('cutting-output-report.index');
+    Route::get('cutting-output-report-print', [CuttingOutputReportController::class,'print'])->name('cutting-output-report.print');
 });
 
 // ## Route for Fetch Select2 Form
