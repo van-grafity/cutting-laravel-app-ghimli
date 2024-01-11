@@ -203,7 +203,7 @@ class DailyCuttingReportsController extends Controller
 
         // ## adjust start_date and end_date for day and night shift
         $start_datetime =  Carbon::parse($date_filter)->format('Y-m-d 07:00:00');
-        $end_datetime =  Carbon::parse($date_filter)->addDay()->format('Y-m-d 05:00:00');
+        $end_datetime =  Carbon::parse($date_filter)->addDay()->format('Y-m-d 06:59:00');
     
         // get data group yang ada potong hari ini
         $groups = Groups::select('groups.id', 'group_name')

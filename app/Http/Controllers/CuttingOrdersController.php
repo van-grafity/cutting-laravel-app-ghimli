@@ -713,8 +713,9 @@ class CuttingOrdersController extends Controller
         $status_layer = $request->status_layer;
         $status_cut = $request->status_cut;
 
-        $date_filter_night_shift = Carbon::parse($date_end)->addDay()->format('Y-m-d H:i:s');
-        $date_filter_night_shift = Carbon::parse($date_filter_night_shift)->format('Y-m-d 05:00:00');
+        // ## adjust start_date and end_date for day and night shift
+        $start_datetime =  Carbon::parse($date_start)->format('Y-m-d 07:00:00');
+        $end_datetime =  Carbon::parse($date_end)->addDay()->format('Y-m-d 06:59:00');
 
         $cuttingOrderRecord = CuttingOrderRecord::with(['statusLayer', 'statusCut', 'CuttingOrderRecordDetail', 'layingPlanningDetail', 'layingPlanningDetail.layingPlanning', 'layingPlanningDetail.layingPlanning.gl', 'layingPlanningDetail.layingPlanning.color', 'layingPlanningDetail.layingPlanning.style'])
             ->whereHas('layingPlanningDetail', function($query) use ($gl_number) {
@@ -734,9 +735,9 @@ class CuttingOrdersController extends Controller
                     $query->where('id', $status_cut);
                 }
             })
-            ->where(function($query) use ($date_start, $date_end, $date_filter_night_shift) {
-                $query->whereDate('updated_at', '>=', [$date_start, Carbon::parse($date_start)->format('Y-m-d 08:00:00')])
-                    ->whereDate('updated_at', '<=', [$date_filter_night_shift, Carbon::parse($date_filter_night_shift)->format('Y-m-d 05:00:00')]);
+            ->where(function($query) use ($start_datetime, $end_datetime) {
+                $query->where('cut', '>=', $start_datetime)
+                      ->where('cut', '<=', $end_datetime);
             })
             ->orderBy('serial_number', 'asc')
             ->get();
