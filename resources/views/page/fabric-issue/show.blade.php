@@ -108,7 +108,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="qr-wrapper">
-                                    <img src="https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl={{ $fabric_requisition->serial_number }}" alt="">
+                                    {!! QrCode::size(100)->generate($fabric_requisition->serial_number); !!}
                                 </div>
                             </div>
                         </div>
