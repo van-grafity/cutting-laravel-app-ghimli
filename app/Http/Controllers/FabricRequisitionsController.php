@@ -300,8 +300,8 @@ class FabricRequisitionsController extends Controller
     public function get_serial_number(Request $request){
         $date_start = $request->date_start;
         $date_end = $request->date_end;
-        $fabric_requisitions = FabricRequisition::whereDate('created_at', '>=', $date_start)
-            ->whereDate('created_at', '<=', $date_end)
+        $fabric_requisitions = FabricRequisition::whereDate('updated_at', '>=', $date_start)
+            ->whereDate('updated_at', '<=', $date_end)
             ->get();
         return response()->json([
             'status' => 'success',
