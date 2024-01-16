@@ -302,6 +302,7 @@ class DailyCuttingReportsController extends Controller
                             $query->where('cutting_order_records.cut', '>=', $start_datetime)
                                   ->where('cutting_order_records.cut', '<=', $end_datetime);
                         })
+                        ->groupBy('cutting_order_records.id')
                         ->where('groups.id', '=', $group->id)
                         ->get();
                     
