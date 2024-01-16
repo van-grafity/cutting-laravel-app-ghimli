@@ -52,33 +52,17 @@
 
 @push('js')
 <script type="text/javascript">
-        $('date_start').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            todayHighlight: true
-        });
-        $('date_end').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            todayHighlight: true
-        });
 
 </script>
 
 <script type="text/javascript">
     $(document).ready(function(){
-        $('date_start').datetimepicker({
-            format: 'DD-MM-yyyy',
-            autoclose: true,
-            todayHighlight: true
-        });
-        $('date_end').datetimepicker({
-            format: 'DD-MM-yyyy',
-            autoclose: true,
-            todayHighlight: true
-        });
         $('#fbr_number').select2();
 
+        $('#date_start').val(moment().subtract(1, 'week').format('yyyy-MM-DD'));
+        $('#date_end').val(moment().format('yyyy-MM-DD'));
+
+        
         $('#date_start').change(function(){
             var date_start = $('#date_start').val();
             var date_end = $('#date_end').val();
@@ -136,6 +120,8 @@
                 alert('Please select Fabric Request Number');
             }
         });
+        
+        $('#date_start').change();
     });
             
 </script>
