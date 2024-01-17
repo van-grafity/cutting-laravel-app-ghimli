@@ -90,6 +90,7 @@ class FabricIssuesController extends Controller
             $fabric_issue->weight = $weightIds[$key];
             $fabric_issue->yard = $yardIds[$key];
             $fabric_issue->fabric_request_id = $fabric_requisition_id;
+            $fabric_issue->created_by = auth()->user()->id;
             // $fabric_issue->save();
             // if null
             if($fabric_issue->roll_no == null || $fabric_issue->batch_number == null || $fabric_issue->weight == null || $fabric_issue->yard == null){
@@ -185,6 +186,7 @@ class FabricIssuesController extends Controller
         $fabric_issue->batch_number = $request->batch_number;
         $fabric_issue->weight = $request->weight;
         $fabric_issue->yard = $request->yard;
+        $fabric_issue->updated_by = auth()->user()->id;
         $fabric_issue->save();
 
         $fabric_requisition = FabricRequisition::find($fabric_issue->fabric_request_id);
