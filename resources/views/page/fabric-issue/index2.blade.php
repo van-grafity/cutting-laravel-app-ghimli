@@ -59,7 +59,7 @@
     $(document).ready(function(){
         $('#fbr_number').select2();
 
-        $('#date_start').val(moment().subtract(1, 'week').format('yyyy-MM-DD'));
+        $('#date_start').val(moment().subtract(2, 'week').format('yyyy-MM-DD'));
         $('#date_end').val(moment().format('yyyy-MM-DD'));
 
         
