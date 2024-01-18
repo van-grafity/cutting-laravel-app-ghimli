@@ -81,6 +81,10 @@ class FabricIssuesController extends Controller
         $yardIds = $request->yard;
         $remark = $request->remark;
         
+        if(!$fabric_requisition) {
+            dd("Fabric Request not Found! Please contact the administrator");
+        }
+        
         $fabric_requisition->remark = $remark;
         $fabric_requisition->save();
         foreach ($rollNoIds as $key => $rollNoId) {
