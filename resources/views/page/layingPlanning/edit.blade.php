@@ -10,13 +10,13 @@
             <div class="card">
                 <div class="card-body">
                     @if ($errors->any())
-                        <div class="alert text-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                    <div class="alert text-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                     @endif
                     <!-- START FORM -->
                     <form action="{{ route('laying-planning.update', $layingPlanning->id) }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="form_laying_planning">
@@ -30,13 +30,13 @@
                                     <select class="form-control select2" id="gl" name="gl" style="width: 100%;" data-placeholder="Choose GL">
                                         <option value="">Choose GL</option>
                                         @foreach ($gls as $gl)
-                                            <option value="{{ $gl->id }}" {{ $gl->id == $layingPlanning->gl_id ? 'selected' : '' }}>{{ $gl->gl_number }}</option>
+                                        <option value="{{ $gl->id }}" {{ $gl->id == $layingPlanning->gl_id ? 'selected' : '' }}>{{ $gl->gl_number }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
@@ -44,9 +44,9 @@
                                     <select class="form-control select2" id="style" name="style" style="width: 100%;" data-placeholder="Choose Style">
                                         <option value=""> Choose Style</option>
                                         @if ($styles != null)
-                                            @foreach ($styles as $style)
-                                                <option value="{{ $style->id }}" {{ $style->id == $layingPlanning->style_id ? 'selected' : '' }}>{{ $style->style }}</option>
-                                            @endforeach
+                                        @foreach ($styles as $style)
+                                        <option value="{{ $style->id }}" {{ $style->id == $layingPlanning->style_id ? 'selected' : '' }}>{{ $style->style }}</option>
+                                        @endforeach
                                         @endif
                                     </select>
                                 </div>
@@ -64,18 +64,18 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="buyer" class="form-label">Buyer</label>
-                                    <input type="hidden" class="form-control" name="buyer" id="buyer"  value="{{ $layingPlanning->gl->buyer->id }}">
+                                    <input type="hidden" class="form-control" name="buyer" id="buyer" value="{{ $layingPlanning->gl->buyer->id }}">
                                     <input type="text" class="form-control" name="buyer_name" id="buyer_name" readonly value="{{ $layingPlanning->gl->buyer->name }}">
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="color" class="form-label">Color</label>
                                     <select class="form-control select2" id="color" name="color" style="width: 100%;" data-placeholder="Choose Color">
                                         <option value="">Choose Color</option>
                                         @foreach ($colors as $color)
-                                            <option value="{{ $color->id }}" {{ $color->id == $layingPlanning->color->id ? 'selected' : '' }} >{{ $color->color }}</option>
+                                        <option value="{{ $color->id }}" {{ $color->id == $layingPlanning->color->id ? 'selected' : '' }}>{{ $color->color }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -102,7 +102,7 @@
                                 <div class="form-group">
                                     <label for="delivery_date" class="form-label">Delivery Date</label>
                                     <div class="input-group date" id="delivery_date" data-target-input="nearest">
-                                        <input type="text" class="form-control datetimepicker-input" data-target="#delivery_date" name="delivery_date" value="{{ $layingPlanning->delivery_date }}"/>
+                                        <input type="text" class="form-control datetimepicker-input" data-target="#delivery_date" name="delivery_date" value="{{ $layingPlanning->delivery_date }}" />
                                         <div class="input-group-append" data-target="#delivery_date" data-toggle="datetimepicker">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>
@@ -113,7 +113,7 @@
                                 <div class="form-group">
                                     <label for="plan_date" class="form-label">Plan Date</label>
                                     <div class="input-group" id="plan_date" data-target-input="nearest">
-                                        <input type="text" class="form-control" data-target="#plan_date" name="plan_date" value="{{ $layingPlanning->plan_date }}"readonly>
+                                        <input type="text" class="form-control" data-target="#plan_date" name="plan_date" value="{{ $layingPlanning->plan_date }}" readonly>
                                         <div class="input-group-append" data-target="#plan_date" data-toggle="">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>
@@ -131,7 +131,7 @@
                             </div>
                         </div>
                         <hr>
-                        <h5 style="font-weight:700">Fabric Consumpition</h5>
+                        <h5 style="font-weight:700">Fabric Consumption</h5>
                         <div class="row">
                             <div class="col-md-4 col-sm-6">
                                 <div class="form-group">
@@ -139,7 +139,7 @@
                                     <select class="form-control select2" id="fabric_cons" name="fabric_cons" style="width: 100%;" data-placeholder="Choose Portion">
                                         <option value="">Choose Portion</option>
                                         @foreach ($fabricCons as $fabricCon)
-                                            <option value="{{ $fabricCon->id }}" {{ $fabricCon->id == $layingPlanning->fabricCons->id ? 'selected' : '' }}>{{ $fabricCon->description }}</option>
+                                        <option value="{{ $fabricCon->id }}" {{ $fabricCon->id == $layingPlanning->fabricCons->id ? 'selected' : '' }}>{{ $fabricCon->description }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -148,7 +148,7 @@
                                 <div class="form-group">
                                     <label for="fabric_cons_qty" class="form-label">Quantity Consumed</label>
                                     <div class="input-group mb-3">
-                                        <input type="number" class="form-control"  id="fabric_cons_qty" name="fabric_cons_qty" min="0" value="{{ $layingPlanning->fabric_cons_qty }}">
+                                        <input type="number" class="form-control" id="fabric_cons_qty" name="fabric_cons_qty" min="0" value="{{ $layingPlanning->fabric_cons_qty }}">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Yard</span>
                                         </div>
@@ -161,7 +161,7 @@
                                     <select class="form-control select2" id="fabric_type" name="fabric_type" style="width: 100%;" data-placeholder="Choose Fabric Type">
                                         <option value="">Choose Fabric Type</option>
                                         @foreach ($fabricTypes as $fabricType)
-                                            <option value="{{ $fabricType->id }}" {{ $fabricType->id == $layingPlanning->fabricType->id ? 'selected' : '' }}>{{ $fabricType->name }}</option>
+                                        <option value="{{ $fabricType->id }}" {{ $fabricType->id == $layingPlanning->fabricType->id ? 'selected' : '' }}>{{ $fabricType->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -227,10 +227,10 @@
                             <div class="col-md-3 col-sm-6">
                                 <label for="select_size" class="form-label">Add Size</label>
                                 <select class="form-control" id="select_size" name="select_size" style="width: 100%;" data-placeholder="Select Size">
-                                <option value="">Select Size</option>
-                                @foreach ($sizes as $size)
+                                    <option value="">Select Size</option>
+                                    @foreach ($sizes as $size)
                                     <option value="{{ $size->id }}">{{ $size->size }}</option>
-                                @endforeach
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-md-2 col-sm-4">
@@ -268,23 +268,23 @@
     const url_style = `{{ route('fetch.style') }}`;
     const url_fabric_type = `{{ route('fetch.fabric-type') }}`;
 
-    
-    $( document ).ready(function() {
-        $('#total_size_qty').html(': '+sum_size_qty()); // ## update total size
-        
+
+    $(document).ready(function() {
+        $('#total_size_qty').html(': ' + sum_size_qty()); // ## update total size
+
         $('.select2').select2({});
 
         $('#delivery_date').datetimepicker({
             format: 'DD/MM/yyyy',
             date: moment('{{ $layingPlanning->delivery_date }}').format('YYYY-MM-DD')
         });
-    
+
         $('#select_size').select2({
             minimumResultsForSearch: Infinity
         })
 
         $('#select_size').select2({
-            templateResult: function (data, container) {
+            templateResult: function(data, container) {
                 if (data.id === '') {
                     return data.text;
                 }
@@ -300,7 +300,9 @@
 
         $('#gl').on('change', function(e) {
             let gl_id = $(this).val();
-            let data_params = { gl_id }
+            let data_params = {
+                gl_id
+            }
 
             // ## Dynamic Data Select Style depend on Select GL
             using_fetch(url_style, data_params, "GET").then((result) => {
@@ -311,7 +313,9 @@
                         text: item.style
                     };
                 });
-                let select_style = $('#style').select2({ data })
+                let select_style = $('#style').select2({
+                    data
+                })
                 select_style.trigger('change');
             }).catch((err) => {
                 console.log(err);
@@ -329,7 +333,9 @@
         // ## Fill Style Description Box depend on Selected Style
         $('#style').on('change', function(e) {
             let style_id = $(this).val();
-            let data_params = { id : style_id }
+            let data_params = {
+                id: style_id
+            }
             using_fetch(url_style, data_params, "GET").then((result) => {
                 $('#style_desc').val(result.data[0].description);
             }).catch((err) => {
@@ -340,7 +346,9 @@
         // ## Fill Fabric Type Description Box depend on Selected Fabric Type
         $('#fabric_type').on('change', function(e) {
             let fabric_type_id = $(this).val();
-            let data_params = { id : fabric_type_id }
+            let data_params = {
+                id: fabric_type_id
+            }
             using_fetch(url_fabric_type, data_params, "GET").then((result) => {
                 $('#fabric_type_desc').val(result.data[0].description);
             }).catch((err) => {
@@ -348,8 +356,6 @@
             });
         })
     });
-
-    
 </script>
 <script type="text/javascript">
     let element_html;
@@ -357,9 +363,9 @@
     let detached_options = [];
 
     // ## memeriksa jika di dalam tabel belum ada size yang dipilih
-    function is_table_empty_data(table_selector){ 
+    function is_table_empty_data(table_selector) {
         let data_row = $('#table_laying_planning_size > tbody tr td').length;
-        if(data_row <= 1){
+        if (data_row <= 1) {
             return true;
         } else {
             return false;
@@ -367,14 +373,18 @@
     }
 
     // ## memeriksa jika input form untuk menambahkan size dan quantitiynya masih kosong atau tidak
-    function is_select_size_empty(){
-        if(!$('#select_size').val()) {
-            swal_warning({ title: "Please select size"})
+    function is_select_size_empty() {
+        if (!$('#select_size').val()) {
+            swal_warning({
+                title: "Please select size"
+            })
             return false;
         }
-        
-        if(!$('#size_qty').val()) {
-            swal_warning({ title: "Please select size quantity"})
+
+        if (!$('#size_qty').val()) {
+            swal_warning({
+                title: "Please select size quantity"
+            })
             return false;
         }
 
@@ -405,9 +415,11 @@
 
     // ## memeriksa apakah size yang akan ditambahkan sudah ada di dalam tabel
     function is_size_already_added() {
-        var get_size = $("input[name='laying_planning_size_id[]']").map(function(){return $(this).val();}).get();
+        var get_size = $("input[name='laying_planning_size_id[]']").map(function() {
+            return $(this).val();
+        }).get();
         let select_size_value = $('#select_size').val();
-        if(get_size.includes(select_size_value)){
+        if (get_size.includes(select_size_value)) {
             return true;
         }
         return false;
@@ -415,23 +427,27 @@
 
     // ## menjumlahkan quantity tiap size
     function sum_size_qty() {
-        var get_size_qty = $("input[name='laying_planning_size_qty[]']").map(function(){return $(this).val();}).get();
+        var get_size_qty = $("input[name='laying_planning_size_qty[]']").map(function() {
+            return $(this).val();
+        }).get();
         const sum = get_size_qty.reduce((tempSum, next_arr) => tempSum + parseInt(next_arr), 0);
         return sum;
     }
 
     // ## user add size ke table list size
     $('#btn_add_laying_size').on('click', function(e) {
-        if(!is_select_size_empty()){ // jika form untuk nambah size ada yang belum di isi, maka aksi gagal
+        if (!is_select_size_empty()) { // jika form untuk nambah size ada yang belum di isi, maka aksi gagal
             return false;
         }
-        
+
         element_html = create_tr_element();
-        if(is_table_empty_data()){
+        if (is_table_empty_data()) {
             $('#table_laying_planning_size > tbody').html(element_html);
         } else {
-            if(is_size_already_added()){
-                swal_warning({ title:"Size already added" })
+            if (is_size_already_added()) {
+                swal_warning({
+                    title: "Size already added"
+                })
             } else {
                 $('#table_laying_planning_size > tbody').append(element_html);
                 data_row_count++;
@@ -441,17 +457,17 @@
         $('#select_size').val('');
         $('#select_size').trigger('change')
         $('#size_qty').val('');
-        $('#total_size_qty').html(': '+sum_size_qty());
+        $('#total_size_qty').html(': ' + sum_size_qty());
     });
 
     // ## when user click on remove button
-    $('#table_laying_planning_size > tbody').on("click",".btn-delete-size", function(e){ 
+    $('#table_laying_planning_size > tbody').on("click", ".btn-delete-size", function(e) {
         e.preventDefault();
-        
+
         $(this).parent().parent().remove();
-		data_row_count--;
-        
-        if(is_table_empty_data()){
+        data_row_count--;
+
+        if (is_table_empty_data()) {
             element_html = `
             <tr>
                 <td class="text-center align-middle" colspan="3">No Selected Size</td>
@@ -460,13 +476,11 @@
             $('#table_laying_planning_size > tbody').html(element_html);
         }
 
-        $('#total_size_qty').html(': '+sum_size_qty());
+        $('#total_size_qty').html(': ' + sum_size_qty());
     });
-
 </script>
 
 <script type="text/javascript">
-
     // ## Ketika opsi diganti pada select2, panggil validasi, jika valid pesan error menghilang
     $(".select2").on("change", function() {
         if ($(this).valid()) {
@@ -475,7 +489,7 @@
             $(this).parent().find('.select2-container').removeClass('select2-container--error');
         }
     });
-    
+
     // ## Form Validation
     let rules = {
         gl: {
@@ -540,7 +554,7 @@
         messages: messages,
         errorElement: "span",
         ignore: [],
-        errorPlacement: function (error, element) {
+        errorPlacement: function(error, element) {
             error.addClass("invalid-feedback");
             element.closest(".form-group").append(error);
 
@@ -556,14 +570,14 @@
             // ## ----------------------------------------------------
 
         },
-        highlight: function (element, errorClass, validClass) {
+        highlight: function(element, errorClass, validClass) {
             $(element).addClass("is-invalid");
         },
-        unhighlight: function (element, errorClass, validClass) {
+        unhighlight: function(element, errorClass, validClass) {
             $(element).removeClass("is-invalid");
         },
-        submitHandler: function (form) {
-            if(is_table_empty_data()){
+        submitHandler: function(form) {
+            if (is_table_empty_data()) {
                 swal_warning({
                     title: "No Size Selected!",
                     text: "Please select at least one Size"
@@ -573,6 +587,5 @@
             form.submit();
         }
     });
-
 </script>
 @endpush
