@@ -205,7 +205,7 @@ class DailyCuttingReportsController extends Controller
         $start_datetime =  Carbon::parse($date_filter)->format('Y-m-d 07:00:00');
         $end_datetime =  Carbon::parse($date_filter)->addDay()->format('Y-m-d 06:59:00');
     
-        // get data group yang ada potong hari ini
+        // ## get data group yang ada potong hari ini
         $groups = Groups::select('groups.id', 'group_name')
             ->join('user_groups', 'user_groups.group_id', '=', 'groups.id')
             ->join('users', 'users.id', '=', 'user_groups.user_id')
@@ -227,7 +227,7 @@ class DailyCuttingReportsController extends Controller
             $groups[$key_group]->group_name_show = $group_name_show;
         }
         
-        // get buyer yang potong hari ini
+        // ## get buyer yang potong hari ini
         $buyers = Buyer::select('buyers.*')
             ->join('laying_plannings','laying_plannings.buyer_id','=','buyers.id')
             ->join('laying_planning_details','laying_planning_details.laying_planning_id','=','laying_plannings.id')
@@ -247,10 +247,12 @@ class DailyCuttingReportsController extends Controller
         $general_total_previous_accumulation = 0;
         $general_total_accumulation = 0;
         $general_total_balance_to_cut = 0;
+        $general_total_replacement = 0;
         
 
         foreach($buyers as $key => $buyer) {
-            // get laying planning yang potong hari ini, untuk setiap buyer
+
+            // ## get laying planning yang potong hari ini, untuk setiap buyer
             $layingPlannings = LayingPlanning::select(
                 'buyers.name', 
                 'styles.style', 
@@ -279,19 +281,22 @@ class DailyCuttingReportsController extends Controller
             $subtotal_previous_accumulation = 0;
             $subtotal_accumulation = 0;
             $subtotal_balance_to_cut = 0;
+            $subtotal_replacement = 0;
 
 
             foreach($layingPlannings as $key_lp => $laying_planning) {
                 $total_qty_per_day = 0;
                 $total_previous_cutting = 0;
+                $total_replacement = 0;
                 $qty_per_groups = [];
 
-                // get qty per groups
+                // ## get qty per groups
                 foreach($groups as $key_group => $group)
                 {
                     $qty_group = 0;
 
-                    $cutting_order_record_groups = CuttingOrderRecord::select('cutting_order_records.*', DB::raw("SUM(cutting_order_record_details.layer) as total_layer"))
+                    // ## Get COR per group. COR yang Replacement tidak masuk. Replacement dihitung terpisah
+                    $cutting_order_record_groups = CuttingOrderRecord::select('cutting_order_records.*','laying_planning_details.marker_code', DB::raw("SUM(cutting_order_record_details.layer) as total_layer"))
                         ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
                         ->join('users', 'users.id', '=', 'cutting_order_record_details.user_id')
                         ->join('user_groups', 'user_groups.user_id', '=', 'users.id')
@@ -302,11 +307,12 @@ class DailyCuttingReportsController extends Controller
                             $query->where('cutting_order_records.cut', '>=', $start_datetime)
                                   ->where('cutting_order_records.cut', '<=', $end_datetime);
                         })
+                        ->whereNot(DB::raw('lower(laying_planning_details.marker_code)'), 'LIKE', '%'. strtolower('REPL') . '%')
                         ->groupBy('cutting_order_records.id')
                         ->where('groups.id', '=', $group->id)
                         ->get();
                     
-                    
+                        
                     foreach ($cutting_order_record_groups as $key_cor => $cor) {
                         
                         $total_ratio = LayingPlanningDetailSize::select('laying_planning_detail_sizes.*')
@@ -330,11 +336,12 @@ class DailyCuttingReportsController extends Controller
                 $layingPlannings[$key_lp]->qty_per_groups = $qty_per_groups;
                 
                 
-                // get cor dari setiap laying planning
+                // ## Get COR per laying planning. untuk mendapatkan qty per day dari setiap laying planning (per warna)
                 $cutting_order_records = CuttingOrderRecord::select('cutting_order_records.*', DB::raw("SUM(cutting_order_record_details.layer) as total_layer"))
                     ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
                     ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
                     ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
+                    ->whereNot(DB::raw('lower(laying_planning_details.marker_code)'), 'LIKE', '%'. strtolower('REPL') . '%')
                     ->where(function($query) use ($start_datetime, $end_datetime){
                         $query->where('cutting_order_records.cut', '>=', $start_datetime)
                               ->where('cutting_order_records.cut', '<=', $end_datetime);
@@ -343,6 +350,7 @@ class DailyCuttingReportsController extends Controller
                     ->get();
                 
 
+                // ## Lakukan penjumlahan di setiap COR untuk jumlah potong hari ini (total_qty_per_day)
                 foreach ($cutting_order_records as $key_cor => $cor) {
                     $total_ratio = LayingPlanningDetailSize::select('laying_planning_detail_sizes.*')
                         ->join('laying_planning_details', 'laying_planning_details.id', '=', 'laying_planning_detail_sizes.laying_planning_detail_id')
@@ -357,18 +365,19 @@ class DailyCuttingReportsController extends Controller
                 $layingPlannings[$key_lp]->total_qty_per_day = $total_qty_per_day;
                 $subtotal_qty_per_day += $total_qty_per_day;
                 
-                // get previous cor dari setiap laying planning
+                // ## Get previous COR dari setiap laying planning
                 $prev_cutting_order_records = CuttingOrderRecord::select('cutting_order_records.*', DB::raw("SUM(cutting_order_record_details.layer) as total_layer"))
                     ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
                     ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
                     ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
+                    ->whereNot(DB::raw('lower(laying_planning_details.marker_code)'), 'LIKE', '%'. strtolower('REPL') . '%')
                     ->where(function($query) use ($start_datetime, $end_datetime){
                         $query->where('cutting_order_records.cut', '<=', $start_datetime);
                     })
                     ->groupBy('cutting_order_records.id')
                     ->get();
 
-                
+                // ## Lakukan penjumlahan di setiap COR yang telah lalu untuk jumlah akumulasi potong hari sebelumnya (total_previous_cutting)
                 foreach ($prev_cutting_order_records as $key_cor => $cor) {
                     $total_ratio = LayingPlanningDetailSize::select('laying_planning_detail_sizes.*')
                         ->join('laying_planning_details', 'laying_planning_details.id', '=', 'laying_planning_detail_sizes.laying_planning_detail_id')
@@ -381,17 +390,48 @@ class DailyCuttingReportsController extends Controller
                     $total_previous_cutting += $total_ratio * $cor->total_layer;
                 }
 
+
+                // ## Get COR khusus REPLACEMENT dari setiap laying planning
+                $cutting_order_records_replacement = CuttingOrderRecord::select('cutting_order_records.*', DB::raw("SUM(cutting_order_record_details.layer) as total_layer"))
+                    ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
+                    ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
+                    ->where('laying_planning_details.laying_planning_id', '=', $laying_planning->laying_planning_id)
+                    ->where(DB::raw('lower(laying_planning_details.marker_code)'), 'LIKE', '%'. strtolower('REPL') . '%')
+                    ->where(function($query) use ($start_datetime, $end_datetime){
+                        $query->where('cutting_order_records.cut', '>=', $start_datetime)
+                              ->where('cutting_order_records.cut', '<=', $end_datetime);
+                    })
+                    ->groupBy('cutting_order_records.id')
+                    ->get();
+
+                
+                // ## Lakukan penjumlahan di setiap COR yang telah lalu untuk jumlah akumulasi potong hari sebelumnya (total_previous_cutting)
+                foreach ($cutting_order_records_replacement as $key_cor => $cor) {
+                    $total_ratio = LayingPlanningDetailSize::select('laying_planning_detail_sizes.*')
+                        ->join('laying_planning_details', 'laying_planning_details.id', '=', 'laying_planning_detail_sizes.laying_planning_detail_id')
+                        ->join('cutting_order_records', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
+                        ->where('cutting_order_records.id', '=', $cor->id)
+                        ->sum('laying_planning_detail_sizes.ratio_per_size');
+
+                    $cutting_order_records_replacement[$key_cor]->total_size_ratio = $total_ratio;
+                    $cutting_order_records_replacement[$key_cor]->total_qty_per_cor = $total_ratio * $cor->total_layer;
+                    $total_replacement += $total_ratio * $cor->total_layer;
+                }
+
+
                 $balance_to_cut = ($total_previous_cutting + $total_qty_per_day) - $layingPlannings[$key_lp]->order_qty;
                 $balance_to_cut = $balance_to_cut > 0 ? '+'.$balance_to_cut : $balance_to_cut;
                 $layingPlannings[$key_lp]->previous_accumulation = $total_previous_cutting;
                 $layingPlannings[$key_lp]->balance_to_cut = $balance_to_cut;
                 $layingPlannings[$key_lp]->accumulation = $total_previous_cutting + $total_qty_per_day;
                 $layingPlannings[$key_lp]->completed = round(($layingPlannings[$key_lp]->accumulation / $layingPlannings[$key_lp]->order_qty * 100), 2) . "%" ;
+                $layingPlannings[$key_lp]->replacement = $total_replacement;
 
                 $subtotal_mi_qty += $layingPlannings[$key_lp]->order_qty;
                 $subtotal_previous_accumulation += $layingPlannings[$key_lp]->previous_accumulation;
                 $subtotal_accumulation += $layingPlannings[$key_lp]->accumulation;
                 $subtotal_balance_to_cut += $layingPlannings[$key_lp]->balance_to_cut;
+                $subtotal_replacement += $layingPlannings[$key_lp]->replacement;
             }
 
             $general_total_mi_qty = $general_total_mi_qty + $subtotal_mi_qty;
@@ -399,6 +439,7 @@ class DailyCuttingReportsController extends Controller
             $general_total_previous_accumulation = $general_total_previous_accumulation + $subtotal_previous_accumulation;
             $general_total_accumulation = $general_total_accumulation + $subtotal_accumulation;
             $general_total_balance_to_cut = $general_total_balance_to_cut + $subtotal_balance_to_cut;
+            $general_total_replacement = $general_total_replacement + $subtotal_replacement;
 
             $data_per_buyer[$key] = (object) [
                 'buyer' => $buyer->name,
@@ -408,6 +449,7 @@ class DailyCuttingReportsController extends Controller
                 'subtotal_previous_accumulation' => $subtotal_previous_accumulation,
                 'subtotal_accumulation' => $subtotal_accumulation,
                 'subtotal_balance_to_cut' => $subtotal_balance_to_cut,
+                'subtotal_replacement' => $subtotal_replacement,
             ];
         }
 
@@ -417,6 +459,7 @@ class DailyCuttingReportsController extends Controller
             'general_total_previous_accumulation' => $general_total_previous_accumulation,
             'general_total_accumulation' => $general_total_accumulation,
             'general_total_balance_to_cut' => $general_total_balance_to_cut,
+            'general_total_replacement' => $general_total_replacement,
         ];
 
         // $data = [

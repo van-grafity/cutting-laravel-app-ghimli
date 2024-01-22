@@ -139,7 +139,7 @@
                                 <td>{{ $laying_planning->previous_accumulation}}</td>
                                 <td>{{ $laying_planning->accumulation}}</td>
                                 <td>{{ $laying_planning->completed}}</td>
-                                <td>0</td>
+                                <td>{{ $laying_planning->replacement}}</td>
                             </tr>
                             @php $count_lp = count($item->laying_plannings); @endphp
 
@@ -161,15 +161,15 @@
                                     <td>{{ $item->subtotal_previous_accumulation }}</td>
                                     <td>{{ $item->subtotal_accumulation }}</td>
                                     <td></td>
-                                    <td></td>
+                                    <td>{{ $item->subtotal_replacement }}</td>
                                 </tr>
                             @endif
                         @endforeach
                     @endforeach
                     <tr style="background-color: #bfbfbf;">
                         <td colspan="4" style="text-align: center; font-weight: bold;">Total</td>
-                        <td>{{ $general_total->general_total_mi_qty}}</td>
-                        <td>{{ $general_total->general_total_balance_to_cut}}</td>
+                        <td>{{ $general_total->general_total_mi_qty }}</td>
+                        <td>{{ $general_total->general_total_balance_to_cut }}</td>
                         
                         @foreach($groups as $key_group => $group)
                             <td><b><?php
@@ -182,11 +182,11 @@
                                 echo $total_qty_group;
                             ?></td>
                         @endforeach
-                        <td>{{ $general_total->general_total_qty_per_day}}</td>
-                        <td>{{ $general_total->general_total_previous_accumulation}}</td>
-                        <td>{{ $general_total->general_total_accumulation}}</td>
+                        <td>{{ $general_total->general_total_qty_per_day }}</td>
+                        <td>{{ $general_total->general_total_previous_accumulation }}</td>
+                        <td>{{ $general_total->general_total_accumulation }}</td>
                         <td></td>
-                        <td></td>
+                        <td>{{ $general_total->general_total_replacement }}</td>
                     </tr>
                 </tbody>
             </table>
