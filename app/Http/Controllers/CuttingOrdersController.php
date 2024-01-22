@@ -603,6 +603,137 @@ class CuttingOrdersController extends Controller
 
     public function cuttingCompletionReport(Request $request)
     {
+        $gl_id = $request->gl_number;
+        $gl = GL::find($gl_id);
+
+        $filename = 'Cutting Completion Report' . '.pdf';
+        $layingPlanning = LayingPlanning::with(['gl','gl.buyer', 'color', 'style','fabricCons','fabricType', 'layingPlanningDetail', 'layingPlanningDetail.layingPlanningDetailSize', 'layingPlanningDetail.cuttingOrderRecord', 'layingPlanningDetail.fabricRequisition', 'layingPlanningDetail.fabricRequisition.fabricIssue', 'layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail'])
+            ->whereHas('gl', function($query) use ($gl_id) {
+                if ($gl_id != null) {
+                    $query->where('id', $gl_id);
+                }
+            })
+            ->orderBy('id', 'asc')
+            ->get();
+        
+        if($layingPlanning->isEmpty()){
+            return redirect()->route('cutting-order.cutting-completion')->with('error', 'Planning from GL '. $gl->gl_number .' was not found');
+        }
+        
+        $buyer_list = [];
+        $style_list = [];
+        $fabric_type_list = [];
+        $fabric_cons_list = [];
+        foreach ($layingPlanning as $key => $lp) {
+            $buyer_list[] = $lp->gl->buyer->name;
+            $style_list[] = $lp->style->style;
+            $fabric_type_list[] = $lp->fabricType->name;
+            $fabric_cons_list[] = $lp->fabricCons->name;
+        }
+
+        // ## Data for Completion Header
+        $completion_data = [];
+        $total_mi_qty = array_sum(array_column($layingPlanning->toArray(), 'order_qty'));
+        $completion_data['total_mi_qty'] = $total_mi_qty;
+        $completion_data['gl_number'] = $gl->gl_number;
+
+        // ## karena sebenarnya bisa bervariasi permasing masing laying planning. untuk sekarang data seperti fabric_po, style, buyer, fabric_type, fabric_cons akan mengambil dari laying planning pertama dulu saja
+        $completion_data['fabric_po'] = $layingPlanning[0]->fabric_po;
+        $completion_data['buyer'] = $layingPlanning[0]->buyer->name;
+        $completion_data['style'] = $layingPlanning[0]->style->style;
+        $completion_data['fabric_type'] = $layingPlanning[0]->fabricType->name;
+        $completion_data['fabric_cons'] = $layingPlanning[0]->fabricCons->name;
+        $completion_data['plan_date'] = $layingPlanning[0]->plan_date;
+        $completion_data['delivery_date'] = $layingPlanning[0]->delivery_date;
+        $completion_data['total_cut_qty'] = 0; // !! masih temporary
+        $completion_data['total_diff_qty'] = 0; // !! masih temporary
+        
+
+        $total_cut_qty = 0;
+        $total_diff_order_and_actual = 0;
+
+        foreach ($layingPlanning as $key_lp => $lp) {
+            $cut_qty_per_lp = 0;
+            $cut_qty_per_size = [];
+            $cut_qty_all_size = 0;
+            
+            $diff_qty_per_size = [];
+            $diff_qty_all_size = 0;
+
+            $total_fabric_request = 0; // ## total length by laying planning detail
+            $total_fabric_received = 0; // ## total length by roll sticker in COR Detail
+            $diff_request_and_received = 0; // ## selisih antara yang diminta (request) dan yang diterima (received)
+            $total_actual_used = 0; // ## total length by marker length in laying planning detail di kali dengan layer di cor detail
+            $diff_received_and_used = 0; // ##  selisih antara yang diterima (received) dengan yang digunakan (used)
+
+            
+            foreach ($lp->layingPlanningSize as $key_lp_size => $lp_size) {
+                $cut_qty_size = 0;
+                $diff_qty_size = 0;
+
+                foreach ($lp->layingPlanningDetail as $lp_detail) {
+                    foreach($lp_detail->layingPlanningDetailSize as $lp_detail_size) {
+                        if ($lp_detail_size->size_id == $lp_size->size_id) {
+                            if(!$lp_detail->cuttingOrderRecord){
+                                $cut_qty_size += 0; 
+                            } else {
+                                if(!$lp_detail->cuttingOrderRecord->cut){
+                                    $cut_qty_size += 0;
+                                } else {
+                                    foreach ($lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail as $cor_detail)
+                                    {
+                                        $cut_qty_size += $cor_detail->layer * $lp_detail_size->ratio_per_size;
+                                    }
+                                }
+                            }
+                            
+                        }
+                    }
+                }
+                
+                $cut_qty_per_size[$key_lp_size] = $cut_qty_size;
+                $diff_qty_size = $cut_qty_size - $lp_size->quantity;
+                $diff_qty_per_size[$key_lp_size] = ($diff_qty_size > 0) ? '+' . $diff_qty_size : $diff_qty_size;
+            }
+
+            $cut_qty_all_size = array_sum($cut_qty_per_size);
+            $diff_qty_all_size = array_sum($diff_qty_per_size);
+
+            $layingPlanning[$key_lp]->cut_qty_per_size = $cut_qty_per_size;
+            $layingPlanning[$key_lp]->cut_qty_all_size = $cut_qty_all_size;
+            
+            $layingPlanning[$key_lp]->diff_qty_per_size = $diff_qty_per_size;
+            $layingPlanning[$key_lp]->diff_qty_all_size = ($diff_qty_all_size > 0) ? '+' . $diff_qty_all_size : $diff_qty_all_size;
+            
+            $diff_percentage = round((($cut_qty_all_size / $lp->order_qty) * 100) , 1);
+            $diff_percentage_color = $diff_percentage < 100 ? 'red' : ($diff_percentage > 100 ? 'blue' : '');
+            $layingPlanning[$key_lp]->diff_percentage = $diff_percentage;
+            $layingPlanning[$key_lp]->diff_percentage_color = $diff_percentage_color;
+            
+            $layingPlanning[$key_lp]->color_colspan = count($cut_qty_per_size) + 1;
+        }
+
+        $laying_plannings = $layingPlanning->chunk(2);
+        $fabric_consumption = $layingPlanning;
+
+        
+        $data = [
+            'laying_plannings' => $laying_plannings,
+            'completion_data' => (object) $completion_data,
+            'fabric_consumption' => $fabric_consumption,
+        ];
+
+        // dd($data);
+        
+
+        // return view('page.cutting-order.completion-report', $data);
+        $pdf = PDF::loadview('page.cutting-order.completion-report', $data)->setPaper('a4', 'landscape');
+        return $pdf->stream($filename);
+    }
+
+    // !! nextnya hapus aja yang ini
+    public function cuttingCompletionReport_old(Request $request)
+    {
         $start_cut = $request->start_cut;
         if($start_cut == null){
             $start_cut = Carbon::now()->toDateString();

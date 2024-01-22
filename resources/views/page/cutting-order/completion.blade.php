@@ -23,14 +23,6 @@
             <div class="card">
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="start_cut">Start Cut</label>
-                        <input type="date" class="form-control" id="start_cut" name="start_cut" placeholder="Date Start">
-                    </div>
-                    <div class="form-group">
-                        <label for="finish_cut">Finish Cut</label>
-                        <input type="date" class="form-control" id="finish_cut" name="finish_cut" placeholder="Date End">
-                    </div>
-                    <div class="form-group">
                         <label for="gl_number">GL Number</label>
                         <select class="form-control" id="gl_number" name="gl_number">
                             <option value="">-- Select GL Number --</option>
@@ -56,12 +48,6 @@
 
 @push('js')
 <script type="text/javascript">
-    $('start_cut').datetimepicker({
-        format: 'DD-MM-yyyy'
-    });
-    $('finish_cut').datetimepicker({
-        format: 'DD-MM-yyyy'
-    });
 </script>
 
 <script type="text/javascript">
@@ -74,11 +60,9 @@
         $('#gl_number').select2();
         
         $('#btn_print_report').click(function(){
-            var start_cut = $('#start_cut').val();
-            var finish_cut = $('#finish_cut').val();
             var gl_number = $('#gl_number').val();
             
-            window.open(url + '?start_cut=' + start_cut + '&finish_cut=' + finish_cut + '&gl_number=' + gl_number, '_blank');
+            window.open(url + '?gl_number=' + gl_number, '_blank');
         });
     });
 </script>
