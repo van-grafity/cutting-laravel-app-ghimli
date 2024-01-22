@@ -27,6 +27,7 @@ class UserRolePermissionsSeeder extends Seeder
         Permission::create(['name' => 'menu layer']);
         Permission::create(['name' => 'menu ticket']);
         Permission::create(['name' => 'menu ppc']);
+        Permission::create(['name' => 'menu_pmr']);
 
         // gets all permissions via Gate::before rule; see AuthServiceProvider
         $role_super_admin = Role::create(['name' => 'super_admin']);
@@ -63,7 +64,7 @@ class UserRolePermissionsSeeder extends Seeder
             'password' => Hash::make('ghimli@2024'),
         ]);
         $user->assignRole($role_super_admin);
-        
+
         $user = \App\Models\User::factory()->create([
             'name' => 'User Planning',
             'email' => 'planning@ghimli.com',
@@ -84,7 +85,7 @@ class UserRolePermissionsSeeder extends Seeder
             'password' => Hash::make('123456789'),
         ]);
         $user->assignRole($role_ticket);
-        
+
         $user = \App\Models\User::factory()->create([
             'name' => 'Yenti Cutting',
             'email' => 'yenti@ghimli.com',
@@ -119,7 +120,7 @@ class UserRolePermissionsSeeder extends Seeder
             'password' => Hash::make('123456789'),
         ]);
         $user->assignRole($role_layer);
-        
+
         $user = \App\Models\User::factory()->create([
             'name' => 'User PPC',
             'email' => 'ppc@ghimli.com',
