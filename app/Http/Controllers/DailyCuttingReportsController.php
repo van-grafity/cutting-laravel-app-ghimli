@@ -462,12 +462,6 @@ class DailyCuttingReportsController extends Controller
             'general_total_replacement' => $general_total_replacement,
         ];
 
-        // $data = [
-        //     'data_per_buyer' => $data_per_buyer,
-        //     'general_total' => $general_total,
-        // ];
-        // return $data;
-        
         // return view('page.daily-cutting-report.print', compact('data_per_buyer', 'date_filter', 'groups','general_total'));
         $filename = 'Daily Cutting Output Report.pdf';
         $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data_per_buyer', 'date_filter', 'groups','general_total'))->setPaper('a4', 'landscape');
