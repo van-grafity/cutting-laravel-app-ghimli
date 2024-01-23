@@ -214,8 +214,8 @@ $(document).ready(function(){
         });
         let gl_combine_name_json = JSON.stringify(gl_combine_name);
         $('#gl_form').append(`<input type="hidden" name="gl_combine_name_json" value='${gl_combine_name_json}'>`);
-        this.submit();
     });
+    
     // ## Show Flash Message
     let session = {!! json_encode(session()->all()) !!};
     show_flash_message(session);
