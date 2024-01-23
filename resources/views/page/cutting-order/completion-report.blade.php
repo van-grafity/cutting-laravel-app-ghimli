@@ -46,6 +46,11 @@
             text-align: left;
         }
 
+        .table-laying-planning .text-left {
+            padding-left: 5px;
+            text-align: left;
+        }
+
 
 
         .table-fabric-consumption {
@@ -110,54 +115,54 @@
             <tr>
                 <td width="10%">GL#</td>
                 <td width="1.5%">:</td>
-                <td style="text-align: left;">{{ $completion_data->gl_number }}</td>
+                <td>{{ $completion_data->gl_number }}</td>
                 <td width="15%">FABRIC TYPE</td>
                 <td width="1.5%">:</td>
-                <td style="text-align: left;" width="35%">{{ $completion_data->fabric_type }}</td>
+                <td width="35%">{{ $completion_data->fabric_type }}</td>
                 <td>DATE</td>
                 <td width="1.5%">:</td>
-                <td style="text-align: left;">{{ $completion_data->plan_date }}</td>
+                <td>{{ $completion_data->plan_date }}</td>
             </tr>
             <tr>
                 <td>PO. NO</td>
                 <td>:</td>
-                <td style="text-align: left;">{{ $completion_data->fabric_po }}</td>
+                <td>{{ $completion_data->fabric_po }}</td>
                 <td>FABRIC CONS</td>
                 <td>:</td>
-                <td style="text-align: left;">{{ $completion_data->fabric_cons }}</td>
+                <td>{{ $completion_data->fabric_cons }}</td>
                 <td>DELIVERY DATE</td>
                 <td>:</td>
-                <td style="text-align: left;">{{ $completion_data->delivery_date }}</td>
+                <td>{{ $completion_data->delivery_date }}</td>
             </tr>
             <tr>
                 <td>BUYER</td>
                 <td>:</td>
-                <td style="text-align: left;">{{ $completion_data->buyer }}</td>
-                <td>OUTPUT QTY</td>
+                <td>{{ $completion_data->buyer }}</td>
+                <td>TOTAL OUTPUT QTY</td>
                 <td>:</td>
-                <td style="text-align: left;">{{ $completion_data->total_cut_qty }}</td>
+                <td>{{ $completion_data->total_output_qty }}</td>
                 <td>PO Marker</td>
                 <td>:</td>
-                <td style="text-align: left;"> - </td>
+                <td> - </td>
             </tr>
             <tr>
                 <td>STYLE</td>
                 <td>:</td>
-                <td style="text-align: left;">{{ $completion_data->style }} </td>
-                <td>REPLACEMENT</td>
+                <td>{{ $completion_data->style }} </td>
+                <td>DIFF (Output - MI)</td>
                 <td>:</td>
-                <td style="text-align: left;">{{ $completion_data->total_cut_qty }}</td>
+                <td>{{ $completion_data->diff_output_mi_qty }}</td>
                 <td>Actual Marker Length</td>
                 <td>:</td>
-                <td style="text-align: left;"> - </td>
+                <td> - </td>
             </tr>
             <tr>
                 <td>MI QTY</td>
                 <td>:</td>
                 <td>{{ $completion_data->total_mi_qty }}</td>
-                <td>DIFF (OUTPUT - MI QTY)</td>
+                <td>TOTAL REPLACEMENT</td>
                 <td>:</td>
-                <td>{{ $completion_data->total_diff_qty }}</td>
+                <td>{{ $completion_data->total_replacement }}</td>
             </tr>
         </table>
 
@@ -170,6 +175,7 @@
                         <table class="table table-laying-planning" style="margin-bottom: 5px;">
                             <thead>
                                 <tr>
+                                    <th class="text-left"> COLOR </th>
                                     <th colspan="{{ $laying_planning->color_colspan }}">{{ $laying_planning->color->color }}</th>
                                     <th style="color:{{ $laying_planning->diff_percentage_color }};" >{{ $laying_planning->diff_percentage }} %</th>
                                 </tr>
@@ -190,7 +196,7 @@
                                     <td>{{ $laying_planning->order_qty}}</td>
                                 </tr>
                                 <tr>
-                                    <td>CUT QTY</td>
+                                    <td>OUTPUT QTY</td>
                                     @foreach($laying_planning->cut_qty_per_size as $qty_each_size)
                                     <td>{{ $qty_each_size }}</td>
                                     @endforeach
@@ -205,10 +211,10 @@
                                 </tr>
                                 <tr>
                                     <td>REPLACEMENT</td>
-                                    @foreach($laying_planning->diff_qty_per_size as $diff_each_size)
-                                    <td>{{ $diff_each_size }}</td>
+                                    @foreach($laying_planning->replacement_qty_per_size as $replacement_each_size)
+                                    <td>{{ $replacement_each_size }}</td>
                                     @endforeach
-                                    <td>{{ $laying_planning->diff_qty_all_size}}</td>
+                                    <td>{{ $laying_planning->replacement_qty_all_size}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -235,12 +241,12 @@
                 @foreach( $fabric_consumption as $key_lp => $lp)
                 <tr>
                     <td>{{ $key_lp + 1 }}</td>
-                    <td class="text-left">{{ $lp->color->color }}</td>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
+                    <td class="text-left">{{ $lp->color }}</td>
+                    <td>{{ $lp->fabric_request }}</td>
+                    <td>{{ $lp->fabric_received }}</td>
+                    <td>{{ $lp->diff_request_and_received }}</td>
+                    <td>{{ $lp->actual_used }}</td>
+                    <td>{{ $lp->diff_received_and_used }}</td>
                 </tr>
                 @endforeach
             </tbody>

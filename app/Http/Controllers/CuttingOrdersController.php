@@ -606,7 +606,7 @@ class CuttingOrdersController extends Controller
         $gl_id = $request->gl_number;
         $gl = GL::find($gl_id);
 
-        $filename = 'Cutting Completion Report' . '.pdf';
+        $filename = 'Cutting Completion Report GL '. $gl->gl_number . '.pdf';
         $layingPlanning = LayingPlanning::with(['gl','gl.buyer', 'color', 'style','fabricCons','fabricType', 'layingPlanningDetail', 'layingPlanningDetail.layingPlanningDetailSize', 'layingPlanningDetail.cuttingOrderRecord', 'layingPlanningDetail.fabricRequisition', 'layingPlanningDetail.fabricRequisition.fabricIssue', 'layingPlanningDetail.cuttingOrderRecord.cuttingOrderRecordDetail'])
             ->whereHas('gl', function($query) use ($gl_id) {
                 if ($gl_id != null) {
@@ -645,62 +645,80 @@ class CuttingOrdersController extends Controller
         $completion_data['fabric_cons'] = $layingPlanning[0]->fabricCons->name;
         $completion_data['plan_date'] = $layingPlanning[0]->plan_date;
         $completion_data['delivery_date'] = $layingPlanning[0]->delivery_date;
-        $completion_data['total_cut_qty'] = 0; // !! masih temporary
-        $completion_data['total_diff_qty'] = 0; // !! masih temporary
-        
 
-        $total_cut_qty = 0;
-        $total_diff_order_and_actual = 0;
+        $fabric_consumption = [];
 
         foreach ($layingPlanning as $key_lp => $lp) {
-            $cut_qty_per_lp = 0;
             $cut_qty_per_size = [];
             $cut_qty_all_size = 0;
+            
+            $replacement_qty_per_size = [];
+            $replacement_qty_all_size = 0;
             
             $diff_qty_per_size = [];
             $diff_qty_all_size = 0;
 
-            $total_fabric_request = 0; // ## total length by laying planning detail
-            $total_fabric_received = 0; // ## total length by roll sticker in COR Detail
-            $diff_request_and_received = 0; // ## selisih antara yang diminta (request) dan yang diterima (received)
-            $total_actual_used = 0; // ## total length by marker length in laying planning detail di kali dengan layer di cor detail
-            $diff_received_and_used = 0; // ##  selisih antara yang diterima (received) dengan yang digunakan (used)
-
-            
             foreach ($lp->layingPlanningSize as $key_lp_size => $lp_size) {
                 $cut_qty_size = 0;
+                $replacement_qty = 0;
                 $diff_qty_size = 0;
 
                 foreach ($lp->layingPlanningDetail as $lp_detail) {
-                    foreach($lp_detail->layingPlanningDetailSize as $lp_detail_size) {
-                        if ($lp_detail_size->size_id == $lp_size->size_id) {
-                            if(!$lp_detail->cuttingOrderRecord){
-                                $cut_qty_size += 0; 
-                            } else {
-                                if(!$lp_detail->cuttingOrderRecord->cut){
-                                    $cut_qty_size += 0;
+                    if(!Str::contains(Str::lower($lp_detail->marker_code), 'repl')){
+                        foreach($lp_detail->layingPlanningDetailSize as $lp_detail_size) {
+                            if ($lp_detail_size->size_id == $lp_size->size_id) {
+                                if(!$lp_detail->cuttingOrderRecord){
+                                    $cut_qty_size += 0; 
                                 } else {
-                                    foreach ($lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail as $cor_detail)
-                                    {
-                                        $cut_qty_size += $cor_detail->layer * $lp_detail_size->ratio_per_size;
+                                    if(!$lp_detail->cuttingOrderRecord->cut){
+                                        $cut_qty_size += 0;
+                                    } else {
+                                        foreach ($lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail as $cor_detail)
+                                        {
+                                            $cut_qty_size += $cor_detail->layer * $lp_detail_size->ratio_per_size;
+                                        }
                                     }
                                 }
+                                
                             }
-                            
+                        }
+                        
+                    } else {
+                        foreach($lp_detail->layingPlanningDetailSize as $lp_detail_size) {
+                            if ($lp_detail_size->size_id == $lp_size->size_id) {
+                                if(!$lp_detail->cuttingOrderRecord){
+                                    $replacement_qty += 0; 
+                                } else {
+                                    if(!$lp_detail->cuttingOrderRecord->cut){
+                                        $replacement_qty += 0;
+                                    } else {
+                                        foreach ($lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail as $cor_detail)
+                                        {
+                                            $replacement_qty += $cor_detail->layer * $lp_detail_size->ratio_per_size;
+                                        }
+                                    }
+                                }
+                                
+                            }
                         }
                     }
                 }
                 
                 $cut_qty_per_size[$key_lp_size] = $cut_qty_size;
+                $replacement_qty_per_size[$key_lp_size] = $replacement_qty;
                 $diff_qty_size = $cut_qty_size - $lp_size->quantity;
                 $diff_qty_per_size[$key_lp_size] = ($diff_qty_size > 0) ? '+' . $diff_qty_size : $diff_qty_size;
             }
 
             $cut_qty_all_size = array_sum($cut_qty_per_size);
+            $replacement_qty_all_size = array_sum($replacement_qty_per_size);
             $diff_qty_all_size = array_sum($diff_qty_per_size);
 
             $layingPlanning[$key_lp]->cut_qty_per_size = $cut_qty_per_size;
             $layingPlanning[$key_lp]->cut_qty_all_size = $cut_qty_all_size;
+
+            $layingPlanning[$key_lp]->replacement_qty_per_size = $replacement_qty_per_size;
+            $layingPlanning[$key_lp]->replacement_qty_all_size = $replacement_qty_all_size;
             
             $layingPlanning[$key_lp]->diff_qty_per_size = $diff_qty_per_size;
             $layingPlanning[$key_lp]->diff_qty_all_size = ($diff_qty_all_size > 0) ? '+' . $diff_qty_all_size : $diff_qty_all_size;
@@ -710,21 +728,50 @@ class CuttingOrdersController extends Controller
             $layingPlanning[$key_lp]->diff_percentage = $diff_percentage;
             $layingPlanning[$key_lp]->diff_percentage_color = $diff_percentage_color;
             
-            $layingPlanning[$key_lp]->color_colspan = count($cut_qty_per_size) + 1;
+            $layingPlanning[$key_lp]->color_colspan = count($cut_qty_per_size);
+
+
+            // ## calculate fabric consuption
+
+            $fabric_request = 0; // ## total length by laying planning detail
+            $fabric_received = 0; // ## total length by roll sticker in COR Detail
+            $diff_request_and_received = 0; // ## selisih antara yang diminta (request) dan yang diterima (received)
+            $actual_used = 0; // ## total length by marker length in laying planning detail di kali dengan layer di cor detail
+            $diff_received_and_used = 0; // ##  selisih antara yang diterima (received) dengan yang digunakan (used)
+
+            foreach ($lp->layingPlanningDetail as $key_lp_detail => $lp_detail) {
+                $fabric_request += $lp_detail->total_length;
+                $fabric_received += $lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail->sum('yardage');
+                $actual_used += $lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail->sum('layer') * $lp_detail->marker_length;
+            }
+
+            $diff_request_and_received = $fabric_received - $fabric_request;
+            $diff_request_and_received = ($diff_request_and_received > 0) ? '+' . $diff_request_and_received : $diff_request_and_received;
+            $diff_received_and_used = $fabric_received - $actual_used;
+            $diff_received_and_used = ($diff_received_and_used > 0) ? '+' . $diff_received_and_used : $diff_received_and_used;
+            
+            $fabric_consumption[$key_lp] = (object) [
+                'color' => $lp->color->color,
+                'fabric_request' => $lp->layingPlanningDetail->sum('total_length'),
+                'fabric_received' => $fabric_received,
+                'diff_request_and_received' => $diff_request_and_received,
+                'actual_used' => $actual_used,
+                'diff_received_and_used' => $diff_received_and_used,
+            ];
         }
 
+        $completion_data['total_output_qty'] = $layingPlanning->sum('cut_qty_all_size');
+        $completion_data['total_replacement'] = $layingPlanning->sum('replacement_qty_all_size');
+        $diff_output_mi_qty = $completion_data['total_output_qty'] - $total_mi_qty;
+        $completion_data['diff_output_mi_qty'] = ($diff_output_mi_qty > 0) ? '+' . $diff_output_mi_qty : $diff_output_mi_qty;
+        
         $laying_plannings = $layingPlanning->chunk(2);
-        $fabric_consumption = $layingPlanning;
-
         
         $data = [
             'laying_plannings' => $laying_plannings,
             'completion_data' => (object) $completion_data,
             'fabric_consumption' => $fabric_consumption,
         ];
-
-        // dd($data);
-        
 
         // return view('page.cutting-order.completion-report', $data);
         $pdf = PDF::loadview('page.cutting-order.completion-report', $data)->setPaper('a4', 'landscape');
