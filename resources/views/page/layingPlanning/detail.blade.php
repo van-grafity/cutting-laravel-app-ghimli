@@ -200,15 +200,17 @@
                                             </div>
                                         @endif
                                     <td>
-                                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
+                                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter') || Auth::user()->hasRole('pmr'))
                                         <div class="dropdown">
                                             @if($detail->cor_status_print == 1 || $detail->fr_status_print == 1)
                                                 <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Salah satu nota Layer atau Fabric Req sudah di print"></span>
                                             @endif
                                             <a class="text-decoration-none dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{ $detail->table_number }}</a>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                @if($detail->fr_id != null)
+                                                @if($detail->fr_id != null) 
+                                                    @if(!Auth::user()->hasRole('pmr'))
                                                     <li><a class="dropdown-item" href="{{ route('fabric-requisition.show', $detail->fr_id) }}">Detail Fabric</a></li>
+                                                    @endif
                                                 @endif
                                                 @if($detail->cor_id != null)
                                                     <li><a class="dropdown-item" href="{{ route('cutting-order.show', $detail->cor_id) }}">Detail Cutting</a></li>
