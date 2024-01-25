@@ -740,9 +740,13 @@ class CuttingOrdersController extends Controller
             $diff_received_and_used = 0; // ##  selisih antara yang diterima (received) dengan yang digunakan (used)
 
             foreach ($lp->layingPlanningDetail as $key_lp_detail => $lp_detail) {
+
+                
                 $fabric_request += $lp_detail->total_length;
-                $fabric_received += $lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail->sum('yardage');
-                $actual_used += $lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail->sum('layer') * $lp_detail->marker_length;
+                if($lp_detail->cuttingOrderRecord) {
+                    $fabric_received += $lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail->sum('yardage');
+                    $actual_used += $lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail->sum('layer') * $lp_detail->marker_length;
+                }
             }
 
             $diff_request_and_received = $fabric_received - $fabric_request;
