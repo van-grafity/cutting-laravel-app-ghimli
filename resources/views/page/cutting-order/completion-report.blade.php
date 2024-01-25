@@ -205,9 +205,9 @@
                                 <tr>
                                     <td>DIFF</td>
                                     @foreach($laying_planning->diff_qty_per_size as $diff_each_size)
-                                    <td>{{ $diff_each_size }}</td>
+                                    <td style="{{ ($diff_each_size < 0) ? 'color:red;' : '' }}" >{{ $diff_each_size }}</td>
                                     @endforeach
-                                    <td>{{ $laying_planning->diff_qty_all_size}}</td>
+                                    <td style="text-align: center; {{ ($laying_planning->diff_qty_all_size < 0) ? 'color:red;' : '' }}">{{ $laying_planning->diff_qty_all_size}}</td>
                                 </tr>
                                 <tr>
                                     <td>REPLACEMENT</td>
