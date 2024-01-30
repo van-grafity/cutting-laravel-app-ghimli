@@ -19,6 +19,7 @@ use Illuminate\Support\Arr;
 use Yajra\Datatables\Datatables;
 use PDF;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class CuttingTicketsController extends Controller
 {
@@ -49,8 +50,8 @@ class CuttingTicketsController extends Controller
     }
 
     public function dataCuttingTicket(){
+        $date_limiter = Carbon::now()->subMonth(2)->format('Y-m-d');
         $query = DB::table('cutting_order_records')
-            
             ->join('laying_planning_details', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
             ->join('laying_plannings', 'laying_planning_details.laying_planning_id', '=', 'laying_plannings.id')
             ->join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
@@ -58,6 +59,7 @@ class CuttingTicketsController extends Controller
             ->join('colors', 'laying_plannings.color_id', '=', 'colors.id')
             ->join('fabric_types', 'laying_plannings.fabric_type_id', '=', 'fabric_types.id')
             ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
+            ->where('cutting_order_records.cut','>=', $date_limiter)
             ->whereRaw('cutting_order_records.id IN (SELECT cutting_order_record_id FROM cutting_tickets)')
             ->select('cutting_order_records.id', 'cutting_order_records.serial_number', 'styles.style', 'colors.color', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'cutting_order_records.updated_at')
             ->orderBy('cutting_order_records.updated_at', 'desc')->get();
