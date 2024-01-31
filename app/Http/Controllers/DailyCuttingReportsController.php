@@ -216,7 +216,7 @@ class DailyCuttingReportsController extends Controller
                       ->where('cutting_order_records.cut', '<=', $end_datetime);
             })
             ->groupBy('groups.id')
-            ->orderBy('groups.id')
+            ->orderBy('groups.group_name')
             ->get();
         
         foreach ($groups as $key_group => $group) {
