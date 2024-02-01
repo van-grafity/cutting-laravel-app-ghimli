@@ -50,7 +50,7 @@ class CuttingTicketsController extends Controller
     }
 
     public function dataCuttingTicket(){
-        $date_limiter = Carbon::now()->subMonth(2)->format('Y-m-d');
+        $date_limiter = Carbon::now()->subMonth(4)->format('Y-m-d');
         $query = DB::table('cutting_order_records')
             ->join('laying_planning_details', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
             ->join('laying_plannings', 'laying_planning_details.laying_planning_id', '=', 'laying_plannings.id')
