@@ -260,6 +260,9 @@
                                     @can('super_admin')
                                         <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_cutting_order_detail({{ $detail->id }})">Delete</a>
                                     @endcan
+                                    @if($cutting_order->status_cut != 'sudah')
+                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_cutting_order_detail({{ $detail->id }})">Delete</a>
+                                    @endif
                                 </td>
                                 <td class="d-none">
                                     <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
