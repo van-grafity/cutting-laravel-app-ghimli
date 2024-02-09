@@ -256,6 +256,7 @@ class CuttingOrdersController extends BaseController
     {
         $input = $request->all();
         $cuttingOrderRecordDetail = CuttingOrderRecordDetail::find($id);
+        $cuttingOrderRecordDetail->cutting_order_record_id = $input['cutting_order_record_id'];
         $cuttingOrderRecordDetail->fabric_roll = $input['fabric_roll'];
         $cuttingOrderRecordDetail->fabric_batch = $input['fabric_batch'];
         $cuttingOrderRecordDetail->color_id = $input['color_id'];
@@ -266,8 +267,15 @@ class CuttingOrdersController extends BaseController
         $cuttingOrderRecordDetail->balance_end = $input['balance_end'];
         $cuttingOrderRecordDetail->remarks = $input['remarks'];
         $cuttingOrderRecordDetail->operator = $input['operator'];
+        $cuttingOrderRecordDetail->user_id = $input['user_id'];
         $cuttingOrderRecordDetail->save();
-        return $this->onSuccess($cuttingOrderRecordDetail, 'Cutting Order Record Detail updated successfully.');
+        $data = CuttingOrderRecordDetail::where('cutting_order_record_details.id', $cuttingOrderRecordDetail->id)->with('cuttingOrderRecord')->first();
+        $data = collect(
+            [
+                'cutting_order_record_detail' => $data
+            ]
+        );
+        return $this->onSuccess($data, 'Cutting Order Record Detail updated successfully.');
     }
 
     public function getCuttingOrderRecordByGlId($id)
