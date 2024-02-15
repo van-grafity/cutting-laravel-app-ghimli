@@ -257,9 +257,9 @@
                                 <td>{{ $detail->cutting_date }}</td>
                                 <td>
                                     <a href="javascript:void(0);" class="btn btn-info btn-sm" onclick="show_detail({{ $detail->id }})">Detail</a>
-                                    @can('super_admin')
+                                    @if(Auth::user()->hasRole('super_admin') || $cutting_order->status_cut != 'sudah')
                                         <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_cutting_order_detail({{ $detail->id }})">Delete</a>
-                                    @endcan
+                                    @endif
                                 </td>
                                 <td class="d-none">
                                     <a href="" class="btn btn-primary btn-sm btn-edit-layingPlanning">Edit</a>
