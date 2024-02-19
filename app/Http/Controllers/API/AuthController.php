@@ -32,8 +32,10 @@ class AuthController extends BaseController
     {
         // collect user
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
-            $authUser = Auth::user(); 
-            $success['token'] =  $authUser->createToken('MyAuthApp')->plainTextToken; 
+            $authUser = Auth::user();
+            $token_name = $request->token_name ? $request->token_name : 'android_app'; 
+            $token_expired_hours = $request->token_expired_hours ? $request->token_expired_hours : 1; 
+            $success['token'] =  $authUser->createToken($token_name, ['*'],  now()->addHours($token_expired_hours))->plainTextToken; 
             $success['name'] =  $authUser->name;
             $success['email'] =  $authUser->email;
 
@@ -65,7 +67,7 @@ class AuthController extends BaseController
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
-        $success['token'] =  $user->createToken('MyAuthApp')->plainTextToken;
+        $success['token'] =  $user->createToken('android_app')->plainTextToken;
         $success['name'] =  $user->name;
    
         return $this->onSuccess($success, 'You have successfully registered');

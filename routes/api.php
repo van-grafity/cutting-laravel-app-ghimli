@@ -13,6 +13,7 @@ use App\Http\Controllers\API\CuttingTicketsController;
 use App\Http\Controllers\API\BundleCutsController;
 use App\Http\Controllers\API\BundleStocksController;
 use App\Http\Controllers\API\BundleLocationsController;
+use App\Http\Controllers\API\FabricRequestSyncController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,4 +69,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     
     Route::get('bundle-locations', [BundleLocationsController::class,'index']);
+    
+    Route::controller(FabricRequestSyncController::class)->prefix('fabric-request-sync')->name('fabric-request-sync.')->group(function(){
+        Route::get('/', [FabricRequestSyncController::class, 'index']);
+        Route::get('/get-fabric-request', [FabricRequestSyncController::class, 'getFabricRequest']);
+    });
 });
