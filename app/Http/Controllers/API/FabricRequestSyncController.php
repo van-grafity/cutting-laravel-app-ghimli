@@ -49,11 +49,11 @@ class FabricRequestSyncController extends Controller
                     ->select(
                         'fabric_requisitions.id as fbr_id',
                         'fabric_requisitions.serial_number as fbr_serial_number',
-                        'laying_planning_details.id as laying_planning_detail_id',
                         'fabric_requisitions.status_print as fbr_status_print',
                         'fabric_requisitions.remark as fbr_remark',
                         'fabric_requisitions.created_at as fbr_created_at',
                         'fabric_requisitions.updated_at as fbr_updated_at',
+                        'laying_planning_details.id as laying_planning_detail_id',
                         'gls.gl_number',
                         'colors.color',
                         'laying_planning_details.table_number',
