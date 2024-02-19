@@ -134,7 +134,7 @@ class CuttingOrdersController extends Controller
             ->addColumn('action', function($data){
                 $action_delete = '';
                 if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter')){
-                    $action_delete = '<a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></a>';
+                    // $action_delete = '<a href="javascript:void(0);" class="btn btn-danger btn-sm mb-1" onclick="delete_cuttingOrder('.$data->id.')" data-id="'.$data->id.'" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></a>';
                 }
                 if ($data->status_print == 0) {
                     $action = '
