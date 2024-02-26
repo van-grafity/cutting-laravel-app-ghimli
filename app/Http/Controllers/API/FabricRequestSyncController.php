@@ -35,7 +35,7 @@ class FabricRequestSyncController extends Controller
     {
         $data_input = $request->all();
         $gl = GL::where('gl_number', $data_input['gl_number'])->first();
-        if ($gl == null) return $this->onError(404, 'GL not found.');
+        if ($gl == null) return $this->onError(404, 'GL Not Found!');
         try {
             // ## Get Laying Planning from GL
             $laying_plannings = LayingPlanning::where('gl_id',$gl->id)->get();
