@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CuttingOrderRecord extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'serial_number',
@@ -15,6 +17,8 @@ class CuttingOrderRecord extends Model
         'id_status_layer',
         'id_status_cut',
         'created_by',
+        'updated_by',
+        'deleted_by',
         'status_print',
     ];
 
