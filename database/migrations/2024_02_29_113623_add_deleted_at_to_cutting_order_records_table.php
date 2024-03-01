@@ -15,7 +15,7 @@ return new class extends Migration
     public function up()
     {
         DB::statement('ALTER TABLE cutting_order_records MODIFY created_by bigint unsigned AFTER status_print');
-
+         
         Schema::table('cutting_order_records', function (Blueprint $table) {
             $table->unsignedBigInteger('updated_by')->after('created_by')->nullable();
             $table->foreign('updated_by')->references('id')->on('users');
@@ -40,7 +40,7 @@ return new class extends Migration
             $table->dropForeign(['updated_by']);
             $table->dropColumn('updated_by'); 
             $table->dropForeign(['deleted_by']);
-            $table->dropColumn('deleted_by'); 
+            $table->dropColumn('deleted_by');
             $table->dropSoftDeletes();
         });
     }
