@@ -53,6 +53,8 @@ class FabricRequestSyncController extends Controller
                 ->join('laying_plannings','laying_plannings.id','=','laying_planning_details.laying_planning_id')
                 ->join('gls','gls.id','=','laying_plannings.gl_id')
                 ->join('colors','colors.id','=','laying_plannings.color_id')
+                ->join('styles','styles.id','=','laying_plannings.style_id')
+                ->join('fabric_types','fabric_types.id','=','laying_plannings.fabric_type_id')
                 ->where(function($query) use ($gl) {
                     if($gl) {
                         $query->where('gls.id', $gl->id);
@@ -67,9 +69,14 @@ class FabricRequestSyncController extends Controller
                     'fabric_requisitions.remark as fbr_remark',
                     'fabric_requisitions.created_at as fbr_created_at',
                     'fabric_requisitions.updated_at as fbr_updated_at',
-                    'laying_planning_details.id as laying_planning_detail_id',
                     'gls.gl_number',
                     'colors.color',
+                    'styles.style',
+                    'fabric_types.name as fabric_type',
+                    'laying_plannings.fabric_po',
+                    'laying_plannings.id as laying_planning_id',
+                    'laying_plannings.serial_number as laying_planning_serial_number',
+                    'laying_planning_details.id as laying_planning_detail_id',
                     'laying_planning_details.table_number',
                     'laying_planning_details.total_length as qty_required',
                 )
