@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\CuttingOrderRecord;
+use Illuminate\Support\Facades\Auth;
 
 class CuttingOrderRecordObserver
 {
@@ -15,9 +16,9 @@ class CuttingOrderRecordObserver
      * @param  \App\Models\CuttingOrderRecord  $cuttingOrderRecord
      * @return void
      */
-    public function created(CuttingOrderRecord $cuttingOrderRecord)
+    public function creating(CuttingOrderRecord $cuttingOrderRecord)
     {
-        $cuttingOrderRecord->created_by = Auth()->user()->id;
+        $cuttingOrderRecord->created_by = Auth::id();
     }
 
     /**
@@ -26,10 +27,10 @@ class CuttingOrderRecordObserver
      * @param  \App\Models\CuttingOrderRecord  $cuttingOrderRecord
      * @return void
      */
-    public function updated(CuttingOrderRecord $cuttingOrderRecord)
+    public function updating(CuttingOrderRecord $cuttingOrderRecord)
     {
-        $cuttingOrderRecord->updated_by = Auth()->user()->id;
-    }
+        $cuttingOrderRecord->updated_by = Auth::id();
+    }   
 
     /**
      * Handle the CuttingOrderRecord "deleted" event.
@@ -39,7 +40,7 @@ class CuttingOrderRecordObserver
      */
     public function deleted(CuttingOrderRecord $cuttingOrderRecord)
     {
-        $cuttingOrderRecord->deleted_by = Auth()->user()->id;
+        $cuttingOrderRecord->deleted_by = Auth::id();
         $cuttingOrderRecord->save();
     }
 
