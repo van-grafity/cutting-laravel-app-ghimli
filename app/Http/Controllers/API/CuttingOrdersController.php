@@ -251,31 +251,46 @@ class CuttingOrdersController extends BaseController
         );
         return $this->onSuccess($data, 'Color retrieved successfully.');
     }
-
+    
     public function update(Request $request, $id)
     {
-        $input = $request->all();
-        $cuttingOrderRecordDetail = CuttingOrderRecordDetail::find($id);
-        $cuttingOrderRecordDetail->cutting_order_record_id = $input['cutting_order_record_id'];
-        $cuttingOrderRecordDetail->fabric_roll = $input['fabric_roll'];
-        $cuttingOrderRecordDetail->fabric_batch = $input['fabric_batch'];
-        $cuttingOrderRecordDetail->color_id = $input['color_id'];
-        $cuttingOrderRecordDetail->yardage = $input['yardage'];
-        $cuttingOrderRecordDetail->weight = $input['weight'];
-        $cuttingOrderRecordDetail->layer = $input['layer'];
-        $cuttingOrderRecordDetail->joint = $input['joint'];
-        $cuttingOrderRecordDetail->balance_end = $input['balance_end'];
-        $cuttingOrderRecordDetail->remarks = $input['remarks'];
-        $cuttingOrderRecordDetail->operator = $input['operator'];
-        $cuttingOrderRecordDetail->user_id = $input['user_id'];
-        $cuttingOrderRecordDetail->save();
-        $data = CuttingOrderRecordDetail::where('cutting_order_record_details.id', $cuttingOrderRecordDetail->id)->with('cuttingOrderRecord')->first();
-        $data = collect(
-            [
-                'cutting_order_record_detail' => $data
-            ]
-        );
-        return $this->onSuccess($data, 'Cutting Order Record Detail updated successfully.');
+        try {
+            $input = $request->only([
+                'fabric_roll', 'fabric_batch', 'color_id', 'yardage',
+                'weight', 'layer', 'joint', 'balance_end', 'remarks', 'operator', 'user_id'
+            ]);
+            $cuttingOrderRecordDetail = CuttingOrderRecordDetail::with('cuttingOrderRecord.statusCut')->where('id', $id)->first();
+            if ($cuttingOrderRecordDetail->cuttingOrderRecord->statusCut->id == 2) {
+                return $this->onError(404, 'Cannot update fabric roll, cutting order record has been cut.');
+            }
+            $cuttingOrderRecordDetail->cutting_order_record_id = $cuttingOrderRecordDetail->cuttingOrderRecord->id;
+            $cuttingOrderRecordDetail->fabric_roll = $input['fabric_roll'];
+            $cuttingOrderRecordDetail->fabric_batch = $input['fabric_batch'];
+
+            $color = Color::where('id', $input['color_id'])->first();
+            if ($color == null) return $this->onError(404, 'Color not found.');
+            $cuttingOrderRecordDetail->color_id = $color->id;
+
+            $cuttingOrderRecordDetail->yardage = $input['yardage'];
+            $cuttingOrderRecordDetail->weight = $input['weight'];
+            $cuttingOrderRecordDetail->layer = $input['layer'];
+            $cuttingOrderRecordDetail->joint = $input['joint'];
+            $cuttingOrderRecordDetail->balance_end = $input['balance_end'];
+
+            $cuttingOrderRecordDetail->remarks = $input['remarks'];
+            $cuttingOrderRecordDetail->operator = $input['operator'];
+            $cuttingOrderRecordDetail->user_id = $input['user_id'];
+
+            $cuttingOrderRecordDetail->save();
+            $data = collect(
+                [
+                    'cutting_order_record_detail' => $cuttingOrderRecordDetail
+                ]
+            );
+            return $this->onSuccess($data, 'Fabric roll updated successfully.');
+        } catch (\Exception $e) {
+            return $this->onError(500, $e->getMessage());
+        }
     }
 
     public function getCuttingOrderRecordByGlId($id)
