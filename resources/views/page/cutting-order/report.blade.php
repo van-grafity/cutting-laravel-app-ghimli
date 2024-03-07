@@ -11,8 +11,9 @@
     <style type="text/css">
         @page {
             margin-top: 0.8cm;
-            margin-left: 1cm;
-            margin-bottom: 0cm;
+            margin-left: 0.7cm;
+            margin-right: 0.7cm;
+            margin-bottom: 0.5cm;
         }
         /* header {
             position: fixed;
@@ -160,7 +161,7 @@
                         <th rowspan="2">Buyer </th>
                         <th rowspan="2"> {{ $data->buyer }} </th>
                         <th rowspan="2">Width <br> <i style="font-weight: 500;">Lebar</i></th>
-                        <th rowspan="2" colspan="2"> {{ $data->size_ratio }} ( {{ $data->total_size_ratio }} )</th>
+                        <th rowspan="2" colspan="2" style="font-size: 9px !important;"> {{ $data->size_ratio }} ( {{ $data->total_size_ratio }} )</th>
                         <th colspan="2">Colour / <i style="font-weight: 500;">Warna</i></th>
                         <th colspan="3"> {{ $data->color }} </th>
                         <th rowspan="2">Laid By <br> <i style="font-weight: 500;">Dibentang Oleh</i></th>

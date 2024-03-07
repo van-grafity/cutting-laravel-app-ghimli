@@ -11,8 +11,9 @@
     <style type="text/css">
         @page {
             margin-top: 0.8cm;
-            margin-left: 1.2cm;
-            margin-bottom: 0cm;
+            margin-left: 0.7cm;
+            margin-right: 0.7cm;
+            margin-bottom: 0.5cm;
         }
         /* header {
             position: fixed;
@@ -148,7 +149,7 @@
             <table class="table table-nota" style="margin-bottom: 0px !important">
                 <thead class="">
                     <tr>
-                        <th width="40">Fabric P/O No. </th>
+                        <th width="26">Fabric P/O No. </th>
                         <th width="90"> {{ $cor['fabric_po'] }} </th>
                         <th width="60">Marker Length <br> <i style="font-weight: 500;">Panjang Marker</i></th>
                         <th width="150" colspan="2"> {{ $cor['marker_length'] }} </th>
@@ -161,7 +162,7 @@
                         <th rowspan="2">Buyer </th>
                         <th rowspan="2"> {{ $cor['buyer'] }} </th>
                         <th rowspan="2">Width <br> <i style="font-weight: 500;">Lebar</i></th>
-                        <th rowspan="2" colspan="2"> {{ $cor['size_ratio'] }} </th>
+                        <th rowspan="2" colspan="2" style="font-size: 9px !important;"> {{ $cor['size_ratio'] }} </th>
                         <th colspan="2">Colour / <i style="font-weight: 500;">Warna</i></th>
                         <th colspan="3"> {{ $cor['color'] }} </th>
                         <th rowspan="2">Laid By <br> <i style="font-weight: 500;">Dibentang Oleh</i></th>
