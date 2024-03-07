@@ -10,7 +10,7 @@
     
     <style type="text/css">
         @page {
-            margin-top: 1.2cm;
+            margin-top: 0.8cm;
             margin-left: 1.2cm;
             margin-bottom: 0cm;
         }
