@@ -78,7 +78,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::controller(CuttingOrdersController::class)->prefix('cutting-orders')->name('cutting-orders.')->group(function(){
-        Route::put('fabric-roll/{id}', 'updateCorByFabricRoll')->name('update-cor-by-fabric-roll');
+        Route::put('fabric-roll/{id}', 'updateFabricRollByCorId')->name('update-fabric-roll');
         Route::delete('fabric-roll/{id}', 'deleteFabricRoll')->name('delete-fabric-roll');
     });
 });

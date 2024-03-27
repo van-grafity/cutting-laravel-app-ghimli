@@ -257,7 +257,7 @@ class CuttingOrdersController extends BaseController
         //
     }
 
-    public function updateCorByFabricRoll(Request $request, $id)
+    public function updateFabricRollByCorId(Request $request, $id)
     {
         try {
             $input = $request->only([
