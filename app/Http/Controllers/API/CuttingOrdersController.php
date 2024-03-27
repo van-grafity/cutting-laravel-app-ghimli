@@ -298,11 +298,18 @@ class CuttingOrdersController extends BaseController
         }
     }
 
-    public function deleteFabricRoll($id)
+    public function deleteFabricRoll(Request $request, $id)
     {
-        $cuttingOrderRecordDetail = CuttingOrderRecordDetail::find($id);
-        $cuttingOrderRecordDetail->delete();
-        return $this->onSuccess($cuttingOrderRecordDetail, 'Fabric roll deleted successfully.');
+        try {
+            $cuttingOrderRecordDetail = CuttingOrderRecordDetail::with('cuttingOrderRecord.statusCut')->where('id', $id)->first();
+            if ($cuttingOrderRecordDetail->cuttingOrderRecord->statusCut->id == 2) {
+                return $this->onSuccess(collect(['cutting_order_record_detail' => null]), 'Tidak bisa menghapus fabric roll, cutting order record sudah di potong.');
+            }
+            $cuttingOrderRecordDetail->delete();
+            return $this->onSuccess(collect(['cutting_order_record_detail' => $cuttingOrderRecordDetail]), 'Fabric roll berhasil dihapus.');
+        } catch (\Exception $e) {
+            return $this->onError(500, $e->getMessage());
+        }
     }
 
     public function getCuttingOrderRecordByGlId($id)
