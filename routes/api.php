@@ -51,6 +51,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('cutting-orders/cor/{id}', [CuttingOrdersController::class, 'getLayingPlanningDetailByCuttingOrderRecordId']);
     Route::post('cutting-orders/status-cut', [CuttingOrdersController::class, 'postStatusCut']);
     Route::post('cutting-orders/search', [CuttingOrdersController::class, 'search']);
+
+    
     
 
     Route::get('cutting-tickets', [CuttingTicketsController::class, 'index']);
@@ -73,5 +75,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::controller(FabricRequestSyncController::class)->prefix('fabric-request-sync')->name('fabric-request-sync.')->group(function(){
         Route::get('/', [FabricRequestSyncController::class, 'index']);
         Route::get('/get-fabric-request', [FabricRequestSyncController::class, 'getFabricRequest']);
+    });
+
+    Route::controller(CuttingOrdersController::class)->prefix('cutting-orders')->name('cutting-orders.')->group(function(){
+        Route::put('fabric-roll/{id}', 'updateCorByFabricRoll')->name('update-cor-by-fabric-roll');
+        Route::delete('fabric-roll/{id}', 'deleteFabricRoll')->name('delete-fabric-roll');
     });
 });

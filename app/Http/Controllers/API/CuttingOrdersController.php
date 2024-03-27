@@ -254,6 +254,11 @@ class CuttingOrdersController extends BaseController
     
     public function update(Request $request, $id)
     {
+        //
+    }
+
+    public function updateCorByFabricRoll(Request $request, $id)
+    {
         try {
             $input = $request->only([
                 'fabric_roll', 'fabric_batch', 'color_id', 'yardage',
@@ -261,7 +266,7 @@ class CuttingOrdersController extends BaseController
             ]);
             $cuttingOrderRecordDetail = CuttingOrderRecordDetail::with('cuttingOrderRecord.statusCut')->where('id', $id)->first();
             if ($cuttingOrderRecordDetail->cuttingOrderRecord->statusCut->id == 2) {
-                return $this->onError(404, 'Cannot update fabric roll, cutting order record has been cut.');
+                return $this->onSuccess(collect(['cutting_order_record_detail' => $cuttingOrderRecordDetail]), 'Cannot update fabric roll, cutting order record has been cut.');
             }
             $cuttingOrderRecordDetail->cutting_order_record_id = $cuttingOrderRecordDetail->cuttingOrderRecord->id;
             $cuttingOrderRecordDetail->fabric_roll = $input['fabric_roll'];
@@ -291,6 +296,13 @@ class CuttingOrdersController extends BaseController
         } catch (\Exception $e) {
             return $this->onError(500, $e->getMessage());
         }
+    }
+
+    public function deleteFabricRoll($id)
+    {
+        $cuttingOrderRecordDetail = CuttingOrderRecordDetail::find($id);
+        $cuttingOrderRecordDetail->delete();
+        return $this->onSuccess($cuttingOrderRecordDetail, 'Fabric roll deleted successfully.');
     }
 
     public function getCuttingOrderRecordByGlId($id)
