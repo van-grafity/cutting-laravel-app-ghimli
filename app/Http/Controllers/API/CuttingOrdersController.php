@@ -286,13 +286,44 @@ class CuttingOrdersController extends BaseController
             $cuttingOrderRecordDetail->operator = $input['operator'];
             $cuttingOrderRecordDetail->user_id = $input['user_id'];
 
+            $sum_layer = 0;
+            $cuttingOrderRecord = $cuttingOrderRecordDetail->cuttingOrderRecord;
+            $sum_layer += $input['layer'];
+            // not using max min
+
+            if ($sum_layer == $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
+                $status = StatusLayer::where('name', 'completed')->first();
+                if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
+                $cuttingOrderRecord->id_status_layer = $status->id;
+            } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
+                return $this->onSuccess(null, 'Layer Cut tidak boleh lebih dari Layer Qty.');
+                $status = StatusLayer::where('name', 'over layer')->first();
+                if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
+                $cuttingOrderRecord->id_status_layer = $status->id;
+            } else {
+                $status = StatusLayer::where('name', 'not completed')->first();
+                if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
+                $cuttingOrderRecord->id_status_layer = $status->id;
+            }
+
+            if ($cuttingOrderRecord->id_status_layer == 1 && $cuttingOrderRecord->id_status_cut == 1) {
+                if ($cuttingOrderRecord->cuttingOrderRecordDetail != null) {
+                    $cuttingOrderRecord->id_status_layer = 4;
+                }
+            } else {
+                $cuttingOrderRecord->id_status_layer = $cuttingOrderRecord->id_status_layer;
+            }
+
             $cuttingOrderRecordDetail->save();
+            $cuttingOrderRecord->save();
+            $data = CuttingOrderRecord::where('cutting_order_records.id', $cuttingOrderRecord->id)->with('statusLayer', 'cuttingOrderRecordDetail.user')
+                ->first();
             $data = collect(
                 [
-                    'cutting_order_record_detail' => $cuttingOrderRecordDetail
+                    'cutting_order_record' => $data
                 ]
             );
-            return $this->onSuccess($data, 'Fabric roll updated successfully.');
+            return $this->onSuccess($data, 'Fabric roll berhasil di update.');
         } catch (\Exception $e) {
             return $this->onError(500, $e->getMessage());
         }
