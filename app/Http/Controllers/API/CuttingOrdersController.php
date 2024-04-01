@@ -328,7 +328,7 @@ class CuttingOrdersController extends BaseController
             return $this->onError(500, $e->getMessage());
         }
     }
-
+    
     public function deleteFabricRoll(Request $request, $id)
     {
         try {
@@ -337,6 +337,37 @@ class CuttingOrdersController extends BaseController
                 return $this->onSuccess(collect(['cutting_order_record_detail' => null]), 'Tidak bisa menghapus fabric roll, cutting order record sudah di potong.');
             }
             $cuttingOrderRecordDetail->delete();
+            $cuttingOrderRecord = $cuttingOrderRecordDetail->cuttingOrderRecord;
+            $sum_layer = 0;
+            foreach ($cuttingOrderRecord->cuttingOrderRecordDetail as $detail) {
+                $sum_layer += $detail->layer;
+            }
+            
+            if ($sum_layer == $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
+                $status = StatusLayer::where('name', 'completed')->first();
+                if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
+                $cuttingOrderRecord->id_status_layer = $status->id;
+                $cuttingOrderRecord->layer = Carbon::now();
+            } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
+                return $this->onSuccess(null, 'Layer Cut tidak boleh lebih dari Layer Qty.');
+                $status = StatusLayer::where('name', 'over layer')->first();
+                if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
+                $cuttingOrderRecord->id_status_layer = $status->id;
+            } else {
+                $status = StatusLayer::where('name', 'not completed')->first();
+                if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
+                $cuttingOrderRecord->id_status_layer = $status->id;
+            }
+
+            if ($cuttingOrderRecord->id_status_layer == 1 && $cuttingOrderRecord->id_status_cut == 1) {
+                if ($cuttingOrderRecord->cuttingOrderRecordDetail != null) {
+                    $cuttingOrderRecord->id_status_layer = 4;
+                }
+            } else {
+                $cuttingOrderRecord->id_status_layer = $cuttingOrderRecord->id_status_layer;
+            }
+
+            $cuttingOrderRecord->save();
             return $this->onSuccess(collect(['cutting_order_record_detail' => $cuttingOrderRecordDetail]), 'Fabric roll berhasil dihapus.');
         } catch (\Exception $e) {
             return $this->onError(500, $e->getMessage());
