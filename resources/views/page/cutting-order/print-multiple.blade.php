@@ -113,7 +113,7 @@
                 PT. GHIMLI INDONESIA
             </div>
             <div class="serial-number-qr">
-                <div class="qr-wrapper" style="margin-top: -15px; margin-right: -15px;">
+                <div class="qr-wrapper" style="margin-top: -10px; margin-right: 0px;">
                     <img src="data:image/png;base64, {!! base64_encode(QrCode::size(70)->generate($cor['serial_number'])) !!} ">
                 </div>
             </div>
