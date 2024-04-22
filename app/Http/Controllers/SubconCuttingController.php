@@ -382,11 +382,6 @@ class SubconCuttingController extends Controller
             $general_total_dozen += $subtotal_dozen_per_gl;
         }
 
-        // dd($cutting_summary);
-        
-        // return view('page.subcon.report_clean', compact('group','date_start', 'date_end','cutting_summary','all_size_in_summary','general_total_pcs','general_total_dozen'));
-
-        // !! file view subcon.report2 bisa di hapus next nya
         $pdf = PDF::loadView('page.subcon.report_clean', compact('group','date_start', 'date_end','cutting_summary','all_size_in_summary','general_total_pcs','general_total_dozen'))->setPaper('a4', 'landscape');
         return $pdf->stream('Summary Group Cutting.pdf');
     }
