@@ -27,7 +27,7 @@ class UserRolePermissionsSeeder extends Seeder
         Permission::create(['name' => 'menu layer']);
         Permission::create(['name' => 'menu ticket']);
         Permission::create(['name' => 'menu ppc']);
-        Permission::create(['name' => 'menu_pmr']);
+        Permission::create(['name' => 'menu pmr']);
 
         // gets all permissions via Gate::before rule; see AuthServiceProvider
         $role_super_admin = Role::create(['name' => 'super_admin']);
