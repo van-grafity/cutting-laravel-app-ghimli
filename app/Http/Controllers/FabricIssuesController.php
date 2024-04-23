@@ -24,7 +24,7 @@ class FabricIssuesController extends Controller
     public function index()
     {
         $fabric_requisitions = FabricRequisition::all();
-        return view('page.fabric-issue.index2', compact('fabric_requisitions'));
+        return view('page.fabric-issue.index', compact('fabric_requisitions'));
     }
 
     public function dataFabricIssue(){

@@ -69,7 +69,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/laying-planning-data', [LayingPlanningsController::class, 'dataLayingPlanning']);
     Route::get('/laying-planning-detail-data/{id}', [LayingPlanningsController::class, 'dataLayingPlanningDetail'])->name('laying-planning-detail-data');
     Route::get('/cutting-order-data', [CuttingOrdersController::class, 'dataCuttingOrder']);
-    Route::get('/subcon-cutting-data', [SubconCuttingController::class, 'dataCuttingOrder']);
+
+    // !! ada planning untuk menghapus yang berkaitan dengan subcon
+    // Route::get('/subcon-cutting-data', [SubconCuttingController::class, 'dataCuttingOrder']);
+    
     Route::get('/cutting-order-chart', [CuttingOrdersController::class, 'chartCuttingOrder']);
     Route::get('/cutting-ticket-data', [CuttingTicketsController::class, 'dataCuttingTicket']);
     Route::get('/cutting-ticket-detail-data/{id}', [CuttingTicketsController::class, 'dataCuttingTicketByCOR'])->name('cutting-ticket-detail-data'); // http://localhost/cutting-ticket-app/public/cutting-ticket-detail-data/COR-62843-MHG-001
@@ -161,8 +164,10 @@ Route::group(['middleware' => ['auth','can:clerk']], function () {
     Route::get('print-multiple/{id}', [CuttingOrdersController::class,'print_multiple'])->name('cutting-order.print-multiple');
     Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
     Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');
-    Route::resource('subcon-cutting', SubconCuttingController::class);
-    Route::get('cutting-report-subcon/{id}', [SubconCuttingController::class,'cutting_report_subcon'])->name('subcon-cutting.cutting-report-subcon');
+    
+    // !! ada planning buat delete semua yang berkaitan dengan subcon
+    // Route::resource('subcon-cutting', SubconCuttingController::class);
+    
     Route::get('cutting-order-detail-delete/{id}', [CuttingOrdersController::class,'delete_cor_detail'])->name('cutting-order.detail-delete');
 
     Route::resource('cutting-ticket', CuttingTicketsController::class);
