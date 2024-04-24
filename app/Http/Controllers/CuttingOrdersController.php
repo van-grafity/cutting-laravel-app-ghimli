@@ -33,28 +33,6 @@ class CuttingOrdersController extends Controller
 {
     public function index()
     {
-        // $cuttingOrder = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])->get();
-        // UPDATE `cutting_order_records` JOIN `cutting_order_record_details` ON `cutting_order_records`.`id` = `cutting_order_record_details`.`cutting_order_record_id` SET `cutting_order_records`.`id_status_layer` = 4 WHERE `cutting_order_records`.`id_status_layer` = 1 AND `cutting_order_records`.`id_status_cut` = 1;
-        // foreach ($cuttingOrder as $key => $value) {
-        //     if ($value->id_status_layer == 1 && $value->id_status_cut == 1) {
-        //         if ($value->cuttingOrderRecordDetail != null) {
-        //             $value->id_status_layer = 4;
-        //         }
-        //     } else {
-        //         $value->id_status_layer = $value->id_status_layer;
-        //     }
-        //     $value->save();
-        // }
-
-        // foreach ($cuttingOrder as $key => $value) {
-        //     if ($value->id_status_layer == 4) {
-        //         if ($value->cuttingOrderRecordDetail->isEmpty()) {
-        //             $value->id_status_layer = 1;
-        //             $value->save();
-        //         }
-        //     }
-        // }
-        
         return view('page.cutting-order.index');
     }
 
@@ -110,25 +88,6 @@ class CuttingOrdersController extends Controller
                 }
                 return $status;
             })
-            // ->addColumn('status', function($data){
-            //     $html = '<div class="d-flex flex-row">';
-            //     if ($data->id_status_layer == 2) {
-            //         $html .= '<div class="p-2"><span class="badge rounded-pill badge-success" style="padding: 8px; margin: -2px;">Selesai Layer</span></div>';
-            //     } else if ($data->id_status_layer == 3) {
-            //         $html .= '<div class="p-2"><span class="badge rounded-pill badge-danger" style="padding: 8px; margin: -2px;">Over layer</span></div>';
-            //     } else if ($data->id_status_layer == 4) {
-            //         $html .= '<div class="p-2"><span class="badge rounded-pill badge-warning" style="padding: 8px; margin: -2px;">On Progress</span></div>';
-            //     } else {
-            //         $html .= '<div class="p-2"><span class="badge rounded-pill badge-info" style="padding: 8px; margin: -2px;">Belum Layer</span></div>';
-            //     }
-            //     if ($data->id_status_cut == 2) {
-            //         $html .= '<div class="p-2"><span class="badge rounded-pill badge-success" style="padding: 8px; margin: -2px;">Sudah Potong</span></div>';
-            //     } else {
-            //         $html .= '<div class="p-2"><span class="badge rounded-pill badge-info" style="padding: 8px; margin: -2px;">Belum Potong</span></div>';
-            //     }
-            //     $html .= '</div>';
-            //     return $html;
-            // })
             ->addColumn('created_at', function($data){
                 return Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('d-m-Y');
             })
@@ -253,84 +212,6 @@ class CuttingOrdersController extends Controller
         $cutting_order = Arr::add($cutting_order, 'total_balance_end', $total_balance_end);
 
         $cutting_order = (object)$cutting_order;
-
-        // reference
-        // if ($getCuttingOrder->id_status_layer == 1 && $getCuttingOrder->id_status_cut == 1) {
-        //     if ($getCuttingOrder->cuttingOrderRecordDetail != null) {
-        //         $getCuttingOrder->id_status_layer = 4;
-        //     } else {
-        //         $getCuttingOrder->id_status_layer = 1;
-        //     }
-        // } else {
-        //     $getCuttingOrder->id_status_layer = $getCuttingOrder->id_status_layer;
-        // }
-
-        // $max_min = $layingPlanningDetail->layer_qty * 0.03;
-        // if ($this->print_total_layer($getCuttingOrder->cuttingOrderRecordDetail) <= $layingPlanningDetail->layer_qty + $max_min && $this->print_total_layer($getCuttingOrder->cuttingOrderRecordDetail) >= $layingPlanningDetail->layer_qty - $max_min && $this->print_total_layer($getCuttingOrder->cuttingOrderRecordDetail) != 0) {
-        //     $status = StatusLayer::where('name', 'completed')->first();
-        //     if ($status == null) {
-        //         $status = StatusLayer::create([
-        //             'name' => 'completed'
-        //         ]);
-        //     }
-        //     $getCuttingOrder->id_status_layer = $status->id;
-        // } else if ($this->print_total_layer($getCuttingOrder->cuttingOrderRecordDetail) > $layingPlanningDetail->layer_qty + $max_min) {
-        //     $status = StatusLayer::where('name', 'over Layer')->first();
-        //     if ($status == null) {
-        //         $status = StatusLayer::create([
-        //             'name' => 'over Layer'
-        //         ]);
-        //     }
-        //     $getCuttingOrder->id_status_layer = $status->id;
-        // } else {
-        //     $status = StatusLayer::where('name', 'not completed')->first();
-        //     if ($status == null) {
-        //         $status = StatusLayer::create([
-        //             'name' => 'not completed'
-        //         ]);
-        //     }
-        //     $getCuttingOrder->id_status_layer = $status->id;
-        // }
-        
-        // $getCuttingOrder->save();
-
-        // update
-        // if ($getCuttingOrder->id_status_layer == 1 && $getCuttingOrder->id_status_cut == 1) {
-        //     if ($getCuttingOrder->cuttingOrderRecordDetail->isEmpty()) {
-        //         $getCuttingOrder->id_status_layer = 4;
-        //     } else {
-        //         $getCuttingOrder->id_status_layer = 1;
-        //     }
-        // } else {
-        //     $getCuttingOrder->id_status_layer = $getCuttingOrder->id_status_layer;
-        // }
-
-        // $max_min = $layingPlanningDetail->layer_qty * 0.03;
-        // if ($this->print_total_layer($cutting_order_detail) <= $layingPlanningDetail->layer_qty + $max_min && $this->print_total_layer($cutting_order_detail) >= $layingPlanningDetail->layer_qty - $max_min && $this->print_total_layer($cutting_order_detail) != 0) {
-        //     $status = StatusLayer::where('name', 'completed')->first();
-        //     if ($status == null) {
-        //         $status = StatusLayer::create([
-        //             'name' => 'completed'
-        //         ]);
-        //     }
-        //     $cutting_order->id_status_layer = $status->id;
-        // } else if ($this->print_total_layer($cutting_order_detail) > $layingPlanningDetail->layer_qty + $max_min) {
-        //     $status = StatusLayer::where('name', 'over Layer')->first();
-        //     if ($status == null) {
-        //         $status = StatusLayer::create([
-        //             'name' => 'over Layer'
-        //         ]);
-        //     }
-        //     $cutting_order->id_status_layer = $status->id;
-        // } else {
-        //     $status = StatusLayer::where('name', 'not completed')->first();
-        //     if ($status == null) {
-        //         $status = StatusLayer::create([
-        //             'name' => 'not completed'
-        //         ]);
-        //     }
-        //     $cutting_order->id_status_layer = $status->id;
-        // }
 
         $getCuttingOrder->save();
         return view('page.cutting-order.detail', compact('cutting_order','cutting_order_detail'));
@@ -940,20 +821,6 @@ class CuttingOrdersController extends Controller
 
     function print_size_ratio($layingPlanningDetail){
         
-        // $get_size_ratio = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
-        // $size_ratio = [];
-        // foreach( $get_size_ratio as $key => $size ) {
-        //     $collect_size[] = $size->size->size;
-        //     $collect_ratio[] = $size->ratio_per_size;
-        // }
-        // $collect_size = Arr::join($collect_size, ' | ');
-        // $collect_ratio = Arr::join($collect_ratio, ' | ');
-        // $size_ratio = [
-        //     'size'=> $collect_size,
-        //     'ratio'=>  $collect_ratio
-        // ];
-
-
         $get_size_ratio = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
         $size_ratio = [];
 
