@@ -533,23 +533,6 @@ return [
             'header'=> 'Lain-lain',
             'can'   => 'admin-only',
         ],
-        [
-            'text' => 'Machine',
-            'icon' => 'fas fa-fw fa fa-object-ungroup',
-            'can'  => 'admin-only',
-            'submenu' => [
-                [
-                    'classes'=> 'ml-3',
-                    'text' => 'Machine List',
-                    'url' => '/machine',
-                ],
-                [
-                    'classes'=> 'ml-3',
-                    'text' => 'Machine Qr Code',
-                    'url' => '/machine-qr-code',
-                ],
-            ],
-        ],
     ],
 
     /*

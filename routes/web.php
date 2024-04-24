@@ -19,7 +19,6 @@ use App\Http\Controllers\RemarksController;
 use App\Http\Controllers\FabricRequisitionsController;
 use App\Http\Controllers\FabricIssuesController;
 use App\Http\Controllers\DailyCuttingReportsController;
-use App\Http\Controllers\MachineController;
 use App\Http\Controllers\BundleCutsController;
 use App\Http\Controllers\BundleStocksController;
 use App\Http\Controllers\BundleTransferNotesController;
@@ -96,11 +95,6 @@ Route::group(['middleware' => ['auth','can:admin-only']], function () {
 
     
 
-    Route::resource('machine', MachineController::class);
-    Route::get('/machine/print/{serial_number}', [MachineController::class, 'print'])->name('machine.print');
-    Route::get('/machine/print-multiple/{id}', [MachineController::class, 'print_multiple'])->name('machine.print-multiple');
-    Route::get('/machine-data', [MachineController::class, 'dataMachine'])->name('machine-data');
-    Route::get('/machine-qr-code', [MachineController::class, 'qr_code'])->name('machine-qr-code');
     // Route::resource('buyer', BuyerController::class);
     // Route::resource('size', SizesController::class);
     // Route::resource('color', ColorsController::class);
