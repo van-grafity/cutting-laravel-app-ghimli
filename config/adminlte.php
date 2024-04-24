@@ -534,12 +534,6 @@ return [
             'can'   => 'admin-only',
         ],
         [
-            'text' => 'Pallet',
-            'url'  => '/pallets',
-            'icon' => 'fas fa-fw fa fa-solid fa-pallet',
-            'can'  => 'admin-only',
-        ],
-        [
             'text' => 'Machine',
             'icon' => 'fas fa-fw fa fa-object-ungroup',
             'can'  => 'admin-only',
