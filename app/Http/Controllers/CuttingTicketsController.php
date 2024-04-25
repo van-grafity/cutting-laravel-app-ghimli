@@ -12,7 +12,6 @@ use App\Models\GlCombine;
 use App\Models\LayingPlanningSizeGlCombine;
 use App\Models\LayingPlanningSize;
 
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 
@@ -61,10 +60,18 @@ class CuttingTicketsController extends Controller
             ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
             ->where('cutting_order_records.cut','>=', $date_limiter)
             ->whereRaw('cutting_order_records.id IN (SELECT cutting_order_record_id FROM cutting_tickets)')
-            ->select('cutting_order_records.id', 'cutting_order_records.serial_number', 'styles.style', 'colors.color', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'cutting_order_records.updated_at')
-            ->orderBy('cutting_order_records.updated_at', 'desc')->get();
+            ->select(
+                'cutting_order_records.id', 
+                'cutting_order_records.serial_number', 
+                'styles.style', 
+                'colors.color', 
+                'fabric_types.name as fabric_type', 
+                'fabric_cons.name as fabric_cons', 
+                'cutting_order_records.updated_at'
+            )
+            ->orderBy('cutting_order_records.updated_at', 'desc');
 
-            return Datatables::of($query)
+        return Datatables::of($query)
             ->escapeColumns([])
             ->addColumn('ticket_number', function($data){
                 return $data->serial_number == null ? '-' : $data->serial_number;
@@ -278,10 +285,7 @@ class CuttingTicketsController extends Controller
             'cutting_tickets' => $cuttingTickets,
             'cutting_order_record_detail' => $cuttingOrderRecordDetail,
             'laying_planning_detail_size' => $layingPlanningDetailSize,
-            // 'gl' => $gl,
-            // 'style' => $style,
             'color' => $color,
-            // 'buyer' => $buyer,
         ];
         $customPaper = array(0,0,794.00, 612.00);
         $pdf = PDF::loadview('page.cutting-ticket.report', compact('data'))->setPaper($customPaper, 'portrait');

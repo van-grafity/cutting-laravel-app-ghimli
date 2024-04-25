@@ -118,8 +118,6 @@ class BundleStocksController extends Controller
             'size_list' => $size_list,
             'total_size' => $total_size,
         ];
-        // dd($data);
-        
 
         // return view('page.bundle-stock.report', $data);
         
