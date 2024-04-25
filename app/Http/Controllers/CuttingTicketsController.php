@@ -340,22 +340,10 @@ class CuttingTicketsController extends Controller
         return $pdf->stream($filename);
     }
 
-    // $get_size_list = $data->layingPlanningSize()->with('glCombine')->get();
-    //     $size_list = [];
-    //     foreach ($get_size_list as $key => $size) {
-    //         $size_list[] = $size->size;
-    //         $gl_combine_name = "";
-    //         foreach ($size->glCombine as $key => $gl_combine) {
-    //             $gl_combine_name = $gl_combine_name . $gl_combine->glCombine->name . " ";
-    //         }
-    //         $size->size->size = $size->size->size ."". $gl_combine_name;
-    //     }
-
     function generate_ticket_number($ticket_id) {
         $ticket = CuttingTicket::find($ticket_id);
 
         $gl_number = $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->gl->gl_number;
-        // $gl_number = explode('-', $gl_number)[0];
         
         $color_code = $ticket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->color->color_code;
 
