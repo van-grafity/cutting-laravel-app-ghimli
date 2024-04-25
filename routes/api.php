@@ -4,7 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\BlogController;
 use App\Http\Controllers\API\CuttingOrdersController;
 use App\Http\Controllers\API\LayingPlanningController;
 use App\Http\Controllers\API\ColorController;
