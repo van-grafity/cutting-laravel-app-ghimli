@@ -6,7 +6,6 @@ use App\Http\Controllers\SizesController;
 use App\Http\Controllers\ColorsController;
 use App\Http\Controllers\FabricConssController;
 use App\Http\Controllers\FabricTypesController;
-use App\Http\Controllers\FabricUsagesController;
 use App\Http\Controllers\GlsController;
 use App\Http\Controllers\CuttingOrdersController;
 use App\Http\Controllers\SubconCuttingController;
@@ -59,7 +58,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/color-data', [ColorsController::class, 'dataColor']);
     Route::get('/fabric-cons-data', [FabricConssController::class, 'dataFabricCons']);
     Route::get('/fabric-type-data', [FabricTypesController::class, 'dataFabricType']);
-    Route::get('/fabric-usage-data', [FabricUsagesController::class, 'dataFabricUsage']);
     Route::get('/remark-data', [RemarksController::class, 'dataRemark']);
     Route::get('/gl-data', [GlsController::class, 'dataGl']);
     Route::get('/style-data', [StylesController::class, 'dataStyle']);
@@ -117,7 +115,6 @@ Route::group(['middleware' => ['auth','can:clerk-cutting']], function () {
 
     Route::resource('fabric-cons', FabricConssController::class);
     Route::resource('fabric-type', FabricTypesController::class);
-    Route::resource('fabric-usage', FabricUsagesController::class);
 
     Route::resource('buyer', BuyerController::class);
     Route::resource('size', SizesController::class);
