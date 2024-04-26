@@ -53,16 +53,6 @@ class FabricIssuesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -102,10 +92,6 @@ class FabricIssuesController extends Controller
             }
             $fabric_issue->save();
         }
-        
-
-        // return $fabric_issues->sum('yard') . " " . $fabric_requisition->layingPlanningDetail->total_length;
-        
         
 
         // 664 dari 3% 664 * 0.03 = 19.92

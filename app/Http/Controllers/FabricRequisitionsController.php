@@ -261,16 +261,6 @@ class FabricRequisitionsController extends Controller
         $no_laying_sheet = preg_replace('/[^0-9\-]/', '', $no_laying_sheet);
         return $no_laying_sheet;
     }
-
-    public function fabric_requisition_detail(Request $request, $id) {
-
-        // $fabric_requisition_record_detail = CuttingOrderRecordDetail::find($id);
-        // $fabric_requisition_record_detail->color = $fabric_requisition_record_detail->color->color;
-        // return response()->json([
-        //     'status' => 'success',
-        //     'data' => $fabric_requisition_record_detail
-        // ], 200);
-    }
     
     function generate_serial_number($layingPlanningDetail){
         $gl_number = $layingPlanningDetail->layingPlanning->gl->gl_number;
