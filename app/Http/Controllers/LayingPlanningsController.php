@@ -52,9 +52,6 @@ class LayingPlanningsController extends Controller
             return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
-            // ->addColumn('serial_number', function ($data){
-            //     return '<a href="'.route('laying-planning.show',$data->id).'">'.$data->serial_number.'</a>';
-            // })
             ->addColumn('gl_number', function ($data){
                 return $data->gl_number;
             })
@@ -71,11 +68,6 @@ class LayingPlanningsController extends Controller
                 return $data->fabric_type;
             })
             ->addColumn('action', function($data){
-                // $action = '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm"">Edit</a>
-                // <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_layingPlanning('.$data->id.')">Delete</a>
-                // <a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1">Detail</a>
-                // <a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Report</a>';
-                // return $action;
 
                 $action = '';
                 if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter')){
@@ -90,16 +82,6 @@ class LayingPlanningsController extends Controller
                 return $action;
             })
             ->make(true);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     public function layingCreate()
@@ -226,12 +208,6 @@ class LayingPlanningsController extends Controller
 
         $data->total_pcs_all_table = $total_pcs_all_table;
         $data->total_length_all_table = $total_length_all_table;
-
-        // $gl_combine = GlCombine::with('layingPlanningSizeGlCombine')->whereHas('layingPlanningSizeGlCombine', function($query) use ($id) {
-        //     $query->whereHas('layingPlanningSize', function($query) use ($id) {
-        //         $query->where('laying_planning_id', $id);
-        //     });
-        // })->get();
 
         $get_size_list = $data->layingPlanningSize()->with('glCombine')->get();
         $size_list = [];
@@ -510,24 +486,6 @@ class LayingPlanningsController extends Controller
             ];
             $insertLayingSize = LayingPlanningSize::create($laying_planning_size);
         }
-        
-        // $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($layingPlanning) {
-        //     $query->where('laying_planning_id', $layingPlanning->id);
-        // })->get();
-        // foreach ($cutting_order_record as $key => $value) {
-        //     $value->serial_number = $this->generate_serial_numberCor($value->layingPlanningDetail);
-        //     $value->serial_number = str_replace('--', '-', $value->serial_number);
-        //     $value->save();
-        // }
-        
-        // $fabric_requisition = FabricRequisition::with(['layingPlanningDetail'])->whereHas('layingPlanningDetail', function($query) use ($layingPlanning) {
-        //     $query->where('laying_planning_id', $layingPlanning->id);
-        // })->get();
-        // foreach ($fabric_requisition as $key => $value) {
-        //     $value->serial_number = $this->generate_serial_numberFbr($value->layingPlanningDetail);
-        //     $value->serial_number = str_replace('--', '-', $value->serial_number);
-        //     $value->save();
-        // }
         
         return redirect('laying-planning')->with('success', 'Laying Planning '. $layingPlanning->serial_number . " successfully Updated!");
     }
