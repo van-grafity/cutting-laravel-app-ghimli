@@ -85,14 +85,14 @@
             serverSide: true,
             ajax: "{{ url('/cutting-order-data') }}",
             columns: [
-                {data: 'serial_number', name: 'serial_number', render: function(data, type, row) {
+                {data: 'serial_number', name: 'cutting_order_records.serial_number', render: function(data, type, row) {
                     return '<a href="{{ url("/cutting-order") }}/'+row.id+'">'+data+'</a>';
                 }},
-                {data: 'color', name: 'color'},
+                {data: 'color', name: 'colors.color'},
                 {data: 'style', name: 'style'},
-                {data: 'fabric_type', name: 'fabric_type'},
-                {data: 'fabric_cons', name: 'fabric_cons'},
-                {data: 'created_at', name: 'created_at'},
+                {data: 'fabric_type', name: 'fabric_types.name'},
+                {data: 'fabric_cons', name: 'fabric_cons.name'},
+                {data: 'created_at', name: 'cutting_order_records.created_at'},
                 {data: 'status_layer', name: 'status_layer'},
                 {data: 'status_cut', name: 'status_cut'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
@@ -102,17 +102,5 @@
 </script>
 
 <script type="text/javascript">
-    $('#filter_date').datetimepicker({
-        format: 'DD/MM/yyyy',
-    });
-
-    $('#filter_date_input').val(moment().format('DD/MM/yyyy'));
-    
-    $(document).ready(function() {
-        $('#filter_date').on('change.datetimepicker', function() {
-            // console.log($('#filter_date_input').val());
-        });
-
-    });
 </script>
 @endpush

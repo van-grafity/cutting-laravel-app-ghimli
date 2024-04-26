@@ -46,10 +46,22 @@ class CuttingOrdersController extends Controller
             ->join('fabric_types', 'laying_plannings.fabric_type_id', '=', 'fabric_types.id')
             ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
             ->where('cutting_order_records.deleted_at', '=', null)
-            ->select('cutting_order_records.id', 'cutting_order_records.serial_number', 'cutting_order_records.is_pilot_run', 'cutting_order_records.id_status_layer', 'cutting_order_records.id_status_cut', 'styles.style', 'colors.color', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'cutting_order_records.created_at', 'cutting_order_records.status_print')
-            ->orderBy('cutting_order_records.updated_at', 'desc')->get();
+            ->select(
+                'cutting_order_records.id', 
+                'cutting_order_records.serial_number', 
+                'cutting_order_records.is_pilot_run', 
+                'cutting_order_records.id_status_layer', 
+                'cutting_order_records.id_status_cut', 
+                'styles.style', 
+                'colors.color', 
+                'fabric_types.name as fabric_type', 
+                'fabric_cons.name as fabric_cons', 
+                'cutting_order_records.created_at', 
+                'cutting_order_records.status_print'
+            )
+            ->orderBy('cutting_order_records.updated_at', 'desc');
             
-            return Datatables::of($query)
+        return Datatables::of($query)
             ->escapeColumns([])
             ->addColumn('serial_number', function ($data){
                 return $data->serial_number;
@@ -382,9 +394,6 @@ class CuttingOrdersController extends Controller
             ];
             $temp_cor_details[] = $data_detail;
         }
-
-        // dd($temp_cor_details);
-
 
         for ($i=0; $i < 10; $i++) {
             if(array_key_exists($i, $temp_cor_details)) {
@@ -775,17 +784,12 @@ class CuttingOrdersController extends Controller
 
     function getDataCompleteCuttingOrder(Request $request) {
         $input = $request->all();
-        // $date_filter = $request->filter_date ? $request->filter_date : Carbon::now()->toDateString();
         $cuttingOrderRecord = CuttingOrderRecord::with(['layingPlanningDetail', 'layingPlanningDetail.layingPlanningDetailSize.size', 'cuttingOrderRecordDetail', 'cuttingOrderRecordDetail.color', 'cuttingTicket', 'cuttingTicket.cuttingOrderRecordDetail', 'cuttingTicket.cuttingOrderRecordDetail.color', 'cuttingTicket.size', 'cuttingTicket.size.size', 'cuttingTicket.size.ratio_per_size'])
             ->whereHas('layingPlanningDetail', function($query) use ($input) {
                 $query->whereHas('layingPlanning', function($query) use ($input) {
                     $query->where('gl_id', 12);
-                    // $query->where('color_id', $input['color_id']);
                 });
             })
-            // ->whereHas('cuttingOrderRecordDetail', function($query) use ($input) {
-            //     $query->where('layer', $query->sum('layer'));
-            // })
             ->where('created_at', 'like', '2023-04-17')
             ->get();
         return response()->json([
