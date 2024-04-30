@@ -88,11 +88,6 @@ Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::get('log-viewers', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 
     
-
-    // Route::resource('buyer', BuyerController::class);
-    // Route::resource('size', SizesController::class);
-    // Route::resource('color', ColorsController::class);
-    // Route::resource('remark', RemarksController::class);
     Route::get('qrcode', function () {
         return QrCode::size(300)->generate('A basic example of QR code!');
     });
