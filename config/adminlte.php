@@ -290,22 +290,11 @@ return [
     */
 
     'menu' => [
-        // Navbar items:
-        // [
-        //     'type'         => 'navbar-search',
-        //     'text'         => 'search',
-        //     'topnav_right' => true,
-        // ],
         [
             'type'         => 'fullscreen-widget',
             'topnav_right' => true,
         ],
 
-        // Sidebar items:
-        // [
-        //     'type' => 'sidebar-menu-search',
-        //     'text' => 'search',
-        // ],
         [
             'text' => 'Dashboard',
             'url'  => '/home',
@@ -363,6 +352,12 @@ return [
             ],
         ],
         [
+            'text' => 'User Management',
+            'icon' => 'fas fa-users nav-icon',
+            'can'   => 'admin-menu',
+            'url' => 'user',
+        ],
+        [
             'text' => 'Master Data Cutting',
             'icon' => 'fas fa-fw fa-industry',
             'can'  => 'clerk-cutting',
@@ -389,12 +384,6 @@ return [
             'icon' => 'fas fa-fw fa fa-file-alt',
             'can'  => 'clerk-cutting', 
         ],
-        // [
-        //     'text' => 'Style',
-        //     'url'  => '/style',
-        //     'icon' => 'fas fa-fw fa fa-solid fa-palette',
-        //     'can'  => 'admin-only', 
-        // ],
         [
             'text' => 'Laying Planning',
             'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
@@ -463,12 +452,6 @@ return [
             'icon' => 'fas fa-fw fa fa-tasks',
             'can'  => 'form',
         ],
-        // [
-        //     'text' => 'Fabric Request Piping',
-        //     'url'  => '/fabric-request-piping',
-        //     'icon' => 'fas fa-fw fa fa-tasks',
-        //     'can'  => 'form',
-        // ],
         [
             'header'=> 'Warehouse',
             'can'   => 'warehouse',

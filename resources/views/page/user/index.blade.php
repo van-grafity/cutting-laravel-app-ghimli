@@ -8,23 +8,28 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-end mb-1">
-                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create" data-id='2'>Create</a>
+                <div class="card-header d-flex p-0">
+                    <h3 class="card-title p-3 my-auto"> User List </h3>
+
+                    <div class="ml-auto p-3">
+                        <a href="javascript:void(0)" class="btn btn-success " id="btn_modal_create" onclick="show_modal_create('modal_user')">Create</a>
                     </div>
-                    <table class="table table-bordered table-hover" id="user_table">
-                        <thead class="">
+                </div>
+                <div class="card-body">
+                    <table id="user_table" class="table table-bordered table-hover text-center">
+                        <thead>
                             <tr>
-                                <th scope="col" style="width: 20px">No</th>
-                                <th scope="col" class="text-left">User</th>
-                                <th scope="col" class="text-left">Email</th>
-                                <th scope="col" class="text-left">Role</th>
-                                <th scope="col" class="text-left">Group</th>
-                                <th scope="col" style="width: 20%;"class="text-left">Action</th>
+                                <th width="25">No</th>
+                                <th width="" class="text-center">Name</th>
+                                <th width="" class="text-center">Email</th>
+                                <th width="">Department</th>
+                                <th width="">Role</th>
+                                <th width="">Created Date</th>
+                                <th width="250">Action</th>
                             </tr>
                         </thead>
-                        <!-- <tbody>
-                        </tbody> -->
+                        <tbody>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -34,11 +39,11 @@
 </div>
 
 <!-- Modal Section -->
-<div class="modal fade" id="modal_form" tabindex="-1" role="dialog" aria-labelledby="modal_formLabel" aria-hidden="true">
+<div class="modal fade" id="modal_user" tabindex="-1" role="dialog" aria-labelledby="modal_userLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modal_formLabel">Add User</h5>
+                <h5 class="modal-title" id="modal_userLabel">Add User</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -87,49 +92,151 @@
 @endsection
 
 @push('js')
+
+
+<script type="text/javascript">
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const store_url ='{{ route("user-management.store",":id") }}';
+    const show_url ='{{ route("user-management.show",":id") }}';
+    const update_url ='{{ route("user-management.update",":id") }}';
+    const delete_url ='{{ route("user-management.destroy",":id") }}';
+    const reset_password_url ='{{ route("user-management.reset",":id") }}';
+    const dtable_url ='{{ route("user-management.dtable") }}';
+
+
+    const show_modal_create = (modal_element_id) => {
+        let modal_data = {
+            modal_id : modal_element_id,
+            title : "Add New User",
+            btn_submit : "Add User",
+            form_action_url : store_url,
+        }
+        clear_form(modal_data);
+        $(`#${modal_element_id}`).modal('show');
+    }
+
+    const show_modal_edit = async (modal_element_id, user_id) => {
+        console.log(modal_element_id, user_id);
+        let modal_data = {
+            modal_id : modal_element_id,
+            title : "Edit User",
+            btn_submit : "Save",
+            form_action_url : update_url.replace(':id', user_id),
+        }
+        clear_form(modal_data);
+        
+        fetch_data = {
+            url: show_url.replace(':id', user_id),
+            method: "GET",
+            token: token,
+        }
+        result = await using_fetch_v2(fetch_data);
+        user_data = result.data.user
+
+        $('#name').val(user_data.name);
+        $('#email').val(user_data.email);
+        $('#department').val(user_data.department_id).trigger('change');
+        $('#role').val(user_data.role).trigger('change');
+        $('#edit_user_id').val(user_data.id);
+        
+        $(`#${modal_element_id}`).modal('show');
+    }
+
+
+    // async function edit_user(user_id) {
+    //     let url_edit = edit_url.replace(':id',user_id);
+
+    //     result = await get_using_fetch(url_edit);
+    //     form = $('#user_form')
+    //     form.append('<input type="hidden" name="_method" value="PUT">');
+    //     $('#modal_userLabel').text("Edit User");
+    //     $('#btn_submit').text("Save");
+    //     $('#modal_user').modal('show')
+
+    //     let url_update = update_url.replace(':id',user_id);
+    //     form.attr('action', url_update);
+    //     form.find('#role').val(result.roles[0].name).trigger('change');
+    //     form.find('input[name="name"]').val(result.name);
+    //     form.find('input[name="email"]').val(result.email);
+    //     form.find('#group').val(result.group).trigger('change');
+    // }
+
+    async function delete_user(user_id) {
+        data = { title: "Are you sure?" };
+        let confirm_delete = await swal_delete_confirm(data);
+        if(!confirm_delete) { return false; };
+
+        let url_delete = delete_url.replace(':id',user_id);
+        let data_params = { token };
+
+        result = await delete_using_fetch(url_delete, data_params)
+        if(result.status == "success"){
+            swal_info({
+                title : result.message,
+                reload_option: true,
+            });
+        } else {
+            swal_failed({ title: result.message });
+        }
+    }
+
+    async function reset_user(user_id) {
+        data = { title: "Want to Reset Password?" };
+        let confirm_delete = await swal_delete_confirm(data);
+        if(!confirm_delete) { return false; };
+
+        let url_reset_password = reset_password_url.replace(':id',user_id);
+        let data_params = { 
+            token,
+            body: { id: user_id }
+         };
+
+        result = await using_fetch(url_reset_password, data_params, "PUT");
+        if(result.status == "success"){
+            swal_info({ title : result.message });
+        } else {
+            swal_failed({ title: result.message });
+        }
+    }
+</script>
+
 <script type="text/javascript">
 
-$(document).ready(function(){
+    $(document).ready(function(){
 
-    // ## Show Flash Message
-    let session = {!! json_encode(session()->all()) !!};
-    show_flash_message(session);
+        // ## Show Flash Message
+        let session = {!! json_encode(session()->all()) !!};
+        show_flash_message(session);
 
-    $('.select2').select2({ 
-        dropdownParent: $('#modal_form')
-    });
+        $('.select2').select2({ 
+            dropdownParent: $('#modal_user')
+        });
 
-    $('#btn_modal_create').click((e) => {
-        $('#modal_formLabel').text("Add User")
-        $('#btn_submit').text("Add User")
-        $('#user_form').attr('action', create_url);
-        $('#user_form').find('#role').val('').trigger('change');
-        $('#user_form').find("input[type=text], textarea").val("");
-        $('#user_form').find('input[name="_method"]').remove();
-        $('#modal_form').modal('show')
+        $('#modal_user').on('hidden.bs.modal', function () {
+            $(this).find('.is-invalid').removeClass('is-invalid');
+        });
     })
-
-    $('#modal_form').on('hidden.bs.modal', function () {
-        $(this).find('.is-invalid').removeClass('is-invalid');
-    });
-})
 </script>
 
 <script type="text/javascript">
 $(function (e) {
 
     // ## Datatable Initialize
-    $('#user_table').DataTable({
+    let user_table = $('#user_table').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ url('/user-data') }}",
+        ajax: dtable_url,
         columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            {data: 'name', name: 'name'},
-            {data: 'email', name: 'email'},
-            {data: 'role', name: 'role'},
-            {data: 'group', name: 'group'},
-            {data: 'action', name: 'action', orderable: false, searchable: false},
+            { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+            { data: 'name', name: 'name', className:'text-left'},
+            { data: 'email', name: 'email', className:'text-left'},
+            { data: 'department', name: 'department' },
+            { data: 'role', name: 'role' },
+            { data: 'created_date', name: 'users.created_at' },
+            { data: 'action', name: 'action' },
+        ],
+        columnDefs: [
+            { targets: [0, -1], orderable: false, searchable: false }, 
         ],
         lengthChange: true,
         searching: true,
@@ -191,71 +298,6 @@ $(function (e) {
     });
     
 });
-</script>
-
-<script type="text/javascript">
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const create_url ='{{ route("user-management.store",":id") }}';
-    const edit_url ='{{ route("user-management.show",":id") }}';
-    const update_url ='{{ route("user-management.update",":id") }}';
-    const delete_url ='{{ route("user-management.destroy",":id") }}';
-    const reset_password_url ='{{ route("user-management.reset",":id") }}';
-
-    async function edit_user(user_id) {
-        let url_edit = edit_url.replace(':id',user_id);
-
-        result = await get_using_fetch(url_edit);
-        form = $('#user_form')
-        form.append('<input type="hidden" name="_method" value="PUT">');
-        $('#modal_formLabel').text("Edit User");
-        $('#btn_submit').text("Save");
-        $('#modal_form').modal('show')
-
-        let url_update = update_url.replace(':id',user_id);
-        form.attr('action', url_update);
-        form.find('#role').val(result.roles[0].name).trigger('change');
-        form.find('input[name="name"]').val(result.name);
-        form.find('input[name="email"]').val(result.email);
-        form.find('#group').val(result.group).trigger('change');
-    }
-
-    async function delete_user(user_id) {
-        data = { title: "Are you sure?" };
-        let confirm_delete = await swal_delete_confirm(data);
-        if(!confirm_delete) { return false; };
-
-        let url_delete = delete_url.replace(':id',user_id);
-        let data_params = { token };
-
-        result = await delete_using_fetch(url_delete, data_params)
-        if(result.status == "success"){
-            swal_info({
-                title : result.message,
-                reload_option: true,
-            });
-        } else {
-            swal_failed({ title: result.message });
-        }
-    }
-
-    async function reset_user(user_id) {
-        data = { title: "Want to Reset Password?" };
-        let confirm_delete = await swal_delete_confirm(data);
-        if(!confirm_delete) { return false; };
-
-        let url_reset_password = reset_password_url.replace(':id',user_id);
-        let data_params = { 
-            token,
-            body: { id: user_id }
-         };
-
-        result = await using_fetch(url_reset_password, data_params, "PUT");
-        if(result.status == "success"){
-            swal_info({ title : result.message });
-        } else {
-            swal_failed({ title: result.message });
-        }
-    }
 </script>
 
 @endpush

@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -48,20 +50,22 @@ class User extends Authenticatable
         return $this->hasOne(Access::class, 'id', 'access');
     }
 
-    public function adminlte_image()
-    {
-        return './assets/img/user-profile-default.png';
-    }
+    
+    // !! next hapus function ini
+    // public function adminlte_image()
+    // {
+    //     return url('').'/assets/img/user-profile-default.png';
+    // }
 
-    public function adminlte_desc()
-    {
-        return 'Cutting Department';
-    }
+    // public function adminlte_desc()
+    // {
+    //     return 'Cutting Department';
+    // }
 
-    public function adminlte_profile_url()
-    {
-        return 'profile';
-    }
+    // public function adminlte_profile_url()
+    // {
+    //     return 'profile';
+    // }
 
     public function userGroups()
     {
@@ -81,5 +85,35 @@ class User extends Authenticatable
     public function cuttingOrderRecordDetail()
     {
         return $this->hasMany(CuttingOrderRecordDetail::class, 'user_id', 'id');
+    }
+
+
+
+
+    
+
+    public function getRoleTitles()
+    {
+        return $this->roles->pluck('title');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id', 'id');
+    }
+
+    public function adminlte_image()
+    {
+        return url('').'/assets/img/user-profile-default.png';
+    }
+
+    public function adminlte_desc()
+    {
+        return $this->department ? $this->department->department : '-';
+    }
+
+    public function adminlte_profile_url()
+    {
+        return route('profile.index');
     }
 }

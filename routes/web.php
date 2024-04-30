@@ -43,6 +43,21 @@ Route::get('/', function () {
 
 Auth::routes();
 
+// ## User Management
+Route::group([
+    'middleware' => [
+        'auth',
+        'can:developer-menu',
+    ],
+    'controller' => App\Http\Controllers\UsersController::class,
+    'prefix' => 'user-management',
+    'as' => 'user-management.',
+],function() {
+    Route::get('dtable', 'dtable')->name('dtable');
+});
+
+
+
 Route::middleware(['auth'])->group(function () {
     Route::resource('home', App\Http\Controllers\HomeController::class);
 

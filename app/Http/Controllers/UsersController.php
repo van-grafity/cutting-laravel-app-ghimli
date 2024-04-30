@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
+
 
 class UsersController extends Controller
 {
@@ -23,6 +25,72 @@ class UsersController extends Controller
         $groups = Groups::all();
         return view('page.user.index', compact('users','roles','groups'));
     }
+
+
+    /**
+     * Show Datatable Data.
+     */
+    public function dtable(Request $request)
+    {
+        if(auth()->user()->can('developer-menu')){
+            
+            $query = User::withTrashed();
+
+        } else {
+            
+            $query = User::withTrashed()->whereDoesntHave('roles', function ($query) {
+                $query->whereIn('name', ['developer','admin']);
+            });
+        }
+        
+        return Datatables::of($query)
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->addColumn('action', function($row){
+                $action_button = "";
+                if(!$row->deleted_at){
+                    $action_button .= "
+                        <a href='javascript:void(0)' class='btn btn-sm mb-1 btn-primary' onclick='show_modal_edit(\"modal_user\", $row->id)' >Edit</a>
+                        <a href='javascript:void(0)' class='btn btn-sm mb-1 btn-info'  onclick='show_modal_reset_password($row->id)'>Reset Password</a>    
+                        <a href='javascript:void(0)' class='btn btn-sm mb-1 btn-danger'  onclick='show_modal_delete($row->id)'>Delete</a>
+                    ";
+                } else {
+                    $action_button .= "
+                        <a href='javascript:void(0)' class='btn btn-sm mb-1 bg-orange' onclick='show_modal_restore($row->id)' >Restore</a>
+                        <a href='javascript:void(0)' class='btn btn-sm mb-1 btn-danger' onclick='show_modal_delete_permanent($row->id)'>Delete Permanently  <i class='fas fa-exclamation-triangle'></i></a>
+                    ";
+                }
+                return $action_button;
+                
+            })
+            ->addColumn('department', function($row){
+                return $row->department ? $row->department->department : '-';
+            })
+            ->addColumn('role', function($row){
+                $roles = $row->getRoleTitles();
+                
+                $result = implode(' | ', $roles->toArray());
+                return $result;
+            })
+            ->filter(function ($query) {
+                if (request()->has('data_status')) {
+                    if (request('data_status') == 1) {
+                        $query->where('deleted_at', null);
+                    }
+                    if (request('data_status') == 2) {
+                        $query->where('deleted_at', '!=', null);
+                    }
+                }
+            }, true)
+            ->addColumn('created_date', function($row){
+                $readable_datetime = Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at);
+                $readable_datetime = $readable_datetime->format('d F Y, H:i');
+                return $readable_datetime;
+            })
+            ->toJson();
+    }
+
+
     
     public function dataUser()
     {
@@ -55,18 +123,23 @@ class UsersController extends Controller
 
     public function show($id){
         try {
-            $userGroups = UserGroups::all();
-            $data = User::with('roles')->find($id);
-            $group = Groups::all();
-            $userGroup = $userGroups->where('user_id', $id)->first();
-            $data->group = $userGroup ? $userGroup->group_id : null;
-            $data->group_name = $userGroup ? $userGroup->groups->group_name : null;
-            return response()->json($data,200);
+            $user = User::find($id);
+            $user->role = $user->roles[0]->name;
+
+            $data_return = [
+                'status' => 'success',
+                'message' => 'Successfully get user ' . $user->user,
+                'data' => [
+                    'user' => $user,
+                ]
+            ];
+            return response()->json($data_return, 200);
         } catch (\Throwable $th) {
-            return response()->json([
+            $data_return = [
                 'status' => 'error',
-                'message' => $th->getMessage()
-            ]);
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($data_return);
         }
     }
 

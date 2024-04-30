@@ -176,3 +176,80 @@ const show_flash_message = ( session = {} ) => {
         });
     }
 }
+
+const clear_form = (data) => {
+    /*
+        * --------------------------------------------------------------------
+        * Params Example
+        * --------------------------------------------------------------------
+        data = {
+            modal_id : 'packinglist_modal',
+            title: "Add Product",
+            btn_submit: "Add Product",
+            form_action_url: "",
+        };
+        * --------------------------------------------------------------------
+    */
+
+    $(`#${data.modal_id} .modal-title`).text(data.title);
+    $(`#${data.modal_id} .btn-submit`).text(data.btn_submit);
+    $(`#${data.modal_id} form`).attr(`action`, data.form_action_url);
+    $(`#${data.modal_id} form`).find("input[type=text], input[type=number], input[type=email], input[type=hidden], input[type=password], textarea").val("");
+    $(`#${data.modal_id} form`).find(`select`).val("").trigger(`change`);
+    $(`#${data.modal_id} form`).find('input,select').removeClass("is-invalid");
+    $(`#${data.modal_id} form`).find('span.invalid-feedback').css('display', 'none');
+}
+
+
+const using_fetch_v2 = async ({ url = "", data = {}, method = "GET", token = null }) => {
+
+    /*
+        * --------------------------------------------------------------------
+        * Params Example
+        * --------------------------------------------------------------------
+        data = {
+            url: "https://example.com/api",
+            method: "POST",
+            data: { key: "value" },
+            token: "your_token",
+        }
+        * --------------------------------------------------------------------
+    */
+
+    const headers = {
+        "Content-Type": "application/json",
+    };
+
+    const fetchOptions = {
+        method,
+        headers,
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+    };
+
+    if (["GET"].includes(method)) {
+        const queryString = new URLSearchParams(data).toString();
+        url = `${url}?${queryString}`;
+    }
+
+    if (["POST", "PUT", "DELETE"].includes(method)) {
+        headers["X-CSRF-TOKEN"] = token;
+        fetchOptions.body = JSON.stringify(data);
+    }
+
+    try {
+        const response = await fetch(url, fetchOptions);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error("Fetch error:", error);
+        throw error;
+    }
+}
