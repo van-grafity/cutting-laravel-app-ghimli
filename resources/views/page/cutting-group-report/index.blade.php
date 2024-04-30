@@ -67,7 +67,7 @@
 
 <script type="text/javascript">
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const url ='{{ route("subcon-cutting.summary-report-group-cutting-order-record") }}';
+    const url ='{{ route("cutting-group-report.print") }}';
     $(document).ready(function(){
         $('#group_id').select2({
             placeholder: '-- Select Group --'

@@ -500,7 +500,7 @@ return [
         ],
         [
             'text' => 'Cutting Group Report',
-            'url'  => '/cutting-print-subcon',
+            'url'  => '/cutting-group-report',
             'icon' => 'fas fa-fw fa fa-database',
             'can'  => 'cutting-record',
         ],
