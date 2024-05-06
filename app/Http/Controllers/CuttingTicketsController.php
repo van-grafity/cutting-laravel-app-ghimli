@@ -49,7 +49,8 @@ class CuttingTicketsController extends Controller
     }
 
     public function dataCuttingTicket(){
-        $date_limiter = Carbon::now()->subMonth(6)->format('Y-m-d');
+        // !! next hapus aja limiter nya
+        // $date_limiter = Carbon::now()->subMonth(6)->format('Y-m-d');
         $query = DB::table('cutting_order_records')
             ->join('laying_planning_details', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
             ->join('laying_plannings', 'laying_planning_details.laying_planning_id', '=', 'laying_plannings.id')
@@ -58,7 +59,7 @@ class CuttingTicketsController extends Controller
             ->join('colors', 'laying_plannings.color_id', '=', 'colors.id')
             ->join('fabric_types', 'laying_plannings.fabric_type_id', '=', 'fabric_types.id')
             ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
-            ->where('cutting_order_records.cut','>=', $date_limiter)
+            // ->where('cutting_order_records.cut','>=', $date_limiter)
             ->whereRaw('cutting_order_records.id IN (SELECT cutting_order_record_id FROM cutting_tickets)')
             ->select(
                 'cutting_order_records.id', 
