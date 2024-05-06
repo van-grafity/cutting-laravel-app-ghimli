@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\UserGroups;
-use App\Models\Groups;
 use App\Models\Role;
+use App\Models\Department;
 use Yajra\Datatables\Datatables;
 
 use Illuminate\Support\Facades\DB;
@@ -22,8 +21,8 @@ class UsersController extends Controller
     {
         $users = User::all();
         $roles = Role::all();
-        $groups = Groups::all();
-        return view('page.user.index', compact('users','roles','groups'));
+        $departments = Department::all();
+        return view('page.user.index', compact('users','roles','departments'));
     }
 
 
@@ -89,12 +88,9 @@ class UsersController extends Controller
             })
             ->toJson();
     }
-
-
     
     public function dataUser()
     {
-        $userGroups = UserGroups::all();
         $query = User::with('roles')->get();
             return Datatables::of($query)
             ->addIndexColumn()
@@ -107,10 +103,6 @@ class UsersController extends Controller
             })
             ->addColumn('role', function($data){
                 return $data->roles->isNotEmpty() ? $data->roles[0]->name : 'Not Assigned';
-            })
-            ->addColumn('group', function($data) use ($userGroups){
-                $group = $userGroups->where('user_id', $data->id)->first();
-                return $group ? $group->groups->group_name : '-';
             })
             ->make(true);
     }
@@ -143,108 +135,6 @@ class UsersController extends Controller
         }
     }
 
-    public function cutting_group()
-    {
-        return view('page.user.cutting_group');
-    }
-
-    public function dataGroup()
-    {
-        $query = Groups::all();
-            return Datatables::of($query)
-            ->addIndexColumn()
-            ->escapeColumns([])
-            ->addColumn('action', function($data){
-                return '
-                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="showModalCuttingGroup(false,'.$data->id.')">Edit</a>
-                <form action="'.route('delete-group', $data->id).'" method="post">
-                    <input type="hidden" name="_token" value="'.csrf_token().'">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="confirmDelete(this)">Delete</button>
-                </form>';
-            })
-            ->make(true);
-    }
-
-    public function edit_group($id)
-    {
-        try {
-            $data = Groups::find($id);
-            return response()->json($data,200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $th->getMessage()
-            ]);
-        }
-    }
-
-    public function store_group(Request $request)
-    {
-        try {
-            $request->validate([
-                'group_name' => 'required',
-                'group_description' => 'required',
-            ]);
-
-            $check_duplicate_code = Groups::where('group_name', $request->group_name)->first();
-            if($check_duplicate_code){
-                return back()->with('error', 'Group Name already exists, please choose another');
-            }
-
-            $group = Groups::firstOrCreate([
-                'group_name' => $request->group_name,
-                'group_description' => $request->group_description,
-            ]);
-            $group->save();
-            
-            return redirect('/user-cutting-group')->with('success', 'Group '.$group->group_name.' Successfully Added!');
-            
-        } catch (\Throwable $th){
-            return redirect('/user-cutting-group')->with('error', $th->getMessage());
-        }
-
-        try {
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
-        
-    }
-
-    public function update_group(Request $request, $id)
-    {
-        $request->validate([
-            'group_name' => 'required',
-            'group_description' => 'required',
-        ]);
-
-        $group = Groups::find($id);
-        $group->group_name = $request->group_name;
-        $group->group_description = $request->group_description;
-        $group->save();
-        
-        return redirect('/user-cutting-group')->with('success', 'Group '.$group->group_name.' Successfully Updated!');
-    }
-
-    public function delete_group($id)
-    {
-        try {
-            $group = Groups::find($id);
-            $group->delete();
-            $date_return = [
-                'status' => 'success',
-                'data'=> $group,
-                'message'=> 'Group '.$group->group_name.' Deleted',
-            ];
-            return response()->json($date_return, 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $th->getMessage()
-            ]);
-        }
-    }
-
     public function store(Request $request)
     {
         try {
@@ -261,6 +151,7 @@ class UsersController extends Controller
             $user = User::firstOrCreate([
                 'name' => $request->name,
                 'email' => $request->email,
+                'department_id' => $request->department,
                 'password' => Hash::make('123456789'),
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
@@ -269,21 +160,6 @@ class UsersController extends Controller
             if($request->role != null){
                 $user->assignRole($request->role);
             }
-            
-            if($request->group == null){
-                return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Added!');
-            }
-
-            $userGroup = UserGroups::where('user_id', $user->id)->first();
-            if($userGroup){
-                $userGroup->group_id = $request->group;
-            } else {
-                $userGroup = new UserGroups;
-                $userGroup->user_id = $user->id;
-                $userGroup->group_id = $request->group;
-            }
-            
-            $userGroup->save();
 
             return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Added!');
             
@@ -327,25 +203,12 @@ class UsersController extends Controller
         $user = User::find($id);
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->department_id = $request->department;
         $user->save();
         
         // update role
         $user->syncRoles($request->role);
         
-        if($request->group == null){
-            return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Updated!');
-        }
-
-        $userGroup = UserGroups::where('user_id', $user->id)->first();
-        if($userGroup){
-            $userGroup->group_id = $request->group;
-        } else {
-            $userGroup = new UserGroups;
-            $userGroup->user_id = $user->id;
-            $userGroup->group_id = $request->group;
-        }
-
-        $userGroup->save();
         return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Updated!');
     }
 

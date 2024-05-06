@@ -94,12 +94,14 @@ Route::group(['middleware' => ['auth']], function () {
 // ## Route for Master Data (Admin)
 Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::resource('user-management', UsersController::class);
-    Route::get('/user-cutting-group', [UsersController::class,'cutting_group'])->name('user-cutting-group.index');
-    Route::get('/group-data', [UsersController::class,'dataGroup'])->name('group-data');
-    Route::get('/edit-group/{id}', [UsersController::class,'edit_group'])->name('edit-group');
-    Route::post('/store-group', [UsersController::class,'store_group'])->name('store-group');
-    Route::put('/update-group/{id}', [UsersController::class,'update_group'])->name('update-group');
-    Route::delete('/delete-group/{id}', [UsersController::class,'delete_group'])->name('delete-group');
+
+    // !! nanti buat controller sendiri
+    // Route::get('/user-cutting-group', [UsersController::class,'cutting_group'])->name('user-cutting-group.index');
+    // Route::get('/group-data', [UsersController::class,'dataGroup'])->name('group-data');
+    // Route::get('/edit-group/{id}', [UsersController::class,'edit_group'])->name('edit-group');
+    // Route::post('/store-group', [UsersController::class,'store_group'])->name('store-group');
+    // Route::put('/update-group/{id}', [UsersController::class,'update_group'])->name('update-group');
+    // Route::delete('/delete-group/{id}', [UsersController::class,'delete_group'])->name('delete-group');
     Route::get('log-viewers', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 
     

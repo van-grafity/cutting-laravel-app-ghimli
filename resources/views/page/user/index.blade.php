@@ -69,13 +69,12 @@
                                 @endforeach
                             </select>
                         </div>
-                        <!-- group -->
                         <div class="form-group">
-                            <label for="group" class="form-label">Group</label>
-                            <select class="form-control select2" id="group" name="group" style="width: 100%;" data-placeholder="Choose Group">
-                                <option value="">Choose Group</option>
-                                @foreach ($groups as $group)
-                                    <option value="{{ $group->id }}">{{ $group->group_name }}</option>
+                            <label for="gl" class="form-label">Department</label>
+                            <select class="form-control select2" id="department" name="department" style="width: 100%;" data-placeholder="Choose Role">
+                                <option value="">Choose Department</option>
+                                @foreach ($departments as $department)
+                                    <option value="{{ $department->id }}">{{ $department->department }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -83,7 +82,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="btn_submit">Add User</button>
+                    <button type="submit" class="btn btn-primary btn-submit" id="btn_submit">Add User</button>
                 </div>
             </form>
         </div>
@@ -96,7 +95,7 @@
 
 <script type="text/javascript">
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const store_url ='{{ route("user-management.store",":id") }}';
+    const store_url ='{{ route("user-management.store") }}';
     const show_url ='{{ route("user-management.show",":id") }}';
     const update_url ='{{ route("user-management.update",":id") }}';
     const delete_url ='{{ route("user-management.destroy",":id") }}';
@@ -112,16 +111,20 @@
             form_action_url : store_url,
         }
         clear_form(modal_data);
+
+        $('#user_form input[name="_token"]').val(token)
+        $('#user_form').find('input[name="_method"]').remove();
+
         $(`#${modal_element_id}`).modal('show');
     }
 
     const show_modal_edit = async (modal_element_id, user_id) => {
-        console.log(modal_element_id, user_id);
         let modal_data = {
             modal_id : modal_element_id,
             title : "Edit User",
             btn_submit : "Save",
             form_action_url : update_url.replace(':id', user_id),
+            method: 'POST'
         }
         clear_form(modal_data);
         
@@ -131,35 +134,21 @@
             token: token,
         }
         result = await using_fetch_v2(fetch_data);
-        user_data = result.data.user
+        user_data = result.data.user;
 
         $('#name').val(user_data.name);
         $('#email').val(user_data.email);
         $('#department').val(user_data.department_id).trigger('change');
         $('#role').val(user_data.role).trigger('change');
         $('#edit_user_id').val(user_data.id);
+
+        $('#user_form input[name="_token"]').val(token)
+        $('#user_form').find('input[name="_method"]').remove();
+        $('#user_form').append('<input type="hidden" name="_method" value="PUT">');
+
         
         $(`#${modal_element_id}`).modal('show');
     }
-
-
-    // async function edit_user(user_id) {
-    //     let url_edit = edit_url.replace(':id',user_id);
-
-    //     result = await get_using_fetch(url_edit);
-    //     form = $('#user_form')
-    //     form.append('<input type="hidden" name="_method" value="PUT">');
-    //     $('#modal_userLabel').text("Edit User");
-    //     $('#btn_submit').text("Save");
-    //     $('#modal_user').modal('show')
-
-    //     let url_update = update_url.replace(':id',user_id);
-    //     form.attr('action', url_update);
-    //     form.find('#role').val(result.roles[0].name).trigger('change');
-    //     form.find('input[name="name"]').val(result.name);
-    //     form.find('input[name="email"]').val(result.email);
-    //     form.find('#group').val(result.group).trigger('change');
-    // }
 
     async function delete_user(user_id) {
         data = { title: "Are you sure?" };
@@ -226,6 +215,7 @@ $(function (e) {
         processing: true,
         serverSide: true,
         ajax: dtable_url,
+        order: [],
         columns: [
             { data: 'DT_RowIndex', name: 'DT_RowIndex' },
             { data: 'name', name: 'name', className:'text-left'},
