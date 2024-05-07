@@ -69,6 +69,8 @@ class UsersController extends Controller
                 $roles = $row->getRoleTitles();
                 
                 $result = implode(' | ', $roles->toArray());
+                $cleanedString = preg_replace('/[ |\|]/', '', $result);
+                $result = (strlen($cleanedString) > 0) ? $result : '-';
                 return $result;
             })
             ->filter(function ($query) {
@@ -177,19 +179,50 @@ class UsersController extends Controller
     public function destroy($id)
     {
         try {
-            $user = User::find($id);
-            $user->delete();
-            $date_return = [
+            $user = User::withTrashed()->find($id);
+            $data_return = [
                 'status' => 'success',
                 'data'=> $user,
-                'message'=> 'User '.$user->name.' Deleted',
             ];
-            return response()->json($date_return, 200);
+
+            if($user->deleted_at) {
+                $user->forceDelete();
+                $data_return['message'] = 'Successfully Permanetly Delete user ' . $user->name . ' !';
+            } else {
+                $user->delete();
+                $data_return['message'] = 'Successfully Delete user ' . $user->name . ' !';
+            }
+
+            return response()->json($data_return, 200);
         } catch (\Throwable $th) {
-            return response()->json([
+            $data_return = [
                 'status' => 'error',
-                'message' => $th->getMessage()
-            ]);
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($data_return);
+        }
+    }
+
+    public function restore(string $id)
+    {
+        try {
+            User::withTrashed()
+                ->where('id', $id)
+                ->restore();
+
+            $user = User::find($id);
+            $data_return = [
+                'status' => 'success',
+                'message' => 'Successfully Restore User ' . $user->name,
+                'data' => $user
+            ];
+            return response()->json($data_return, 200);
+        } catch (\Throwable $th) {
+            $data_return = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($data_return);
         }
     }
 
@@ -212,7 +245,7 @@ class UsersController extends Controller
         return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Updated!');
     }
 
-    public function reset(Request $request, $id)
+    public function reset_password(Request $request, $id)
     {
         try {
             $user = User::find($id);

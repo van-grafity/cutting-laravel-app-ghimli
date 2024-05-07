@@ -99,7 +99,8 @@
     const show_url ='{{ route("user-management.show",":id") }}';
     const update_url ='{{ route("user-management.update",":id") }}';
     const delete_url ='{{ route("user-management.destroy",":id") }}';
-    const reset_password_url ='{{ route("user-management.reset",":id") }}';
+    const reset_password_url ='{{ route("user-management.reset-password",":id") }}';
+    const restore_url = "{{ route('user-management.restore',':id') }}";
     const dtable_url ='{{ route("user-management.dtable") }}';
 
 
@@ -150,43 +151,122 @@
         $(`#${modal_element_id}`).modal('show');
     }
 
-    async function delete_user(user_id) {
-        data = { title: "Are you sure?" };
-        let confirm_delete = await swal_delete_confirm(data);
+    const show_modal_reset_password = async (user_id) => {
+        swal_data = {
+            title: "Reset Password?",
+            text: "This account password will be changed to default",
+            icon: "warning",
+            confirmButton: "Reset",
+            confirmButtonClass: "btn-primary",
+            cancelButtonClass: "btn-secondary"
+        };
+        let confirm_delete = await swal_confirm(swal_data);
+        if (!confirm_delete) {
+            return false;
+        };
+
+        fetch_data = {
+            url: reset_password_url.replace(':id', user_id),
+            method: "GET",
+            token: token,
+        }
+        result = await using_fetch_v2(fetch_data);
+
+        if (result.status == "success") {
+            swal_info({ title: result.message, reload_option: true });
+        } else {
+            swal_failed({ title: result.message });
+        }
+    }
+
+    const show_modal_delete = async (user_id) => {
+        swal_data = {
+            title: "Are you Sure?",
+            text: "Want to delete the user",
+            icon: "warning",
+            confirmButton: "Delete",
+            confirmButtonClass: "btn-danger",
+            cancelButtonClass: "btn-secondary"
+        };
+        let confirm_delete = await swal_confirm(swal_data);
+        if (!confirm_delete) {
+            return false;
+        };
+
+        fetch_data = {
+            url: delete_url.replace(':id', user_id),
+            method: "DELETE",
+            token: token,
+        }
+        result = await using_fetch_v2(fetch_data);
+
+        if (result.status == "success") {
+            swal_info({ title: result.message, reload_option: true });
+        } else {
+            swal_failed({ title: result.message });
+        }
+    }
+
+    const show_modal_restore = async (user_id) => {
+        swal_data = {
+            title: "Want to Restore this User?",
+            text: "This user will remove from user deleted list",
+            icon: "warning",
+            confirmButton: "Restore",
+            confirmButtonClass: "btn-info",
+            cancelButtonClass: "btn-secondary"
+        };
+        let confirm_delete = await swal_confirm(swal_data);
         if(!confirm_delete) { return false; };
 
-        let url_delete = delete_url.replace(':id',user_id);
-        let data_params = { token };
+        fetch_data = {
+            url: restore_url.replace(':id', user_id),
+            method: "GET",
+            token: token,
+        }
+        result = await using_fetch_v2(fetch_data);
 
-        result = await delete_using_fetch(url_delete, data_params)
         if(result.status == "success"){
             swal_info({
                 title : result.message,
-                reload_option: true,
+                reload_option: true 
             });
+            
         } else {
             swal_failed({ title: result.message });
         }
     }
 
-    async function reset_user(user_id) {
-        data = { title: "Want to Reset Password?" };
-        let confirm_delete = await swal_delete_confirm(data);
+    const show_modal_delete_permanent = async (user_id) => {
+        swal_data = {
+            title: "Permanently Delete?",
+            text: "User will be permanently deleted",
+            icon: "warning",
+            confirmButton: "Delete",
+            confirmButtonClass: "btn-danger",
+            cancelButtonClass: "btn-secondary"
+        };
+        let confirm_delete = await swal_confirm(swal_data);
         if(!confirm_delete) { return false; };
 
-        let url_reset_password = reset_password_url.replace(':id',user_id);
-        let data_params = { 
-            token,
-            body: { id: user_id }
-         };
+        fetch_data = {
+            url: delete_url.replace(':id', user_id),
+            method: "DELETE",
+            token: token,
+        }
+        result = await using_fetch_v2(fetch_data);
 
-        result = await using_fetch(url_reset_password, data_params, "PUT");
         if(result.status == "success"){
-            swal_info({ title : result.message });
+            swal_info({
+                title : result.message,
+                reload_option: true
+            });
+
         } else {
             swal_failed({ title: result.message });
         }
     }
+
 </script>
 
 <script type="text/javascript">

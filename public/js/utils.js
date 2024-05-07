@@ -253,3 +253,43 @@ const using_fetch_v2 = async ({ url = "", data = {}, method = "GET", token = nul
         throw error;
     }
 }
+
+
+const swal_confirm = (options = {}) => {
+    /*
+     * Example usage of swalConfirm:
+     * --------------------------------------------------------------------
+     * const result = await swalConfirm({
+     *     title: "Custom Title",
+     *     text: "Custom Text",
+     *     icon: "info",
+     *     confirmButtonText: "Save",  // Use confirmButtonText for clarity
+     *     confirmButtonClass: "btn-primary",
+     *     cancelButtonClass: "btn-secondary"
+     * });
+     * --------------------------------------------------------------------
+     */
+
+    // Merge user options with default configurations
+    const mergedOptions = {
+        title: options.title || "Are you sure?",
+        text: options.text,
+        icon: options.icon || "question",
+        confirmButtonText: options.confirmButton || "Save",
+        showCancelButton: true,
+        reverseButtons: true,
+        customClass: {
+            confirmButton: `btn ${options.confirmButtonClass || "btn-primary"} m-2`,
+            cancelButton: `btn ${options.cancelButtonClass || "btn-secondary"} m-2`,
+        },
+        buttonsStyling: false
+    };
+
+    // Create a SweetAlert2 instance with merged options
+    return Swal.fire(mergedOptions)
+        .then(result => result.isConfirmed ? Promise.resolve(true) : Promise.resolve(false))
+        .catch(error => Promise.reject(error));
+}
+
+
+

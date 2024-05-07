@@ -93,7 +93,10 @@ Route::group(['middleware' => ['auth']], function () {
 
 // ## Route for Master Data (Admin)
 Route::group(['middleware' => ['auth','can:admin-only']], function () {
+    Route::get('user-management/{user}/restore', [App\Http\Controllers\UsersController::class, 'restore'])->name('user-management.restore');
+    Route::get('user-management/{user}/reset-password', [UsersController::class,'reset_password'])->name('user-management.reset-password');
     Route::resource('user-management', UsersController::class);
+
 
     // !! nanti buat controller sendiri
     // Route::get('/user-cutting-group', [UsersController::class,'cutting_group'])->name('user-cutting-group.index');
@@ -109,7 +112,6 @@ Route::group(['middleware' => ['auth','can:admin-only']], function () {
         return QrCode::size(300)->generate('A basic example of QR code!');
     });
     
-    Route::put('user-management/reset/{id}', [UsersController::class,'reset'])->name('user-management.reset');
 });
 
 Route::group(['middleware' => ['auth','can:warehouse']], function () {
