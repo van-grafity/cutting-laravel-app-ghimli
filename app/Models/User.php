@@ -52,22 +52,6 @@ class User extends Authenticatable
     }
 
     
-    // !! next hapus function ini
-    // public function adminlte_image()
-    // {
-    //     return url('').'/assets/img/user-profile-default.png';
-    // }
-
-    // public function adminlte_desc()
-    // {
-    //     return 'Cutting Department';
-    // }
-
-    // public function adminlte_profile_url()
-    // {
-    //     return 'profile';
-    // }
-
     public function userGroups()
     {
         return $this->hasMany(UserGroups::class, 'user_id', 'id');
