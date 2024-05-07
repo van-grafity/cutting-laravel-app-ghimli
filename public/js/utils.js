@@ -291,5 +291,18 @@ const swal_confirm = (options = {}) => {
         .catch(error => Promise.reject(error));
 }
 
+const getFormData = (form) => {
+    if (!form) return {};
+
+    const formData = new FormData(form);
+    const formDataObject = {};
+
+    formData.forEach((value, key) => {
+        formDataObject[key] = value;
+    });
+
+    return formDataObject;
+}
+
 
 

@@ -56,3 +56,20 @@
         transform: translateY(-5px);
     }
 }
+
+
+/* ## CSS Overlay Datatable */
+.datatable-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(100, 100, 100, 0.1); /* ## Warna hitam transparan, sesuaikan transparansi sesuai kebutuhan */
+}
+
+/* ## CSS Dimming Tabel */
+.dimmed-table {
+    /* ## Menonaktifkan event mouse selama loading */
+    pointer-events: none; 
+}

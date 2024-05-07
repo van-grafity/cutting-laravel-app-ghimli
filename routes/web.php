@@ -76,6 +76,23 @@ Route::group([
     Route::post('change-password', 'profile_change_password')->name('change-password');
 });
 
+// ## Cutting Group
+Route::group([
+    'middleware' => [
+        'auth',
+    ],
+    'controller' => App\Http\Controllers\CuttingGroupsController::class,
+    'prefix' => 'cutting-group',
+    'as' => 'cutting-group.',
+],function() {
+    Route::get('', 'index')->name('index');
+    Route::get('dtable', 'dtable')->name('dtable');
+    Route::get('{user}', 'show')->name('show');
+    Route::post('', 'store')->name('store');
+    Route::put('{user}', 'update')->name('update');
+    Route::delete('{user}', 'destroy')->name('destroy');
+});
+
 
 
 Route::middleware(['auth'])->group(function () {
