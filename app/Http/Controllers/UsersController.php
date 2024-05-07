@@ -90,30 +90,6 @@ class UsersController extends Controller
             })
             ->toJson();
     }
-    
-    public function dataUser()
-    {
-        $query = User::with('roles')->get();
-            return Datatables::of($query)
-            ->addIndexColumn()
-            ->escapeColumns([])
-            ->addColumn('action', function($data){
-                return '
-                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="edit_user('.$data->id.')">Edit</a>
-                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_user('.$data->id.')">Delete</a>
-                <a href="javascript:void(0);" class="btn bg-gray btn-sm" onclick="reset_user('.$data->id.')">Reset Password</a>';
-            })
-            ->addColumn('role', function($data){
-                return $data->roles->isNotEmpty() ? $data->roles[0]->name : 'Not Assigned';
-            })
-            ->make(true);
-    }
-
-    public function get_user_list()
-    {
-        $get_user = User::all();
-        return response()->json($get_user,200);
-    }
 
     public function show($id){
         try {

@@ -53,21 +53,37 @@ Route::group([
     'prefix' => 'user-management',
     'as' => 'user-management.',
 ],function() {
+    Route::get('', 'index')->name('index');
     Route::get('dtable', 'dtable')->name('dtable');
+    Route::get('{user}/restore','restore')->name('restore');
+    Route::get('{user}/reset-password','reset_password')->name('reset-password');
+    Route::get('{user}', 'show')->name('show');
+    Route::post('', 'store')->name('store');
+    Route::put('{user}', 'update')->name('update');
+    Route::delete('{user}', 'destroy')->name('destroy');
+});
+
+// ## User Profile
+Route::group([
+    'middleware' => [
+        'auth',
+    ],
+    'controller' => App\Http\Controllers\UsersController::class,
+    'prefix' => 'profile',
+    'as' => 'profile.',
+],function() {
+    Route::get('', 'profile')->name('index');
+    Route::post('change-password', 'profile_change_password')->name('change-password');
 });
 
 
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('home', App\Http\Controllers\HomeController::class);
-
-    Route::get('profile', [UsersController::class,'profile'])->name('profile.index');
-    Route::post('profile/change_password', [UsersController::class,'profile_change_password'])->name('profile.change-password');
 });
 
 // ## Route for Datatable
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/user-data', [UsersController::class, 'dataUser']);
     Route::get('/buyer-data', [BuyerController::class, 'dataBuyer']);
     Route::get('/size-data', [SizesController::class, 'dataSize']);
     Route::get('/color-data', [ColorsController::class, 'dataColor']);
@@ -93,9 +109,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 // ## Route for Master Data (Admin)
 Route::group(['middleware' => ['auth','can:admin-only']], function () {
-    Route::get('user-management/{user}/restore', [App\Http\Controllers\UsersController::class, 'restore'])->name('user-management.restore');
-    Route::get('user-management/{user}/reset-password', [UsersController::class,'reset_password'])->name('user-management.reset-password');
-    Route::resource('user-management', UsersController::class);
+    
 
 
     // !! nanti buat controller sendiri
