@@ -58,6 +58,21 @@
 }
 
 
+/* ## CSS Buttong Spinner when Loading */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.btn .fas {
+    display: inline-block;
+    transition: transform 0.5s ease-in-out;
+}
+
+.btn.loading .fas {
+    animation: spin 1s infinite linear;
+}
+
 /* ## CSS Overlay Datatable */
 .datatable-overlay {
     position: absolute;

@@ -11,7 +11,8 @@
 
                 <div class="ml-auto p-3">
                     @can('manage')
-                        <a href="javascript:void(0)" class="btn btn-success " id="btn_modal_create" onclick="show_modal_create('modal_group')">Create</a>
+                        <a href="javascript:void(0)" class="btn btn-default mr-2" id="btn_sync_old_data" onclick="sync_old_data()">Sync Old Data</a>
+                        <a href="javascript:void(0)" class="btn btn-success" id="btn_modal_create" onclick="show_modal_create('modal_group')">Create</a>
                     @endcan
                 </div>
 
@@ -90,6 +91,7 @@
     const update_url = "{{ route('cutting-group.update',':id') }}";
     const delete_url = "{{ route('cutting-group.destroy',':id') }}";
     const dtable_url = "{{ route('cutting-group.dtable') }}";
+    const sync_old_data_url = "{{ route('cutting-group.sync-old-data') }}";
 
     const show_modal_create = (modal_element_id) => {
         let modal_data = {
@@ -208,6 +210,28 @@
     }
 
     const reload_dtable = () => {
+        $('#reload_table_btn').trigger('click');
+    }
+    
+    const sync_old_data = async () => {
+        fetch_data = {
+            url: sync_old_data_url,
+            method: "GET",
+            token: token,
+        }
+        result = await using_fetch_v2(fetch_data);
+
+        if(result.status == "success"){
+            swal_info({
+                title : result.message,
+            });
+
+            reload_dtable();
+            
+        } else {
+            swal_failed({ title: result.message });
+        }
+
         $('#reload_table_btn').trigger('click');
     }
 

@@ -87,6 +87,7 @@ Route::group([
 ],function() {
     Route::get('', 'index')->name('index');
     Route::get('dtable', 'dtable')->name('dtable');
+    Route::get('sync-old-data', 'sync_old_data')->name('sync-old-data');
     Route::get('{user}', 'show')->name('show');
     Route::post('', 'store')->name('store');
     Route::put('{user}', 'update')->name('update');

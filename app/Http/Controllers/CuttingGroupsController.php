@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Groups;
 use App\Models\CuttingGroup;
 
 use Illuminate\Support\Facades\Gate;
@@ -140,6 +141,41 @@ class CuttingGroupsController extends Controller
                 'status' => 'success',
                 'data'=> $group,
                 'message'=> 'Group '.$group->group.' successfully Deleted!',
+            ];
+            return response()->json($data_return, 200);
+        } catch (\Throwable $th) {
+            $data_return = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($data_return);
+        }
+    }
+
+    // ## Untuk proses migratisi data. ini di perlu di awal awal aja. kedepannya akan di hapus
+    // todo : delete this function next. beserta tombol dan fungsi yang ada di cutting group index
+    public function sync_old_data() {
+        try {
+            $groups = Groups::all();
+            $cutting_group_data = [];
+            foreach ($groups as $key => $group) {
+                $cutting_group_data[] = [
+                    'id' => $group->id,
+                    'group' => $group->group_name,
+                    'description' => $group->group_description,
+                    'created_at' => $group->created_at,
+                    'updated_at' => $group->updated_at,
+                    'created_by' => auth()->user()->id,
+                    'updated_by' => auth()->user()->id,
+                ];
+            }
+            CuttingGroup::truncate();
+            CuttingGroup::insert($cutting_group_data);
+            
+            $data_return = [
+                'status' => 'success',
+                'data'=> $cutting_group_data,
+                'message' => 'Successfully synchronized ' . $groups->count() . ' groups.',
             ];
             return response()->json($data_return, 200);
         } catch (\Throwable $th) {
