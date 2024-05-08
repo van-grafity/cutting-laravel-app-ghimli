@@ -304,5 +304,9 @@ const getFormData = (form) => {
     return formDataObject;
 }
 
+const stopFormSubmission = (event) => {
+    event.preventDefault();
+}
+
 
 

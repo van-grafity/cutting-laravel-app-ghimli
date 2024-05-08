@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+// !! next di hapus sih. masih diperlukan karena untuk migrasi data di awal aja
 use App\Models\Groups;
+use App\Models\UserGroups;
+
 use App\Models\CuttingGroup;
+use App\Models\CuttingGroupUser;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
@@ -37,17 +41,47 @@ class CuttingGroupsController extends Controller
      */
     public function dtable()
     {
-        $query = CuttingGroup::get();
+        $query = CuttingGroup::query();
+
+        // ## penambahan logika sorting agar mampu sort string as number
+        $orderData = request()->input('order');
+
+        //##  Cek apakah ada data order dan memenuhi kondisi yang dibutuhkan
+        if (!empty($orderData) && isset($orderData[0]['column'], $orderData[0]['dir'])) {
+            $orderIndex = $orderData[0]['column'];
+            $dir = $orderData[0]['dir'];
+
+            // ## Pengurutan berdasarkan kolom yang diurutkan, dalam hal ini roll_number berada di index 1
+            if ($orderIndex == 1) {
+                $query->orderByRaw("CAST(SUBSTRING(cutting_groups.group,7) AS UNSIGNED) $dir");
+            }
+        }
+
         
         return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
             ->addColumn('action', function($row){
-                return '
-                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="show_modal_edit(\'modal_group\', '.$row->id.')">Edit</a>
-                <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="show_modal_delete('.$row->id.')">Delete</a>';
+                $action_button = '
+                    <a href="javascript:void(0);" class="btn btn-info btn-sm mt-1" onclick="manage_members('.$row->id.')">Manage Member</a>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm mt-1" onclick="show_modal_edit(\'modal_group\', '.$row->id.')">Edit</a>
+                    <a href="javascript:void(0);" class="btn btn-danger btn-sm mt-1" onclick="show_modal_delete('.$row->id.')">Delete</a>
+                ';
+
+                return $action_button;
             })
-            ->make(true);
+            ->addColumn('members', function($row){
+                $names = $row->users->pluck('name')->sort()->map(function($name) {
+                    return "<span class='badge bg-navy mt-1 p-2'>$name</span>";
+                })->implode(' ');
+                return $names;
+            })
+            ->filterColumn('members', function($query, $keyword) {
+                $query->whereHas('users', function($query) use ($keyword) {
+                    $query->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->toJson();
     }
 
     /**
@@ -152,10 +186,81 @@ class CuttingGroupsController extends Controller
         }
     }
 
+    /**
+     * Display Members in the Group.
+     */
+    public function show_members(string $group_id)
+    {
+        try {
+            $group = CuttingGroup::find($group_id);
+            $users = $group->users;
+
+            $data_return = [
+                'status' => 'success',
+                'message' => 'Successfully get users (' . $group->group . ')',
+                'data' => [
+                    'users' => $users,
+                ]
+            ];
+            return response()->json($data_return, 200);
+        } catch (\Throwable $th) {
+            $data_return = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($data_return);
+        }
+    }
+
+
+    /**
+     * Update Members in the Group.
+     */
+    public function update_members(Request $request, string $group_id)
+    {
+        try {
+            $members = $request->members;
+
+            $cutting_group = CuttingGroup::find($group_id);
+            $delete_exist_data = CuttingGroupUser::where('cutting_group_id',$group_id)->delete();
+            $updated_members = [];
+            foreach ($members as $key => $user_id) {
+                $updated_members[] = CuttingGroupUser::firstOrCreate([
+                    'cutting_group_id' => $group_id,
+                    'user_id' => $user_id,
+                ]);
+            }
+
+            $data_return = [
+                'status' => 'success',
+                'message' => 'Successfully update member for ' . $cutting_group->group,
+                'data' => [
+                    'updated_members' => $updated_members,
+                ]
+            ];
+            return response()->json($data_return, 200);
+        } catch (\Throwable $th) {
+            $data_return = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($data_return);
+        }
+    }
+
+
+
     // ## Untuk proses migratisi data. ini di perlu di awal awal aja. kedepannya akan di hapus
     // todo : delete this function next. beserta tombol dan fungsi yang ada di cutting group index
     public function sync_old_data() {
         try {
+
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            CuttingGroupUser::truncate();
+            CuttingGroup::truncate();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+
             $groups = Groups::all();
             $cutting_group_data = [];
             foreach ($groups as $key => $group) {
@@ -169,8 +274,21 @@ class CuttingGroupsController extends Controller
                     'updated_by' => auth()->user()->id,
                 ];
             }
-            CuttingGroup::truncate();
             CuttingGroup::insert($cutting_group_data);
+            
+            $user_groups = UserGroups::all();
+            $cutting_group_user_data = [];
+            foreach ($user_groups as $key => $user_group) {
+                $cutting_group_user_data[] = [
+                    'id' => $user_group->id,
+                    'user_id' => $user_group->user_id,
+                    'cutting_group_id' => $user_group->group_id,
+                    'created_at' => $user_group->created_at,
+                    'updated_at' => $user_group->updated_at,
+                ];
+            }
+
+            CuttingGroupUser::insert($cutting_group_user_data);
             
             $data_return = [
                 'status' => 'success',

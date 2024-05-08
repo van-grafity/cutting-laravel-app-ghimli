@@ -85,14 +85,38 @@ Route::group([
     'prefix' => 'cutting-group',
     'as' => 'cutting-group.',
 ],function() {
-    Route::get('', 'index')->name('index');
     Route::get('dtable', 'dtable')->name('dtable');
     Route::get('sync-old-data', 'sync_old_data')->name('sync-old-data');
-    Route::get('{user}', 'show')->name('show');
+    
+    Route::get('{group}/show-members', 'show_members')->name('show-members');
+    Route::put('{group}/update-members', 'update_members')->name('update-members');
+    
+    Route::get('', 'index')->name('index');
+    Route::get('{group}', 'show')->name('show');
     Route::post('', 'store')->name('store');
-    Route::put('{user}', 'update')->name('update');
-    Route::delete('{user}', 'destroy')->name('destroy');
+    Route::put('{group}', 'update')->name('update');
+    Route::delete('{group}', 'destroy')->name('destroy');
 });
+
+
+Route::group([
+    'middleware' => [
+        'auth',
+        'can:user-menu',
+    ],
+    'controller' => App\Http\Controllers\FetchSelectController::class,
+    'prefix' => 'fetch-select',
+    'as' => 'fetch-select.',
+], function () {
+    Route::get('', 'index')->name('index');
+    Route::get('user', 'select_user')->name('user');
+    Route::get('user-multiple', 'select_user_multiple')->name('user-multiple');
+});
+
+
+
+
+// ---------------------------------------------------------------------------------
 
 
 

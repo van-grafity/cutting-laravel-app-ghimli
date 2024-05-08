@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('cutting_group_users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('cutting_group_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('cutting_group_id')->constrained('cutting_groups')->onDelete('cascade');
             $table->timestamps();
         });
     }
