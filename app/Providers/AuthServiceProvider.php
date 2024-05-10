@@ -45,6 +45,35 @@ class AuthServiceProvider extends ServiceProvider
             }
         });
 
+        Gate::define('department-menu', function (User $user) {
+            $permitted_permissions = [
+                'department.access',
+                'department.manage',
+            ];
+            if ($user->canany($permitted_permissions)) { return true; }
+        });
+
+        Gate::define('cutting-group-menu', function (User $user) {
+            $permitted_permissions = [
+                'cutting-group.access',
+                'cutting-group.manage',
+            ];
+            if ($user->canany($permitted_permissions)) { return true; }
+        });
+
+        // todo : kodingan untuk nanti
+        // Gate::define('user-management-menu', function (User $user) {
+        //     $permitted_permissions = [
+        //         'user-management.access',
+        //         'user-management.manage',
+        //     ];
+        //     if ($user->canany($permitted_permissions)) { return true; }
+        // });
+
+
+        // ## ========== batas
+
+
         // Implicitly grant "Super-Admin" role all permission checks using can()
         Gate::before(function ($user, $ability) {
             if ($user->hasRole('super_admin')) {

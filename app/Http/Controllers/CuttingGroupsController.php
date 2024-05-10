@@ -19,7 +19,7 @@ class CuttingGroupsController extends Controller
     public function __construct()
     {
         Gate::define('manage', function ($user) {
-            return $user->hasPermissionTo('group.manage');
+            return $user->hasPermissionTo('cutting-group.manage');
         });
     }
 

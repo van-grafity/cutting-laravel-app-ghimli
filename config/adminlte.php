@@ -326,7 +326,7 @@ return [
             'text' => 'Department',
             'url'  => '/department',
             'icon' => 'fas fa-user-friends nav-icon',
-            'can'  => 'developer-menu',
+            'can'  => 'department-menu',
         ],
         [
             'text' => 'User Management',
@@ -338,7 +338,7 @@ return [
             'text' => 'Cutting Group',
             'url'  => 'cutting-group',
             'icon' => 'fas fa-object-group nav-icon',
-            'can'  => 'admin-only',
+            'can'  => 'cutting-group-menu',
         ],
 
         [

@@ -80,6 +80,7 @@ Route::group([
 Route::group([
     'middleware' => [
         'auth',
+        'can:cutting-group-menu',
     ],
     'controller' => App\Http\Controllers\CuttingGroupsController::class,
     'prefix' => 'cutting-group',
@@ -102,7 +103,7 @@ Route::group([
 Route::group([
     'middleware' => [
         'auth',
-        'can:developer-menu',
+        'can:department-menu',
     ],
     'controller' => App\Http\Controllers\DepartmentsController::class,
     'prefix' => 'department',
@@ -154,6 +155,28 @@ Route::group([
     Route::post('', 'store')->name('store');
     Route::put('{group}', 'update')->name('update');
     Route::delete('{group}', 'destroy')->name('destroy');
+});
+
+// ## Role
+Route::group([
+    'middleware' => [
+        'auth',
+        'can:developer-menu',
+    ],
+    'controller' => App\Http\Controllers\RoleController::class,
+    'prefix' => 'role',
+    'as' => 'role.',
+],function() {
+    Route::get('dtable', 'dtable')->name('dtable');
+    
+    Route::get('', 'index')->name('index');
+    Route::get('{group}', 'show')->name('show');
+    Route::post('', 'store')->name('store');
+    Route::put('{group}', 'update')->name('update');
+    Route::delete('{group}', 'destroy')->name('destroy');
+
+    Route::get('{group}/manage-permission', 'manage_permission')->name('manage-permission');
+    Route::post('{group}/manage-permission', 'manage_permission_update')->name('manage-permission-update');
 });
 
 
