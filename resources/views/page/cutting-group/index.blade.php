@@ -1,9 +1,13 @@
 
 @extends('layouts.master')
-@section('title', 'Cutting Groups')
+@section('title', $title)
 @section('content')
 
 <style>
+
+    /*
+        * Styling for select2 multi select. make it neater and nicer 
+    */
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
         background-color: #001f3f;
         border: 1px solid #001f3f;
@@ -35,6 +39,7 @@
         border-color: #006fe6;
         box-shadow: none;
     }
+    
 </style>
 
 <div class="row">

@@ -98,6 +98,25 @@ Route::group([
     Route::delete('{group}', 'destroy')->name('destroy');
 });
 
+// ## Department
+Route::group([
+    'middleware' => [
+        'auth',
+        'can:developer-menu',
+    ],
+    'controller' => App\Http\Controllers\DepartmentsController::class,
+    'prefix' => 'department',
+    'as' => 'department.',
+],function() {
+    Route::get('dtable', 'dtable')->name('dtable');
+    
+    Route::get('', 'index')->name('index');
+    Route::get('{group}', 'show')->name('show');
+    Route::post('', 'store')->name('store');
+    Route::put('{group}', 'update')->name('update');
+    Route::delete('{group}', 'destroy')->name('destroy');
+});
+
 
 Route::group([
     'middleware' => [

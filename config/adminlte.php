@@ -294,6 +294,57 @@ return [
             'type'         => 'fullscreen-widget',
             'topnav_right' => true,
         ],
+        
+        [
+            'header' => 'Developer',
+            'can'   => 'developer-menu',
+        ],
+        [
+            'text' => 'Settings',
+            'icon' => 'fas fa-cog nav-icon',
+            'can' => 'developer-menu',
+            'submenu' => [
+                [
+                    'text' => 'Permission Category',
+                    'url' => 'permission-category',
+                ],
+                [
+                    'text' => 'Permission',
+                    'url' => 'permission',
+                ],
+                [
+                    'text' => 'Role',
+                    'url' => 'role',
+                ],
+                [
+                    'text' => 'Logs',
+                    'url' => 'logs',
+                ],
+            ],
+        ],
+        [
+            'text' => 'Department',
+            'url'  => '/department',
+            'icon' => 'fas fa-user-friends nav-icon',
+            'can'  => 'developer-menu',
+        ],
+        [
+            'text' => 'User Management',
+            'url'  => '/user-management',
+            'icon' => 'fas fa-users nav-icon',
+            'can'  => 'developer-menu',
+        ],
+        [
+            'text' => 'Cutting Group',
+            'url'  => 'cutting-group',
+            'icon' => 'fas fa-object-group nav-icon',
+            'can'  => 'admin-only',
+        ],
+
+        [
+            'header' => 'General',
+            'can'   => 'default-menu',
+        ],
 
         [
             'text' => 'Dashboard',
@@ -306,13 +357,7 @@ return [
             'icon' => 'fas fa-fw fa-ruler-combined',
             'can'  => 'clerk-cutting',
             'submenu' => [
-                [
-                    'text' => 'User Management',
-                    'url'  => '/user-management',
-                    'classes'=> 'ml-3',
-                    'icon' => 'fas fa-fw fa-users',
-                    'can'  => 'admin-only',
-                ],
+                
                 // [
                 //     'text' => 'Cutting Group',
                 //     'url'  => '/user-cutting-group',
@@ -320,13 +365,7 @@ return [
                 //     'icon'  => 'fas fa-fw fa fa-solid fa-object-group',
                 //     'can'  => 'admin-only',
                 // ],
-                [
-                    'text' => 'Cutting Group',
-                    'url'  => 'cutting-group',
-                    'classes'=> 'ml-3',
-                    'icon'  => 'fas fa-fw fa fa-solid fa-object-group',
-                    'can'  => 'admin-only',
-                ],
+                
                 [
                     'text' => 'Buyer',
                     'url'  => '/buyer',

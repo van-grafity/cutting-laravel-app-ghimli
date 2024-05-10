@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use App\Models\User;
+
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,8 +26,25 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+        
+        Gate::before(function (User $user, $ability) {
+           if ($user->hasRole('super_admin')) {
+               return true;
+           }
+        });
 
-        //
+        Gate::define('viewLogViewer', function (?User $user) {
+            if ($user && $user->hasRole('super_admin')) {
+               return true;
+            }
+        });
+        
+        Gate::define('developer-menu', function (User $user) {
+            if ($user->hasRole('super_admin')) {
+                return true;
+            }
+        });
+
         // Implicitly grant "Super-Admin" role all permission checks using can()
         Gate::before(function ($user, $ability) {
             if ($user->hasRole('super_admin')) {
