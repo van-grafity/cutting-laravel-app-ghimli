@@ -10,41 +10,50 @@ class DepartmentsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
-        Department::insert([
+        $data = [
             [
-                'id' => 1,
-                'department' => 'Admin',
-                'description' => 'Admin',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
-                
+                'department' => 'IT Programmer',
+                'description' => 'Department of IT Programmer',
             ],
             [
-                'id' => 2,
-                'department' => 'Cutting Department',
-                'description' => 'Cutting Department',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
+                'department' => 'IT Officer',
+                'description' => 'Department of IT Officer',
             ],
             [
-                'id' => 3,
-                'department' => 'Sewing Department',
-                'description' => 'Sewing Deparment',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
+                'department' => 'Warehouse',
+                'description' => 'Department of Warehouse',
             ],
             [
-                'id' => 4,
-                'department' => 'Packing Department',
-                'description' => 'Packing Deparment',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s')
+                'department' => 'Cutting',
+                'description' => 'Department of Cutting',
             ],
-        ]);
+            [
+                'department' => 'Sewing',
+                'description' => 'Department of Sewing',
+            ],
+            [
+                'department' => 'PPC',
+                'description' => 'Department of PPC',
+            ],
+            [
+                'department' => 'PMR',
+                'description' => 'Department of PMR',
+            ],
+            [
+                'department' => 'General User',
+                'description' => 'General User',
+            ],
+            [
+                'department' => 'Guest',
+                'description' => 'Guest User',
+            ],
+        ];
+
+        foreach ($data as $key => $department) {
+            Department::create($department);
+        }
     }
 }

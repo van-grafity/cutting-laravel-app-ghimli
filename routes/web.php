@@ -118,6 +118,26 @@ Route::group([
 });
 
 
+// ## Permission Category
+Route::group([
+    'middleware' => [
+        'auth',
+        'can:developer-menu',
+    ],
+    'controller' => App\Http\Controllers\PermissionCategoryController::class,
+    'prefix' => 'permission-category',
+    'as' => 'permission-category.',
+],function() {
+    Route::get('dtable', 'dtable')->name('dtable');
+    
+    Route::get('', 'index')->name('index');
+    Route::get('{group}', 'show')->name('show');
+    Route::post('', 'store')->name('store');
+    Route::put('{group}', 'update')->name('update');
+    Route::delete('{group}', 'destroy')->name('destroy');
+});
+
+
 Route::group([
     'middleware' => [
         'auth',
