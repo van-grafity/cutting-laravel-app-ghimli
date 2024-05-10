@@ -6,6 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Department;
+
+
+// !! nanti model ini di hapus
+use App\Models\Groups;
+
+
+
 use Yajra\Datatables\Datatables;
 
 use Illuminate\Support\Facades\DB;
@@ -275,4 +282,114 @@ class UsersController extends Controller
             ]);
         }
     }
+
+
+
+
+
+
+    // !! nanti semua tentang group ini di hapus
+    public function cutting_group()
+    {
+        return view('page.user.cutting_group');
+    }
+
+    public function dataGroup()
+    {
+        $query = Groups::all();
+            return Datatables::of($query)
+            ->addIndexColumn()
+            ->escapeColumns([])
+            ->addColumn('action', function($data){
+                return '
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="showModalCuttingGroup(false,'.$data->id.')">Edit</a>
+                <form action="'.route('delete-group', $data->id).'" method="post">
+                    <input type="hidden" name="_token" value="'.csrf_token().'">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="confirmDelete(this)">Delete</button>
+                </form>';
+            })
+            ->make(true);
+    }
+
+    public function edit_group($id)
+    {
+        try {
+            $data = Groups::find($id);
+            return response()->json($data,200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
+    public function store_group(Request $request)
+    {
+        try {
+            $request->validate([
+                'group_name' => 'required',
+                'group_description' => 'required',
+            ]);
+
+            $check_duplicate_code = Groups::where('group_name', $request->group_name)->first();
+            if($check_duplicate_code){
+                return back()->with('error', 'Group Name already exists, please choose another');
+            }
+
+            $group = Groups::firstOrCreate([
+                'group_name' => $request->group_name,
+                'group_description' => $request->group_description,
+            ]);
+            $group->save();
+            
+            return redirect('/user-cutting-group')->with('success', 'Group '.$group->group_name.' Successfully Added!');
+            
+        } catch (\Throwable $th){
+            return redirect('/user-cutting-group')->with('error', $th->getMessage());
+        }
+
+        try {
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        
+    }
+
+    public function update_group(Request $request, $id)
+    {
+        $request->validate([
+            'group_name' => 'required',
+            'group_description' => 'required',
+        ]);
+
+        $group = Groups::find($id);
+        $group->group_name = $request->group_name;
+        $group->group_description = $request->group_description;
+        $group->save();
+        
+        return redirect('/user-cutting-group')->with('success', 'Group '.$group->group_name.' Successfully Updated!');
+    }
+
+    public function delete_group($id)
+    {
+        try {
+            $group = Groups::find($id);
+            $group->delete();
+            $date_return = [
+                'status' => 'success',
+                'data'=> $group,
+                'message'=> 'Group '.$group->group_name.' Deleted',
+            ];
+            return response()->json($date_return, 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
+    // !! ===== batas hapus
 }
