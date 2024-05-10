@@ -664,7 +664,8 @@ return [
                 [
                     'type' => 'js',
                     'asset' => true,
-                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@11',
+                    // 'location' => '//cdn.jsdelivr.net/npm/sweetalert2@11',
+                    'location' => 'vendor\sweetalert2\sweetalert2.all.min.js',
                 ],
             ],
         ],
