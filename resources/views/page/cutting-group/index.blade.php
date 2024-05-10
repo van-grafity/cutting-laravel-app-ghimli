@@ -429,7 +429,8 @@
             { data: 'action', name: 'action', visible: column_visible },
         ],
         columnDefs: [
-            { targets: [0,-1,-2,-3], orderable: false, searchable: false },
+            { targets: [0,-1,-3], orderable: false, searchable: false },
+            { targets: [-2], orderable: false },
         ],
         
         paging: true,
