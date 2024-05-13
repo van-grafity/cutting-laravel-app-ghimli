@@ -62,12 +62,15 @@
                         </div>
                         <div class="form-group">
                             <label for="gl" class="form-label">Role</label>
-                            <select class="form-control select2" id="role" name="role" style="width: 100%;" data-placeholder="Choose Role">
-                                <option value="">Choose Role</option>
-                                @foreach ($roles as $role)
-                                    <option value="{{ $role->name }}">{{ $role->title }}</option>
-                                @endforeach
-                            </select>
+                            <div class="select2-navy">
+                                <select class="form-control select2" id="role" name="role" multiple="multiple" style="width: 100%;" data-placeholder="Choose Role">
+                                    <option value="">Choose Role</option>
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role->name }}">{{ $role->title }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                         </div>
                         <div class="form-group">
                             <label for="gl" class="form-label">Department</label>
