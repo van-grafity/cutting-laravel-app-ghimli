@@ -21,6 +21,7 @@ class RoleController extends Controller
         $data = [
             'title' => 'Role',
             'page_title' => 'Role List',
+            'can_manage' => auth()->user()->can('manage'),
         ];
         return view('page.role.index', $data);
     }
@@ -84,7 +85,7 @@ class RoleController extends Controller
 
             $data_return = [
                 'status' => 'success',
-                'message' => 'Successfully get role (' . $role->role . ')',
+                'message' => 'Successfully get role (' . $role->name . ')',
                 'data' => [
                     'role' => $role,
                 ]
@@ -210,6 +211,42 @@ class RoleController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             return redirect()->back()->with('errors', $th->getMessage());
+        }
+    }
+
+    public function fill_empty_data()
+    {
+        try {
+            DB::beginTransaction();
+            $roles = Role::all();
+            $updated_roles = [];
+            foreach ($roles as $key => $role) {
+                if(!$role->title) {
+                    $role->title = formatStringrole($role->name);
+                    $role->description = formatStringrole($role->name);
+                    $role->save();
+                    $updated_roles[] = $role;
+                }
+            }
+            DB::commit();
+            
+            $data_return = [
+                'status' => 'success',
+                'message'=> 'Successfully Update '. count($updated_roles) .' Roles',
+                'data'=> [
+                    'updated_roles' => $updated_roles
+                ],
+            ];
+            return response()->json($data_return, 200);
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            $data_return = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+            return response()->json($data_return);
         }
     }
 }

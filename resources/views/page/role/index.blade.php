@@ -6,13 +6,14 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header d-flex p-0">
-                @can('admin')
-                    <h3 class="card-title p-3 my-auto"> Role List </h3>
+                <h3 class="card-title p-3 my-auto"> Role List </h3>
+                
+                @can('manage')
+                    <div class="ml-auto p-3">
+                        <a href="javascript:void(0)" class="btn btn-default mr-2" id="btn_fill_empty_data" onclick="fill_empty_data()">Fill Empty Data</a>
+                        <a href="javascript:void(0)" class="btn btn-success " id="btn_modal_create" onclick="show_modal_create('modal_role')">Create</a>
+                    </div>
                 @endcan
-
-                <div class="ml-auto p-3">
-                    <a href="javascript:void(0)" class="btn btn-success " id="btn_modal_create" onclick="show_modal_create('modal_role')">Create</a>
-                </div>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -85,13 +86,15 @@
 <script type="text/javascript">
 
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    
+    const column_action = '{{ $can_manage }}';
+
     // ## URL List
     const show_url = "{{ route('role.show',':id') }}";
     const store_url = "{{ route('role.store') }}";
     const update_url = "{{ route('role.update',':id') }}";
     const delete_url = "{{ route('role.destroy',':id') }}";
     const dtable_url = "{{ route('role.dtable') }}";
+    const fill_empty_data_url = "{{ route('role.fill-empty-data') }}";
 
     const show_modal_create = (modal_element_id) => {
         let modal_data = {
@@ -215,6 +218,29 @@
         $('#reload_table_btn').trigger('click');
     }
 
+
+    const fill_empty_data = async () => {
+        fetch_data = {
+            url: fill_empty_data_url,
+            method: "GET",
+            token: token,
+        }
+        result = await using_fetch_v2(fetch_data);
+
+        if(result.status == "success"){
+            swal_info({
+                title : result.message,
+            });
+
+            reload_dtable();
+            
+        } else {
+            swal_failed({ title: result.message });
+        }
+
+        $('#reload_table_btn').trigger('click');
+    }
+
 </script>
 
 <script type="text/javascript">
@@ -238,7 +264,7 @@
             { data: 'name', name: 'name', className: 'text-left'},
             { data: 'title', name: 'title', className: 'text-left'},
             { data: 'description', name: 'description', className: 'text-left'},
-            { data: 'action', name: 'action'},
+            { data: 'action', name: 'action', visible: column_action},
         ],
         columnDefs: [
             { targets: [0,-1], orderable: false, searchable: false },

@@ -168,15 +168,17 @@ Route::group([
     'as' => 'role.',
 ],function() {
     Route::get('dtable', 'dtable')->name('dtable');
+    Route::get('fill-empty-data', 'fill_empty_data')->name('fill-empty-data');
     
     Route::get('', 'index')->name('index');
     Route::get('{group}', 'show')->name('show');
     Route::post('', 'store')->name('store');
     Route::put('{group}', 'update')->name('update');
     Route::delete('{group}', 'destroy')->name('destroy');
-
+    
     Route::get('{group}/manage-permission', 'manage_permission')->name('manage-permission');
     Route::post('{group}/manage-permission', 'manage_permission_update')->name('manage-permission-update');
+    
 });
 
 
