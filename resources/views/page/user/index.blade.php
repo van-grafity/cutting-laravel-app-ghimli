@@ -63,8 +63,7 @@
                         <div class="form-group">
                             <label for="gl" class="form-label">Role</label>
                             <div class="select2-navy">
-                                <select class="form-control select2" id="role" name="role" multiple="multiple" style="width: 100%;" data-placeholder="Choose Role">
-                                    <option value="">Choose Role</option>
+                                <select class="form-control select2" id="role" name="role[]" multiple="multiple" style="width: 100%;" data-placeholder="Choose Role">
                                     @foreach ($roles as $role)
                                         <option value="{{ $role->name }}">{{ $role->title }}</option>
                                     @endforeach
@@ -143,7 +142,7 @@
         $('#name').val(user_data.name);
         $('#email').val(user_data.email);
         $('#department').val(user_data.department_id).trigger('change');
-        $('#role').val(user_data.role).trigger('change');
+        $('#role').val(user_data.roles.map((arr) => arr.name)).trigger('change');
         $('#edit_user_id').val(user_data.id);
 
         $('#user_form input[name="_token"]').val(token)

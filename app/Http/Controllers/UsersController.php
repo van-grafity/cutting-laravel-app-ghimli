@@ -8,7 +8,7 @@ use App\Models\Role;
 use App\Models\Department;
 
 
-// !! nanti model ini di hapus
+// !! nanti model ini di hapus. karena pengaturan tentang group sudah tidak lagi di controller ini
 use App\Models\Groups;
 
 
@@ -159,6 +159,25 @@ class UsersController extends Controller
         
     }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+        ]);
+
+        $user = User::find($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->department_id = $request->department;
+        $user->save();
+
+        // update role
+        $user->syncRoles($request->role);
+        
+        return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Updated!');
+    }
+
     public function destroy($id)
     {
         try {
@@ -207,25 +226,6 @@ class UsersController extends Controller
             ];
             return response()->json($data_return);
         }
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-        ]);
-
-        $user = User::find($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->department_id = $request->department;
-        $user->save();
-        
-        // update role
-        $user->syncRoles($request->role);
-        
-        return redirect('/user-management')->with('success', 'User '.$user->name.' Successfully Updated!');
     }
 
     public function reset_password(Request $request, $id)
