@@ -395,7 +395,7 @@ class CuttingOrdersController extends Controller
             $temp_cor_details[] = $data_detail;
         }
 
-        for ($i=0; $i < 10; $i++) {
+        for ($i=0; $i < 20; $i++) {
             if(array_key_exists($i, $temp_cor_details)) {
                 $data_detail = (object)[
                     'place_no' => $temp_cor_details[$i]->place_no,
@@ -422,6 +422,10 @@ class CuttingOrdersController extends Controller
             }
             $cor_details[] = $data_detail;
         }
+
+        $total_balance_end_total = array_sum(array_map(function ($items) { 
+            return (double) $items->balance_end;
+        }, $cor_details ));
 
         // if null
         $name = $cutting_order_detail[0]->operator ?? null;
@@ -474,6 +478,7 @@ class CuttingOrdersController extends Controller
             'laid_by' => $name,
             'created_at' => Carbon::createFromFormat('Y-m-d H:i:s', $cutting_order->created_at)->format('d-m-Y'),
             'printed_by' => Auth::user()->name,
+            'total_balance_end_total' => $total_balance_end_total .' Yards',
             
         ];
 
