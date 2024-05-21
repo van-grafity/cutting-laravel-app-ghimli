@@ -38,14 +38,11 @@ class UsersController extends Controller
      */
     public function dtable(Request $request)
     {
-        if(auth()->user()->can('developer-menu')){
-            
-            $query = User::withTrashed();
+        $query = User::with(['roles', 'department'])->withTrashed();
 
-        } else {
-            
-            $query = User::withTrashed()->whereDoesntHave('roles', function ($query) {
-                $query->whereIn('name', ['developer','admin']);
+        if (!auth()->user()->can('developer-menu')) {
+            $query->whereDoesntHave('roles', function ($query) {
+                $query->whereIn('name', ['developer', 'admin']);
             });
         }
         
@@ -80,16 +77,6 @@ class UsersController extends Controller
                 $result = (strlen($cleanedString) > 0) ? $result : '-';
                 return $result;
             })
-            ->filter(function ($query) {
-                if (request()->has('data_status')) {
-                    if (request('data_status') == 1) {
-                        $query->where('deleted_at', null);
-                    }
-                    if (request('data_status') == 2) {
-                        $query->where('deleted_at', '!=', null);
-                    }
-                }
-            }, true)
             ->addColumn('created_date', function($row){
                 $readable_datetime = Carbon::createFromFormat('Y-m-d H:i:s', $row->created_at);
                 $readable_datetime = $readable_datetime->format('d F Y, H:i');
