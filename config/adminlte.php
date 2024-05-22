@@ -320,6 +320,10 @@ return [
                     'text' => 'Logs',
                     'url' => 'logs',
                 ],
+                [
+                    'text' => 'Personal Access Token',
+                    'url' => 'personal-access-token',
+                ],
             ],
         ],
         [

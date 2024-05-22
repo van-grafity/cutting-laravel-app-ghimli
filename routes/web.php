@@ -198,6 +198,25 @@ Route::group([
 
 
 
+// ## Personal Access Token
+Route::group([
+    'middleware' => [
+        'auth',
+        'can:developer-menu',
+    ],
+    'controller' => App\Http\Controllers\PersonalAccessTokensController::class,
+    'prefix' => 'personal-access-token',
+    'as' => 'personal-access-token.',
+],function() {
+    Route::get('dtable', 'dtable')->name('dtable');
+    Route::post('revoke-token', 'revoke_token')->name('revoke-token');
+    
+    Route::get('', 'index')->name('index');
+    Route::post('', 'store')->name('store');
+    Route::delete('{token}', 'destroy')->name('destroy');
+});
+
+
 
 // ---------------------------------------------------------------------------------
 
