@@ -307,7 +307,7 @@
         order: [],
         columns: [
             { data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            { data: 'user', name: 'tokenable.name'},
+            { data: 'user', name: 'users.name'},
             { data: 'name', name: 'name'},
             { data: 'abilities', name: 'abilities'},
             { data: 'last_used_at', name: 'personal_access_tokens.last_used_at'},

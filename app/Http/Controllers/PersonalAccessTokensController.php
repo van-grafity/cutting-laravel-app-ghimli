@@ -34,7 +34,7 @@ class PersonalAccessTokensController extends Controller
             'page_title' => 'Token List',
             'can_manage' => auth()->user()->can('manage'),
         ];
-        return view('page.token.index', $data);
+        return view('page.personal-access-token.index', $data);
     }
 
     /**
@@ -42,7 +42,9 @@ class PersonalAccessTokensController extends Controller
      */
     public function dtable(Request $request)
     {
-        $query = PersonalAccessToken::with('tokenable');
+        $query = PersonalAccessToken::with('tokenable')
+            ->join('users','users.id','=','personal_access_tokens.tokenable_id')
+            ->select('personal_access_tokens.*','users.name as user_name');
 
         return Datatables::of($query)
             ->addIndexColumn()
