@@ -318,7 +318,7 @@ return [
                 ],
                 [
                     'text' => 'Logs',
-                    'url' => 'logs',
+                    'url' => 'log-viewers',
                 ],
                 [
                     'text' => 'Personal Access Token',
