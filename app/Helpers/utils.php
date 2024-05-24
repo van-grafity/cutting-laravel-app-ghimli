@@ -34,8 +34,8 @@ if (!function_exists('normalizeNumber')) {
 
 if (!function_exists('formatStringRole')) {
     function formatStringRole($input) {
-        // ## Mengganti underscore dengan spasi dan memisahkan string berdasarkan spasi
-        $words = explode(' ', str_replace('_', ' ', $input));
+        // ## Mengganti underscore dan tanda hubung dengan spasi dan memisahkan string berdasarkan spasi
+        $words = explode(' ', str_replace(['_', '-'], ' ', $input));
         
         // ## Mengubah setiap kata menjadi kapital
         $formattedWords = array_map('ucwords', $words);
@@ -44,3 +44,4 @@ if (!function_exists('formatStringRole')) {
         return implode(' ', $formattedWords);
     }
 }
+

@@ -401,12 +401,12 @@ return [
                 
             ],
         ],
-        [
-            'text' => 'User Management',
-            'icon' => 'fas fa-users nav-icon',
-            'can'   => 'admin-menu',
-            'url' => 'user',
-        ],
+        // [
+        //     'text' => 'User Management',
+        //     'icon' => 'fas fa-users nav-icon',
+        //     'can'   => 'admin-menu',
+        //     'url' => 'user',
+        // ],
         [
             'text' => 'Master Data Cutting',
             'icon' => 'fas fa-fw fa-industry',

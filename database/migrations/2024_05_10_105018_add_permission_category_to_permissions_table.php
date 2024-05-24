@@ -14,6 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('permissions', function (Blueprint $table) {
+            $table->string('description');
             $table->foreignId('permission_category_id')->after('name')->nullable()->constrained('permissions_categories');
         });
     }
@@ -27,7 +28,7 @@ return new class extends Migration
     {
         Schema::table('permissions', function (Blueprint $table) {
             $table->dropForeign(['permission_category_id']);
-            $table->dropColumn(['permission_category_id']);
+            $table->dropColumn(['description','permission_category_id']);
         });
     }
 };

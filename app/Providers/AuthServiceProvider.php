@@ -33,12 +33,6 @@ class AuthServiceProvider extends ServiceProvider
            }
         });
 
-        Gate::define('viewLogViewer', function (?User $user) {
-            if ($user && $user->hasRole('super_admin')) {
-               return true;
-            }
-        });
-        
         Gate::define('developer-menu', function (User $user) {
             if ($user->hasRole('super_admin')) {
                 return true;
