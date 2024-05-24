@@ -344,6 +344,12 @@ return [
             'icon' => 'fas fa-object-group nav-icon',
             'can'  => 'cutting-group-menu',
         ],
+        [
+            'text' => 'Cutting Table',
+            'url'  => 'cutting-table',
+            'icon' => 'fas fa-microchip nav-icon',
+            'can'  => 'cutting-table-menu',
+        ],
 
         [
             'header' => 'General',

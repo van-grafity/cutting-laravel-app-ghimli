@@ -217,8 +217,27 @@ Route::group([
 });
 
 
+// ## Cutting Table
+Route::group([
+    'middleware' => [
+        'auth',
+        'can:cutting-table-menu',
+    ],
+    'controller' => App\Http\Controllers\CuttingTablesController::class,
+    'prefix' => 'cutting-table',
+    'as' => 'cutting-table.',
+],function() {
+    Route::get('dtable', 'dtable')->name('dtable');
+    
+    Route::get('', 'index')->name('index');
+    Route::get('{cutting_table}', 'show')->name('show');
+    Route::post('', 'store')->name('store');
+    Route::put('{cutting_table}', 'update')->name('update');
+    Route::delete('{cutting_table}', 'destroy')->name('destroy');
+});
 
-// ---------------------------------------------------------------------------------
+
+// ## ---------------------------------------------------------------------------------
 
 
 

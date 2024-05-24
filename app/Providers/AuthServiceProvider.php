@@ -55,6 +55,14 @@ class AuthServiceProvider extends ServiceProvider
             if ($user->canany($permitted_permissions)) { return true; }
         });
 
+        Gate::define('cutting-table-menu', function (User $user) {
+            $permitted_permissions = [
+                'cutting-table.access',
+                'cutting-table.manage',
+            ];
+            if ($user->canany($permitted_permissions)) { return true; }
+        });
+
         // todo : kodingan untuk nanti
         // Gate::define('user-management-menu', function (User $user) {
         //     $permitted_permissions = [
