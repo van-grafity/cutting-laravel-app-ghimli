@@ -153,6 +153,13 @@
                     </div>
                     @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
                     <div class="d-flex justify-content-end mb-1">
+                        <div class="action-wrapper mr-auto">
+                            @can('unprint-cor')
+                                <button class="btn btn-primary" disabled="disabled" onclick="unprint_cor()">
+                                    <i class="fas fa-print"></i> Undo Nota COR
+                                </button>
+                            @endcan
+                        </div>
                         <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
                         <a href="{{ route('cutting-order.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_nota">Print Nota</a>
                         <a href="{{ route('fabric-requisition.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_fabric">Print Fabric Req</a>
@@ -161,6 +168,20 @@
                     <table class="table align-middle table-nowrap table-hover">
                         <thead class="table-light">
                             <tr>
+                                @can('unprint-cor')
+                                <th scopt="col">
+                                    <div class="form-group mb-0">
+                                        <div class="custom-control custom-checkbox">
+                                            <input 
+                                                id="print_checkbox_all" 
+                                                class="custom-control-input checkbox-all-control" 
+                                                type="checkbox"
+                                            >
+                                            <label for="print_checkbox_all" class="custom-control-label"></label>
+                                        </div>
+                                    </div>
+                                </th>
+                                @endcan
                                 <th scope="col">COR</th>
                                 <th scope="col">FBR</th>
                                 <th scope="col">Table No</th>
@@ -175,6 +196,23 @@
                         <tbody>
                             @foreach ($details as $detail)
                                 <tr>
+                                    @can('unprint-cor')
+                                    <td>
+                                        <div class="form-group mb-0">
+                                            <div class="custom-control custom-checkbox">
+                                                <input 
+                                                    id="print_checkbox_{{ $detail->id }}" 
+                                                    name="selected_item[]" 
+                                                    class="custom-control-input checkbox-print-control" 
+                                                    type="checkbox" 
+                                                    value="{{ $detail->id }}"
+                                                    onchange="checkbox_clicked()" 
+                                                >
+                                                <label for="print_checkbox_{{ $detail->id }}" class="custom-control-label"></label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    @endcan
                                     <td>
                                         @can('super_admin')
                                             <div class="form-check">
@@ -518,7 +556,8 @@
 @push('js')
 
 <script type="text/javascript">
-$(document).ready(function(){
+    //!!  next remove document ready kalau tidak ada masalah
+// $(document).ready(function(){
 
     // ## Show Flash Message
     let session = {!! json_encode(session()->all()) !!};
@@ -528,6 +567,7 @@ $(document).ready(function(){
     const size_list = {!! json_encode($size_list) !!};
     const create_url = '{{ route("laying-planning.detail-create") }}';
     const fetch_cutting_table_url = '{{ route("fetch.cutting-table") }}';
+    const unprint_cor_url = '{{ route("laying-planning-detail.unprint-cor") }}';
 
     $.ajaxSetup({
         headers: {
@@ -666,10 +706,11 @@ $(document).ready(function(){
 
         $('#modal_duplicate').modal('show');
     });
-})
+// })
 </script>
 
 <script type="text/javascript">
+
     function reset_form(data = {}) {
         $('#modal_create_form').text(data.title);
         $('#btn_submit').text(data.btn_text);
@@ -768,5 +809,100 @@ $(document).ready(function(){
 
         $('#modal_form').modal('show')
     }
+</script>
+
+<script type="text/javascript">
+
+    // ## Javascript for Checkbox Feature
+
+    const is_all_checked = () => {
+        let all_print_checkbox = document.getElementsByClassName('checkbox-print-control');
+        if(all_print_checkbox.length <= 0) { return false; }
+        for (let item of all_print_checkbox) {
+            if(!item.checked) { return false; }
+        }
+        return true;
+    }
+
+    const is_any_checked = () => {
+        let all_print_checkbox = document.getElementsByClassName('checkbox-print-control');
+        for (let item of all_print_checkbox) {
+            if(item.checked) { return true; }
+        }
+        return false;
+    }
+
+    // ## checkbox listener for always update print_checkbox_all
+    const checkbox_clicked = () => {
+        let checked_status_checkbox_all = is_all_checked() ? true : false;
+        document.getElementById('print_checkbox_all').checked = checked_status_checkbox_all;
+
+        let disabled_status_action_wrapper = is_any_checked() ? false : true;
+        disabled_action_wrapper(disabled_status_action_wrapper);
+    }
+
+    const disabled_action_wrapper = (disabled_status = false) => {
+        let action_wrapper = document.getElementsByClassName('action-wrapper').item(0);
+        let buttons = action_wrapper.querySelectorAll('button');
+        buttons.forEach(function(button) {
+            button.disabled = disabled_status;
+        });
+    }
+
+    const get_selected_item = () => {
+        let selected_element = $('.checkbox-print-control:checked').toArray();
+        let selected_item_value = [];
+
+        selected_element.forEach(element => {
+            selected_item_value.push($(element).val());
+        });
+        return selected_item_value;
+    }
+
+    // ## Checkbox All part
+    $('.checkbox-all-control').on('click', function(e) {
+        let is_checked = $(this).prop('checked');
+        let table = $(this).parents('table');
+        table.find('.checkbox-print-control').prop('checked',is_checked);
+    })
+
+    $('#print_checkbox_all').on('change', function(e) {
+        checkbox_clicked();
+    })
+
+</script>
+
+<script>
+    const unprint_cor = async () => {
+        let selected_item = get_selected_item();
+
+        let params_data = {
+            selected_item: selected_item
+        }
+
+        if(selected_item.length > 0) {
+            let fetch_data = {
+                url: unprint_cor_url,
+                method: "GET",
+                token: token,
+                data: params_data,
+            }
+
+            result = await using_fetch_v2(fetch_data);
+
+            if(result.status == "success"){
+                swal_info({
+                    title : result.message,
+                    reload_option: true,
+                });
+
+            } else {
+                swal_failed({ title: result.message });
+            }
+            
+        } else {
+            swal_failed({ title: 'Please select at least one item' });
+        }
+    };
 </script>
 @endpush('js')

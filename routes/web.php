@@ -218,6 +218,22 @@ Route::group([
 
 
 
+// ## Personal Access Token
+Route::group([
+    'middleware' => [
+        'auth',
+        'can:developer-menu',
+    ],
+    'controller' => App\Http\Controllers\LayingPlanningDetailController::class,
+    'prefix' => 'laying-planning-detail',
+    'as' => 'laying-planning-detail.',
+],function() {
+    Route::get('unprint-cor', 'unprint_cor')->name('unprint-cor');
+});
+
+
+
+
 // ---------------------------------------------------------------------------------
 
 

@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
 
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +31,13 @@ use PDF;
 
 class LayingPlanningsController extends Controller
 {
+    public function __construct()
+    {
+        Gate::define('unprint-cor', function ($user) {
+            return $user->hasPermissionTo('laying-planning-detail.unprint-cor');
+        });
+    }
+
     /**
      * Display a listing of the resource.
      *
