@@ -135,7 +135,7 @@
                     <td colspan="1" class="no-border"> Style No</td>
                     <td colspan="4" class="text-left">: {{ $cor['style'] }} </td>
                     <td colspan="1" class="no-border text-right">Marker Code</td>
-                    <td colspan="1" width="120" class="no-border">: {{ $cor['marker_code'] }} </td>
+                    <td colspan="1" width="120" class="no-border" style="white-space: nowrap; overflow: hidden;">: {{ $cor['marker_code'] }} </td>
                     <td colspan="2" class="no-border text-right"> GL No </td>
                     <td colspan="1" width="70">: {{ $cor['gl_number']}} </td>
                     <td colspan="2" class="no-border"></td>
