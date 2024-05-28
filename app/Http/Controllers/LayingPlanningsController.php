@@ -182,53 +182,54 @@ class LayingPlanningsController extends Controller
 
     public function show($id)
     {
-        $data = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->find($id);
-        $details = LayingPlanningDetail::with(['fabricRequisition'])->where('laying_planning_id', $id)->get();
-        $fabric_requisition = FabricRequisition::with(['layingPlanningDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
-            $query->where('laying_planning_id', $id);
-        })->get();
-        $total_order_qty = LayingPlanning::where('gl_id', $data->gl_id)->sum('order_qty');
-        $data->total_order_qty = $total_order_qty;
+        $laying_planning = LayingPlanning::with(['gl', 'style', 'buyer', 'color', 'fabricType'])->find($id);
+        $details = LayingPlanningDetail::with(['fabricRequisition'])
+            ->where('laying_planning_id', $id)
+            ->get();
+        $fabric_requisition = FabricRequisition::with(['layingPlanningDetail'])
+            ->whereHas('layingPlanningDetail', fn($query) => $query->where('laying_planning_id', $id))
+            ->get();
+        
+        $laying_planning->total_order_qty = LayingPlanning::where('gl_id', $laying_planning->gl_id)->sum('order_qty');
+        $laying_planning->delivery_date = Carbon::createFromFormat('Y-m-d', $laying_planning->delivery_date)->format('d-m-Y');
+        $laying_planning->plan_date = Carbon::createFromFormat('Y-m-d', $laying_planning->plan_date)->format('d-m-Y');
+
         $total_pcs_all_table = 0;
         $total_length_all_table = 0;
-        
-        $delivery_date = Carbon::createFromFormat('Y-m-d', $data->delivery_date)->format('d-m-Y');
-        $data->delivery_date = $delivery_date;
-        $plan_date = Carbon::createFromFormat('Y-m-d', $data->plan_date)->format('d-m-Y');
-        $data->plan_date = $plan_date;
 
-        foreach($details as $key => $value) {
-            $details[$key]->cor_status = $value->cuttingOrderRecord ? 'disabled' : '';
-            // faric requisition disable
-            $details[$key]->fr_status = $value->fabricRequisition ? 'disabled' : '';
-            // cuttingOrderRecord->layingPlanningDetail-layingPlanning
-            $details[$key]->cor_id = $value->cuttingOrderRecord ? $value->cuttingOrderRecord->id : '';
-            $details[$key]->fr_id = $value->fabricRequisition ? $value->fabricRequisition->id : '';
-            $details[$key]->cor_status_print = $value->cuttingOrderRecord ? $value->cuttingOrderRecord->status_print : '';
-            $details[$key]->fr_status_print = $value->fabricRequisition ? $value->fabricRequisition->status_print : '';
-            // $cutting_order_record = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
-            //     $query->where('laying_planning_id', $id);
-            // })->get();
-            // $details[$key]->cutting_order_record = $cutting_order_record;
-            $total_pcs_all_table = $total_pcs_all_table + $value->total_all_size;
-            $total_length_all_table = $total_length_all_table + $value->total_length;
+        foreach ($details as $detail) {
+            $detail->cor_status = $detail->cuttingOrderRecord ? 'disabled' : '';
+            $detail->fr_status = $detail->fabricRequisition ? 'disabled' : '';
+            $detail->cor_id = $detail->cuttingOrderRecord ? $detail->cuttingOrderRecord->id : '';
+            $detail->fr_id = $detail->fabricRequisition ? $detail->fabricRequisition->id : '';
+            $detail->cor_status_print = $detail->cuttingOrderRecord ? $detail->cuttingOrderRecord->status_print : '';
+            $detail->fr_status_print = $detail->fabricRequisition ? $detail->fabricRequisition->status_print : '';
+            $total_pcs_all_table += $detail->total_all_size;
+            $total_length_all_table += $detail->total_length;
         }
 
-        $data->total_pcs_all_table = $total_pcs_all_table;
-        $data->total_length_all_table = $total_length_all_table;
+        $laying_planning->total_pcs_all_table = $total_pcs_all_table;
+        $laying_planning->total_length_all_table = $total_length_all_table;
 
-        $get_size_list = $data->layingPlanningSize()->with('glCombine')->get();
+        $get_size_list = $laying_planning->layingPlanningSize()->with('glCombine')->get();
         $size_list = [];
-        foreach ($get_size_list as $key => $size) {
+
+        foreach ($get_size_list as $size) {
             $size_list[] = $size->size;
-            $gl_combine_name = "";
-            foreach ($size->glCombine as $key => $gl_combine) {
-                $gl_combine_name = $gl_combine_name . $gl_combine->glCombine->name . " ";
-            }
-            $size->size->size = $size->size->size ."". $gl_combine_name;
+            $gl_combine_name = $size->glCombine->pluck('glCombine.name')->implode(' ');
+            $size->size->size .= $gl_combine_name;
         }
-        $styles = DB::table('styles')->where('gl_id',$data->gl_id)->get();
-        return view('page.layingPlanning.detail', compact('data', 'details','size_list','styles'));
+
+        $styles = DB::table('styles')->where('gl_id', $laying_planning->gl_id)->get();
+
+        $viewData = [
+            'data' => $laying_planning,
+            'details' => $details,
+            'size_list' => $size_list,
+            'styles' => $styles
+        ];
+
+        return view('page.layingPlanning.detail', $viewData);
     }
 
     public function dataLayingPlanningDetail($id){
