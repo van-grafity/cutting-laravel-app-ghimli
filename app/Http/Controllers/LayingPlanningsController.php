@@ -223,7 +223,7 @@ class LayingPlanningsController extends Controller
         $styles = DB::table('styles')->where('gl_id', $laying_planning->gl_id)->get();
 
         $viewData = [
-            'data' => $laying_planning,
+            'laying_planning' => $laying_planning,
             'details' => $details,
             'size_list' => $size_list,
             'styles' => $styles
@@ -314,6 +314,7 @@ class LayingPlanningsController extends Controller
         return $pdf->stream('laying-planning-report.pdf');
     }
 
+    // !! mungkin fungsi ini tidak di gunakan. tandai dulu
     public function layingPlanningv2Report($id)
     {
         $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('id', $id)->first();
@@ -335,6 +336,7 @@ class LayingPlanningsController extends Controller
         return $pdf->stream('laying-planning-report.pdf');
     }
 
+    // !! mungkin fungsi ini tidak di gunakan. tandai dulu
     public function cuttingOrderv2Report($id)
     {
         $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('id', $id)->first();

@@ -14,13 +14,13 @@
                                 <thead>
                                     <tr style="font-weight:700; font-size:20px;">
                                         <td>
-                                            @if($data->status_print == 1)
+                                            @if($laying_planning->status_print == 1)
                                                 <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Nota Planning Sudah di Print"></span>
                                             @endif
                                             NO
                                         </td>
                                         <td>:</td>
-                                        <td>{{ $data->serial_number }}</td>
+                                        <td>{{ $laying_planning->serial_number }}</td>
                                     </tr>
                                 </thead>
                             </table>
@@ -33,7 +33,7 @@
                                         Action
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $data->id) }}">Duplicate</a>
+                                        <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $laying_planning->id) }}">Duplicate</a>
                                         @php
                                             $cor_status = '';
                                             foreach($details as $detail)
@@ -49,7 +49,7 @@
                                                 }
                                             }
                                         @endphp
-                                        <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}" {{ $cor_status }}>Edit</a>
+                                        <a class="dropdown-item" href="{{ route('laying-planning.edit', $laying_planning->id) }}" {{ $cor_status }}>Edit</a>
                                     </div>
                                 </div>
                             </div>
@@ -63,19 +63,19 @@
                                     <tr>
                                         <td>GL No.</td>
                                         <td class="pl-3">:</td>
-                                        <td>{{ $data->gl->gl_number }}</td>
+                                        <td>{{ $laying_planning->gl->gl_number }}</td>
                                     </tr>
                                     <tr>
                                         <td>Buyer</td>
                                         <td class="pl-3">:</td>
-                                        <td>{{ $data->gl->buyer->name }}</td>
+                                        <td>{{ $laying_planning->gl->buyer->name }}</td>
                                     </tr>
                                     <tr>
                                         <td>Style</td>
                                         <td class="pl-3">:</td>
                                         <td>
                                             @foreach ($styles as $style)
-                                                @if($style->id == $data->style_id)
+                                                @if($style->id == $laying_planning->style_id)
                                                     {{ $style->style }}
                                                 @endif
                                             @endforeach
@@ -84,17 +84,17 @@
                                     <tr>
                                         <td>Color</td>
                                         <td class="pl-3">:</td>
-                                        <td>{{ $data->color->color }}</td>
+                                        <td>{{ $laying_planning->color->color }}</td>
                                     </tr>
                                     <tr>
                                         <td>Order Qty</td>
                                         <td class="pl-3">:</td>
-                                        <td>{{ $data->order_qty }} Pcs</td>
+                                        <td>{{ $laying_planning->order_qty }} Pcs</td>
                                     </tr>
                                     <tr>
                                         <td>Total Qty</td>
                                         <td class="pl-3">:</td>
-                                        <td>{{ $data->total_order_qty }} Pcs</td>
+                                        <td>{{ $laying_planning->total_order_qty }} Pcs</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -105,24 +105,24 @@
                                     <tr>
                                         <td>Fabric P/O</td>
                                         <td class="pl-3">:</td>
-                                        <td>{{ $data->fabric_po }}</td>
+                                        <td>{{ $laying_planning->fabric_po }}</td>
                                     </tr>
                                     <tr>
                                         <td>Fabric Type</td>
                                         <td class="pl-3">:</td>
-                                        <td>{{ $data->fabricType->name }}</td>
+                                        <td>{{ $laying_planning->fabricType->name }}</td>
                                     </tr>
                                     <tr>
                                         <td>Fabric Consumpition</td>
                                         <td class="pl-3">:</td>
-                                        <td>{{ $data->fabricCons->name }}</td>
+                                        <td>{{ $laying_planning->fabricCons->name }}</td>
                                     </tr>
                                     <tr>
                                         <td>Description</td>
                                         <td class="pl-3">:</td>
                                         <td>
                                             @foreach ($styles as $style)
-                                                @if($style->id == $data->style_id)
+                                                @if($style->id == $laying_planning->style_id)
                                                     {{ $style->description }}
                                                 @endif
                                             @endforeach
@@ -131,12 +131,12 @@
                                     <tr>
                                         <td>Delivery Date</td>
                                         <td class="pl-3">:</td>
-                                        <td>{{ $data->delivery_date }}</td>
+                                        <td>{{ $laying_planning->delivery_date }}</td>
                                     </tr>
                                     <tr>
                                         <td>Plan Date</td>
                                         <td class="pl-3">:</td>
-                                        <td>{{ $data->plan_date }}</td>
+                                        <td>{{ $laying_planning->plan_date }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -159,8 +159,8 @@
                         @endcan
                     </div>
                     <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
-                    <a href="{{ route('cutting-order.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_nota">Print Nota</a>
-                    <a href="{{ route('fabric-requisition.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_fabric">Print Fabric Req</a>
+                    <a href="{{ route('cutting-order.print-multiple', $laying_planning->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_nota">Print Nota</a>
+                    <a href="{{ route('fabric-requisition.print-multiple', $laying_planning->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_fabric">Print Fabric Req</a>
                 </div>
                 @endif
                 <table class="table align-middle table-nowrap table-hover">
@@ -313,8 +313,8 @@
                     <tfoot>
                         <tr>
                             <th class="text-left" colspan="5">Total :</th>
-                            <th class="" colspan="1">{{ $data->total_pcs_all_table }} Pcs </th>
-                            <th class="" colspan="1">{{ $data->total_length_all_table }} Yd </th>
+                            <th class="" colspan="1">{{ $laying_planning->total_pcs_all_table }} Pcs </th>
+                            <th class="" colspan="1">{{ $laying_planning->total_length_all_table }} Yd </th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -345,7 +345,7 @@
             </div>
             <form action="{{ route('laying-planning.detail-create') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="planning_detail_form">
                 @csrf
-                <input type="hidden" name="laying_planning_id" value="{{ $data->id }}">
+                <input type="hidden" name="laying_planning_id" value="{{ $laying_planning->id }}">
                 <div class="modal-body">
                     <div class="card-body">
                         <div class="row">
