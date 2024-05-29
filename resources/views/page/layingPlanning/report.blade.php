@@ -7,7 +7,35 @@
     <title>LAYING PLANNING & CUTTING REPORT</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <style type="text/css">
+        
+        table.table-bordered > thead > tr > th {
+            border: 1px solid black;
+        }
 
+        .table thead th {
+            text-align: center;
+            vertical-align: middle;
+            font-size: 8px;
+            padding-top: 1 !important;
+            padding-bottom: 1 !important;
+            padding-left: 0.3 !important;
+            padding-right: 0.3 !important;
+        }
+
+        .table tbody td {
+            border: 1px solid;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: bold;
+            font-size: 10px;
+            padding-top: 1.5 !important;
+            padding-bottom: 1.5 !important;
+            padding-left: 0.3 !important;
+            padding-right: 0.3 !important;
+            margin-bottom: 0px !important;
+        }
+    </style>
 </head>
 <body>
     <div>
@@ -122,70 +150,33 @@
                 <tr>
                     <td>{{ $detail->table_number }}</td>
                     <td></td>
+                    
                     @foreach ($detail->layingPlanningDetailSize as $item)
-                    @if ($item->qty_per_size == 0)
-                    <td>-</td>
-                    @else
-                    <td>{{ $item->qty_per_size }}</td>
-                    @endif
+                    <td>{{ $item->qty_per_size == 0 ? '-' : $item->qty_per_size }}</td>
                     @endforeach
-                    <td>
-                        <?php
-                        $total_qty_per_size = 0;
-                        foreach ($detail->layingPlanningDetailSize as $item)
-                        {
-                            $total_qty_per_size += $item->qty_per_size;
-                        }
-                        echo $total_qty_per_size;
-                        ?>
-                    </td>
+                    
+                    <td>{{ $detail->layingPlanningDetailSize->sum('qty_per_size') }}</td>
                     <td>{{ $detail->total_length }}</td>
                     <td>{{ $detail->marker_code }}</td>
                     <td>{{ $detail->table_number }}</td>
                     <td>{{ $detail->marker_length }}</td>
                     <td>{{ $detail->marker_yard }}</td>
                     <td>{{ $detail->marker_inch }}</td>
+                    
                     @foreach ($detail->layingPlanningDetailSize as $item)
-                        @if ($item->qty_per_size == 0)
-                            <td>-</td>
-                        @else
-                            <td>{{ $item->ratio_per_size }}</td>
-                        @endif
+                        <td>{{ $item->qty_per_size == 0 ? '-' : $item->ratio_per_size }}</td>
                     @endforeach
+
                     <td>{{ $detail->layer_qty }}</td>
-                    <td>
-                        <?php
-                         $total_cutting_order_record = 0;
-                         $total_size_ratio = 0;
-                         $hasil_cut_qty = 0;
-                         foreach ($cutting_order_records as $record)
-                         {
-                             if ($record->laying_planning_detail_id == $detail->id)
-                             {
-                                 foreach ($record->cuttingOrderRecordDetail as $record_detail)
-                                 {
-                                     $total_cutting_order_record += $record_detail->layer;
-                                 }
-                             }
-                         }
-                        foreach ($detail->layingPlanningDetailSize as $size)
-                        {
-                            $total_size_ratio += $size->ratio_per_size;
-                        }
-                        // echo ($total_cutting_order_record * $total_size_ratio) == 0 ? '-' : $total_cutting_order_record * $total_size_ratio;
-                        $hasil_cut_qty = $total_cutting_order_record * $total_size_ratio;
-                        echo $hasil_cut_qty == 0 ? '-' : $hasil_cut_qty;
-                        ?>
-                    </td>
-                    <td width="5.2%"> {{ $detail->cut_date ? date('d-M', strtotime($detail->cut_date)) : '-' }} </td>
+                    <td>{{ $detail->actual_cut_qty }}</td>
+                    <td width="40"> {{ $detail->cut_date }} </td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <!-- || $loop->iteration == $lp_details->count() -->
-                @if($loop->iteration < $lp_details->count() && $detail->marker_code != $lp_details[$loop->iteration]->marker_code || $loop->iteration == $lp_details->count())
-                <tr>
+                @if($loop->last || ($loop->iteration < $lp_details->count() && $detail->marker_code != $lp_details[$loop->iteration]->marker_code))
+                    <tr>
                         <td></td>
                         <td></td>
                         @foreach ($laying_planning->layingPlanningSize as $item)
@@ -201,17 +192,7 @@
                         @foreach ($laying_planning->layingPlanningSize as $item)
                         <td></td>
                         @endforeach
-                        <td style="font-size: 11.2px;"><b><?php
-                        // $total_layer = 0;
-                        // foreach ($lp_details as $detail)
-                        // {
-                        //     if ($detail->marker_code == $lp_details[$loop->iteration - 1]->marker_code)
-                        //     {
-                        //         $total_layer += $detail->layer_qty;
-                        //     }
-                        // }
-                        // echo $total_layer;
-                        ?></br></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -244,68 +225,24 @@
                     <td></td>
                     <td></td>
                 </tr>
+
+                
                 <tr>
                     <td colspan="2">Total</td>
-                    @foreach ($laying_planning->layingPlanningSize as $item)
-                    <td><?php
-                        $total_per_size = 0;
-                        foreach ($lp_details as $detail)
-                        {
-                            foreach ($detail->layingPlanningDetailSize as $size)
-                            {
-                                if ($size->size_id == $item->size_id)
-                                {
-                                    $total_per_size += $size->qty_per_size;
-                                }
-                            }
-                        }
-                        echo $total_per_size;
-                    ?></td>
+                    @foreach($laying_planning->total_per_size as $qty_per_size)
+                    <td>{{ $qty_per_size }}</td>
                     @endforeach
-                    <td><?php
-                        $total_all_size = 0;
-                        foreach ($lp_details as $detail)
-                        {
-                            foreach ($detail->layingPlanningDetailSize as $size)
-                            {
-                                $total_all_size += $size->qty_per_size;
-                            }
-                        }
-                        echo $total_all_size;
-                    ?></td>
-                    <td><?php
-                        $total_length = 0;
-                        foreach ($lp_details as $detail)
-                        {
-                            $total_length += $detail->total_length;
-                        }
-                        echo $total_length;
-                    ?></td>
+                    <td>{{ $laying_planning->total_all_size }}</td>
+                    <td>{{ $lp_details->sum('total_length') }}</td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    @foreach ($laying_planning->layingPlanningSize as $item)
+                    @foreach ($laying_planning->layingPlanningSize as $size)
                     <td></td>
                     @endforeach
-                    <td style="font-size: 11.2px;">
-                    <?php
-                        $total = 0;
-                        foreach ($lp_details as $detail)
-                        {
-                            try
-                            {
-                                $total += $detail->layer_qty;
-                            }
-                            catch (Exception $e)
-                            {
-                                $total += 0;
-                            }
-                        }
-                        echo $total;
-                    ?>
-                    </td>
+                    <td style="font-size: 11.2px;"> {{ $lp_details->sum('layer_qty') }} </td>
                     <td>{{ $laying_planning->total_cut_qty }}</td>
                     <td></td>
                     <td></td>
@@ -313,56 +250,15 @@
                     <td></td>
                     <td></td>
                 </tr>
+
+
                 <tr>
                     <td colspan="2">( + / - )</td>
-                    @foreach ($laying_planning->layingPlanningSize as $item)
-                    <td><?php
-                        $total_per_size = 0;
-                        foreach ($lp_details as $detail)
-                        {
-                            foreach ($detail->layingPlanningDetailSize as $size)
-                            {
-                                if ($size->size_id == $item->size_id)
-                                {
-                                    $total_per_size += $size->qty_per_size;
-                                }
-                            }
-                        }
-                        echo $total_per_size - $item->quantity;
-                    ?></td>
+                    @foreach($laying_planning->balance_per_size as $balance_per_size)
+                    <td>{{ $balance_per_size }}</td>
                     @endforeach
-                    <td><?php
-                        $total_all_size = 0;
-                        $sisa = 0;
-                        foreach ($lp_details as $detail)
-                        {
-                            foreach ($detail->layingPlanningDetailSize as $size)
-                            {
-                                $total_all_size += $size->qty_per_size;
-                            }
-                        }
-                        foreach ($laying_planning->layingPlanningSize as $item)
-                        {
-                            $sisa += $item->quantity;
-                        }
-                        echo $total_all_size -  $sisa;
-                    ?></td>
-                    <td><?php
-                        $total = 0;
-                        foreach ($laying_planning->layingPlanningSize as $item)
-                        {
-                            $total += $item->quantity;
-                        }
-                        $total_all_size = 0;
-                        foreach ($lp_details as $detail)
-                        {
-                            foreach ($detail->layingPlanningDetailSize as $size)
-                            {
-                                $total_all_size += $size->qty_per_size;
-                            }
-                        }
-                        echo round($total_all_size / $total * 100, 2);
-                    ?>%</td>
+                    <td>{{ $laying_planning->balance_all_size }}</td>
+                    <td>{{ $laying_planning->total_percentage }}</td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -383,45 +279,13 @@
                 </tr>
             </tbody>
         </table>
-        <table width="100%" style="font-size: 10px; font-weight: bold; padding-bottom: 28 !important; margin: 0 !important;">
+        <table width="100%" style="font-size: 10px; font-weight: bold; padding-bottom: 28px; margin: 0;">
             <tr>
                 <td width="10%">Remark</td>
-                @if ($laying_planning->remark == null)
-                <td width="90%">: -</td>
-                @else
-                <td width="90%">: {{ $laying_planning->remark }}</td>
-                @endif
+                <td width="90%">: {{ $laying_planning->remark ?? '-' }}</td>
             </tr>
         </table>
 
-        <table width="100%" style="font-size: 10px; font-weight: bold;" hidden>
-            <tr>
-                <td width="20%">Total Layer Qty base on Marker Code</td>
-                <td width="60%" colspan="7">: <?php
-                    $marker_code = [];
-                    $total_layer = 0;
-                    foreach ($lp_details as $detail)
-                    {
-                        array_push($marker_code, $detail->marker_code);
-                    }
-                    $marker_code = array_unique($marker_code);
-                    $marker_code = array_values($marker_code);
-                    foreach ($marker_code as $code)
-                    {
-                        foreach ($lp_details as $detail)
-                        {
-                            if ($code == $detail->marker_code)
-                            {
-                                $total_layer += $detail->layer_qty;
-                            }
-                        }
-                        echo $code . ' = ' . $total_layer . ' ';
-                        $total_layer = 0;
-                    }
-                ?></td>
-            </tr>
-        </table>
-        
         <table width="100%" style="font-size: 12px; font-family: Times New Roman, Times, serif; font-weight: bold; position: absolute; bottom: 60px;">
             <tr>
                 <td width="50%" style="text-align: center;">
@@ -457,45 +321,3 @@
     </div>
 </body>
 </html>
-
-<style type="text/css">
-    * {
-        font-family: Calibri, san-serif;
-    }
-    
-    /* @page {
-        margin-top: 1cm;
-        margin-left: 0.4cm;
-        margin-right: 0.4cm;
-        margin-bottom: 3.5cm;
-    } */
-    
-    table.table-bordered > thead > tr > th{
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
-        border-left: 1px solid black;
-        border-right: 1px solid black;
-    }
-
-    .table thead th {
-        text-align: center;
-        vertical-align: middle;
-        font-size: 8px;
-        padding-top: 1 !important;
-        padding-bottom: 1 !important;
-        padding-left: 0.3 !important;
-        padding-right: 0.3 !important;
-    }
-    .table tbody td {
-        border: 1px solid;
-        text-align: center;
-        vertical-align: middle;
-        font-weight: bold;
-        font-size: 10px;
-        padding-top: 1.5 !important;
-        padding-bottom: 1.5 !important;
-        padding-left: 0.3 !important;
-        padding-right: 0.3 !important;
-        margin-bottom: 0px !important;
-    }
-</style>

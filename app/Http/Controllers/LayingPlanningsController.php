@@ -288,7 +288,8 @@ class LayingPlanningsController extends Controller
         // ## melakukan penyesuaian cut_date. menggunakan tanggal shift, dari pada menggunakan tanggal asli potongnya dari database. untuk setiap laying planning detail
         foreach ($lp_details as $lp_detail) {
             if (!$lp_detail->cuttingOrderRecord) {
-                $lp_detail->cut_date = null;
+                $lp_detail->cut_date = '-';
+                $lp_detail->actual_cut_qty = '-';
                 continue;
             }
 
@@ -302,13 +303,18 @@ class LayingPlanningsController extends Controller
                     ? $carbon_real_cut_datetime->subDay() 
                     : $carbon_real_cut_datetime;
 
-                $lp_detail->cut_date = $shift_date->format('Y-m-d');
+                $lp_detail->cut_date = $shift_date->format('d-M');
             } else {
-                $lp_detail->cut_date = null;
+                $lp_detail->cut_date = '-';
             }
+
+            // ## Actual Cut Calculation
+            $total_layer_in_cor = $lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail->sum('layer');
+            $total_size_ratio_in_cor = $lp_detail->layingPlanningDetailSize->sum('ratio_per_size');
+            $lp_detail->actual_cut_qty = ($total_layer_in_cor * $total_size_ratio_in_cor) > 0 ? ($total_layer_in_cor * $total_size_ratio_in_cor) : '-';
         }
 
-
+        
         $cutting_order_records = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])
             ->whereHas('layingPlanningDetail.layingPlanning', fn($query) => $query->where('id', $id))
             ->get();
@@ -328,12 +334,12 @@ class LayingPlanningsController extends Controller
         }
 
 
-        // ## Menjumlahkan semua cut_qty dari setiap laying planning detail
+        // ## Menjumlahkan semua cut qty dari setiap laying planning detail
         foreach ($lp_details as $lp_detail) {
             $total_cutting_order_record = $cor_map[$lp_detail->id] ?? 0;
             $total_size_ratio = array_sum(array_column($lp_detail->layingPlanningDetailSize->toArray(), 'ratio_per_size'));
 
-            // ## Hitung hasil cut quantity
+            // ## Hitung total cut quantity
             $hasil_cut_qty = $total_cutting_order_record * $total_size_ratio;
             $total_cut_qty += $hasil_cut_qty;
         }
@@ -342,14 +348,35 @@ class LayingPlanningsController extends Controller
         $laying_planning->lp_size_count = $laying_planning->layingPlanningSize->count();
         $laying_planning->lp_size_sum_quantity = $laying_planning->layingPlanningSize->sum('quantity');
 
+
+        // ## Start Calculate the Total per Size of 'Laying Planning'
+        $sum_per_size = $lp_details->flatMap(function ($lp_detail) {
+            return $lp_detail->layingPlanningDetailSize;
+        })->groupBy('size_id')->map(function ($grouped_size) {
+            return $grouped_size->sum('qty_per_size');
+        });
+
+        $total_per_size = [];
+        $balance_per_size = [];
+        foreach ($laying_planning->layingPlanningSize as $lp_size) {
+            $total_per_size[] = $sum_per_size[$lp_size->size_id] ?? 0;
+            $balance_per_size[] = $sum_per_size[$lp_size->size_id] ? $sum_per_size[$lp_size->size_id] - $lp_size->quantity : '--';
+        }
+        $laying_planning->total_per_size = $total_per_size;
+        $laying_planning->total_all_size = array_sum($total_per_size);
+        $laying_planning->balance_per_size = $balance_per_size;
+        $laying_planning->balance_all_size = array_sum($balance_per_size);
+        $laying_planning->total_percentage = round(($laying_planning->total_all_size / $laying_planning->lp_size_sum_quantity) * 100, 2) .' %';
+        // ## End of Calculate the Total of 'Laying Planning'
+
+
         $data = [
             'laying_planning' => $laying_planning,
             'lp_details' => $lp_details,
             'cutting_order_records' => $cutting_order_records
         ];
 
-        $pdf = PDF::loadView('page.layingPlanning.report', $data)
-            ->setPaper('a4', 'landscape');
+        $pdf = PDF::loadView('page.layingPlanning.report', $data)->setPaper('a4', 'landscape');
 
         if (!Auth::user()->hasRole('super_admin') && !Auth::user()->hasRole('merchandiser')) {
             $update_laying_planning = LayingPlanning::find($id);
