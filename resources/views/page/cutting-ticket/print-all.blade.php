@@ -48,7 +48,7 @@
             <tbody>
                 <tr>
                     <td rowspan="4" style="text-align: center; font-size: 12px;">
-                    <img src="data:image/png;base64, {!! base64_encode(QrCode::size(120)->generate($cutting_ticket->serial_number)) !!} ">
+                        <img src="data:image/png;base64, {!! base64_encode(QrCode::size(120)->generate($cutting_ticket->serial_number)) !!} ">
                     </td>
                     <td width="14px"></td>
                     <td width="14%" style="text-align: left; font-size: 12px;">Ticket No. </td>
@@ -59,7 +59,7 @@
                     <td></td>
                     <td width="14%" style="text-align: left; font-size: 12px;">Buyer </td>
                     <td style="padding-left: 8px; padding-right: 8px; font-size: 12px;">: </td>
-                    <td style="text-align: left; font-size: 12px;">{{ $cutting_ticket->buyer }} </td>
+                    <td style="text-align: left; font-size: 12px;">{{ Str::limit($cutting_ticket->buyer, 15) }} </td>
                 </tr>
                 <tr>
                     <td></td>
