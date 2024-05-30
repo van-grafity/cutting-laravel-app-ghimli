@@ -360,8 +360,8 @@ class LayingPlanningsController extends Controller
         $balance_per_size = [];
         foreach ($laying_planning->layingPlanningSize as $lp_size) {
             $total_per_size[] = $sum_per_size[$lp_size->size_id] ?? 0;
-            $sum_per_size = isset($sum_per_size[$lp_size->size_id]) ? $sum_per_size[$lp_size->size_id] : 0;
-            $balance_per_size[] = $sum_per_size - $lp_size->quantity;
+            $sum_this_size = isset($sum_per_size[$lp_size->size_id]) ? $sum_per_size[$lp_size->size_id] : 0;
+            $balance_per_size[] = $sum_this_size - $lp_size->quantity;
         }
         
         $laying_planning->total_per_size = $total_per_size;
