@@ -19,8 +19,8 @@
                     </div>
                     <table class="table table-bordered table-hover" id="laying_planning_table">
                         <thead class="">
-                            <tr>
-                                <th scope="col" width="5%">No. </th>
+                            <tr class="text-center">
+                                <th scope="col" width="10px">No. </th>
                                 <th scope="col" width="12%">Serial Number</th>
                                 <th scope="col">Style</th>
                                 <th scope="col">Buyer</th>
@@ -75,14 +75,15 @@
         $('#laying_planning_table').DataTable({
             processing: true,
             serverSide: true,
+            order: [],
             ajax: "{{ url('/laying-planning-data') }}",
             columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'serial_number', name: 'serial_number'},
-                {data: 'style', name: 'style'},
-                {data: 'buyer', name: 'buyer'},
-                {data: 'color', name: 'color'},
-                {data: 'fabric_type', name: 'fabric_type'},
+                {data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false},
+                {data: 'serial_number', name: 'laying_plannings.serial_number'},
+                {data: 'style', name: 'styles.style'},
+                {data: 'buyer', name: 'buyers.name'},
+                {data: 'color', name: 'colors.color'},
+                {data: 'fabric_type', name: 'fabric_types.description'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
             lengthChange: true,

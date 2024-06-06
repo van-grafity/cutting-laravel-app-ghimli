@@ -49,32 +49,49 @@ class LayingPlanningsController extends Controller
     }
 
     public function dataLayingPlanning (){
+        
         $query = DB::table('laying_plannings')
             ->join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
             ->join('styles', 'laying_plannings.style_id', '=', 'styles.id')
             ->join('colors', 'laying_plannings.color_id', '=', 'colors.id')
             ->join('buyers', 'laying_plannings.buyer_id', '=', 'buyers.id')
             ->join('fabric_types', 'laying_plannings.fabric_type_id', '=', 'fabric_types.id')
-            ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
-            ->select('laying_plannings.*', 'gls.gl_number', 'styles.style', 'colors.color', 'fabric_types.description as fabric_type', 'buyers.name as buyer', 'fabric_cons.description as fabric_cons')->get();
-            return Datatables::of($query)
+            ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id');
+
+        // ## kalau tidak ada order dari frontend datatable. maka pakai order berdasarkan dibuatnya laying planning dari yang terakhir
+        if(!request()->input('order')) {
+            $query->orderBy('laying_plannings.created_at','DESC');
+        }
+        
+        $query = $query->select(
+            'laying_plannings.*', 
+            'gls.gl_number', 
+            'styles.style', 
+            'colors.color', 
+            'fabric_types.description as fabric_type', 
+            'buyers.name as buyer', 
+            'fabric_cons.description as fabric_cons'
+        );
+            
+        return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
-            ->addColumn('gl_number', function ($data){
-                return $data->gl_number;
-            })
-            ->addColumn('style', function ($data){
-                return $data->style;
-            })
-            ->addColumn('buyer', function ($data){
-                return $data->buyer;
-            })
-            ->addColumn('color', function ($data){
-                return $data->color;
-            })
-            ->addColumn('fabric_type', function ($data){
-                return $data->fabric_type;
-            })
+            // !! ini di hapus karena nama kolom sudah sama dengan nama kolom yang di select. jadi harusnya sama aja
+            // ->addColumn('gl_number', function ($data){
+            //     return $data->gl_number;
+            // })
+            // ->addColumn('style', function ($data){
+            //     return $data->style;
+            // })
+            // ->addColumn('buyer', function ($data){
+            //     return $data->buyer;
+            // })
+            // ->addColumn('color', function ($data){
+            //     return $data->color;
+            // })
+            // ->addColumn('fabric_type', function ($data){
+            //     return $data->fabric_type;
+            // })
             ->addColumn('action', function($data){
 
                 $action = '';
@@ -89,7 +106,7 @@ class LayingPlanningsController extends Controller
                 }
                 return $action;
             })
-            ->make(true);
+            ->toJson();
     }
 
     public function layingCreate()
