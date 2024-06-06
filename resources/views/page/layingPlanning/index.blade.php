@@ -26,7 +26,7 @@
                                 <th scope="col">Buyer</th>
                                 <th scope="col">Color</th>
                                 <th scope="col">Fabric Type</th>
-                                <th scope="col">Action</th>
+                                <th scope="col" width="280px">Action</th>
                             </tr>
                         </thead>
                     </table>

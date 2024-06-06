@@ -88,3 +88,13 @@
     /* ## Menonaktifkan event mouse selama loading */
     pointer-events: none; 
 }
+
+.dropdown-item:focus, .dropdown-item:hover {
+    color: #16181b;
+    text-decoration: none;
+    background-color: #e9ecef;
+}
+
+.dropdown-divider {
+    border-top: 1px solid #cecece;
+}

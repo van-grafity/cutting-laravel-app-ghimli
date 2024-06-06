@@ -96,14 +96,25 @@ class LayingPlanningsController extends Controller
 
                 $action = '';
                 if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter')){
-                    $action = '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm"">Edit</a>
-                    <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="delete_layingPlanning('.$data->id.')">Delete</a>
-                    <a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1">Detail</a>
-                    <a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Report</a>';
+                    $action .= '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm mt-1 mr-1">Edit</a>';
+                    $action .= '<a href="javascript:void(0);" class="btn btn-danger btn-sm mt-1 mr-1" onclick="delete_layingPlanning('.$data->id.')">Delete</a>';
+                    $action .= '<a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1 mr-1">Detail</a>';
+                    $action .= '<a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1 mr-1">Report</a>';
                 } else {
-                    $action = '<a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1">Detail</a>
-                    <a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1">Report</a>';
+                    $action .= '<a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1 mr-1">Detail</a>';
+                    $action .= '<a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1 mr-1">Report</a>';
                 }
+                $action .= '<a type="button" class="btn btn-default mt-1 mr-1" data-toggle="dropdown" aria-expanded="false" style="height:2rem">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" style="">
+                                <a class="dropdown-item" href="'.route('laying-planning.report',$data->id).'" target="_blank">Report</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="'.route('laying-planning-report.marker-requirement',$data->id).'" target="_blank">Marker Requirement</a>
+                            </div>
+                ';
+
+                
                 return $action;
             })
             ->toJson();

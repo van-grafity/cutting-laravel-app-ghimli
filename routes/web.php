@@ -231,6 +231,18 @@ Route::group([
 });
 
 
+Route::group([
+    'middleware' => [
+        'auth',
+    ],
+    'controller' => App\Http\Controllers\LayingPlanningReportsController::class,
+    'prefix' => 'laying-planning-report',
+    'as' => 'laying-planning-report.',
+],function() {
+    Route::get('{laying_planning_id}/marker-requirement', 'markerRequirement')->name('marker-requirement')->middleware('can:laying-planning-report.marker-requirement');
+});
+
+
 
 
 // ---------------------------------------------------------------------------------
