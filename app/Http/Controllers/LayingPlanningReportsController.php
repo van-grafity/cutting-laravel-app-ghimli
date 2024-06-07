@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\LayingPlanning;
 use App\Models\LayingPlanningDetail;
 
+use Carbon\Carbon;
 use PDF;
-
 
 class LayingPlanningReportsController extends Controller
 {
@@ -25,27 +25,30 @@ class LayingPlanningReportsController extends Controller
             ];
         });
 
-        // dd($layingPlanningDetail);
-        // dd($filteredColumn);
         $uniqueMarker = $filteredColumn->groupBy('marker_code')->map(function ($grouped_by_marker_code) {
             $uniqueMarkerCode = $grouped_by_marker_code->first();
             $uniqueMarkerCode['marker_qty'] = $grouped_by_marker_code->count();
             $uniqueMarkerCode['total_length'] = $grouped_by_marker_code->sum('marker_length');
 
-            return $uniqueMarkerCode;
+            return (object) $uniqueMarkerCode;
         })->values();
-        dd($uniqueMarker);
 
-        // return $filteredColumn;
+        $totalAllMarker = (object) [
+            'total_all_qty' => $uniqueMarker->sum('marker_qty'),
+            'total_all_length' => $uniqueMarker->sum('total_length'),
+        ];
         
-        
-        
+        $filename = 'Marker Requirement Report #' . $layingPlanning->gl->gl_number .' ( ' . $layingPlanning->color->color .' )';
         $data = [
             'layingPlanning' => $layingPlanning,
+            'uniqueMarker' => $uniqueMarker,
+            'totalAllMarker' => $totalAllMarker,
+            'printedDate' => Carbon::now()->format('d F Y'),
+            'filename' => $filename,
         ];
 
         $pdf = PDF::loadView('page.laying-planning-report.marker-requirement', $data)->setPaper('a4', 'landscape');
-        return $pdf->stream('test.pdf');
+        return $pdf->stream($filename .'.pdf');
     }
 
     private function getSizeRatio(LayingPlanningDetail $layingPlanningDetail)

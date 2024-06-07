@@ -286,7 +286,7 @@
             </tr>
         </table>
 
-        <table width="100%" style="font-size: 12px; font-family: Times New Roman, Times, serif; font-weight: bold; position: absolute; bottom: 60px;">
+        <table width="100%" style="font-size: 12px; font-weight: bold; position: absolute; bottom: 60px;">
             <tr>
                 <td width="50%" style="text-align: center;">
                     <p>Prepared by:</p>
