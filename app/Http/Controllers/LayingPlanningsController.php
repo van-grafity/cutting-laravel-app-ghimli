@@ -104,17 +104,20 @@ class LayingPlanningsController extends Controller
                     $action .= '<a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1 mr-1">Detail</a>';
                     $action .= '<a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1 mr-1">Report</a>';
                 }
+                
                 $action .= '<a type="button" class="btn btn-default mt-1 mr-1" data-toggle="dropdown" aria-expanded="false" style="height:2rem">
                                 <i class="fas fa-ellipsis-v"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" style="">
-                                <a class="dropdown-item" href="'.route('laying-planning.report',$data->id).'" target="_blank">Report</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="'.route('laying-planning-report.marker-requirement',$data->id).'" target="_blank">Marker Requirement</a>
-                            </div>
-                ';
+                            </a>';
 
-                
+                $action .= '<div class="dropdown-menu dropdown-menu-right">';
+                $action .= '<a class="dropdown-item" href="' . route('laying-planning.report', $data->id) . '" target="_blank">Report</a>';
+
+                if (auth()->user()->can('laying-planning-report.marker-requirement')) {
+                    $action .= '<div class="dropdown-divider"></div>';
+                    $action .= '<a class="dropdown-item" href="' . route('laying-planning-report.marker-requirement', $data->id) . '" target="_blank">Marker Requirement</a>';
+                }
+
+                $action .= '</div>';
                 return $action;
             })
             ->toJson();
