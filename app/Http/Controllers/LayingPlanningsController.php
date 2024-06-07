@@ -96,8 +96,9 @@ class LayingPlanningsController extends Controller
 
                 $action = '';
                 if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter')){
-                    $action .= '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm mt-1 mr-1">Edit</a>';
-                    $action .= '<a href="javascript:void(0);" class="btn btn-danger btn-sm mt-1 mr-1" onclick="delete_layingPlanning('.$data->id.')">Delete</a>';
+                    // !! next hapus ini, kalau udah stabil. tombol edit di pindahkan ke more option soalnya
+                    // $action .= '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm mt-1 mr-1">Edit</a>';
+                    // $action .= '<a href="javascript:void(0);" class="btn btn-danger btn-sm mt-1 mr-1" onclick="delete_layingPlanning('.$data->id.')">Delete</a>';
                     $action .= '<a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1 mr-1">Detail</a>';
                     $action .= '<a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1 mr-1">Report</a>';
                 } else {
@@ -105,13 +106,19 @@ class LayingPlanningsController extends Controller
                     $action .= '<a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1 mr-1">Report</a>';
                 }
                 
-                $action .= '<a type="button" class="btn btn-default mt-1 mr-1" data-toggle="dropdown" aria-expanded="false" style="height:2rem">
+                $action .= '<a type="button" class="btn btn-default mt-1" data-toggle="dropdown" aria-expanded="false" style="height:2rem">
                                 <i class="fas fa-ellipsis-v"></i>
                             </a>';
 
                 $action .= '<div class="dropdown-menu dropdown-menu-right">';
-                $action .= '<a class="dropdown-item" href="' . route('laying-planning.report', $data->id) . '" target="_blank">Report</a>';
+                $action .= '<a class="dropdown-item" href="' . route('laying-planning.report', $data->id) . '" target="_blank">Print Report</a>';
 
+                if (auth()->user()->can('laying-planning.manage')) {
+                    $action .= '<div class="dropdown-divider"></div>';
+                    $action .= '<a class="dropdown-item" href="'.route('laying-planning.edit',$data->id).'" >Edit</a>';
+                    $action .= '<div class="dropdown-divider"></div>';
+                    $action .= '<a class="dropdown-item" href="javascript:void(0);" onclick="delete_layingPlanning('.$data->id.')">Delete</a>';
+                }
                 if (auth()->user()->can('laying-planning-report.marker-requirement')) {
                     $action .= '<div class="dropdown-divider"></div>';
                     $action .= '<a class="dropdown-item" href="' . route('laying-planning-report.marker-requirement', $data->id) . '" target="_blank">Marker Requirement</a>';

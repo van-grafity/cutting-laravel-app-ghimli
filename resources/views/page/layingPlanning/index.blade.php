@@ -21,12 +21,12 @@
                         <thead class="">
                             <tr class="text-center">
                                 <th scope="col" width="10px">No. </th>
-                                <th scope="col" width="12%">Serial Number</th>
+                                <th scope="col" width="20%">Serial Number</th>
                                 <th scope="col">Style</th>
                                 <th scope="col">Buyer</th>
                                 <th scope="col">Color</th>
                                 <th scope="col">Fabric Type</th>
-                                <th scope="col" width="280px">Action</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                     </table>
@@ -84,12 +84,19 @@
                 {data: 'buyer', name: 'buyers.name'},
                 {data: 'color', name: 'colors.color'},
                 {data: 'fabric_type', name: 'fabric_types.description'},
-                {data: 'action', name: 'action', orderable: false, searchable: false},
+                {data: 'action', name: 'action', className: 'text-center', orderable: false, searchable: false},
             ],
             lengthChange: true,
             searching: true,
             autoWidth: false,
             responsive: true,
+            createdRow: function (row, data, dataIndex) {
+                // ## Apply vertical align style to cells
+                $(row).find('td').css('vertical-align', 'middle');
+                $(row).find('td:last').css({
+                    'white-space':'nowrap',
+                });
+            }
         });
     });
 </script>
