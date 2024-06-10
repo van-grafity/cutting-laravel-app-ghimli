@@ -36,6 +36,9 @@ class LayingPlanningsController extends Controller
         Gate::define('unprint-cor', function ($user) {
             return $user->hasPermissionTo('laying-planning-detail.unprint-cor');
         });
+        Gate::define('unprint-fbr', function ($user) {
+            return $user->hasPermissionTo('laying-planning-detail.unprint-fbr');
+        });
     }
 
     /**

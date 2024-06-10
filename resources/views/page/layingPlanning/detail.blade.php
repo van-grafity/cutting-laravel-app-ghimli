@@ -153,8 +153,13 @@
                 <div class="d-flex justify-content-end mb-1">
                     <div class="action-wrapper mr-auto">
                         @can('unprint-cor')
-                            <button class="btn btn-primary" disabled="disabled" onclick="unprint_cor()">
+                            <button class="btn btn-primary btn-sm" disabled="disabled" onclick="unprint_cor()">
                                 <i class="fas fa-print"></i> Undo Print COR
+                            </button>
+                        @endcan
+                        @can('unprint-fbr')
+                            <button class="btn bg-navy btn-sm" disabled="disabled" onclick="unprint_fbr()">
+                                <i class="fas fa-print"></i> Undo Print FBR
                             </button>
                         @endcan
                     </div>
@@ -166,20 +171,21 @@
                 <table class="table align-middle table-nowrap table-hover">
                     <thead class="table-light">
                         <tr>
-                            @can('unprint-cor')
-                            <th scopt="col">
-                                <div class="form-group mb-0">
-                                    <div class="custom-control custom-checkbox">
-                                        <input 
-                                            id="print_checkbox_all" 
-                                            class="custom-control-input checkbox-all-control" 
-                                            type="checkbox"
-                                        >
-                                        <label for="print_checkbox_all" class="custom-control-label"></label>
+                            @if(auth()->user()->can('unprint-cor') || auth()->user()->can('unprint-fbr'))
+                                <th scope="col">
+                                    <div class="form-group mb-0">
+                                        <div class="custom-control custom-checkbox">
+                                            <input 
+                                                id="print_checkbox_all" 
+                                                class="custom-control-input checkbox-all-control" 
+                                                type="checkbox"
+                                            >
+                                            <label for="print_checkbox_all" class="custom-control-label"></label>
+                                        </div>
                                     </div>
-                                </div>
-                            </th>
-                            @endcan
+                                </th>
+                            @endif
+
                             <th scope="col">COR</th>
                             <th scope="col">FBR</th>
                             <th scope="col">Table No</th>
@@ -194,7 +200,7 @@
                     <tbody>
                         @foreach ($details as $detail)
                             <tr>
-                                @can('unprint-cor')
+                                @if(auth()->user()->can('unprint-cor') || auth()->user()->can('unprint-fbr'))
                                 <td>
                                     <div class="form-group mb-0">
                                         <div class="custom-control custom-checkbox">
@@ -210,7 +216,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                @endcan
+                                @endif
                                 <td>
                                     @can('super_admin')
                                         <div class="form-check">
@@ -565,19 +571,13 @@
     const create_url = '{{ route("laying-planning.detail-create") }}';
     const fetch_cutting_table_url = '{{ route("fetch.cutting-table") }}';
     const unprint_cor_url = '{{ route("laying-planning-detail.unprint-cor") }}';
+    const unprint_fbr_url = '{{ route("laying-planning-detail.unprint-fbr") }}';
 
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
-    // $('#duplicate_qty').on('keyup', function(e) {
-    //     let duplicate_qty = $(this).val();
-    //     if(duplicate_qty > 8){
-    //         $(this).val(8);
-    //     }
-    // });
 
     $('#duplicate_qty').tooltip({
         title: "Duplikat data maximal 15",
@@ -880,6 +880,39 @@
         if(selected_item.length > 0) {
             let fetch_data = {
                 url: unprint_cor_url,
+                method: "GET",
+                token: token,
+                data: params_data,
+            }
+
+            result = await using_fetch_v2(fetch_data);
+
+            if(result.status == "success"){
+                swal_info({
+                    title : result.message,
+                    reload_option: true,
+                });
+
+            } else {
+                swal_failed({ title: result.message });
+            }
+            
+        } else {
+            swal_failed({ title: 'Please select at least one item' });
+        }
+    };
+
+
+    const unprint_fbr = async () => {
+        let selected_item = get_selected_item();
+
+        let params_data = {
+            selected_item: selected_item
+        }
+
+        if(selected_item.length > 0) {
+            let fetch_data = {
+                url: unprint_fbr_url,
                 method: "GET",
                 token: token,
                 data: params_data,

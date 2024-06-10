@@ -228,6 +228,7 @@ Route::group([
     'as' => 'laying-planning-detail.',
 ],function() {
     Route::get('unprint-cor', 'unprint_cor')->name('unprint-cor')->middleware('can:laying-planning-detail.unprint-cor');
+    Route::get('unprint-fbr', 'unprint_fbr')->name('unprint-fbr')->middleware('can:laying-planning-detail.unprint-fbr');
 });
 
 
