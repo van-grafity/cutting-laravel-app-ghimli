@@ -490,10 +490,5 @@
         }
     });
 
-    // ## bagian ini bertujuan agar saat select2 di open, langsung mengarah ke search box focusnya. bisa langsung ketik di keyboard searching nya. tidak perlu diklik menggunakan mouse dulu
-    $('.select2').on('select2:open', function (e) {
-        document.querySelector('.select2-search__field').focus();
-    });
-
 </script>
 @stop

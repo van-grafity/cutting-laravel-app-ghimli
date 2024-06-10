@@ -158,7 +158,7 @@ class RoleController extends Controller
         $permission_by_categories = [];
 
         foreach ($permission_categories as $key => $category) {
-            $permissions = Permission::where('permission_category_id',$category->id)->get();
+            $permissions = Permission::where('permission_category_id',$category->id)->orderBy('name','ASC')->get();
             
             if($permissions){
                 $permission_checked_counter = 0;
