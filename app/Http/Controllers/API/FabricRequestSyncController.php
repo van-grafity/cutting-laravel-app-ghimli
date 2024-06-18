@@ -67,6 +67,8 @@ class FabricRequestSyncController extends Controller
                 ->join('gls','gls.id','=','laying_plannings.gl_id')
                 ->join('colors','colors.id','=','laying_plannings.color_id')
                 ->join('styles','styles.id','=','laying_plannings.style_id')
+                ->join('users','users.id','=','fabric_requisitions.requested_by')
+                ->whereNotNull('requested_at')
                 ->join('fabric_types','fabric_types.id','=','laying_plannings.fabric_type_id')
                 ->where(function($query) use ($gl, $fabric_request, $start_date, $end_date) {
                     if($gl){
@@ -78,11 +80,11 @@ class FabricRequestSyncController extends Controller
                     }
 
                     if($start_date){
-                        $query->where('fabric_requisitions.created_at', '>=', $start_date);
+                        $query->where('fabric_requisitions.requested_at', '>=', $start_date);
                     }
 
                     if($end_date){
-                        $query->where('fabric_requisitions.created_at', '<=', $end_date);
+                        $query->where('fabric_requisitions.requested_at', '<=', $end_date);
                     }
                 })
                 ->select(
@@ -92,6 +94,8 @@ class FabricRequestSyncController extends Controller
                     'fabric_requisitions.remark as fbr_remark',
                     'fabric_requisitions.created_at as fbr_created_at',
                     'fabric_requisitions.updated_at as fbr_updated_at',
+                    'fabric_requisitions.requested_at as fbr_requested_at',
+                    'users.name as fbr_requested_by',
                     'gls.gl_number',
                     'colors.color',
                     'styles.style',

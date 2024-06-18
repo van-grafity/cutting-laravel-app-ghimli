@@ -337,7 +337,7 @@ class CuttingOrdersController extends Controller
         // $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.cutting-order.print-multiple', compact('data'))->setPaper('a4', 'landscape');
 
-        if(!Auth::user()->hasRole('super_admin') || !Auth::user()->hasRole('merchandiser')){
+        if(!(auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('merchandiser'))){
             foreach($laying_planning_details as $laying_planning_detail){
                 $cutting_order = CuttingOrderRecord::where('laying_planning_detail_id', $laying_planning_detail->id)->first();
                 $cutting_order->status_print = true;

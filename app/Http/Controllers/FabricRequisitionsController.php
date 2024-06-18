@@ -215,8 +215,12 @@ class FabricRequisitionsController extends Controller
         $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
 
-        $fabric_requisition->status_print = 1;
-        $fabric_requisition->save();
+        if(!(auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('merchandiser'))){
+            $fabric_requisition->status_print = 1;
+            $fabric_requisition->requested_at = Carbon::now();
+            $fabric_requisition->requested_by = auth()->user()->id;
+            $fabric_requisition->save();
+        }
 
         return $pdf->stream($filename);
     }
@@ -248,10 +252,14 @@ class FabricRequisitionsController extends Controller
         $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.fabric-requisition.print-multiple', compact('data'))->setPaper($customPaper, 'portrait');
 
-        foreach($laying_planning_laying_planning_detail_ids as $laying_planning_laying_planning_detail_id){
-            $fabric_requisition = FabricRequisition::where('laying_planning_detail_id', $laying_planning_laying_planning_detail_id)->first();
-            $fabric_requisition->status_print = 1;
-            $fabric_requisition->save();
+        if(!(auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('merchandiser'))){
+            foreach($laying_planning_laying_planning_detail_ids as $laying_planning_laying_planning_detail_id){
+                $fabric_requisition = FabricRequisition::where('laying_planning_detail_id', $laying_planning_laying_planning_detail_id)->first();
+                $fabric_requisition->status_print = 1;
+                $fabric_requisition->requested_at = Carbon::now();
+                $fabric_requisition->requested_by = auth()->user()->id;
+                $fabric_requisition->save();
+            }
         }
         
         return $pdf->stream('fabric-requisition.pdf');
