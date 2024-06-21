@@ -437,19 +437,19 @@ return [
         [
             'text' => 'Laying Planning',
             'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
-            'can'  => 'clerk',
+            'can'  => 'clerk | laying-planning.access',
             'submenu' => [
                 [
                     'classes'   => 'ml-3',
                     'text' => 'Create Laying Planning',
                     'url' => '/laying-planning-create',
-                    'can' => 'editor'
+                    'can' => 'editor | laying-planning.manage'
                 ],
                 [
                     'classes'   => 'ml-3',
                     'text' => 'Laying Planning List',
                     'url' => '/laying-planning',
-                    'can' => 'viewer'
+                    'can' => 'viewer | laying-planning.access',
                 ],
             ],
         ],
@@ -574,13 +574,14 @@ return [
     */
 
     'filters' => [
-        JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,
+        // JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\HrefFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\SearchFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\ActiveFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\ClassesFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
+        App\Filters\AnyPermissionFilter::class, 
     ],
 
     /*

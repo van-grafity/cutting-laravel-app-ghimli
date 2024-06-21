@@ -319,7 +319,7 @@ Route::group(['middleware' => ['auth','can:clerk-cutting']], function () {
     Route::resource('remark', RemarksController::class);
 });
 
-Route::group(['middleware' => ['auth','can:clerk']], function () {
+Route::group(['middleware' => ['auth','hasAnyPermission:clerk,laying-planning.access']], function () {
     Route::resource('laying-planning',LayingPlanningsController::class);
     Route::get('/laying-planning-create', [LayingPlanningsController::class, 'layingCreate']);
     Route::get('/laying-planning-qrcode/{id}', [LayingPlanningsController::class, 'layingQrcode']);
