@@ -32,24 +32,12 @@
                                     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Action
                                     </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $laying_planning->id) }}">Duplicate</a>
-                                        @php
-                                            $cor_status = '';
-                                            foreach($details as $detail)
-                                            {
-                                                if($detail->cuttingOrderRecord != null){
-                                                    if($detail->cuttingOrderRecord->status_print == 1){
-                                                        if(Auth::user()->can('admin-only')){
-                                                            $cor_status = '';
-                                                        } else {
-                                                            $cor_status = 'hidden';
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        @endphp
-                                        <a class="dropdown-item" href="{{ route('laying-planning.edit', $laying_planning->id) }}" {{ $cor_status }}>Edit</a>
+                                        
+                                        @if($is_can_edit)
+                                        <a class="dropdown-item" href="{{ route('laying-planning.edit', $laying_planning->id) }}">Edit</a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -149,7 +137,7 @@
                 <div class="content-title text-center">
                     <h3>Cutting Table List</h3>
                 </div>
-                @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
+                @canany(['clerk','cutter'])
                 <div class="d-flex justify-content-end mb-1">
                     <div class="action-wrapper mr-auto">
                         @can('unprint-cor')
@@ -167,11 +155,11 @@
                     <a href="{{ route('cutting-order.print-multiple', $laying_planning->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_nota">Print Nota</a>
                     <a href="{{ route('fabric-requisition.print-multiple', $laying_planning->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_fabric">Print Fabric Req</a>
                 </div>
-                @endif
+                @endcan
                 <table class="table align-middle table-nowrap table-hover">
                     <thead class="table-light">
-                        <tr>
-                            @if(auth()->user()->can('unprint-cor') || auth()->user()->can('unprint-fbr'))
+                        <tr class="text-center">
+                            @canany(['unprint-cor','unprint-fbr'])
                                 <th scope="col">
                                     <div class="form-group mb-0">
                                         <div class="custom-control custom-checkbox">
@@ -184,10 +172,11 @@
                                         </div>
                                     </div>
                                 </th>
-                            @endif
-
-                            <th scope="col">COR</th>
-                            <th scope="col">FBR</th>
+                            @endcan
+                            @canany(['laying-planning.manage','clerk'])
+                                <th scope="col">COR</th>
+                                <th scope="col">FBR</th>
+                            @endcan
                             <th scope="col">Table No</th>
                             <th scope="col">Marker Code</th>
                             <th scope="col">Marker Length</th>
@@ -199,8 +188,8 @@
                     </thead>
                     <tbody>
                         @foreach ($details as $detail)
-                            <tr>
-                                @if(auth()->user()->can('unprint-cor') || auth()->user()->can('unprint-fbr'))
+                            <tr class="text-center">
+                                @canany(['unprint-cor','unprint-fbr'])
                                 <td>
                                     <div class="form-group mb-0">
                                         <div class="custom-control custom-checkbox">
@@ -216,31 +205,29 @@
                                         </div>
                                     </div>
                                 </td>
-                                @endif
+                                @endcan
+                                @canany(['laying-planning.manage','clerk'])
                                 <td>
-                                    @can('super_admin')
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
-                                        </div>
-                                    @endcan
-                                        @if($detail->cor_status_print == 0)
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
+                                    @if($detail->cor_status_print == 0 || Auth::user()->can('super_admin'))
+                                        <div class="form-group mb-4">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
+                                            </div>
                                         </div>
                                     @endif
                                 </td>
-                                
+                                @endcan
+                                @canany(['laying-planning.manage','clerk'])
                                 <td>
-                                    @can('super_admin')
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="fbr_ids[]" value="{{ $detail->id }}">
-                                        </div>
-                                    @endcan
-                                    @if($detail->fr_status_print == 0)
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="fbr_ids[]" value="{{ $detail->id }}">
+                                    @if($detail->fr_status_print == 0 || Auth::user()->can('super_admin'))
+                                        <div class="form-group mb-4">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="fbr_ids[]" value="{{ $detail->id }}">
+                                            </div>
                                         </div>
                                     @endif
+                                </td>
+                                @endcan
                                 <td>
                                     @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter') || Auth::user()->hasRole('pmr'))
                                     <div class="dropdown">
@@ -276,6 +263,7 @@
                                         @endif
                                     @else
                                         @if($detail->cuttingOrderRecord->status_print == 1)
+                                            <!-- // !! nanti hapus -->
                                             <!-- <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
                                             <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
                                             <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}">Create COR</a>
@@ -317,11 +305,16 @@
                         @endforeach
                     </tbody>
                     <tfoot>
-                        <tr>
-                            <th class="text-left" colspan="5">Total :</th>
+                        <tr class="text-center">
+                            <th class="text-left" colspan="3">Total :</th>
+                            @canany(['unprint-cor','unprint-fbr'])
+                             <th colspan="1"></th>
+                            @endcan
+                            @canany(['laying-planning.manage','clerk'])
+                             <th colspan="2"></th>
+                            @endcan
                             <th class="" colspan="1">{{ $laying_planning->total_pcs_all_table }} Pcs </th>
                             <th class="" colspan="1">{{ $laying_planning->total_length_all_table }} Yd </th>
-                            <th></th>
                             <th></th>
                             <th></th>
                         </tr>

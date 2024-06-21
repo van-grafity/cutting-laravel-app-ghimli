@@ -98,3 +98,8 @@
 .dropdown-divider {
     border-top: 1px solid #cecece;
 }
+
+.table.align-middle td, 
+.table.align-middle th {
+    vertical-align: middle !important;
+}

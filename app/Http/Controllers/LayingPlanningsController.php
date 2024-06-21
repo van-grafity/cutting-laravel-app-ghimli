@@ -237,8 +237,16 @@ class LayingPlanningsController extends Controller
 
         $total_pcs_all_table = 0;
         $total_length_all_table = 0;
+        $is_can_edit = true;
 
         foreach ($details as $detail) {
+            if ($detail->cuttingOrderRecord && $detail->cuttingOrderRecord->status_print == 1) {
+                $is_can_edit = false;
+            }
+            if ($detail->fabricRequisition && $detail->fabricRequisition->status_print == 1) {
+                $is_can_edit = false;
+            }
+
             $detail->cor_status = $detail->cuttingOrderRecord ? 'disabled' : '';
             $detail->fr_status = $detail->fabricRequisition ? 'disabled' : '';
             $detail->cor_id = $detail->cuttingOrderRecord ? $detail->cuttingOrderRecord->id : '';
@@ -263,11 +271,17 @@ class LayingPlanningsController extends Controller
 
         $styles = DB::table('styles')->where('gl_id', $laying_planning->gl_id)->get();
 
+        // ## set by passing privilege role
+        if(auth()->user()->can('admin-only')){
+            $is_can_edit = true;
+        }
+        
         $viewData = [
             'laying_planning' => $laying_planning,
             'details' => $details,
             'size_list' => $size_list,
-            'styles' => $styles
+            'styles' => $styles,
+            'is_can_edit' => $is_can_edit,
         ];
 
         return view('page.layingPlanning.detail', $viewData);
