@@ -455,7 +455,6 @@ class LayingPlanningsController extends Controller
                 'user_id' => auth()->user()->id,
                 'user_name' => auth()->user()->name,
                 'message' => $e->getMessage(),
-                'lp_details' => $lp_details,
             ]);
             return redirect()->back();
         }
