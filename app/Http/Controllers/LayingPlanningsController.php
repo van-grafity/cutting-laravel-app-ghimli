@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\Auth;
@@ -320,133 +321,149 @@ class LayingPlanningsController extends Controller
         
     public function layingPlanningReport($id)
     {
-        $laying_planning = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->find($id);
+        $lp_details = null;
 
-        $laying_planning->delivery_date = Carbon::parse($laying_planning->delivery_date)->format('d F Y');
-        $laying_planning->plan_date = Carbon::parse($laying_planning->plan_date)->format('d F Y');
+        try {
+            $laying_planning = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->find($id);
 
-        $lp_details = LayingPlanningDetail::with([
-                'layingPlanningDetailSize',
-                'layingPlanning.gl', 
-                'layingPlanning.style', 
-                'layingPlanning.buyer', 
-                'layingPlanning.color', 
-                'layingPlanning.fabricType', 
-                'layingPlanning.layingPlanningSize.size',
-                'cuttingOrderRecord.cuttingOrderRecordDetail.color'
-            ])
-            ->where('laying_planning_id', $id)
-            ->get();
+            $laying_planning->delivery_date = Carbon::parse($laying_planning->delivery_date)->format('d F Y');
+            $laying_planning->plan_date = Carbon::parse($laying_planning->plan_date)->format('d F Y');
+
+            $lp_details = LayingPlanningDetail::with([
+                    'layingPlanningDetailSize',
+                    'layingPlanning.gl', 
+                    'layingPlanning.style', 
+                    'layingPlanning.buyer', 
+                    'layingPlanning.color', 
+                    'layingPlanning.fabricType', 
+                    'layingPlanning.layingPlanningSize.size',
+                    'cuttingOrderRecord.cuttingOrderRecordDetail.color'
+                ])
+                ->where('laying_planning_id', $id)
+                ->get();
 
 
-        // ## Adjust Cut Date using Shift instead of real cut date
-        // ## melakukan penyesuaian cut_date. menggunakan tanggal shift, dari pada menggunakan tanggal asli potongnya dari database. untuk setiap laying planning detail
-        foreach ($lp_details as $lp_detail) {
-            if (!$lp_detail->cuttingOrderRecord) {
-                $lp_detail->cut_date = '-';
-                $lp_detail->actual_cut_qty = '-';
-                continue;
+            // ## Adjust Cut Date using Shift instead of real cut date
+            // ## melakukan penyesuaian cut_date. menggunakan tanggal shift, dari pada menggunakan tanggal asli potongnya dari database. untuk setiap laying planning detail
+            foreach ($lp_detailxs as $lp_detail) {
+                if (!$lp_detail->cuttingOrderRecord) {
+                    $lp_detail->cut_date = '-';
+                    $lp_detail->actual_cut_qty = '-';
+                    continue;
+                }
+
+                $cut_date = $lp_detail->cuttingOrderRecord->cut;
+                if ($cut_date) {
+                    $carbon_real_cut_datetime = Carbon::parse($cut_date);
+                    $real_cut_date_only = $carbon_real_cut_datetime->format('Y-m-d');
+                    $start_shift_datetime = Carbon::parse($real_cut_date_only . ' 07:00:00');
+
+                    $shift_date = $carbon_real_cut_datetime->lt($start_shift_datetime) 
+                        ? $carbon_real_cut_datetime->subDay() 
+                        : $carbon_real_cut_datetime;
+
+                    $lp_detail->cut_date = $shift_date->format('d-M');
+                } else {
+                    $lp_detail->cut_date = '-';
+                }
+
+                // ## Actual Cut Calculation
+                $total_layer_in_cor = $lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail->sum('layer');
+                $total_size_ratio_in_cor = $lp_detail->layingPlanningDetailSize->sum('ratio_per_size');
+                $lp_detail->actual_cut_qty = ($total_layer_in_cor * $total_size_ratio_in_cor) > 0 ? ($total_layer_in_cor * $total_size_ratio_in_cor) : '-';
             }
 
-            $cut_date = $lp_detail->cuttingOrderRecord->cut;
-            if ($cut_date) {
-                $carbon_real_cut_datetime = Carbon::parse($cut_date);
-                $real_cut_date_only = $carbon_real_cut_datetime->format('Y-m-d');
-                $start_shift_datetime = Carbon::parse($real_cut_date_only . ' 07:00:00');
+            
+            $cutting_order_records = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])
+                ->whereHas('layingPlanningDetail.layingPlanning', fn($query) => $query->where('id', $id))
+                ->get();
 
-                $shift_date = $carbon_real_cut_datetime->lt($start_shift_datetime) 
-                    ? $carbon_real_cut_datetime->subDay() 
-                    : $carbon_real_cut_datetime;
+            $total_cut_qty = 0;
+            $cor_map = [];
 
-                $lp_detail->cut_date = $shift_date->format('d-M');
-            } else {
-                $lp_detail->cut_date = '-';
+            // ## Hitung jumlah actual layer untuk setiap cutting order record
+            foreach ($cutting_order_records as $cor) {
+                $lp_detail_id = $cor->laying_planning_detail_id;
+                if (!isset($cor_map[$lp_detail_id])) {
+                    $cor_map[$lp_detail_id] = 0;
+                }
+                foreach ($cor->cuttingOrderRecordDetail as $cor_detail) {
+                    $cor_map[$lp_detail_id] += $cor_detail->layer;
+                }
             }
 
-            // ## Actual Cut Calculation
-            $total_layer_in_cor = $lp_detail->cuttingOrderRecord->cuttingOrderRecordDetail->sum('layer');
-            $total_size_ratio_in_cor = $lp_detail->layingPlanningDetailSize->sum('ratio_per_size');
-            $lp_detail->actual_cut_qty = ($total_layer_in_cor * $total_size_ratio_in_cor) > 0 ? ($total_layer_in_cor * $total_size_ratio_in_cor) : '-';
-        }
 
-        
-        $cutting_order_records = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])
-            ->whereHas('layingPlanningDetail.layingPlanning', fn($query) => $query->where('id', $id))
-            ->get();
+            // ## Menjumlahkan semua cut qty dari setiap laying planning detail
+            foreach ($lp_details as $lp_detail) {
+                $total_cutting_order_record = $cor_map[$lp_detail->id] ?? 0;
+                $total_size_ratio = array_sum(array_column($lp_detail->layingPlanningDetailSize->toArray(), 'ratio_per_size'));
 
-        $total_cut_qty = 0;
-        $cor_map = [];
-
-        // ## Hitung jumlah actual layer untuk setiap cutting order record
-        foreach ($cutting_order_records as $cor) {
-            $lp_detail_id = $cor->laying_planning_detail_id;
-            if (!isset($cor_map[$lp_detail_id])) {
-                $cor_map[$lp_detail_id] = 0;
+                // ## Hitung total cut quantity
+                $hasil_cut_qty = $total_cutting_order_record * $total_size_ratio;
+                $total_cut_qty += $hasil_cut_qty;
             }
-            foreach ($cor->cuttingOrderRecordDetail as $cor_detail) {
-                $cor_map[$lp_detail_id] += $cor_detail->layer;
+            
+            $laying_planning->total_cut_qty = $total_cut_qty;
+            $laying_planning->lp_size_count = $laying_planning->layingPlanningSize->count();
+            $laying_planning->lp_size_sum_quantity = $laying_planning->layingPlanningSize->sum('quantity');
+
+
+            // ## Start Calculate the Total per Size of 'Laying Planning'
+            $sum_per_size = $lp_details->flatMap(function ($lp_detail) {
+                return $lp_detail->layingPlanningDetailSize;
+            })->groupBy('size_id')->map(function ($grouped_size) {
+                return $grouped_size->sum('qty_per_size');
+            });
+
+            $total_per_size = [];
+            $balance_per_size = [];
+            foreach ($laying_planning->layingPlanningSize as $lp_size) {
+                $total_per_size[] = $sum_per_size[$lp_size->size_id] ?? 0;
+                $sum_this_size = isset($sum_per_size[$lp_size->size_id]) ? $sum_per_size[$lp_size->size_id] : 0;
+                $balance_per_size[] = $sum_this_size - $lp_size->quantity;
             }
+            
+            $laying_planning->total_per_size = $total_per_size;
+            $laying_planning->total_all_size = array_sum($total_per_size);
+            $laying_planning->balance_per_size = $balance_per_size;
+            $laying_planning->balance_all_size = array_sum($balance_per_size);
+            $laying_planning->total_percentage = round(($laying_planning->total_all_size / $laying_planning->lp_size_sum_quantity) * 100, 2) .' %';
+            // ## End of Calculate the Total of 'Laying Planning'
+
+
+            $data = [
+                'laying_planning' => $laying_planning,
+                'lp_details' => $lp_details,
+                'cutting_order_records' => $cutting_order_records
+            ];
+
+            $pdf = PDF::loadView('page.layingPlanning.report', $data)->setPaper('a4', 'landscape');
+
+            if (!Auth::user()->hasRole('super_admin') && !Auth::user()->hasRole('merchandiser')) {
+                $update_laying_planning = LayingPlanning::find($id);
+                $update_laying_planning->status_print = true;
+                $update_laying_planning->save();
+            }
+
+            return $pdf->stream('laying-planning-report.pdf');
+
+        } catch (\Exception $e) {
+
+            Log::error('Laying Planning Report Error', [
+                'url' => url()->full(),
+                'url_prev' => url()->previous(),
+                'user_id' => auth()->user()->id,
+                'user_name' => auth()->user()->name,
+                'message' => $e->getMessage(),
+                'lp_details' => $lp_details,
+            ]);
+            return redirect()->back();
         }
-
-
-        // ## Menjumlahkan semua cut qty dari setiap laying planning detail
-        foreach ($lp_details as $lp_detail) {
-            $total_cutting_order_record = $cor_map[$lp_detail->id] ?? 0;
-            $total_size_ratio = array_sum(array_column($lp_detail->layingPlanningDetailSize->toArray(), 'ratio_per_size'));
-
-            // ## Hitung total cut quantity
-            $hasil_cut_qty = $total_cutting_order_record * $total_size_ratio;
-            $total_cut_qty += $hasil_cut_qty;
-        }
-        
-        $laying_planning->total_cut_qty = $total_cut_qty;
-        $laying_planning->lp_size_count = $laying_planning->layingPlanningSize->count();
-        $laying_planning->lp_size_sum_quantity = $laying_planning->layingPlanningSize->sum('quantity');
-
-
-        // ## Start Calculate the Total per Size of 'Laying Planning'
-        $sum_per_size = $lp_details->flatMap(function ($lp_detail) {
-            return $lp_detail->layingPlanningDetailSize;
-        })->groupBy('size_id')->map(function ($grouped_size) {
-            return $grouped_size->sum('qty_per_size');
-        });
-
-        $total_per_size = [];
-        $balance_per_size = [];
-        foreach ($laying_planning->layingPlanningSize as $lp_size) {
-            $total_per_size[] = $sum_per_size[$lp_size->size_id] ?? 0;
-            $sum_this_size = isset($sum_per_size[$lp_size->size_id]) ? $sum_per_size[$lp_size->size_id] : 0;
-            $balance_per_size[] = $sum_this_size - $lp_size->quantity;
-        }
-        
-        $laying_planning->total_per_size = $total_per_size;
-        $laying_planning->total_all_size = array_sum($total_per_size);
-        $laying_planning->balance_per_size = $balance_per_size;
-        $laying_planning->balance_all_size = array_sum($balance_per_size);
-        $laying_planning->total_percentage = round(($laying_planning->total_all_size / $laying_planning->lp_size_sum_quantity) * 100, 2) .' %';
-        // ## End of Calculate the Total of 'Laying Planning'
-
-
-        $data = [
-            'laying_planning' => $laying_planning,
-            'lp_details' => $lp_details,
-            'cutting_order_records' => $cutting_order_records
-        ];
-
-        $pdf = PDF::loadView('page.layingPlanning.report', $data)->setPaper('a4', 'landscape');
-
-        if (!Auth::user()->hasRole('super_admin') && !Auth::user()->hasRole('merchandiser')) {
-            $update_laying_planning = LayingPlanning::find($id);
-            $update_laying_planning->status_print = true;
-            $update_laying_planning->save();
-        }
-
-        return $pdf->stream('laying-planning-report.pdf');
     }
 
 
     // !! mungkin fungsi ini tidak di gunakan. tandai dulu
-    public function layingPlanningv2Report($id)
+    public function layingPlanningv2Reportzz($id)
     {
         $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('id', $id)->first();
         $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($id) {
@@ -468,7 +485,7 @@ class LayingPlanningsController extends Controller
     }
 
     // !! mungkin fungsi ini tidak di gunakan. tandai dulu
-    public function cuttingOrderv2Report($id)
+    public function cuttingOrderv2Reportzz($id)
     {
         $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('id', $id)->first();
         $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($id) {
