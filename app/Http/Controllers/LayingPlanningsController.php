@@ -345,7 +345,7 @@ class LayingPlanningsController extends Controller
 
             // ## Adjust Cut Date using Shift instead of real cut date
             // ## melakukan penyesuaian cut_date. menggunakan tanggal shift, dari pada menggunakan tanggal asli potongnya dari database. untuk setiap laying planning detail
-            foreach ($lp_detailxs as $lp_detail) {
+            foreach ($lp_details as $lp_detail) {
                 if (!$lp_detail->cuttingOrderRecord) {
                     $lp_detail->cut_date = '-';
                     $lp_detail->actual_cut_qty = '-';
