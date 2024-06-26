@@ -278,7 +278,7 @@
                                     <span class="glyphicon glyphicon-magnet"></span>
                                 </td>
                                 <td><?php
-                                    $total_actual = $cutting_order->total_layer * ($cutting_order->marker_yards + ($cutting_order->marker_inches / 36));
+                                    $total_actual = $cutting_order->total_layer * ($cutting_order->marker_yards + (($cutting_order->marker_inches + 1)  / 36));
                                     $total_actual = number_format($total_actual, 2, '.', '');
                                     echo $total_actual . " Yard";
                                 ?></td>

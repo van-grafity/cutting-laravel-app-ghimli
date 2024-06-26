@@ -401,6 +401,7 @@ Route::group(['middleware' => ['auth','can:cutting-record']], function () {
     Route::resource('daily-cutting-report', DailyCuttingReportsController::class);
     Route::get('daily-cutting-detail', [DailyCuttingReportsController::class,'dailyCuttingDetail'])->name('daily-cutting.detail');
     Route::get('daily-cutting-report-print', [DailyCuttingReportsController::class,'dailyCuttingReport'])->name('daily-cutting.print-report');
+    Route::get('daily-cutting-report-print-yds', [DailyCuttingReportsController::class,'dailyCuttingReportYds'])->name('daily-cutting.print-report-yds');
 
     Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
     Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');

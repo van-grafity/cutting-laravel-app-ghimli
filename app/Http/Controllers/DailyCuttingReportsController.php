@@ -28,7 +28,8 @@ class DailyCuttingReportsController extends Controller
         return view('page.daily-cutting-report.index');
     }
 
-    public function dailyCuttingReport(Request $request) {
+    public function dailyCuttingReport(Request $request) 
+    {
         $date_filter = $request->date;
 
         // ## adjust start_date and end_date for day and night shift
@@ -77,6 +78,70 @@ class DailyCuttingReportsController extends Controller
         $pdf = PDF::loadview('page.daily-cutting-report.print', compact('data_per_buyer', 'date_filter', 'groups','general_total'))->setPaper('a4', 'landscape');
         return $pdf->stream($filename);
     }
+
+    public function dailyCuttingReportYds(Request $request)
+    {
+        $date_filter = $request->date;
+
+        // ## adjust start_date and end_date for day and night shift
+        $start_datetime =  Carbon::parse($date_filter)->format('Y-m-d 07:00:00');
+        $end_datetime =  Carbon::parse($date_filter)->addDay()->format('Y-m-d 06:59:00');
+    
+        $groups = $this->getGroups($start_datetime, $end_datetime);
+        $buyers = $this->getBuyers($start_datetime, $end_datetime);
+
+        $data_per_buyer = [];
+        $general_totals = $this->initializeGeneralTotals('yds');
+
+        foreach($buyers as $key => $buyer) {
+            $layingPlannings = $this->getLayingPlannings($buyer->id, $start_datetime, $end_datetime);
+            $subtotals = $this->initializeSubtotals('yds');
+
+            foreach($layingPlannings as $key_lp => $laying_planning) {
+                $laying_planning->plan_yds = $this->calculatePlanYds($laying_planning->laying_planning_id);
+                $laying_planning->qty_per_groups = $this->getQtyPerGroups($laying_planning->laying_planning_id, $groups, $start_datetime, $end_datetime,'yds');
+                $laying_planning->total_qty_per_day = collect($laying_planning->qty_per_groups)->pluck('qty_group')->sum();
+                $laying_planning->previous_accumulation = $this->getPreviousAccumulation($laying_planning->laying_planning_id, $start_datetime , 'yds');
+                $laying_planning->replacement = $this->getReplacement($laying_planning->laying_planning_id, $start_datetime, $end_datetime);
+                $laying_planning->accumulation = $laying_planning->previous_accumulation + $laying_planning->total_qty_per_day;
+                $laying_planning->balance_to_cut = $this->calculateBalanceYdsToCut($laying_planning->laying_planning_id);
+
+                $pcs_prev_accumulation = $this->getPreviousAccumulation($laying_planning->laying_planning_id, $start_datetime);
+                $total_qty_per_day = $this->getTotalQtyPerDay($laying_planning->laying_planning_id, $start_datetime, $end_datetime);
+                $pcs_accumulation = $pcs_prev_accumulation + $total_qty_per_day;
+
+                $laying_planning->completed = $this->calculateCompleted($pcs_accumulation, $laying_planning->order_qty);
+                $this->updateSubtotals($subtotals, $laying_planning,'yds');
+            }
+
+            $this->updateGeneralTotals($general_totals, $subtotals,'yds');
+
+            $data_per_buyer[$key] = (object) [
+                'buyer' => $buyer->name,
+                'laying_plannings' => $layingPlannings,
+                'subtotal_plan_yds' => $subtotals['subtotal_plan_yds'],
+                'subtotal_yds_per_day' => $subtotals['subtotal_yds_per_day'],
+                'subtotal_previous_accumulation' => $subtotals['subtotal_previous_accumulation'],
+                'subtotal_accumulation' => $subtotals['subtotal_accumulation'],
+                'subtotal_balance_to_cut' => $subtotals['subtotal_balance_to_cut'],
+                'subtotal_replacement' => $subtotals['subtotal_replacement'],
+            ];
+        }
+
+        $general_total = (object) $general_totals;
+
+        $filename = 'Daily Cutting Output Report.pdf';
+        $data = [
+            'data_per_buyer' => $data_per_buyer,
+            'date_filter' => $date_filter,
+            'groups' => $groups,
+            'general_total' => $general_total,
+        ];
+        
+        $pdf = PDF::loadview('page.daily-cutting-report.print-yds', $data)->setPaper('a4', 'landscape');
+        return $pdf->stream($filename);
+    }
+
 
     private function getGroups($start_datetime, $end_datetime) {
         $groups = Groups::select('groups.id', 'group_name')
@@ -136,38 +201,47 @@ class DailyCuttingReportsController extends Controller
             ->get();
     }
 
-    private function getQtyPerGroups($laying_planning_id, $groups, $start_datetime, $end_datetime) {
+    private function getQtyPerGroups($laying_planning_id, $groups, $start_datetime, $end_datetime, $unit = 'pcs') {
         $qty_per_groups = [];
-
+        
         foreach($groups as $key_group => $group) {
             $qty_group = 0;
 
-            $cutting_order_record_groups = CuttingOrderRecord::select('cutting_order_records.*','laying_planning_details.marker_code', DB::raw("SUM(cutting_order_record_details.layer) as total_layer"))
+            $cutting_order_record_groups = CuttingOrderRecord::select(
+                    'cutting_order_records.*',
+                    'laying_planning_details.marker_code',
+                    DB::raw("SUM(cutting_order_record_details.layer) as total_layer")
+                )
                 ->join('cutting_order_record_details', 'cutting_order_record_details.cutting_order_record_id', '=', 'cutting_order_records.id')
                 ->join('users', 'users.id', '=', 'cutting_order_record_details.user_id')
                 ->join('user_groups', 'user_groups.user_id', '=', 'users.id')
                 ->join('groups', 'groups.id', '=', 'user_groups.group_id')
                 ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
                 ->where('laying_planning_details.laying_planning_id', '=', $laying_planning_id)
-                ->where(function($query) use ($start_datetime, $end_datetime){
+                ->where(function($query) use ($start_datetime, $end_datetime) {
                     $query->where('cutting_order_records.cut', '>=', $start_datetime)
                           ->where('cutting_order_records.cut', '<=', $end_datetime);
                 })
-                ->whereNot(DB::raw('lower(laying_planning_details.marker_code)'), 'LIKE', '%'. strtolower('REPL') . '%')
-                ->groupBy('cutting_order_records.id')
+                ->whereNot(DB::raw('lower(laying_planning_details.marker_code)'), 'LIKE', '%' . strtolower('REPL') . '%')
                 ->where('groups.id', '=', $group->id)
+                ->groupBy('cutting_order_records.id')
                 ->get();
-            
-            foreach ($cutting_order_record_groups as $key_cor => $cor) {
-                $total_ratio = LayingPlanningDetailSize::select('laying_planning_detail_sizes.*')
-                    ->join('laying_planning_details', 'laying_planning_details.id', '=', 'laying_planning_detail_sizes.laying_planning_detail_id')
-                    ->join('cutting_order_records', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
-                    ->where('cutting_order_records.id', '=', $cor->id)
-                    ->sum('laying_planning_detail_sizes.ratio_per_size');
 
-                $cutting_order_record_groups[$key_cor]->total_size_ratio = $total_ratio;
-                $cutting_order_record_groups[$key_cor]->total_qty_per_cor = $total_ratio * $cor->total_layer;
-                $qty_group += $total_ratio * $cor->total_layer;
+            foreach ($cutting_order_record_groups as $key_cor => $cor) {
+                if($unit == 'yds') {
+                    $qty_group += $cor->total_layer * $cor->layingPlanningDetail->marker_length;
+                    
+                } else {
+                    $total_ratio = LayingPlanningDetailSize::select('laying_planning_detail_sizes.*')
+                        ->join('laying_planning_details', 'laying_planning_details.id', '=', 'laying_planning_detail_sizes.laying_planning_detail_id')
+                        ->join('cutting_order_records', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
+                        ->where('cutting_order_records.id', '=', $cor->id)
+                        ->sum('laying_planning_detail_sizes.ratio_per_size');
+
+                    $cutting_order_record_groups[$key_cor]->total_size_ratio = $total_ratio;
+                    $cutting_order_record_groups[$key_cor]->total_qty_per_cor = $total_ratio * $cor->total_layer;
+                    $qty_group += $total_ratio * $cor->total_layer;
+                }
             }
 
             $qty_per_groups[$key_group] = (object) [
@@ -209,7 +283,7 @@ class DailyCuttingReportsController extends Controller
         return $total_qty_per_day;
     }
 
-    private function getPreviousAccumulation($laying_planning_id, $start_datetime) {
+    private function getPreviousAccumulation($laying_planning_id, $start_datetime, $unit = 'pcs') {
         $total_previous_cutting = 0;
 
         $prev_cutting_order_records = CuttingOrderRecord::select('cutting_order_records.*', DB::raw("SUM(cutting_order_record_details.layer) as total_layer"))
@@ -224,15 +298,20 @@ class DailyCuttingReportsController extends Controller
             ->get();
 
         foreach ($prev_cutting_order_records as $key_cor => $cor) {
-            $total_ratio = LayingPlanningDetailSize::select('laying_planning_detail_sizes.*')
-                ->join('laying_planning_details', 'laying_planning_details.id', '=', 'laying_planning_detail_sizes.laying_planning_detail_id')
-                ->join('cutting_order_records', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
-                ->where('cutting_order_records.id', '=', $cor->id)
-                ->sum('laying_planning_detail_sizes.ratio_per_size');
-
-            $prev_cutting_order_records[$key_cor]->total_size_ratio = $total_ratio;
-            $prev_cutting_order_records[$key_cor]->total_qty_per_cor = $total_ratio * $cor->total_layer;
-            $total_previous_cutting += $total_ratio * $cor->total_layer;
+            if($unit == 'yds') {
+                $total_previous_cutting += $cor->total_layer * $cor->layingPlanningDetail->marker_length;
+                
+            } else {
+                $total_ratio = LayingPlanningDetailSize::select('laying_planning_detail_sizes.*')
+                    ->join('laying_planning_details', 'laying_planning_details.id', '=', 'laying_planning_detail_sizes.laying_planning_detail_id')
+                    ->join('cutting_order_records', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
+                    ->where('cutting_order_records.id', '=', $cor->id)
+                    ->sum('laying_planning_detail_sizes.ratio_per_size');
+    
+                $prev_cutting_order_records[$key_cor]->total_size_ratio = $total_ratio;
+                $prev_cutting_order_records[$key_cor]->total_qty_per_cor = $total_ratio * $cor->total_layer;
+                $total_previous_cutting += $total_ratio * $cor->total_layer;
+            }
         }
 
         return $total_previous_cutting;
@@ -254,15 +333,20 @@ class DailyCuttingReportsController extends Controller
             ->get();
 
         foreach ($cutting_order_records_replacement as $key_cor => $cor) {
-            $total_ratio = LayingPlanningDetailSize::select('laying_planning_detail_sizes.*')
-                ->join('laying_planning_details', 'laying_planning_details.id', '=', 'laying_planning_detail_sizes.laying_planning_detail_id')
-                ->join('cutting_order_records', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
-                ->where('cutting_order_records.id', '=', $cor->id)
-                ->sum('laying_planning_detail_sizes.ratio_per_size');
-
-            $cutting_order_records_replacement[$key_cor]->total_size_ratio = $total_ratio;
-            $cutting_order_records_replacement[$key_cor]->total_qty_per_cor = $total_ratio * $cor->total_layer;
-            $total_replacement += $total_ratio * $cor->total_layer;
+            if($unit == 'yds') {
+                $total_replacement += $cor->total_layer * $cor->layingPlanningDetail->marker_length;
+                
+            } else {
+                $total_ratio = LayingPlanningDetailSize::select('laying_planning_detail_sizes.*')
+                    ->join('laying_planning_details', 'laying_planning_details.id', '=', 'laying_planning_detail_sizes.laying_planning_detail_id')
+                    ->join('cutting_order_records', 'cutting_order_records.laying_planning_detail_id', '=', 'laying_planning_details.id')
+                    ->where('cutting_order_records.id', '=', $cor->id)
+                    ->sum('laying_planning_detail_sizes.ratio_per_size');
+    
+                $cutting_order_records_replacement[$key_cor]->total_size_ratio = $total_ratio;
+                $cutting_order_records_replacement[$key_cor]->total_qty_per_cor = $total_ratio * $cor->total_layer;
+                $total_replacement += $total_ratio * $cor->total_layer;
+            }
         }
 
         return $total_replacement;
@@ -277,43 +361,92 @@ class DailyCuttingReportsController extends Controller
         return round(($accumulation / $order_qty * 100), 2) . "%" ;
     }
 
-    private function initializeGeneralTotals() {
-        return [
-            'general_total_mi_qty' => 0,
-            'general_total_qty_per_day' => 0,
-            'general_total_previous_accumulation' => 0,
-            'general_total_accumulation' => 0,
-            'general_total_balance_to_cut' => 0,
-            'general_total_replacement' => 0,
-        ];
+    private function initializeGeneralTotals($unit = 'pcs') {
+        $general_totals = [];
+
+        if ($unit === 'yds') {
+            $general_totals['general_total_plan_yds'] = 0;
+            $general_totals['general_total_yds_per_day'] = 0;
+        } else {
+            $general_totals['general_total_mi_qty'] = 0;
+            $general_totals['general_total_qty_per_day'] = 0;
+        }
+
+        $general_totals['general_total_previous_accumulation'] = 0;
+        $general_totals['general_total_accumulation'] = 0;
+        $general_totals['general_total_balance_to_cut'] = 0;
+        $general_totals['general_total_replacement'] = 0;
+
+        return $general_totals;
     }
 
-    private function initializeSubtotals() {
-        return [
-            'subtotal_mi_qty' => 0,
-            'subtotal_qty_per_day' => 0,
-            'subtotal_previous_accumulation' => 0,
-            'subtotal_accumulation' => 0,
-            'subtotal_balance_to_cut' => 0,
-            'subtotal_replacement' => 0,
-        ];
+    private function initializeSubtotals($unit = 'pcs') {
+        $subtotals = [];
+
+        if ($unit === 'yds') {
+            $subtotals['subtotal_plan_yds'] = 0;
+            $subtotals['subtotal_yds_per_day'] = 0;
+        } else {
+            $subtotals['subtotal_mi_qty'] = 0;
+            $subtotals['subtotal_qty_per_day'] = 0;
+        }
+
+        $subtotals['subtotal_previous_accumulation'] = 0;
+        $subtotals['subtotal_accumulation'] = 0;
+        $subtotals['subtotal_balance_to_cut'] = 0;
+        $subtotals['subtotal_replacement'] = 0;
+
+        return $subtotals;
     }
 
-    private function updateSubtotals(&$subtotals, $laying_planning) {
-        $subtotals['subtotal_mi_qty'] += $laying_planning->order_qty;
-        $subtotals['subtotal_qty_per_day'] += $laying_planning->total_qty_per_day;
+    private function updateSubtotals(&$subtotals, $laying_planning, $unit = 'pcs') {
+
+        if ($unit === 'yds') {
+            $subtotals['subtotal_plan_yds'] += $laying_planning->plan_yds;
+            $subtotals['subtotal_yds_per_day'] += $laying_planning->total_qty_per_day;
+        } else {
+            $subtotals['subtotal_mi_qty'] += $laying_planning->order_qty;
+            $subtotals['subtotal_qty_per_day'] += $laying_planning->total_qty_per_day;
+        }
+        
         $subtotals['subtotal_previous_accumulation'] += $laying_planning->previous_accumulation;
         $subtotals['subtotal_accumulation'] += $laying_planning->accumulation;
         $subtotals['subtotal_balance_to_cut'] += $laying_planning->balance_to_cut;
         $subtotals['subtotal_replacement'] += $laying_planning->replacement;
     }
 
-    private function updateGeneralTotals(&$general_totals, $subtotals) {
-        $general_totals['general_total_mi_qty'] += $subtotals['subtotal_mi_qty'];
-        $general_totals['general_total_qty_per_day'] += $subtotals['subtotal_qty_per_day'];
+    private function updateGeneralTotals(&$general_totals, $subtotals, $unit = 'pcs') {
+        
+        if ($unit === 'yds') {
+            $general_totals['general_total_plan_yds'] += $subtotals['subtotal_plan_yds'];
+            $general_totals['general_total_yds_per_day'] += $subtotals['subtotal_yds_per_day'];
+        } else {
+            $general_totals['general_total_mi_qty'] += $subtotals['subtotal_mi_qty'];
+            $general_totals['general_total_qty_per_day'] += $subtotals['subtotal_qty_per_day'];
+        }
+
         $general_totals['general_total_previous_accumulation'] += $subtotals['subtotal_previous_accumulation'];
         $general_totals['general_total_accumulation'] += $subtotals['subtotal_accumulation'];
         $general_totals['general_total_balance_to_cut'] += $subtotals['subtotal_balance_to_cut'];
         $general_totals['general_total_replacement'] += $subtotals['subtotal_replacement'];
+    }
+
+    private function calculatePlanYds($laying_planning_id)
+    {
+        $laying_planning = LayingPlanning::find($laying_planning_id);
+        return $laying_planning->layingPlanningDetail->pluck('total_length')->sum();
+    }
+
+    private function calculateBalanceYdsToCut($laying_planning_id)
+    {
+        $total_balance_yds_to_cut = 0;
+        $laying_planning = LayingPlanning::find($laying_planning_id);
+        
+        foreach ($laying_planning->layingPlanningDetail as $key => $lp_detail) {
+            if(!$lp_detail->cuttingOrderRecord || !$lp_detail->cuttingOrderRecord->cut) {
+                $total_balance_yds_to_cut += $lp_detail->total_length;
+            }
+        }
+        return $total_balance_yds_to_cut;
     }
 }
