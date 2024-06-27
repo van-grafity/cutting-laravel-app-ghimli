@@ -10,17 +10,13 @@
     
     <style type="text/css">
         @page {
-          margin-top: 1cm;
-          margin-left: 0.4cm;
-          margin-right: 0.4cm;
-          margin-bottom: 1cm;
+            margin: 1cm 0.4cm;
         }
 
         .table-nota td, .table-nota th {
-          padding: 0.25rem 0.25rem;
-          font-size: 7pt;
-          /* text-align:center; */
-          vertical-align:middle;
+            padding: 0.25rem;
+            font-size: 7pt;
+            vertical-align: middle;
         }
 
         .header-main { 
@@ -35,18 +31,18 @@
         }
 
         .title-nota {
-            clear:left;
-            /* clear:right; */
+            clear: left;
             text-align: center;
             font-weight: bold;
             font-size: 14px;
         }
-        
+
         .serial-number-qr {
-            float:right;
+            float: right;
             text-align: right;
             font-size: 12px;
         }
+
         .table-nota {
             border: 2px solid;
         }
@@ -56,19 +52,16 @@
             vertical-align: middle;
             text-align: center;
             font-size: 7pt;
-            margin: 0px !important;
-            padding: 0px !important;
+            padding: 0;
         }
+        
         .table-nota tbody td {
             border: 1px solid;
             vertical-align: middle;
             text-align: center;
             font-weight: bold;
-            font-size:6pt;
-            padding-top: 1.5 !important;
-            padding-bottom: 1.5 !important;
-            padding-left: 0.3 !important;
-            padding-right: 0.3 !important;
+            font-size: 6pt;
+            padding: 2px 0.3px;
             white-space: nowrap;
         }
         
@@ -117,18 +110,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($data_per_buyer as $key => $item)
-                        @php 
-                            $count_lp = count($item->laying_plannings);
-                        @endphp
-                        @foreach($item->laying_plannings as $key_lp => $laying_planning)
+                    @foreach ($data_per_buyer as $key => $buyer)
+                        @foreach($buyer->laying_plannings as $key_lp => $laying_planning)
                             <tr>
-                                <td>{{ $item->buyer }} </td>
+                                <td>{{ $buyer->buyer }} </td>
                                 <td>{{ $laying_planning->style }}</td>
                                 <td>{{ $laying_planning->gl_number }}</td>
                                 <td style="text-align: left; padding-left: 2 !important;">
                                     {{ $laying_planning->color }}
-                                    <!-- {{ (strlen($laying_planning->color) > 30) ? substr($laying_planning->color,0,30).'...' : $laying_planning->color }} -->
                                 </td>
                                 <td>{{ $laying_planning->order_qty }}</td>
                                 <td>{{ $laying_planning->balance_to_cut }}</td>
@@ -141,27 +130,19 @@
                                 <td>{{ $laying_planning->completed}}</td>
                                 <td>{{ $laying_planning->replacement}}</td>
                             </tr>
-                            @php $count_lp = count($item->laying_plannings); @endphp
-
-                            @if ($key_lp == $count_lp - 1)
+                            @if ($loop->last)
                                 <tr style="background-color: #d9d9d9;">
                                     <td colspan="4" style="text-align: center; font-weight: bold;">Subtotal</td>
-                                    <td>{{ $item->subtotal_mi_qty }}</td>
-                                    <td>{{ $item->subtotal_balance_to_cut }}</td>
-                                    @foreach($laying_planning->qty_per_groups as $key_group => $group)
-                                        <td><b><?php
-                                            $total_qty_group = 0;
-                                            foreach($item->laying_plannings as $laying_planning) {
-                                                $total_qty_group += $laying_planning->qty_per_groups[$key_group]->qty_group;
-                                            }
-                                            echo $total_qty_group;
-                                        ?></td>
+                                    <td>{{ $buyer->subtotal_mi_qty }}</td>
+                                    <td>{{ $buyer->subtotal_balance_to_cut }}</td>
+                                    @foreach($buyer->subtotal_per_group as $key_group => $group_subtotal)
+                                        <td>{{ $group_subtotal }}</td>
                                     @endforeach
-                                    <td>{{ $item->subtotal_qty_per_day }}</td>
-                                    <td>{{ $item->subtotal_previous_accumulation }}</td>
-                                    <td>{{ $item->subtotal_accumulation }}</td>
+                                    <td>{{ $buyer->subtotal_qty_per_day }}</td>
+                                    <td>{{ $buyer->subtotal_previous_accumulation }}</td>
+                                    <td>{{ $buyer->subtotal_accumulation }}</td>
                                     <td></td>
-                                    <td>{{ $item->subtotal_replacement }}</td>
+                                    <td>{{ $buyer->subtotal_replacement }}</td>
                                 </tr>
                             @endif
                         @endforeach
@@ -170,18 +151,13 @@
                         <td colspan="4" style="text-align: center; font-weight: bold;">Total</td>
                         <td>{{ $general_total->general_total_mi_qty }}</td>
                         <td>{{ $general_total->general_total_balance_to_cut }}</td>
-                        
-                        @foreach($groups as $key_group => $group)
-                            <td><b><?php
-                                $total_qty_group = 0;
-                                foreach($data_per_buyer as $key => $item) {
-                                    foreach($item->laying_plannings as $key_lp => $laying_planning) {
-                                        $total_qty_group += $laying_planning->qty_per_groups[$key_group]->qty_group;
-                                    }
-                                }
-                                echo $total_qty_group;
-                            ?></td>
-                        @endforeach
+                        @if(count($groups) > 0)
+                            @foreach($general_total->general_total_per_group as $key_group => $group_total)
+                                <td>{{ $group_total }}</td>
+                            @endforeach
+                        @else
+                            <td></td>
+                        @endif
                         <td>{{ $general_total->general_total_qty_per_day }}</td>
                         <td>{{ $general_total->general_total_previous_accumulation }}</td>
                         <td>{{ $general_total->general_total_accumulation }}</td>

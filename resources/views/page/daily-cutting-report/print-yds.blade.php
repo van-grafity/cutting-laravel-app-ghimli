@@ -10,17 +10,13 @@
     
     <style type="text/css">
         @page {
-          margin-top: 1cm;
-          margin-left: 0.4cm;
-          margin-right: 0.4cm;
-          margin-bottom: 1cm;
+            margin: 1cm 0.4cm;
         }
 
         .table-nota td, .table-nota th {
-          padding: 0.25rem 0.25rem;
-          font-size: 7pt;
-          /* text-align:center; */
-          vertical-align:middle;
+            padding: 0.25rem;
+            font-size: 7pt;
+            vertical-align: middle;
         }
 
         .header-main { 
@@ -35,18 +31,18 @@
         }
 
         .title-nota {
-            clear:left;
-            /* clear:right; */
+            clear: left;
             text-align: center;
             font-weight: bold;
             font-size: 14px;
         }
-        
+
         .serial-number-qr {
-            float:right;
+            float: right;
             text-align: right;
             font-size: 12px;
         }
+
         .table-nota {
             border: 2px solid;
         }
@@ -56,20 +52,16 @@
             vertical-align: middle;
             text-align: center;
             font-size: 7pt;
-            margin: 0px !important;
-            padding: 0px !important;
+            padding: 0;
         }
+        
         .table-nota tbody td {
             border: 1px solid;
             vertical-align: middle;
             text-align: center;
             font-weight: bold;
-            /* // ## change font size */
-            font-size:5pt; 
-            padding-top: 1.5 !important;
-            padding-bottom: 1.5 !important;
-            padding-left: 0.3 !important;
-            padding-right: 0.3 !important;
+            font-size: 5pt;
+            padding: 2px 0.3px;
             white-space: nowrap;
         }
         
@@ -110,18 +102,22 @@
                         <th rowspan="2">Replacement for </br> Sewing</th>
                     </tr>
                     <tr>
-                        <th rowspan="1" style="width: 3%;">Planning Yds</th>
+                        <th rowspan="1" style="width: 3%;">Plan <br> length <br> (yds) </th>
                         <th rowspan="1">Plan to Cut <br> (yds)</th>
-                        @foreach($groups as $key_group => $group)
-                            <th rowspan="1" colspan="1"> {{ $group->group_name_show }}</th>
-                        @endforeach
+                        @if(count($groups) > 0)
+                            @foreach($groups as $key_group => $group)
+                                <th rowspan="1" colspan="1"> {{ $group->group_name_show }}</th>
+                            @endforeach
+                        @else
+                            <th></th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($data_per_buyer as $item)
-                        @foreach($item->laying_plannings as $key_lp => $laying_planning)
+                    @foreach ($data_per_buyer as $buyer)
+                        @foreach($buyer->laying_plannings as $key_lp => $laying_planning)
                             <tr>
-                                <td>{{ $item->buyer }}</td>
+                                <td>{{ $buyer->buyer }}</td>
                                 <td>{{ $laying_planning->style }}</td>
                                 <td>{{ $laying_planning->gl_number }}</td>
                                 <td style="text-align: left; padding-left: 2px !important;">
@@ -141,24 +137,16 @@
                             @if ($loop->last)
                                 <tr style="background-color: #d9d9d9;">
                                     <td colspan="4" style="text-align: center; font-weight: bold;">Subtotal</td>
-                                    <td>{{ $item->subtotal_plan_yds }}</td>
-                                    <td>{{ $item->subtotal_balance_to_cut }}</td>
-                                    @foreach($laying_planning->qty_per_groups as $key_group => $group)
-                                        <td>
-                                            @php
-                                                $total = 0;
-                                                foreach ($item->laying_plannings as $lp) {
-                                                    $total += $lp->qty_per_groups[$key_group]->qty_group;
-                                                }
-                                                echo $total;
-                                            @endphp
-                                        </td>
+                                    <td>{{ $buyer->subtotal_plan_yds }}</td>
+                                    <td>{{ $buyer->subtotal_balance_to_cut }}</td>
+                                    @foreach($buyer->subtotal_per_group as $key_group => $group_subtotal)
+                                        <td>{{ $group_subtotal }}</td>
                                     @endforeach
-                                    <td>{{ $item->subtotal_yds_per_day }}</td>
-                                    <td>{{ $item->subtotal_previous_accumulation }}</td>
-                                    <td>{{ $item->subtotal_accumulation }}</td>
+                                    <td>{{ $buyer->subtotal_yds_per_day }}</td>
+                                    <td>{{ $buyer->subtotal_previous_accumulation }}</td>
+                                    <td>{{ $buyer->subtotal_accumulation }}</td>
                                     <td></td>
-                                    <td>{{ $item->subtotal_replacement }}</td>
+                                    <td>{{ $buyer->subtotal_replacement }}</td>
                                 </tr>
                             @endif
                         @endforeach
@@ -168,19 +156,13 @@
                         <td>{{ $general_total->general_total_plan_yds }}</td>
                         <td>{{ $general_total->general_total_balance_to_cut }}</td>
                         
-                        @foreach($groups as $key_group => $group)
-                            <td>
-                                <?php
-                                    $total_qty_group = 0;
-                                    foreach($data_per_buyer as $key => $item) {
-                                        foreach($item->laying_plannings as $key_lp => $laying_planning) {
-                                            $total_qty_group += $laying_planning->qty_per_groups[$key_group]->qty_group;
-                                        }
-                                    }
-                                    echo $total_qty_group;
-                                ?>
-                            </td>
-                        @endforeach
+                        @if(count($groups) > 0)
+                            @foreach($general_total->general_total_per_group as $key_group => $group_total)
+                                <td>{{ $group_total }}</td>
+                            @endforeach
+                        @else
+                            <td></td>
+                        @endif
                         <td>{{ $general_total->general_total_yds_per_day }}</td>
                         <td>{{ $general_total->general_total_previous_accumulation }}</td>
                         <td>{{ $general_total->general_total_accumulation }}</td>
@@ -193,7 +175,7 @@
             </br>
             </br>
 
-            <table width="100%" style="font-size: 12px; font-family: Times New Roman, Times, serif; font-weight: bold; position: absolute; bottom: 50px;">
+            <table width="100%" style="font-size: 12px; font-weight: bold; position: absolute; bottom: 50px;">
                 <tr>
                     <td width="50%" style="text-align: center;">
                         <p>Prepared by:</p>

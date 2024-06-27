@@ -64,6 +64,7 @@ class DailyCuttingReportsController extends Controller
                 'buyer' => $buyer->name,
                 'laying_plannings' => $layingPlannings,
                 'subtotal_mi_qty' => $subtotals['subtotal_mi_qty'],
+                'subtotal_per_group' => $subtotals['subtotal_per_group'],
                 'subtotal_qty_per_day' => $subtotals['subtotal_qty_per_day'],
                 'subtotal_previous_accumulation' => $subtotals['subtotal_previous_accumulation'],
                 'subtotal_accumulation' => $subtotals['subtotal_accumulation'],
@@ -120,6 +121,7 @@ class DailyCuttingReportsController extends Controller
                 'buyer' => $buyer->name,
                 'laying_plannings' => $layingPlannings,
                 'subtotal_plan_yds' => $subtotals['subtotal_plan_yds'],
+                'subtotal_per_group' => $subtotals['subtotal_per_group'],
                 'subtotal_yds_per_day' => $subtotals['subtotal_yds_per_day'],
                 'subtotal_previous_accumulation' => $subtotals['subtotal_previous_accumulation'],
                 'subtotal_accumulation' => $subtotals['subtotal_accumulation'],
@@ -137,7 +139,8 @@ class DailyCuttingReportsController extends Controller
             'groups' => $groups,
             'general_total' => $general_total,
         ];
-        
+
+        // return view('page.daily-cutting-report.print-yds', $data);
         $pdf = PDF::loadview('page.daily-cutting-report.print-yds', $data)->setPaper('a4', 'landscape');
         return $pdf->stream($filename);
     }
@@ -371,7 +374,8 @@ class DailyCuttingReportsController extends Controller
             $general_totals['general_total_mi_qty'] = 0;
             $general_totals['general_total_qty_per_day'] = 0;
         }
-
+        
+        $general_totals['general_total_per_group'] = [];
         $general_totals['general_total_previous_accumulation'] = 0;
         $general_totals['general_total_accumulation'] = 0;
         $general_totals['general_total_balance_to_cut'] = 0;
@@ -390,7 +394,8 @@ class DailyCuttingReportsController extends Controller
             $subtotals['subtotal_mi_qty'] = 0;
             $subtotals['subtotal_qty_per_day'] = 0;
         }
-
+        
+        $subtotals['subtotal_per_group'] = [];
         $subtotals['subtotal_previous_accumulation'] = 0;
         $subtotals['subtotal_accumulation'] = 0;
         $subtotals['subtotal_balance_to_cut'] = 0;
@@ -408,6 +413,13 @@ class DailyCuttingReportsController extends Controller
             $subtotals['subtotal_mi_qty'] += $laying_planning->order_qty;
             $subtotals['subtotal_qty_per_day'] += $laying_planning->total_qty_per_day;
         }
+
+        foreach($laying_planning->qty_per_groups as $key_group => $group){
+            if (!isset($subtotals['subtotal_per_group'][$key_group])) {
+                $subtotals['subtotal_per_group'][$key_group] = 0;
+            }
+            $subtotals['subtotal_per_group'][$key_group] += $group->qty_group;
+        }
         
         $subtotals['subtotal_previous_accumulation'] += $laying_planning->previous_accumulation;
         $subtotals['subtotal_accumulation'] += $laying_planning->accumulation;
@@ -423,6 +435,13 @@ class DailyCuttingReportsController extends Controller
         } else {
             $general_totals['general_total_mi_qty'] += $subtotals['subtotal_mi_qty'];
             $general_totals['general_total_qty_per_day'] += $subtotals['subtotal_qty_per_day'];
+        }
+
+        foreach($subtotals['subtotal_per_group'] as $key_group => $subtotal_per_group){
+            if (!isset($general_totals['general_total_per_group'][$key_group])) {
+                $general_totals['general_total_per_group'][$key_group] = 0;
+            }
+            $general_totals['general_total_per_group'][$key_group] += $subtotal_per_group;
         }
 
         $general_totals['general_total_previous_accumulation'] += $subtotals['subtotal_previous_accumulation'];
