@@ -106,7 +106,7 @@
                     <th rowspan="2" colspan="1" style="width:40%">Marker Code</th>
                     <th rowspan="2" colspan="1" style="width:10%">Marker Qty</th>
                     <th rowspan="1" colspan="3" style="width:auto">Marker</th>
-                    <th rowspan="1" colspan="6" style="width:auto">Ratio</th>
+                    <th rowspan="1" colspan="{{ $layingPlanning->layingPlanningSize->count() }}" style="width:auto">Ratio</th>
                     <th rowspan="2" colspan="1" style="width:10%">Total Length <br> (YDs)</th>
                 </tr>
                 <tr>
