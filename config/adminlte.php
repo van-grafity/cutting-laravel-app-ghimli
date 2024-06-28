@@ -344,32 +344,19 @@ return [
             'icon' => 'fas fa-object-group nav-icon',
             'can'  => 'cutting-group-menu',
         ],
-
         [
             'header' => 'General',
-            'can'   => 'default-menu',
         ],
-
         [
             'text' => 'Dashboard',
             'url'  => '/home',
             'icon' => 'fas fa-fw fa-home',
-            'can'  => 'clerk',
         ],
         [
             'text' => 'Master Data',
             'icon' => 'fas fa-fw fa-ruler-combined',
             'can'  => 'clerk-cutting',
             'submenu' => [
-                
-                // [
-                //     'text' => 'Cutting Group',
-                //     'url'  => '/user-cutting-group',
-                //     'classes'=> 'ml-3',
-                //     'icon'  => 'fas fa-fw fa fa-solid fa-object-group',
-                //     'can'  => 'admin-only',
-                // ],
-                
                 [
                     'text' => 'Buyer',
                     'url'  => '/buyer',
@@ -401,12 +388,6 @@ return [
                 
             ],
         ],
-        // [
-        //     'text' => 'User Management',
-        //     'icon' => 'fas fa-users nav-icon',
-        //     'can'   => 'admin-menu',
-        //     'url' => 'user',
-        // ],
         [
             'text' => 'Master Data Cutting',
             'icon' => 'fas fa-fw fa-industry',
@@ -515,7 +496,7 @@ return [
         [   
             'header'=> 'Reports',
             'can'  => [
-                'daily-cutting-report.access',
+                'report-menu-section',
                 'cutting-record',
             ]
         ],

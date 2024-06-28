@@ -6,6 +6,9 @@
 <div class="row justify-content-center pt-5">
     <div class="col-lg-6">
         <div class="card">
+            <div class="card-header">
+                <strong>Daily Cutting Output Report</strong>
+            </div>
             <div class="card-body">
                 <div class="form-group">
                     <label for="filter_date">Filter Date</label>

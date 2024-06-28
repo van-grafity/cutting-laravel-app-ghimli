@@ -54,6 +54,13 @@ class AuthServiceProvider extends ServiceProvider
             ];
             if ($user->canany($permitted_permissions)) { return true; }
         });
+        
+        Gate::define('report-menu-section', function (User $user) {
+            $permitted_permissions = [
+                'daily-cutting-report.access',
+            ];
+            if ($user->canany($permitted_permissions)) { return true; }
+        });
 
         // todo : kodingan untuk nanti
         // Gate::define('user-management-menu', function (User $user) {
