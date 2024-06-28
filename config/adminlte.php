@@ -321,6 +321,10 @@ return [
                     'url' => 'log-viewers',
                 ],
                 [
+                    'text' => 'Authentication Logs',
+                    'url' => 'authentication-log',
+                ],
+                [
                     'text' => 'Personal Access Token',
                     'url' => 'personal-access-token',
                 ],

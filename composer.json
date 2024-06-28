@@ -18,9 +18,11 @@
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.2",
         "rap2hpoutre/laravel-log-viewer": "^2.3",
+        "rappasoft/laravel-authentication-log": "^2.0",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-activitylog": "^4.7",
         "spatie/laravel-permission": "^5.9",
+        "torann/geoip": "^3.0",
         "yajra/laravel-datatables": "^9.0",
         "yajra/laravel-datatables-buttons": "^9.0"
     },

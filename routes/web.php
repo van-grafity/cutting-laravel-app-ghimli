@@ -181,7 +181,7 @@ Route::group([
     
 });
 
-
+// ## Fetch Select
 Route::group([
     'middleware' => [
         'auth',
@@ -216,6 +216,19 @@ Route::group([
     Route::delete('{token}', 'destroy')->name('destroy');
 });
 
+// ## Authentication Log
+Route::group([
+    'middleware' => [
+        'auth',
+        'can:developer-menu',
+    ],
+    'controller' => App\Http\Controllers\AuthenticationLogController::class,
+    'prefix' => 'authentication-log',
+    'as' => 'authentication-log.',
+],function() {
+    Route::get('', 'index')->name('index');
+    Route::get('dtable', 'dtable')->name('dtable');
+});
 
 
 // ## Laying Planning Detail and Cutting Order Record
