@@ -28,7 +28,7 @@ class DailyCuttingReportsController extends Controller
         return view('page.daily-cutting-report.index');
     }
 
-    public function dailyCuttingReport(Request $request) 
+    public function print(Request $request) 
     {
         $date_filter = $request->date;
 
@@ -80,7 +80,7 @@ class DailyCuttingReportsController extends Controller
         return $pdf->stream($filename);
     }
 
-    public function dailyCuttingReportYds(Request $request)
+    public function print_yds(Request $request)
     {
         $date_filter = $request->date;
 

@@ -19,7 +19,9 @@
 
                 <div class="row">
                     <div class="col-sm-12 text-right">
+                        @can('daily-cutting-report.print-yds')
                         <a href="javascript:void(0);" class="btn btn-info" id="btn_print_report_yds">Print Report ( YDs Version )</a>
+                        @endcan
                         <a href="javascript:void(0);" class="btn btn-primary" id="btn_print_report">Print Report</a>
                     </div>
                 </div>
@@ -33,8 +35,8 @@
 
 <script type="text/javascript">
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const print_report_url ='{{ route("daily-cutting.print-report") }}';
-    const print_report_yds_url ='{{ route("daily-cutting.print-report-yds") }}';
+    const print_report_url ='{{ route("daily-cutting-report.print") }}';
+    const print_report_yds_url ='{{ route("daily-cutting-report.print-yds") }}';
 </script>
 
 <script type="text/javascript">
@@ -52,7 +54,6 @@ $(document).ready(function(){
 
     $('#btn_print_report').on('click', function() {
         if($('#filter_date_input').val().length > 1) {
-            if($('#filter_date_input').val())
             filter_date = moment($('#filter_date_input').val(), "DD/MM/YYYY").format('YYYY-MM-DD');
             let url_print_report = print_report_url + '?date=' + filter_date;
             window.open(url_print_report);
@@ -64,7 +65,6 @@ $(document).ready(function(){
     });
     $('#btn_print_report_yds').on('click', function() {
         if($('#filter_date_input').val().length > 1) {
-            if($('#filter_date_input').val())
             filter_date = moment($('#filter_date_input').val(), "DD/MM/YYYY").format('YYYY-MM-DD');
             let url_print_report_yds = print_report_yds_url + '?date=' + filter_date;
             window.open(url_print_report_yds);

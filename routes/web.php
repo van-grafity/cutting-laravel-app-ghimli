@@ -244,7 +244,20 @@ Route::group([
 });
 
 
-
+// ## daily cutting output report
+Route::group([
+    'middleware' => [
+        'auth',
+        'hasAnyPermission:cutting-record,daily-cutting-report.access',
+    ],
+    'controller' => App\Http\Controllers\DailyCuttingReportsController::class,
+    'prefix' => 'daily-cutting-report',
+    'as' => 'daily-cutting-report.',
+],function() {
+    Route::get('', 'index')->name('index');
+    Route::get('print', 'print')->name('print');
+    Route::get('print-yds', 'print_yds')->name('print-yds')->middleware('can:daily-cutting-report.print-yds');
+});
 
 // ## ---------------------------------------------------------------------------------
 
@@ -275,7 +288,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/fabric-requisition-data', [FabricRequisitionsController::class, 'dataFabricRequisition']);
     Route::get('/fabric-requisition-serial-number', [FabricRequisitionsController::class, 'get_serial_number'])->name('fabric-requisition-serial-number');
     Route::get('/fabric-issue-data', [FabricIssuesController::class, 'dataFabricIssue']);
-    Route::get('/daily-cutting-data', [DailyCuttingReportsController::class, 'dataDailyCutting']);
+
+    // !! delete this unused route
+    // Route::get('/daily-cutting-data', [DailyCuttingReportsController::class, 'dataDailyCutting']); 
 
 });
 
@@ -398,10 +413,9 @@ Route::group(['middleware' => ['auth','can:form']], function () {
 });
 
 Route::group(['middleware' => ['auth','can:cutting-record']], function () {
-    Route::resource('daily-cutting-report', DailyCuttingReportsController::class);
-    Route::get('daily-cutting-detail', [DailyCuttingReportsController::class,'dailyCuttingDetail'])->name('daily-cutting.detail');
-    Route::get('daily-cutting-report-print', [DailyCuttingReportsController::class,'dailyCuttingReport'])->name('daily-cutting.print-report');
-    Route::get('daily-cutting-report-print-yds', [DailyCuttingReportsController::class,'dailyCuttingReportYds'])->name('daily-cutting.print-report-yds');
+    
+    // !! delete this unsed route
+    // Route::get('daily-cutting-detail', [DailyCuttingReportsController::class,'dailyCuttingDetail'])->name('daily-cutting.detail');
 
     Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
     Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');

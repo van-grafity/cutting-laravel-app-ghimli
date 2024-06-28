@@ -512,7 +512,13 @@ return [
             'icon' => 'fas fa-fw fa fa-tasks',
             'can'  => 'warehouse',
         ],
-        [   'header'=> 'Reports'],
+        [   
+            'header'=> 'Reports',
+            'can'  => [
+                'daily-cutting-report.access',
+                'cutting-record',
+            ]
+        ],
         [
             'text' => 'Cut Piece Stock Report',
             'url'  => '/bundle-stock-report',
@@ -523,7 +529,7 @@ return [
             'text' => 'Daily Cutting Report',
             'url'  => '/daily-cutting-report',
             'icon' => 'fas fa-fw fa fa-journal-whills',
-            'can'  => 'cutting-record',
+            'can'  => 'cutting-record | daily-cutting-report.access',
         ],
         [
             'text' => 'Cutting Status',

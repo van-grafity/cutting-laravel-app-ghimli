@@ -104,9 +104,13 @@
                     <tr>
                         <th rowspan="1" style="width: 3%;">MI QTY</th>
                         <th rowspan="1">MI Balance <br> (pcs)</th>
-                        @foreach($groups as $key_group => $group)
-                            <th rowspan="1" colspan="1"> {{ $group->group_name_show }}</th>
-                        @endforeach
+                        @if(count($groups) > 0)
+                            @foreach($groups as $key_group => $group)
+                                <th rowspan="1" colspan="1"> {{ $group->group_name_show }}</th>
+                            @endforeach
+                        @else
+                            <th></th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
