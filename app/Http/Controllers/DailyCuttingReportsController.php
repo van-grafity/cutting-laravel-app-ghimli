@@ -103,7 +103,7 @@ class DailyCuttingReportsController extends Controller
                 $laying_planning->qty_per_groups = $this->getQtyPerGroups($laying_planning->laying_planning_id, $groups, $start_datetime, $end_datetime,'yds');
                 $laying_planning->total_qty_per_day = collect($laying_planning->qty_per_groups)->pluck('qty_group')->sum();
                 $laying_planning->previous_accumulation = $this->getPreviousAccumulation($laying_planning->laying_planning_id, $start_datetime , 'yds');
-                $laying_planning->replacement = $this->getReplacement($laying_planning->laying_planning_id, $start_datetime, $end_datetime);
+                $laying_planning->replacement = $this->getReplacement($laying_planning->laying_planning_id, $start_datetime, $end_datetime, 'yds');
                 $laying_planning->accumulation = $laying_planning->previous_accumulation + $laying_planning->total_qty_per_day;
                 $laying_planning->balance_to_cut = $this->calculateBalanceYdsToCut($laying_planning->laying_planning_id);
 
@@ -320,7 +320,7 @@ class DailyCuttingReportsController extends Controller
         return $total_previous_cutting;
     }
 
-    private function getReplacement($laying_planning_id, $start_datetime, $end_datetime) {
+    private function getReplacement($laying_planning_id, $start_datetime, $end_datetime, $unit = 'pcs') {
         $total_replacement = 0;
 
         $cutting_order_records_replacement = CuttingOrderRecord::select('cutting_order_records.*', DB::raw("SUM(cutting_order_record_details.layer) as total_layer"))
