@@ -47,8 +47,6 @@ class LayingPlanningReportsController extends Controller
             'filename' => $filename,
         ];
 
-        return view('page.laying-planning-report.marker-requirement', $data);
-
         $pdf = PDF::loadView('page.laying-planning-report.marker-requirement', $data)->setPaper('a4', 'landscape');
         return $pdf->stream($filename .'.pdf');
     }
