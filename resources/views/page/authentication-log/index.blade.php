@@ -2,7 +2,7 @@
 @section('title', $title)
 @section('content')
 
-<div class="row">
+<div class="row pt-3">
     <div class="col-12">
         <div class="card">
             <div class="card-header d-flex p-0">

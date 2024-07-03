@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Yajra\Datatables\Datatables;
 use Rappasoft\LaravelAuthenticationLog\Models\AuthenticationLog as Log;
+use App\Models\User;
 use Carbon\Carbon;
 
 
@@ -33,10 +34,10 @@ class AuthenticationLogController extends Controller
             ->addIndexColumn()
             ->escapeColumns([])
             ->addColumn('user_email', function($row){
-                return $row->authenticatable->email;
+                return $row->authenticatable ? $row->authenticatable->email : User::withTrashed()->find($row->authenticatable_id)->email;
             })
             ->addColumn('user_name', function($row){
-                return $row->authenticatable->name;
+                return $row->authenticatable ? $row->authenticatable->name : User::withTrashed()->find($row->authenticatable_id)->name;
             })
             ->editColumn('login_at', function($row){
                 
