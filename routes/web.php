@@ -352,10 +352,6 @@ Route::group(['middleware' => ['auth','hasAnyPermission:clerk,laying-planning.ac
     Route::get('/laying-planning-create', [LayingPlanningsController::class, 'layingCreate']);
     Route::get('/laying-planning-qrcode/{id}', [LayingPlanningsController::class, 'layingQrcode']);
     Route::get('/laying-planning-report/{id}', [LayingPlanningsController::class, 'layingPlanningReport'])->name('laying-planning.report');
-    
-    // !! kayaknya ga di pakai. tandai dulu
-    // Route::get('/laying-plannings-report/{id}', [LayingPlanningsController::class, 'layingPlanningv2Report'])->name('laying-planningv2.report');
-    // Route::get('/cutting-orders-report/{id}', [LayingPlanningsController::class, 'cuttingOrderv2Report'])->name('cutting-orderv2.report');
 
     Route::controller(LayingPlanningsController::class)
     ->prefix('laying-planning-detail')->name('laying-planning.')->group(function(){

@@ -80,29 +80,9 @@ class LayingPlanningsController extends Controller
         return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
-            // !! ini di hapus karena nama kolom sudah sama dengan nama kolom yang di select. jadi harusnya sama aja
-            // ->addColumn('gl_number', function ($data){
-            //     return $data->gl_number;
-            // })
-            // ->addColumn('style', function ($data){
-            //     return $data->style;
-            // })
-            // ->addColumn('buyer', function ($data){
-            //     return $data->buyer;
-            // })
-            // ->addColumn('color', function ($data){
-            //     return $data->color;
-            // })
-            // ->addColumn('fabric_type', function ($data){
-            //     return $data->fabric_type;
-            // })
             ->addColumn('action', function($data){
-
                 $action = '';
                 if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter')){
-                    // !! next hapus ini, kalau udah stabil. tombol edit di pindahkan ke more option soalnya
-                    // $action .= '<a href="'.route('laying-planning.edit',$data->id).'" class="btn btn-primary btn-sm mt-1 mr-1">Edit</a>';
-                    // $action .= '<a href="javascript:void(0);" class="btn btn-danger btn-sm mt-1 mr-1" onclick="delete_layingPlanning('.$data->id.')">Delete</a>';
                     $action .= '<a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1 mr-1">Detail</a>';
                     $action .= '<a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1 mr-1">Report</a>';
                 } else {
@@ -458,51 +438,6 @@ class LayingPlanningsController extends Controller
             ]);
             return redirect()->back();
         }
-    }
-
-
-    // !! mungkin fungsi ini tidak di gunakan. tandai dulu
-    public function layingPlanningv2Reportzz($id)
-    {
-        $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('id', $id)->first();
-        $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($id) {
-            $query->where('id', $id);
-        })->get();
-        $details->load('cuttingOrderRecord', 'cuttingOrderRecord.cuttingOrderRecordDetail', 'cuttingOrderRecord.cuttingOrderRecordDetail.color');
-        $cuttingOrderRecord = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
-            $query->whereHas('layingPlanning', function($query) use ($id) {
-                $query->where('id', $id);
-            });
-        })->get();
-        
-        $pdf = PDF::loadView('page.layingPlanning.report-laying-planning', compact('data', 'details', 'cuttingOrderRecord'))->setPaper('a4', 'landscape');
-        
-        $data->status_print = true;
-        $data->save();
-
-        return $pdf->stream('laying-planning-report.pdf');
-    }
-
-    // !! mungkin fungsi ini tidak di gunakan. tandai dulu
-    public function cuttingOrderv2Reportzz($id)
-    {
-        $data = LayingPlanning::with(['gl', 'style', 'fabricCons', 'fabricType', 'color'])->where('id', $id)->first();
-        $details = LayingPlanningDetail::with(['layingPlanning', 'layingPlanningDetailSize', 'layingPlanning.gl', 'layingPlanning.style', 'layingPlanning.buyer', 'layingPlanning.color', 'layingPlanning.fabricType', 'layingPlanning.layingPlanningSize.size'])->whereHas('layingPlanning', function($query) use ($id) {
-            $query->where('id', $id);
-        })->get();
-        $details->load('cuttingOrderRecord', 'cuttingOrderRecord.cuttingOrderRecordDetail', 'cuttingOrderRecord.cuttingOrderRecordDetail.color');
-        $cuttingOrderRecord = CuttingOrderRecord::with(['layingPlanningDetail', 'cuttingOrderRecordDetail'])->whereHas('layingPlanningDetail', function($query) use ($id) {
-            $query->whereHas('layingPlanning', function($query) use ($id) {
-                $query->where('id', $id);
-            });
-        })->get();
-        
-        $pdf = PDF::loadView('page.layingPlanning.report-cutting-order', compact('data', 'details', 'cuttingOrderRecord'))->setPaper('a4', 'landscape');
-        
-        $data->status_print = true;
-        $data->save();
-
-        return $pdf->stream('cutting-order-report.pdf');
     }
 
     public function layingQrcode($id)
