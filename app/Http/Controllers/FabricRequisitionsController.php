@@ -31,7 +31,7 @@ class FabricRequisitionsController extends Controller
     }
 
     public function dataFabricRequisition(){
-            $query = DB::table('fabric_requisitions')
+        $query = DB::table('fabric_requisitions')
             ->join('laying_planning_details', 'fabric_requisitions.laying_planning_detail_id', '=', 'laying_planning_details.id')
             ->join('laying_plannings', 'laying_planning_details.laying_planning_id', '=', 'laying_plannings.id')
             ->join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
@@ -40,8 +40,9 @@ class FabricRequisitionsController extends Controller
             ->join('fabric_types', 'laying_plannings.fabric_type_id', '=', 'fabric_types.id')
             ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
             ->select('fabric_requisitions.id', 'fabric_requisitions.serial_number', 'fabric_requisitions.is_issue', 'fabric_requisitions.status_print', 'fabric_requisitions.remark', 'laying_planning_details.table_number', 'styles.style', 'colors.color', 'laying_plannings.fabric_po', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'laying_planning_details.total_length')
-            ->orderBy('fabric_requisitions.updated_at', 'desc')->get();
-            return Datatables::of($query)
+            ->orderBy('fabric_requisitions.updated_at', 'desc');
+
+        return Datatables::of($query)
             ->escapeColumns([])
             ->addColumn('serial_number', function ($data){
                 return $data->serial_number;

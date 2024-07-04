@@ -547,6 +547,12 @@ return [
             'can'  => 'cutting-record',
         ],
         [
+            'text' => 'Fabric Consumption',
+            'url'  => 'fabric-consumption',
+            'icon' => 'fas fa-fw fa fa-file-alt',
+            'can'  => 'fabric-consumption.access',
+        ],
+        [
             'header'=> 'Lain-lain',
             'can'   => 'admin-only',
         ],

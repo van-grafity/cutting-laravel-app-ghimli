@@ -272,6 +272,21 @@ Route::group([
     Route::get('print-yds', 'print_yds')->name('print-yds')->middleware('can:daily-cutting-report.print-yds');
 });
 
+
+// ## Fabric Consumption
+Route::group([
+    'middleware' => [
+        'auth',
+        'hasAnyPermission:fabric-consumption.access',
+    ],
+    'controller' => App\Http\Controllers\FabricConsumptionsController::class,
+    'prefix' => 'fabric-consumption',
+    'as' => 'fabric-consumption.',
+],function() {
+    Route::get('', 'index')->name('index');
+    Route::get('print-preview', 'print_preview')->name('print-preview');
+});
+
 // ## ---------------------------------------------------------------------------------
 
 
