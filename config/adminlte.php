@@ -538,7 +538,10 @@ return [
             'text' => 'Cutting Order Completion',
             'url'  => '/cutting-order-completion',
             'icon' => 'fas fa-fw fa fa-database',
-            'can'  => 'cutting-record',
+            'can'  => [
+                'cutting-record',
+                'cutting-completion-report.access',
+            ]
         ],
         [
             'text' => 'Tracking Fabric Usage',

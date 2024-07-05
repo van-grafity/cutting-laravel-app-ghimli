@@ -273,6 +273,20 @@ Route::group([
 });
 
 
+// ## Cutting Completion Report
+Route::group([
+    'middleware' => [
+        'auth',
+        'hasAnyPermission:cutting-record,cutting-completion-report.access',
+    ],
+    'controller' => App\Http\Controllers\CuttingOrdersController::class,
+    // 'prefix' => 'cutting-order',
+    'as' => 'cutting-order.',
+],function() {
+    Route::get('cutting-order-completion', 'cuttingCompletion')->name('cutting-completion');
+    Route::get('cutting-order-completion-report', 'cuttingCompletionReport')->name('cutting-completion-report');
+});
+
 // ## Fabric Consumption
 Route::group([
     'middleware' => [
@@ -447,10 +461,6 @@ Route::group(['middleware' => ['auth','can:cutting-record']], function () {
     
     Route::get('cutting-group-report', [CuttingGroupReportController::class,'index'])->name('cutting-group-report.index');
     Route::get('cutting-group-report/print', [CuttingGroupReportController::class,'print'])->name('cutting-group-report.print');
-
-    
-    Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
-    Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
     
     Route::get('tracking-fabric-usage', [FabricIssuesController::class,'trackingFabricUsage'])->name('fabric-issue.tracking-fabric-usage');
     Route::get('tracking-fabric-usage-report', [FabricIssuesController::class,'trackingFabricUsageReport'])->name('fabric-issue.tracking-fabric-usage-report');
