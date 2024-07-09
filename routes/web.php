@@ -88,10 +88,10 @@ Route::group([
 ],function() {
     Route::get('dtable', 'dtable')->name('dtable');
     Route::get('sync-old-data', 'sync_old_data')->name('sync-old-data');
-    
+
     Route::get('{group}/show-members', 'show_members')->name('show-members');
     Route::put('{group}/update-members', 'update_members')->name('update-members');
-    
+
     Route::get('', 'index')->name('index');
     Route::get('{group}', 'show')->name('show');
     Route::post('', 'store')->name('store');
@@ -110,7 +110,7 @@ Route::group([
     'as' => 'department.',
 ],function() {
     Route::get('dtable', 'dtable')->name('dtable');
-    
+
     Route::get('', 'index')->name('index');
     Route::get('{group}', 'show')->name('show');
     Route::post('', 'store')->name('store');
@@ -130,7 +130,7 @@ Route::group([
     'as' => 'permission-category.',
 ],function() {
     Route::get('dtable', 'dtable')->name('dtable');
-    
+
     Route::get('', 'index')->name('index');
     Route::get('{group}', 'show')->name('show');
     Route::post('', 'store')->name('store');
@@ -149,7 +149,7 @@ Route::group([
     'as' => 'permission.',
 ],function() {
     Route::get('dtable', 'dtable')->name('dtable');
-    
+
     Route::get('', 'index')->name('index');
     Route::get('{group}', 'show')->name('show');
     Route::post('', 'store')->name('store');
@@ -169,16 +169,16 @@ Route::group([
 ],function() {
     Route::get('dtable', 'dtable')->name('dtable');
     Route::get('fill-empty-data', 'fill_empty_data')->name('fill-empty-data');
-    
+
     Route::get('', 'index')->name('index');
     Route::get('{group}', 'show')->name('show');
     Route::post('', 'store')->name('store');
     Route::put('{group}', 'update')->name('update');
     Route::delete('{group}', 'destroy')->name('destroy');
-    
+
     Route::get('{group}/manage-permission', 'manage_permission')->name('manage-permission');
     Route::post('{group}/manage-permission', 'manage_permission_update')->name('manage-permission-update');
-    
+
 });
 
 // ## Fetch Select
@@ -210,7 +210,7 @@ Route::group([
 ],function() {
     Route::get('dtable', 'dtable')->name('dtable');
     Route::post('revoke-token', 'revoke_token')->name('revoke-token');
-    
+
     Route::get('', 'index')->name('index');
     Route::post('', 'store')->name('store');
     Route::delete('{token}', 'destroy')->name('destroy');
@@ -287,6 +287,20 @@ Route::group([
     Route::get('print-preview', 'print_preview')->name('print-preview');
 });
 
+// ## Create new Controller and Route from cutting-order-completion to cutting-completion-report
+Route::group([
+    'middleware'=> [
+        'auth',
+        'can:cutting-record',
+    ],
+    'controller' =>App\Http\Controllers\CuttingCompletionReportsController::class,
+    'prefix' => 'cutting-completion-report',
+    'as'=> 'cutting-completion-report.',
+], function() {
+    Route::get('', 'index')->name('index');
+    Route::get('print', 'cuttingCompletionReport')->name('print');
+});
+// ## end
 // ## ---------------------------------------------------------------------------------
 
 
@@ -311,20 +325,20 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/cutting-order-chart', [CuttingOrdersController::class, 'chartCuttingOrder']);
     Route::get('/cutting-ticket-data', [CuttingTicketsController::class, 'dataCuttingTicket']);
-    Route::get('/cutting-ticket-detail-data/{id}', [CuttingTicketsController::class, 'dataCuttingTicketByCOR'])->name('cutting-ticket-detail-data'); 
+    Route::get('/cutting-ticket-detail-data/{id}', [CuttingTicketsController::class, 'dataCuttingTicketByCOR'])->name('cutting-ticket-detail-data');
     Route::get('/get-color-list', [ColorsController::class, 'get_color_list']);
     Route::get('/fabric-requisition-data', [FabricRequisitionsController::class, 'dataFabricRequisition']);
     Route::get('/fabric-requisition-serial-number', [FabricRequisitionsController::class, 'get_serial_number'])->name('fabric-requisition-serial-number');
     Route::get('/fabric-issue-data', [FabricIssuesController::class, 'dataFabricIssue']);
 
     // !! delete this unused route
-    // Route::get('/daily-cutting-data', [DailyCuttingReportsController::class, 'dataDailyCutting']); 
+    // Route::get('/daily-cutting-data', [DailyCuttingReportsController::class, 'dataDailyCutting']);
 
 });
 
 // ## Route for Master Data (Admin)
 Route::group(['middleware' => ['auth','can:admin-only']], function () {
-    
+
 
 
     // !! nanti buat controller sendiri
@@ -336,11 +350,11 @@ Route::group(['middleware' => ['auth','can:admin-only']], function () {
     Route::delete('/delete-group/{id}', [UsersController::class,'delete_group'])->name('delete-group');
     Route::get('log-viewers', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
     // !! ============================
-    
+
     Route::get('qrcode', function () {
         return QrCode::size(300)->generate('A basic example of QR code!');
     });
-    
+
 });
 
 Route::group(['middleware' => ['auth','can:warehouse']], function () {
@@ -381,6 +395,9 @@ Route::group(['middleware' => ['auth','hasAnyPermission:clerk,laying-planning.ac
     Route::resource('cutting-order', CuttingOrdersController::class);
     Route::get('cutting-order-create/{id}', [CuttingOrdersController::class,'createNota'])->name('cutting-order.createNota');
     Route::get('cutting-order-print/{id}', [CuttingOrdersController::class,'print_pdf'])->name('cutting-order.print');
+    //## Change from cutting-order-print to cutting-completion-report.print
+    // Route::get('cutting-completion-report/{id}', [CuttingCompletionReportsController::class,'print_pdf'])->name('cutting-completion-report.print');
+    //## end
     Route::get('cutting-order-report/{id}', [CuttingOrdersController::class,'print_report_pdf'])->name('cutting-order.report');
     Route::get('cutting-order-detail/{id}', [CuttingOrdersController::class,'cutting_order_detail'])->name('cutting-order.detail');
     Route::get('cutting-order-approve-pilot-run/{id}', [CuttingOrdersController::class,'approve_pilot_run'])->name('cutting-order.approve-pilot-run');
@@ -388,7 +405,7 @@ Route::group(['middleware' => ['auth','hasAnyPermission:clerk,laying-planning.ac
     Route::get('print-multiple/{id}', [CuttingOrdersController::class,'print_multiple'])->name('cutting-order.print-multiple');
     Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
     Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');
-    
+
     Route::get('cutting-order-detail-delete/{id}', [CuttingOrdersController::class,'delete_cor_detail'])->name('cutting-order.detail-delete');
 
     Route::resource('cutting-ticket', CuttingTicketsController::class);
@@ -399,7 +416,7 @@ Route::group(['middleware' => ['auth','hasAnyPermission:clerk,laying-planning.ac
         Route::get('/detail/{id}', [CuttingTicketsController::class, 'ticketListByCOR'])->name('detail');
 
         Route::get('/report/{id}', [CuttingTicketsController::class, 'print_report_pdf'])->name('report');
-        
+
         Route::delete('/delete/{id}', [CuttingTicketsController::class, 'delete_ticket'])->name('delete-ticket');
         Route::get('/refresh-ticket/{id}', [CuttingTicketsController::class, 'refresh_ticket'])->name('refresh-ticket');
     });
@@ -412,7 +429,7 @@ Route::group(['middleware' => ['auth','hasAnyPermission:clerk,laying-planning.ac
     Route::controller(BundleStocksController::class)->prefix('bundle-stock')->name('bundle-stock.')->group(function(){
         route::get('/', 'index')->name('index');
         route::get('/dtable', 'dataBundleStock')->name('dtable');
-        
+
         route::get('/detail', 'detail')->name('detail');
         route::get('/report', 'report')->name('report');
 
@@ -433,25 +450,26 @@ Route::group(['middleware' => ['auth','can:form']], function () {
     Route::resource('fabric-requisition', FabricRequisitionsController::class);
     Route::get('fabric-requisition-create/{id}', [FabricRequisitionsController::class,'createNota'])->name('fabric-requisition.createNota');
     Route::get('fabric-requisition-print/{id}', [FabricRequisitionsController::class,'print_pdf'])->name('fabric-requisition.print');
-    Route::get('print-multiple-fabric-requisition/{id}', [FabricRequisitionsController::class,'print_multiple_fabric_requisition'])->name('fabric-requisition.print-multiple');    
+    Route::get('print-multiple-fabric-requisition/{id}', [FabricRequisitionsController::class,'print_multiple_fabric_requisition'])->name('fabric-requisition.print-multiple');
 });
 
 Route::group(['middleware' => ['auth','can:cutting-record']], function () {
-    
+
     // !! delete this unsed route
     // Route::get('daily-cutting-detail', [DailyCuttingReportsController::class,'dailyCuttingDetail'])->name('daily-cutting.detail');
 
     Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
     Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');
 
-    
+
     Route::get('cutting-group-report', [CuttingGroupReportController::class,'index'])->name('cutting-group-report.index');
     Route::get('cutting-group-report/print', [CuttingGroupReportController::class,'print'])->name('cutting-group-report.print');
 
-    
+
     Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
+
     Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
-    
+
     Route::get('tracking-fabric-usage', [FabricIssuesController::class,'trackingFabricUsage'])->name('fabric-issue.tracking-fabric-usage');
     Route::get('tracking-fabric-usage-report', [FabricIssuesController::class,'trackingFabricUsageReport'])->name('fabric-issue.tracking-fabric-usage-report');
 
@@ -467,7 +485,7 @@ Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(
     Route::get('color', [FetchController::class, 'color'])->name('color');
     Route::get('fabric-type', [FetchController::class, 'fabric_type'])->name('fabric-type');
     Route::get('gl-combine', [FetchController::class, 'gl_combine'])->name('gl-combine');
-    
+
     Route::get('get-cutting-order/{id}', [CuttingTicketsController::class, 'get_cutting_order'])->name('cutting-order');
 });
 

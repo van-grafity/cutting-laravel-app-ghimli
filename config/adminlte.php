@@ -294,7 +294,7 @@ return [
             'type'         => 'fullscreen-widget',
             'topnav_right' => true,
         ],
-        
+
         [
             'header' => 'Developer',
             'can'   => 'developer-menu',
@@ -366,30 +366,30 @@ return [
                     'url'  => '/buyer',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-user',
-                    'can'  => 'clerk-cutting', 
+                    'can'  => 'clerk-cutting',
                 ],
                 [
                     'text' => 'Size',
                     'url'  => '/size',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-solid fa-ruler',
-                    'can'  => 'clerk-cutting', 
+                    'can'  => 'clerk-cutting',
                 ],
                 [
                     'text' => 'Color',
                     'url'  => '/color',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-solid fa-fill-drip',
-                    'can'  => 'clerk-cutting', 
+                    'can'  => 'clerk-cutting',
                 ],
                 [
                     'text' => 'Remarks',
                     'url'  => '/remark',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-solid fa-sticky-note',
-                    'can'  => 'clerk-cutting', 
+                    'can'  => 'clerk-cutting',
                 ],
-                
+
             ],
         ],
         [
@@ -402,14 +402,14 @@ return [
                     'url'  => '/fabric-cons',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
-                    'can'  => 'clerk-cutting', 
+                    'can'  => 'clerk-cutting',
                 ],
                 [
                     'text' => 'Fabric Type',
                     'url'  => '/fabric-type',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-solid fa-swatchbook',
-                    'can'  => 'clerk-cutting', 
+                    'can'  => 'clerk-cutting',
                 ],
             ],
         ],
@@ -417,7 +417,7 @@ return [
             'text' => 'GL',
             'url'  => '/gl',
             'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'clerk-cutting', 
+            'can'  => 'clerk-cutting',
         ],
         [
             'text' => 'Laying Planning',
@@ -479,7 +479,7 @@ return [
             ],
         ],
         [   'header'=> 'Forms',
-            'can'   => 'form', 
+            'can'   => 'form',
         ],
         [
             'text' => 'Fabric Requisition',
@@ -497,7 +497,7 @@ return [
             'icon' => 'fas fa-fw fa fa-tasks',
             'can'  => 'warehouse',
         ],
-        [   
+        [
             'header'=> 'Reports',
             'can'  => [
                 'report-menu-section',
@@ -541,6 +541,12 @@ return [
             'can'  => 'cutting-record',
         ],
         [
+            'text' => 'Cutting Completion Report',
+            'url'  => '/cutting-completion-report',
+            'icon' => 'fas fa-fw fa fa-database',
+            'can'  => 'cutting-record',
+        ],
+        [
             'text' => 'Tracking Fabric Usage',
             'url'  => '/tracking-fabric-usage',
             'icon' => 'fas fa-fw fa fa-database',
@@ -578,7 +584,7 @@ return [
         JeroenNoten\LaravelAdminLte\Menu\Filters\ClassesFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
-        App\Filters\AnyPermissionFilter::class, 
+        App\Filters\AnyPermissionFilter::class,
     ],
 
     /*
