@@ -291,7 +291,7 @@ Route::group([
 Route::group([
     'middleware'=> [
         'auth',
-        'can:cutting-record',
+        'hasAnyPermission:clerk,cutting-completion-report.access',
     ],
     'controller' =>App\Http\Controllers\CuttingCompletionReportsController::class,
     'prefix' => 'cutting-completion-report',
@@ -453,6 +453,13 @@ Route::group(['middleware' => ['auth','can:form']], function () {
     Route::get('print-multiple-fabric-requisition/{id}', [FabricRequisitionsController::class,'print_multiple_fabric_requisition'])->name('fabric-requisition.print-multiple');
 });
 
+
+//## ganti permission cutting-order-completion
+Route::group(['middleware' => ['auth', 'hasAnyPermission:clerk,cutting-completion-report.access']], function(){
+    Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
+    Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
+});
+
 Route::group(['middleware' => ['auth','can:cutting-record']], function () {
 
     // !! delete this unsed route
@@ -466,9 +473,9 @@ Route::group(['middleware' => ['auth','can:cutting-record']], function () {
     Route::get('cutting-group-report/print', [CuttingGroupReportController::class,'print'])->name('cutting-group-report.print');
 
 
-    Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
+    // Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
 
-    Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
+    // Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
 
     Route::get('tracking-fabric-usage', [FabricIssuesController::class,'trackingFabricUsage'])->name('fabric-issue.tracking-fabric-usage');
     Route::get('tracking-fabric-usage-report', [FabricIssuesController::class,'trackingFabricUsageReport'])->name('fabric-issue.tracking-fabric-usage-report');
