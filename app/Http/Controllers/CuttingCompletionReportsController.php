@@ -18,7 +18,7 @@ class CuttingCompletionReportsController extends Controller
         return view('page.cutting-order.cutting-completion-report', compact('gls'));
     }
 
-    public function cuttingCompletionReport(Request $request)
+    public function print(Request $request)
     {
         $gl_id = $request->gl_number;
         $gl = GL::find($gl_id);
