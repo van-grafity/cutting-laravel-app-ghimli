@@ -56,14 +56,14 @@
                                                 <td>
                                                     <div class="form-group mb-0">
                                                         <div class="custom-control custom-checkbox">
-                                                            <input id="permission_checkbox_{{ $key_checkbox }}" 
-                                                            name="selected_permission[]" 
-                                                            class="custom-control-input checkbox-permission-control" 
-                                                            type="checkbox" 
-                                                            value="{{ $permission->id }}" 
-                                                            @if ($permission->is_role_has_permission) 
-                                                                checked 
-                                                            @endif 
+                                                            <input id="permission_checkbox_{{ $key_checkbox }}"
+                                                            name="selected_permission[]"
+                                                            class="custom-control-input checkbox-permission-control"
+                                                            type="checkbox"
+                                                            value="{{ $permission->id }}"
+                                                            @if ($permission->is_role_has_permission)
+                                                                checked
+                                                            @endif
                                                             >
                                                             <label for="permission_checkbox_{{ $key_checkbox }}" class="custom-control-label"></label>
                                                             @php $key_checkbox++; @endphp

@@ -90,7 +90,7 @@
         .table-fabric-consumption .text-left {
             padding-left: 5px;
         }
-        
+
     </style>
 </head>
 <body>
@@ -225,7 +225,7 @@
                 @endforeach
             </tbody>
         </table>
-        
+
         <table class="table table-fabric-consumption">
             <thead>
                 <tr>

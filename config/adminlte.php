@@ -193,7 +193,7 @@ return [
     'classes_content_header' => '',
     'classes_content' => '',
     'classes_sidebar' => 'sidebar-dark-primary elevation-4',
-    'classes_sidebar_nav' => '',
+    'classes_sidebar_nav' => 'nav-flat',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand',
     'classes_topnav_container' => 'container',
@@ -507,25 +507,25 @@ return [
         [
             'text' => 'Cut Piece Stock Report',
             'url'  => '/bundle-stock-report',
-            'icon' => 'fas fa-fw fa fa-journal-whills',
+            'icon' => 'fas fa-fw fa fa-file-alt',
             'can'  => 'cutting-record',
         ],
         [
             'text' => 'Daily Cutting Report',
             'url'  => '/daily-cutting-report',
-            'icon' => 'fas fa-fw fa fa-journal-whills',
+            'icon' => 'fas fa-fw fa fa-file-alt',
             'can'  => 'cutting-record | daily-cutting-report.access',
         ],
         [
             'text' => 'Cutting Status',
             'url'  => '/status-cutting-order-record',
-            'icon' => 'fas fa-fw fa fa-chart-bar',
+            'icon' => 'fas fa-fw fa fa-file-alt',
             'can'  => 'cutting-record',
         ],
         [
             'text' => 'Cutting Group Report',
             'url'  => '/cutting-group-report',
-            'icon' => 'fas fa-fw fa fa-database',
+            'icon' => 'fas fa-fw fa fa-file-alt',
             'can'  => 'cutting-record',
         ],
         [
@@ -537,22 +537,19 @@ return [
         [
             'text' => 'Cutting Order Completion',
             'url'  => '/cutting-order-completion',
-            'icon' => 'fas fa-fw fa fa-database',
-            'can'  => [
-                'cutting-record',
-                'cutting-completion-report.access',
-            ]
+            'icon' => 'fas fa-fw fa fa-file-alt',
+            'can'  => 'clerk |cutting-completion-report.access',
         ],
         [
             'text' => 'Cutting Completion Report',
             'url'  => '/cutting-completion-report',
-            'icon' => 'fas fa-fw fa fa-database',
-            'can'  => 'cutting-record',
+            'icon' => 'fas fa-fw fa fa-file-alt',
+            'can'  => 'clerk |cutting-completion-report.access',
         ],
         [
             'text' => 'Tracking Fabric Usage',
             'url'  => '/tracking-fabric-usage',
-            'icon' => 'fas fa-fw fa fa-database',
+            'icon' => 'fas fa-fw fa fa-file-alt',
             'can'  => 'cutting-record',
         ],
         [

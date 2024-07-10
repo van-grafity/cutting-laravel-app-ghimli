@@ -305,7 +305,7 @@ Route::group([
 Route::group([
     'middleware'=> [
         'auth',
-        'can:cutting-record',
+        'hasAnyPermission:clerk,cutting-completion-report.access',
     ],
     'controller' =>App\Http\Controllers\CuttingCompletionReportsController::class,
     'prefix' => 'cutting-completion-report',
@@ -410,10 +410,6 @@ Route::group(['middleware' => ['auth','hasAnyPermission:clerk,laying-planning.ac
     Route::get('cutting-order-create/{id}', [CuttingOrdersController::class,'createNota'])->name('cutting-order.createNota');
     Route::get('cutting-order-print/{id}', [CuttingOrdersController::class,'print_pdf'])->name('cutting-order.print');
     
-    //!! Change from cutting-order-print to cutting-completion-report.print next di hapus
-    // Route::get('cutting-completion-report/{id}', [CuttingCompletionReportsController::class,'print_pdf'])->name('cutting-completion-report.print');
-    //## end
-    
     Route::get('cutting-order-report/{id}', [CuttingOrdersController::class,'print_report_pdf'])->name('cutting-order.report');
     Route::get('cutting-order-detail/{id}', [CuttingOrdersController::class,'cutting_order_detail'])->name('cutting-order.detail');
     Route::get('cutting-order-approve-pilot-run/{id}', [CuttingOrdersController::class,'approve_pilot_run'])->name('cutting-order.approve-pilot-run');
@@ -469,6 +465,13 @@ Route::group(['middleware' => ['auth','can:form']], function () {
     Route::get('print-multiple-fabric-requisition/{id}', [FabricRequisitionsController::class,'print_multiple_fabric_requisition'])->name('fabric-requisition.print-multiple');
 });
 
+
+//## ganti permission cutting-order-completion
+Route::group(['middleware' => ['auth', 'hasAnyPermission:clerk,cutting-completion-report.access']], function(){
+    Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
+    Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
+});
+
 Route::group(['middleware' => ['auth','can:cutting-record']], function () {
 
     // !! delete this unsed route
@@ -480,7 +483,12 @@ Route::group(['middleware' => ['auth','can:cutting-record']], function () {
 
     Route::get('cutting-group-report', [CuttingGroupReportController::class,'index'])->name('cutting-group-report.index');
     Route::get('cutting-group-report/print', [CuttingGroupReportController::class,'print'])->name('cutting-group-report.print');
-    
+
+
+    // Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
+
+    // Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
+
     Route::get('tracking-fabric-usage', [FabricIssuesController::class,'trackingFabricUsage'])->name('fabric-issue.tracking-fabric-usage');
     Route::get('tracking-fabric-usage-report', [FabricIssuesController::class,'trackingFabricUsageReport'])->name('fabric-issue.tracking-fabric-usage-report');
 
