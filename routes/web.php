@@ -312,7 +312,7 @@ Route::group([
     'as'=> 'cutting-completion-report.',
 ], function() {
     Route::get('', 'index')->name('index');
-    Route::get('print', 'cuttingCompletionReport')->name('print');
+    Route::get('print', 'print')->name('print');
 });
 // ## end
 // ## ---------------------------------------------------------------------------------
