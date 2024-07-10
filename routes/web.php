@@ -291,7 +291,7 @@ Route::group([
 Route::group([
     'middleware'=> [
         'auth',
-        'hasAnyPermission:clerk,cutting-completion-report.access',
+        'hasAnyPermission:cutting-record,cutting-completion-report.access',
     ],
     'controller' =>App\Http\Controllers\CuttingCompletionReportsController::class,
     'prefix' => 'cutting-completion-report',
@@ -455,7 +455,7 @@ Route::group(['middleware' => ['auth','can:form']], function () {
 
 
 //## ganti permission cutting-order-completion
-Route::group(['middleware' => ['auth', 'hasAnyPermission:clerk,cutting-completion-report.access']], function(){
+Route::group(['middleware' => ['auth', 'hasAnyPermission:cutting-record,cutting-completion-report.access']], function(){
     Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
     Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
 });
