@@ -273,6 +273,20 @@ Route::group([
 });
 
 
+// ## Cutting Completion Report
+Route::group([
+    'middleware' => [
+        'auth',
+        'hasAnyPermission:cutting-record,cutting-completion-report.access',
+    ],
+    'controller' => App\Http\Controllers\CuttingOrdersController::class,
+    // 'prefix' => 'cutting-order',
+    'as' => 'cutting-order.',
+],function() {
+    Route::get('cutting-order-completion', 'cuttingCompletion')->name('cutting-completion');
+    Route::get('cutting-order-completion-report', 'cuttingCompletionReport')->name('cutting-completion-report');
+});
+
 // ## Fabric Consumption
 Route::group([
     'middleware' => [
@@ -395,9 +409,7 @@ Route::group(['middleware' => ['auth','hasAnyPermission:clerk,laying-planning.ac
     Route::resource('cutting-order', CuttingOrdersController::class);
     Route::get('cutting-order-create/{id}', [CuttingOrdersController::class,'createNota'])->name('cutting-order.createNota');
     Route::get('cutting-order-print/{id}', [CuttingOrdersController::class,'print_pdf'])->name('cutting-order.print');
-    //## Change from cutting-order-print to cutting-completion-report.print
-    // Route::get('cutting-completion-report/{id}', [CuttingCompletionReportsController::class,'print_pdf'])->name('cutting-completion-report.print');
-    //## end
+    
     Route::get('cutting-order-report/{id}', [CuttingOrdersController::class,'print_report_pdf'])->name('cutting-order.report');
     Route::get('cutting-order-detail/{id}', [CuttingOrdersController::class,'cutting_order_detail'])->name('cutting-order.detail');
     Route::get('cutting-order-approve-pilot-run/{id}', [CuttingOrdersController::class,'approve_pilot_run'])->name('cutting-order.approve-pilot-run');
