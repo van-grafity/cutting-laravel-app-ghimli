@@ -508,7 +508,7 @@ return [
             'text' => 'Cut Piece Stock Report',
             'url'  => '/bundle-stock-report',
             'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'cutting-record',
+            'can'  => 'cutting-record | cut-piece-stock-report.access',
         ],
         [
             'text' => 'Daily Cutting Report',
@@ -520,19 +520,19 @@ return [
             'text' => 'Cutting Status',
             'url'  => '/status-cutting-order-record',
             'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'cutting-record',
+            'can'  => 'cutting-record | status-cutting-order-record.access',
         ],
         [
             'text' => 'Cutting Group Report',
             'url'  => '/cutting-group-report',
             'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'cutting-record',
+            'can'  => 'cutting-record | cutting-group-report.access',
         ],
         [
             'text' => 'Output Report per GL',
             'url'  => '/cutting-output-report',
             'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'cutting-record',
+            'can'  => 'cutting-record | cutting-output-report.access',
         ],
         [
             'text' => 'Cutting Order Completion',
@@ -550,7 +550,7 @@ return [
             'text' => 'Tracking Fabric Usage',
             'url'  => '/tracking-fabric-usage',
             'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'cutting-record',
+            'can'  => 'cutting-record | tracking-fabric-usage.access',
         ],
         [
             'text' => 'Fabric Consumption',

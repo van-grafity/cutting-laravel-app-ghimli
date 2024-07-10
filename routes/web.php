@@ -390,7 +390,7 @@ Route::group(['middleware' => ['auth','can:clerk-cutting']], function () {
     Route::resource('remark', RemarksController::class);
 });
 
-Route::group(['middleware' => ['auth','hasAnyPermission:clerk,laying-planning.access']], function () {
+Route::group(['middleware' => ['auth']], function () {
     Route::resource('laying-planning',LayingPlanningsController::class);
     Route::get('/laying-planning-create', [LayingPlanningsController::class, 'layingCreate']);
     Route::get('/laying-planning-qrcode/{id}', [LayingPlanningsController::class, 'layingQrcode']);
@@ -409,13 +409,13 @@ Route::group(['middleware' => ['auth','hasAnyPermission:clerk,laying-planning.ac
     Route::resource('cutting-order', CuttingOrdersController::class);
     Route::get('cutting-order-create/{id}', [CuttingOrdersController::class,'createNota'])->name('cutting-order.createNota');
     Route::get('cutting-order-print/{id}', [CuttingOrdersController::class,'print_pdf'])->name('cutting-order.print');
-    
+
     Route::get('cutting-order-report/{id}', [CuttingOrdersController::class,'print_report_pdf'])->name('cutting-order.report');
     Route::get('cutting-order-detail/{id}', [CuttingOrdersController::class,'cutting_order_detail'])->name('cutting-order.detail');
     Route::get('cutting-order-approve-pilot-run/{id}', [CuttingOrdersController::class,'approve_pilot_run'])->name('cutting-order.approve-pilot-run');
     Route::get('cutting-order-record/{date}', [CuttingOrdersController::class,'getCuttingOrderRecordByDate'])->name('cutting-order.date');
     Route::get('print-multiple/{id}', [CuttingOrdersController::class,'print_multiple'])->name('cutting-order.print-multiple');
-    Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
+    // Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
     Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');
 
     Route::get('cutting-order-detail-delete/{id}', [CuttingOrdersController::class,'delete_cor_detail'])->name('cutting-order.detail-delete');
@@ -433,7 +433,7 @@ Route::group(['middleware' => ['auth','hasAnyPermission:clerk,laying-planning.ac
         Route::get('/refresh-ticket/{id}', [CuttingTicketsController::class, 'refresh_ticket'])->name('refresh-ticket');
     });
 
-    Route::controller(BundleStocksController::class)->prefix('bundle-stock-report')->name('bundle-stock-report.')->group(function(){
+    Route::controller(BundleStocksController::class)->prefix('bundle-stock-report')->name('bundle-stock-report.')->middleware(['auth', 'hasAnyPermission:cutting-record,cut-piece-stock-report.access'])->group(function(){
         route::get('/', 'filter')->name('filter');
         route::get('/print', 'print')->name('print');
     });
@@ -472,28 +472,33 @@ Route::group(['middleware' => ['auth', 'hasAnyPermission:cutting-record,cutting-
     Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
 });
 
-Route::group(['middleware' => ['auth','can:cutting-record']], function () {
+Route::group(['middleware' => ['auth']], function () {
 
     // !! delete this unsed route
     // Route::get('daily-cutting-detail', [DailyCuttingReportsController::class,'dailyCuttingDetail'])->name('daily-cutting.detail');
 
-    Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
-    Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');
+    Route::group(['middleware' => ['hasAnyPermission:cutting-record,status-cutting-order-record.access']], function() {
+        Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
+        Route::get('print-status-cutting-order-record', [CuttingOrdersController::class,'printStatusCuttingOrderRecord'])->name('cutting-order.print-status-cutting-order-record');
+    });
 
-
-    Route::get('cutting-group-report', [CuttingGroupReportController::class,'index'])->name('cutting-group-report.index');
-    Route::get('cutting-group-report/print', [CuttingGroupReportController::class,'print'])->name('cutting-group-report.print');
-
+    Route::group(['middleware' => ['hasAnyPermission:cutting-record,cutting-group-report.access']], function() {
+        Route::get('cutting-group-report', [CuttingGroupReportController::class,'index'])->name('cutting-group-report.index');
+        Route::get('cutting-group-report/print', [CuttingGroupReportController::class,'print'])->name('cutting-group-report.print');
+    });
 
     // Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
 
     // Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
+    Route::group(['middleware' => ['hasAnyPermission:cutting-record,tracking-fabric-usage.access']], function() {
+        Route::get('tracking-fabric-usage', [FabricIssuesController::class,'trackingFabricUsage'])->name('fabric-issue.tracking-fabric-usage');
+        Route::get('tracking-fabric-usage-report', [FabricIssuesController::class,'trackingFabricUsageReport'])->name('fabric-issue.tracking-fabric-usage-report');
+    });
 
-    Route::get('tracking-fabric-usage', [FabricIssuesController::class,'trackingFabricUsage'])->name('fabric-issue.tracking-fabric-usage');
-    Route::get('tracking-fabric-usage-report', [FabricIssuesController::class,'trackingFabricUsageReport'])->name('fabric-issue.tracking-fabric-usage-report');
-
-    Route::get('cutting-output-report', [CuttingOutputReportController::class,'index'])->name('cutting-output-report.index');
-    Route::get('cutting-output-report-print', [CuttingOutputReportController::class,'print'])->name('cutting-output-report.print');
+    Route::group(['middleware' => ['hasAnyPermission:cutting-record,cutting-output-report.access']], function() {
+        Route::get('cutting-output-report', [CuttingOutputReportController::class,'index'])->name('cutting-output-report.index');
+        Route::get('cutting-output-report-print', [CuttingOutputReportController::class,'print'])->name('cutting-output-report.print');
+    });
 });
 
 // ## Route for Fetch Select2 Form
