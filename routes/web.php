@@ -273,6 +273,7 @@ Route::group([
 });
 
 
+// !! ini hapus punya ridwan, awalnya mau buat controller baru tapi belum selesai. udah di lanjutkan sama josh
 // ## Cutting Completion Report
 Route::group([
     'middleware' => [
@@ -302,6 +303,7 @@ Route::group([
 });
 
 // ## Create new Controller and Route from cutting-order-completion to cutting-completion-report
+// ## Cutting Completion Report
 Route::group([
     'middleware'=> [
         'auth',
@@ -466,6 +468,7 @@ Route::group(['middleware' => ['auth','can:form']], function () {
 });
 
 
+// !! next delete cutting order completion ini kodingan lama
 //## ganti permission cutting-order-completion
 Route::group(['middleware' => ['auth', 'hasAnyPermission:cutting-record,cutting-completion-report.access']], function(){
     Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');

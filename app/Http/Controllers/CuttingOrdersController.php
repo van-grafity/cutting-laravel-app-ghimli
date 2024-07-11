@@ -491,12 +491,14 @@ class CuttingOrdersController extends Controller
         return $pdf->stream($filename);
     }
 
+    // !! next hapus function ini. karena udah pindah ke controller baru
     public function cuttingCompletion()
     {
         $gls = Gl::with('GLCombine')->get();
         return view('page.cutting-order.completion', compact('gls'));
     }
 
+    // !! next hapus function ini
     public function cuttingCompletionReport(Request $request)
     {
         $gl_id = $request->gl_number;
