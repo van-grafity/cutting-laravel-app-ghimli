@@ -534,12 +534,12 @@ return [
             'icon' => 'fas fa-fw fa fa-file-alt',
             'can'  => 'cutting-record | cutting-output-report.access',
         ],
-        [
-            'text' => 'Cutting Order Completion',
-            'url'  => '/cutting-order-completion',
-            'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'cutting-record | cutting-completion-report.access',
-        ],
+        // [
+        //     'text' => 'Cutting Order Completion',
+        //     'url'  => '/cutting-order-completion',
+        //     'icon' => 'fas fa-fw fa fa-file-alt',
+        //     'can'  => 'cutting-record | cutting-completion-report.access',
+        // ],
         [
             'text' => 'Cutting Completion Report',
             'url'  => '/cutting-completion-report',
