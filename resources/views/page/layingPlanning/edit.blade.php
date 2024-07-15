@@ -179,7 +179,42 @@
                                 </div>
                             </div>
                         </div>
-                        <div col-sm-12>
+                        <div class="col-sm-12 my-3 row">
+                            <div class="col-sm-12">
+                                <h5 style="font-weight:700">Laying Planning Type</h5>
+                            </div>
+                            <div class="col-sm-12 col-lg-4">
+                                <div class="form-group">
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" id="laying_planning_type_body" name="laying_planning_type" value="1" {{ $layingPlanning->laying_planning_type_id == 1 || $layingPlanning->laying_planning_type_id == null ? 'checked' : '' }}>
+                                        <label for="laying_planning_type_body" class="custom-control-label">BODY</label>
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" id="laying_planning_type_combinasi" name="laying_planning_type" value="2" {{ $layingPlanning->laying_planning_type_id == 2 ? 'checked' : '' }}>
+                                        <label for="laying_planning_type_combinasi" class="custom-control-label">COMBINASI</label>
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                        <input class="custom-control-input" type="radio" id="laying_planning_type_interlining" name="laying_planning_type" value="3" {{ $layingPlanning->laying_planning_type_id == 3 ? 'checked' : '' }}>
+                                        <label for="laying_planning_type_interlining" class="custom-control-label">INTERLINING</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-8 laying-planning-select-option" style="{{ $layingPlanning->laying_planning_type_id == 1 || $layingPlanning->laying_planning_type_id == null ? 'display: none;' : '' }}">
+                                <div class="form-group">
+                                    <label for="parent_laying_planning" class="form-label">Planning Parrent</label>
+                                    <select class="form-control select2" id="parent_laying_planning" name="parent_laying_planning" data-placeholder="Select Planning Parrent">
+                                        <option value="">Select Planning Parrent</option>
+                                        @foreach ($laying_planning_list as $laying_planning)
+                                            <option value="{{ $laying_planning->id }}" {{ $laying_planning->id == $layingPlanning->parent_laying_planning_id ? 'selected' : '' }}>
+                                                {{ $laying_planning->serial_number }} | COLOR : {{ $laying_planning->color->color }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <small class="text-muted"><i>*Pastikan untuk mereferensi ke laying planning utama (body) yang benar</i></small>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
                             <div class="form-group">
                                 <label for="remark" class="form-label">Remark</label> <i>(Optional)</i>
                                 <textarea class="form-control" name="remark" id="remark" cols="30" rows="2">{{ $layingPlanning->remark }}</textarea>
@@ -354,7 +389,15 @@
             }).catch((err) => {
                 console.log(err);
             });
-        })
+        });
+
+
+        $('input[name="laying_planning_type"]').change(function() {
+            listen_laying_planning_type();
+        });
+        listen_laying_planning_type();
+
+        
     });
 </script>
 <script type="text/javascript">
@@ -478,6 +521,17 @@
 
         $('#total_size_qty').html(': ' + sum_size_qty());
     });
+
+    function listen_laying_planning_type() {
+        if ($('input[name="laying_planning_type"]:checked').val() === '1') {
+            $('.laying-planning-select-option').hide();
+            $('#parent_laying_planning').removeAttr('required');
+            $('#parent_laying_planning').val(null).trigger('change');
+        } else {
+            $('.laying-planning-select-option').show();
+            $('#parent_laying_planning').attr('required', 'required');
+        }
+    }
 </script>
 
 <script type="text/javascript">

@@ -123,7 +123,28 @@ class LayingPlanningsController extends Controller
         $fabricCons = DB::table('fabric_cons')->get();
         $sizes = DB::table('sizes')->get();
         $gl_combines = GlCombine::all();
-        return view('page.layingPlanning.add', compact('gls', 'styles', 'colors', 'fabricTypes', 'fabricCons', 'sizes','gl_combines'));
+
+        // todo : di sini ada pr, bagaimana caranya agar laying plannign tidak muncul semua. tapi cukup sesuai dengan gl nya. kayaknya bakal pakai ajax untuk munculin data option parent laying planning ini
+        // ## Retrieve laying plannings with the same main GL number prefix
+        // ## This reduces the list to only show related laying plannings
+        // $gl_number_prefix = Str::substr($layingPlanning->gl->gl_number, 0, 5);
+        $laying_planning_list = LayingPlanning::join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
+            // ->where('gls.gl_number', 'like', $gl_number_prefix . '%')
+            ->select('laying_plannings.id', 'laying_plannings.serial_number','color_id')
+            ->get();
+
+        $data = [
+            'gls' => $gls,
+            'styles' => $styles,
+            'colors' => $colors,
+            'fabricTypes' => $fabricTypes,
+            'fabricCons' => $fabricCons,
+            'sizes' => $sizes,
+            'gl_combines' => $gl_combines,
+            'laying_planning_list' => $laying_planning_list,
+        ];
+
+        return view('page.layingPlanning.add', $data);
     }
 
     /**
@@ -170,6 +191,7 @@ class LayingPlanningsController extends Controller
                 'fabric_cons_qty' => $request->fabric_cons_qty,
                 'fabric_cons_desc' => $request->fabric_cons_desc,
                 'remark' => $request->remark,
+                'created_by' => auth()->user()->id,
             ];
             $insertLayingData = LayingPlanning::create($layingData);
 
@@ -456,37 +478,43 @@ class LayingPlanningsController extends Controller
      */
     public function edit(LayingPlanning $layingPlannings, $id)
     {
-        
         $layingPlanning = LayingPlanning::find($id);
+        
+        // ## Retrieve laying plannings with the same main GL number prefix
+        // ## This reduces the list to only show related laying plannings
+        $gl_number_prefix = Str::substr($layingPlanning->gl->gl_number, 0, 5);
+        $laying_planning_list = LayingPlanning::join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
+            ->where('gls.gl_number', 'like', $gl_number_prefix . '%')
+            ->select('laying_plannings.id', 'laying_plannings.serial_number','color_id')
+            ->get();
+        
         $gls = DB::table('gls')->get();
         $styles = DB::table('styles')->where('gl_id',$layingPlanning->gl_id)->get();
         $colors = DB::table('colors')->get();
         $fabricTypes = DB::table('fabric_types')->get();
         $fabricCons = DB::table('fabric_cons')->get();
         $sizes = DB::table('sizes')->get();
-
-        // $layingPlanning->delivery_date = date('d/m/Y', strtotime($layingPlanning->delivery_date));
         $layingPlanning->plan_date = date('m/d/Y', strtotime($layingPlanning->plan_date));
-        
         $layingPlanningSizes = LayingPlanningSize::where('laying_planning_id', $layingPlanning->id)->get();
 
-        return view('page.layingPlanning.edit', compact('gls', 'styles', 'colors', 'fabricTypes', 'fabricCons', 'sizes','layingPlanning','layingPlanningSizes'));
+        $data = [
+            'gls' => $gls,
+            'styles' => $styles,
+            'colors' => $colors,
+            'fabricTypes' => $fabricTypes,
+            'fabricCons' => $fabricCons,
+            'sizes' => $sizes,
+            'layingPlanning' => $layingPlanning,
+            'layingPlanningSizes' => $layingPlanningSizes,
+            'laying_planning_list' => $laying_planning_list,
+        ];
+
+        return view('page.layingPlanning.edit', $data);
     }
 
     public function duplicate(Request $request, $id)
     {
         $layingPlanning = LayingPlanning::find($id);
-        $gls = DB::table('gls')->get();
-        $styles = DB::table('styles')->where('gl_id',$layingPlanning->gl_id)->get();
-        $colors = DB::table('colors')->get();
-        $fabricTypes = DB::table('fabric_types')->get();
-        $fabricCons = DB::table('fabric_cons')->get();
-        $sizes = DB::table('sizes')->get();
-
-        // $layingPlanning->delivery_date = date('d/m/Y', strtotime($layingPlanning->delivery_date));
-        // $layingPlanning->plan_date = date('m/d/Y', strtotime($layingPlanning->plan_date));
-
-        $layingPlanningSizes = LayingPlanningSize::where('laying_planning_id', $layingPlanning->id)->get();
 
         $layingPlanningData = [
             'serial_number' => $this->generate_serial_number($layingPlanning->gl_id,$layingPlanning->color_id, $layingPlanning->style_id, $layingPlanning->fabric_type_id, $layingPlanning->fabric_cons_id),
@@ -495,7 +523,6 @@ class LayingPlanningsController extends Controller
             'buyer_id' => $layingPlanning->buyer_id,
             'color_id' => $layingPlanning->color_id,
             'order_qty' => $layingPlanning->order_qty,
-            // DATE DEFAULT y-m-d 1945-08-17
             'delivery_date' => Carbon::createFromFormat('Y-m-d', '1945-08-17')->format('y-m-d'),
             'plan_date' => Carbon::now()->format('y-m-d'),
             'fabric_po' => $layingPlanning->fabric_po,
@@ -503,12 +530,14 @@ class LayingPlanningsController extends Controller
             'fabric_type_id' => $layingPlanning->fabric_type_id,
             'fabric_cons_qty' => $layingPlanning->fabric_cons_qty,
             'fabric_cons_desc' => $layingPlanning->fabric_cons_desc,
+            'laying_planning_type_id' => $layingPlanning->laying_planning_type_id,
+            'parent_laying_planning_id' => $layingPlanning->parent_laying_planning_id,
+            'created_by' => auth()->user()->id,
             'remark' => $layingPlanning->remark,
         ];
         $insertLayingData = LayingPlanning::create($layingPlanningData);
 
-        return redirect()->route('laying-planning.show',$insertLayingData->id)
-            ->with('success', 'Planning Successfully Duplicated.');
+        return redirect()->route('laying-planning.show',$insertLayingData->id)->with('success', 'Planning Successfully Duplicated.');
     }
     
     /**
@@ -553,6 +582,8 @@ class LayingPlanningsController extends Controller
         $layingPlanning->fabric_type_id = $request->fabric_type;
         $layingPlanning->fabric_cons_qty = $request->fabric_cons_qty;
         $layingPlanning->fabric_cons_desc = $request->fabric_cons_desc;
+        $layingPlanning->laying_planning_type_id = $request->laying_planning_type;
+        $layingPlanning->parent_laying_planning_id = $request->parent_laying_planning;
         $layingPlanning->remark = $request->remark;
 
         $layingPlanningDetail = LayingPlanningDetail::where('laying_planning_id', $layingPlanning->id)->get();
@@ -612,8 +643,7 @@ class LayingPlanningsController extends Controller
     {
         $layingPlanning = LayingPlanning::find($request->laying_planning_id);
         if(!$layingPlanning) {
-            return redirect('laying-planning-create')
-                        ->withInput();
+            return redirect('laying-planning-create')->withInput();
         }
         $getLastDetail = LayingPlanningDetail::where('laying_planning_id', $layingPlanning->id)->orderBy('table_number','desc')->first();
 
