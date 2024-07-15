@@ -426,9 +426,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/print/{id}', [CuttingTicketsController::class, 'print_ticket'])->name('print');
         Route::get('/print-multiple/{id}', [CuttingTicketsController::class, 'print_multiple'])->name('print-multiple');
         Route::get('/detail/{id}', [CuttingTicketsController::class, 'ticketListByCOR'])->name('detail');
-
         Route::get('/report/{id}', [CuttingTicketsController::class, 'print_report_pdf'])->name('report');
-
         Route::delete('/delete/{id}', [CuttingTicketsController::class, 'delete_ticket'])->name('delete-ticket');
         Route::get('/refresh-ticket/{id}', [CuttingTicketsController::class, 'refresh_ticket'])->name('refresh-ticket');
     });
@@ -441,10 +439,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::controller(BundleStocksController::class)->prefix('bundle-stock')->name('bundle-stock.')->group(function(){
         route::get('/', 'index')->name('index');
         route::get('/dtable', 'dataBundleStock')->name('dtable');
-
         route::get('/detail', 'detail')->name('detail');
+        route::get('/create-stock-in','stockIn')->name('stock-in');
+        route::get('/create-stock-out','stockOut')->name('stock-out');
+        route::post('/store', 'store')->name('store');
+        Route::get('/search-serial-number/{id}','search_serial_number')->name('search_serial_number');
+        route::post('/store-multiple', "storeMultiple")->name('store-multiple');
         route::get('/report', 'report')->name('report');
-
     });
 
     Route::controller(BundleTransferNotesController::class)->prefix('bundle-transfer-note')->name('bundle-transfer-note.')->group(function(){

@@ -468,6 +468,16 @@ return [
             'submenu' => [
                 [
                     'classes'=> 'ml-3',
+                    'text' => 'Create Stock In',
+                    'url' => '/bundle-stock/create-stock-in',
+                ],
+                [
+                    'classes'=> 'ml-3',
+                    'text' => 'Create Stock out',
+                    'url' => '/bundle-stock/create-stock-out',
+                ],
+                [
+                    'classes'=> 'ml-3',
                     'text' => 'Cut Piece Stock List',
                     'url' => '/bundle-stock',
                 ],
