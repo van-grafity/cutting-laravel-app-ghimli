@@ -133,14 +133,19 @@ class BundleStocksController extends Controller
 
         if (!$bundle_stock_transaction) {
             return ($transaction_type == 'OUT') ?
-                ['status' => "error", 'message' => 'Bundle dengan nomor ticket ' . $cutting_ticket->serial_number . ' tidak ada di dalam rack'] :
+                [
+                    'status'=> 'error',
+                    'serial_number' => $cutting_ticket->serial_number,
+                ] :
                 $success_condition;
         }
 
-        $message = ($transaction_type == 'IN') ? 'Sudah ada di dalam rack' : 'Sudah keluar dari rack';
 
         return ($bundle_stock_transaction->transaction_type == $transaction_type) ?
-            ['status' => 'error' , 'message' => 'Bundle dengan nomor ticket ' . $cutting_ticket->serial_number  . ' ' . $message] :
+        [
+            'status'=> 'error',
+            'serial_number' => $cutting_ticket->serial_number
+            ] :
             $success_condition;
     }
 
@@ -165,17 +170,19 @@ class BundleStocksController extends Controller
         $ticket_list = CuttingTicket::whereIn('serial_number', $data_input['serial_number'])->get();
         // ## Check bundle is inside rack or not.
         $bundle_checking_responses = $this->checkMultipleBundleOnRack($ticket_list, $data_input['transaction_type']);
+        $error_serial_numbers = [];
+        $transaction_type_message = ($data_input['transaction_type'] == 'IN') ? ' Sudah ada di dalam rack' : ' Sudah keluar dari rack';
+        foreach($bundle_checking_responses as $response){
+            if($response['status'] === 'error'){
+                $error_serial_numbers[] = $response['serial_number'];
+            }
+        }
 
-        // ## Get Only Error Bundle
-        $error_bundles = array_filter($bundle_checking_responses, function ($response) {
-            return isset($response['status']) && $response['status'] === 'error';
-        });
-
-        if($error_bundles){
-            // ## Get First Error
-            $first_error_bundle = reset($error_bundles);
-            return response()->json($first_error_bundle);
-
+        if(!empty($error_serial_numbers)){
+                return response()->json([
+                    'status'=> 'error',
+                    'message' => 'Bundle dengan nomor ticket ' . implode(', ', $error_serial_numbers) . $transaction_type_message,
+                ]);
         }
 
         try {
@@ -238,24 +245,24 @@ class BundleStocksController extends Controller
         return $response;
     }
 
-    private function checkTicketlist(Array $ticket_serial_number_list)
-    {
-        foreach ($ticket_serial_number_list as $key => $serial_number) {
-            $cutting_ticket = CuttingTicket::where('serial_number', $serial_number)->first();
-            if(!$cutting_ticket) {
-                $checking_result = [
-                    'status' => 'error',
-                    'message' => 'Bundle dengan nomor Tiket ' . $serial_number . ' tidak ditemukan'
-                ];
-                return $checking_result;
-            }
-        }
-        $checking_result = [
-            'status' => 'success',
-            'message' => 'All Ticket are Valid'
-        ];
-        return $checking_result;
-    }
+    // private function checkTicketlist(Array $ticket_serial_number_list)
+    // {
+    //     foreach ($ticket_serial_number_list as $key => $serial_number) {
+    //         $cutting_ticket = CuttingTicket::where('serial_number', $serial_number)->first();
+    //         if(!$cutting_ticket) {
+    //             $checking_result = [
+    //                 'status' => 'error',
+    //                 'message' => 'Bundle dengan nomor Tiket ' . $serial_number . ' tidak ditemukan'
+    //             ];
+    //             return $checking_result;
+    //         }
+    //     }
+    //     $checking_result = [
+    //         'status' => 'success',
+    //         'message' => 'All Ticket are Valid'
+    //     ];
+    //     return $checking_result;
+    // }
 
     private function createTransferNote($bundle_transaction_list, $location_id)
     {

@@ -49,8 +49,8 @@
                         </tbody>
                     </table>
                     <div class="row m-1">
-                       <h5 class="mr-2">Total </h5>
-                       <h5 id="total-stock-in">: 0</h5>
+                       <h5 class="mr-2">Total :</h5>
+                       <h5 id="total-stock-in">0</h5>
                     </div>
 
                     <div class="col text-right">

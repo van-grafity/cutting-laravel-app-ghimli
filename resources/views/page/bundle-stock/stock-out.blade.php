@@ -48,8 +48,8 @@
                             </tbody>
                         </table>
                     <div class="row m-1">
-                        <h5 class="mr-2">Total </h5>
-                        <h5 id="total-stock-out">: 0</h5>
+                        <h5 class="mr-2">Total : </h5>
+                        <h5 id="total-stock-out">0</h5>
                     </div>
                     <div class="form-group col-md-6 my-4">
                         <label for="location" class="form-label">Location</label>
