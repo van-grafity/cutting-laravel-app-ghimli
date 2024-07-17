@@ -25,17 +25,6 @@
                                 </div>
 
                             </div>
-                            {{-- <div class="form-group col-md-6">
-                                    <label for="location" class="form-label">Location</label>
-                                    <select class="form-control" id="location" name="location" style="width: 100%;" data-placeholder="Choose Location">
-                                        <option value="">Choose Location</option>
-                                        @foreach ($location as $locations)
-                                            <option value="{{ $locations->id }}">{{ $locations->location }}</option>
-                                        @endforeach
-                                    </select>
-                                </div> --}}
-                            <div class="form-group">
-                            </div>
                         </form>
                         <!-- END FORM -->
                     </div>
@@ -44,7 +33,7 @@
                 <!-- Table -->
                 <div class="card p-3">
                     <h4>List Scanned Ticket :</h4>
-                    <table ble class="table table-sm table-bordered text-center" id="stock-in-table">
+                    <table class="table table-sm table-bordered text-center" id="stock-in-table">
                         <thead>
                             <tr>
                                 <th scope="col">No Ticket Number</th>
@@ -63,20 +52,10 @@
                        <h5 class="mr-2">Total </h5>
                        <h5 id="total-stock-in">: 0</h5>
                     </div>
-                    <div class="form-group col-md-6 my-4">
-                        <label for="location" class="form-label">Location</label>
-                        <select class="form-control" id="location" name="location" style="width: 100%;"
-                            data-placeholder="Choose Location">
-                            <option value="">Choose Location</option>
-                            @foreach ($location as $locations)
-                                <option value="{{ $locations->id }}">{{ $locations->location }}</option>
-                            @endforeach
-                        </select>
-                    </div>
 
                     <div class="col text-right">
                         <a href="{{ url('/bundle-stock') }}" class="btn btn-secondary shadow-sm">cancel</a>
-                        <button class="btn btn-primary btn-md" id="save_stock" onclick="save_stock_in()">Save</button>
+                        <button class="btn btn-primary btn-md" id="save_stock" onclick="save_stock_in({{$location->id}})">Save</button>
                     </div>
                 </div>
             </div>
@@ -131,7 +110,7 @@
 
         const get_cutting_ticket = async (serial_number) => {
             const fetch_data = {
-                url: "{{ route('bundle-stock.store') }}",
+                url: "{{ route('bundle-stock.search-ticket') }}",
                 method: "POST",
                 data: {
                     serial_number: serial_number,
@@ -169,7 +148,7 @@
             const response = data.data
             const layingPlanning = response.cutting_order_record.laying_planning_detail.laying_planning;
             const row = `
-                <tr id=${response.serial_number}>
+                <tr id="${response.serial_number}">
                     <th scope="row">${response.ticket_number}</th>
                     <td class="serial_number">${response.serial_number}</td>
                     <td>${layingPlanning.buyer.name}</td>
@@ -192,24 +171,22 @@
             $('#total-stock-in').text(rowCount)
         }
 
-        const save_stock_in = async () => {
+        const save_stock_in = async (location) => {
             $('#save_stock').prop('disabled', true);
             const trElements = document.querySelectorAll('tr');
             let ids = [];
-
             trElements.forEach((tr) => {
                 if (tr.id !== '') {
-                    ids.push(tr.id); // Pushing just the ID string
+                    ids.push(tr.id);
                 }
             });
-
             const fetch_data = {
                 url: "{{ route('bundle-stock.store-multiple') }}",
                 method: "POST",
                 data: {
                     serial_number: ids,
                     transaction_type: "IN",
-                    location: $('#location  :selected').val(),
+                    location : location
                 },
                 token: token
             };
@@ -220,13 +197,14 @@
                     title: response.message
                 });
                 $("#stock-in-table tbody").empty();
-                $("#location").prop("selectedIndex", 0)
             } else {
                 swal_warning({
                     title: response.message
                 })
             }
             $('#save_stock').prop('disabled', false);
+            var rowCount = $('#stock-in-table tbody tr').length;
+            $('#total-stock-in').text(rowCount)
         }
     </script>
 @endpush

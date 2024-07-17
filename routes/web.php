@@ -442,7 +442,7 @@ Route::group(['middleware' => ['auth']], function () {
         route::get('/detail', 'detail')->name('detail');
         route::get('/create-stock-in','stockIn')->name('stock-in');
         route::get('/create-stock-out','stockOut')->name('stock-out');
-        route::post('/store', 'store')->name('store');
+        route::post('/search-ticket', 'searchTicket')->name('search-ticket');
         Route::get('/search-serial-number/{id}','search_serial_number')->name('search_serial_number');
         route::post('/store-multiple', "storeMultiple")->name('store-multiple');
         route::get('/report', 'report')->name('report');

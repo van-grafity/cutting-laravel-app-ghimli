@@ -23,18 +23,6 @@
                                     <input type="text" class="form-control mr-2" id="serial_number" name="serial_number">
                                     <button class="btn btn-primary shadow-sm" id="submit_form">Search Serial Number</button>
                                 </div>
-
-                            </div>
-                            {{-- <div class="form-group col-md-6">
-                                    <label for="location" class="form-label">Location</label>
-                                    <select class="form-control" id="location" name="location" style="width: 100%;" data-placeholder="Choose Location">
-                                        <option value="">Choose Location</option>
-                                        @foreach ($location as $locations)
-                                            <option value="{{ $locations->id }}">{{ $locations->location }}</option>
-                                        @endforeach
-                                    </select>
-                                </div> --}}
-                            <div class="form-group">
                             </div>
                         </form>
                         <!-- END FORM -->
@@ -44,8 +32,8 @@
                 <!-- Table -->
                 <div class="card p-3">
                     <h4>List Scanner Serial Number :</h4>
-                    <table ble class="table table-sm table-bordered text-center" id="stock-out-table">
-                        <thead>
+                        <table class="table table-sm table-bordered text-center" id="stock-out-table">
+                            <thead>
                             <tr>
                                 <th scope="col">No Ticket Number</th>
                                 <th scope="col">No Serial Number</th>
@@ -54,14 +42,14 @@
                                 <th scope="col">Color</th>
                                 <th scope="col">Layer</th>
                                 <th scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     <div class="row m-1">
-                       <h5 class="mr-2">Total </h5>
-                       <h5 id="total-stock-out">: 0</h5>
+                        <h5 class="mr-2">Total </h5>
+                        <h5 id="total-stock-out">: 0</h5>
                     </div>
                     <div class="form-group col-md-6 my-4">
                         <label for="location" class="form-label">Location</label>
@@ -131,7 +119,7 @@
 
         const get_cutting_ticket = async (serial_number) => {
             const fetch_data = {
-                url: "{{ route('bundle-stock.store') }}",
+                url: "{{ route('bundle-stock.search-ticket') }}",
                 method: "POST",
                 data: {
                     serial_number: serial_number,
@@ -169,7 +157,7 @@
             const response = data.data
             const layingPlanning = response.cutting_order_record.laying_planning_detail.laying_planning;
             const row = `
-                <tr id=${response.serial_number}>
+                <tr id="${response.serial_number}">
                     <th scope="row">${response.ticket_number}</th>
                     <td class="serial_number">${response.serial_number}</td>
                     <td>${layingPlanning.buyer.name}</td>
@@ -227,6 +215,8 @@
                 })
             }
             $('#save_stock').prop('disabled', false);
+            var rowCount = $('#stock-out-table tbody tr').length;
+            $('#total-stock-out').text(rowCount)
         }
     </script>
 @endpush

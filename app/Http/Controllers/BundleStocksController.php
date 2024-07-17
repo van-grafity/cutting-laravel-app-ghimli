@@ -88,25 +88,17 @@ class BundleStocksController extends Controller
     }
 
     public function stockIn(){
-        $location = DB::table('bundle_locations')->get();
+        $location = DB::table('bundle_locations')
+                    ->where('location', ['Cutting'])
+                    ->first();
         return view('page.bundle-stock.stock-in', compact('location'));
     }
 
     public function stockOut(){
-        $location = DB::table('bundle_locations')->get();
+        $location = DB::table('bundle_locations')
+                    ->whereNotIn('location', ['Cutting'])
+                    ->get();
         return view('page.bundle-stock.stock-out', compact('location'));
-    }
-
-
-    private function checkSingleBundleOnRack($transaction_type, $cutting_ticket)
-    {
-        $bundle_stock_transaction = BundleStockTransaction::where('ticket_id', $cutting_ticket->id)
-            ->orderBy('created_at', 'desc')
-            ->first();
-
-        $result = $this->generateResponses($bundle_stock_transaction, $transaction_type, $cutting_ticket);
-
-        return $result;
     }
 
     private function getSuccessMessage($transaction_type)
@@ -148,14 +140,13 @@ class BundleStocksController extends Controller
         $message = ($transaction_type == 'IN') ? 'Sudah ada di dalam rack' : 'Sudah keluar dari rack';
 
         return ($bundle_stock_transaction->transaction_type == $transaction_type) ?
-            ['status' => 'error' , 'message' => 'Bundle dengan nomor ticket ' . $cutting_ticket->serial_number . ' ' . $message] :
+            ['status' => 'error' , 'message' => 'Bundle dengan nomor ticket ' . $cutting_ticket->serial_number  . ' ' . $message] :
             $success_condition;
     }
 
     public function storeMultiple(Request $request)
     {
         $data_input = $request->all();
-        $checked_tickets = $this->checkTicketlist($data_input['serial_number']);
 
         if(!$data_input['serial_number']){
             return response()->json([
@@ -169,14 +160,6 @@ class BundleStocksController extends Controller
                 'status'=> 'error',
                 'message' => "Location Tidak Boleh Kosong"
             ]);
-        }
-
-        if($checked_tickets['status'] == 'error'){
-            $data_return = [
-                'status' => 'error',
-                'message' => $checked_tickets['message'],
-            ];
-            return response()->json($data_return);
         }
 
         $ticket_list = CuttingTicket::whereIn('serial_number', $data_input['serial_number'])->get();
@@ -252,7 +235,6 @@ class BundleStocksController extends Controller
 
             $response[$ticket_id] = $result;
         }
-
         return $response;
     }
 
@@ -316,59 +298,39 @@ class BundleStocksController extends Controller
         return $serial_number;
     }
 
-
-
-    // public function search_serial_number(String $id){
-    //     try{
-    //         $ticket = CuttingTicket::where('serial_number', $id)->first();
-    //         if($ticket == null){
-    //             return response()->json([
-    //                 'status'=> 'error',
-    //                 'message'=> 'Cutting Ticket Dengan Serial Number'. $id . 'Tidak Ditemukan'
-    //             ]);
-    //         };
-
-    //         $checkBundle = $this->checkSingleBundleOnRack($data_input["transaction_type"], $cutting_ticket);
-    //         if($checkBundle['status'] == "error"){
-    //             return  response()->json($checkBundle);
-    //         };
-
-    //         return response()->json($ticket);
-    //     }catch(\Throwable $th){
-    //         return response()->json([
-    //             'status'=> 'error',
-    //             'message'=> $th->getMessage()
-    //         ]);
-    //     }
-    // }
-
-    public function store(Request $request)
+    public function searchTicket(Request $request)
     {
         try {
-
             $data_input = $request->all();
+            $cutting_ticket = CuttingTicket::with([
+                'cuttingOrderRecord.layingPlanningDetail.layingPlanning.color',
+                'cuttingOrderRecord.layingPlanningDetail.layingPlanning.buyer',
+                'size'
+            ])
+            ->select('id', 'serial_number', 'cutting_order_record_id', 'size_id', 'layer', 'ticket_number')
+            ->where('serial_number', $data_input['serial_number'])
+            ->first();
 
-            $cutting_ticket = CuttingTicket::with(['cuttingOrderRecord.layingPlanningDetail.layingPlanning.color','cuttingOrderRecord.layingPlanningDetail.layingPlanning.buyer' ,'size'])
-                            ->select('cutting_tickets.id','cutting_tickets.serial_number','cutting_order_record_id','size_id','layer','ticket_number')
-                            ->where('serial_number', $data_input['serial_number'])
-                            ->first();
+            if(!$cutting_ticket) {
+                    $checking_result = [
+                        'status' => 'error',
+                        'message' => 'Bundle dengan nomor Tiket ' .  $data_input['serial_number'] . ' tidak ditemukan'
+                    ];
+                    return $checking_result;
+            }
 
-            if ($cutting_ticket == null) return response()->json(["message" => "Cutting Ticket Tidak Ditemukan"]);
-
-            $data_return = [
-                'status' => "success",
+            $checking_result = [
+                'status' => 'success',
                 'message' => "Berhasil menambah cutting ticket pada tabel",
-                'data' => $cutting_ticket
+                'data' => $cutting_ticket,
             ];
-
-            return response()->json($data_return);
+            return $checking_result;
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
                 'message' => $th->getMessage()
             ]);
         }
-
     }
 
     private function updateBundleStock($bundle_stock_transaction) : array
