@@ -124,15 +124,6 @@ class LayingPlanningsController extends Controller
         $sizes = DB::table('sizes')->get();
         $gl_combines = GlCombine::all();
 
-        // todo : di sini ada pr, bagaimana caranya agar laying plannign tidak muncul semua. tapi cukup sesuai dengan gl nya. kayaknya bakal pakai ajax untuk munculin data option parent laying planning ini
-        // ## Retrieve laying plannings with the same main GL number prefix
-        // ## This reduces the list to only show related laying plannings
-        // $gl_number_prefix = Str::substr($layingPlanning->gl->gl_number, 0, 5);
-        $laying_planning_list = LayingPlanning::join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
-            // ->where('gls.gl_number', 'like', $gl_number_prefix . '%')
-            ->select('laying_plannings.id', 'laying_plannings.serial_number','color_id')
-            ->get();
-
         $data = [
             'gls' => $gls,
             'styles' => $styles,
@@ -141,10 +132,38 @@ class LayingPlanningsController extends Controller
             'fabricCons' => $fabricCons,
             'sizes' => $sizes,
             'gl_combines' => $gl_combines,
-            'laying_planning_list' => $laying_planning_list,
         ];
 
         return view('page.layingPlanning.add', $data);
+    }
+
+    public function get_planning_by_gl(Request $request)
+    {
+        if(!$request->has('gl_id')){
+            $date_return = [
+                'status' => 'error',
+                'message'=> 'Please Provide GL ID',
+            ];
+            return response()->json($date_return, 200);
+        }
+        
+        // ## Retrieve laying plannings with the same GL number prefix
+        // ## This reduces the list to only show related laying plannings
+        $gl_number = GL::find($request->gl_id);
+        $gl_number_prefix = Str::substr($gl_number->gl_number, 0, 5);
+        $laying_planning_list = LayingPlanning::with('color')->join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
+            ->where('gls.gl_number', 'like', $gl_number_prefix . '%')
+            ->select('laying_plannings.id', 'laying_plannings.serial_number','color_id')
+            ->get();
+
+        $date_return = [
+            'status' => 'success',
+            'data' => [
+                'laying_planning_list' => $laying_planning_list
+            ],
+            'message'=> 'Successfully retrieved Laying Planning',
+        ];
+        return response()->json($date_return, 200);
     }
 
     /**
@@ -170,8 +189,8 @@ class LayingPlanningsController extends Controller
 
         if ($validator->fails()) {
             return redirect('laying-planning-create')
-                        ->withErrors($validator)
-                        ->withInput();
+                ->withErrors($validator)
+                ->withInput();
         }
 
         try {
@@ -190,6 +209,8 @@ class LayingPlanningsController extends Controller
                 'fabric_type_id' => $request->fabric_type,
                 'fabric_cons_qty' => $request->fabric_cons_qty,
                 'fabric_cons_desc' => $request->fabric_cons_desc,
+                'laying_planning_type_id' => $request->laying_planning_type,
+                'parent_laying_planning_id' => $request->parent_laying_planning,
                 'remark' => $request->remark,
                 'created_by' => auth()->user()->id,
             ];
@@ -219,8 +240,8 @@ class LayingPlanningsController extends Controller
                 ->with('success', 'Data Laying Planning berhasil dibuat.');
         } catch (\Throwable $th) {
             return redirect('laying-planning-create')
-                        ->withErrors($th->getMessage())
-                        ->withInput();
+                ->withErrors($th->getMessage())
+                ->withInput();
         }
     }
 

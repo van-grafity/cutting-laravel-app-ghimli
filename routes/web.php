@@ -231,6 +231,19 @@ Route::group([
 });
 
 
+// ## Laying Planning (New Routing)
+Route::group([
+    'middleware' => [
+        'auth',
+    ],
+    'controller' => App\Http\Controllers\LayingPlanningsController::class,
+    'prefix' => 'laying-planning',
+    'as' => 'laying-planning.',
+],function() {
+    Route::get('get-planning-by-gl', 'get_planning_by_gl')->name('get-planning-by-gl');
+});
+
+
 // ## Laying Planning Detail and Cutting Order Record
 Route::group([
     'middleware' => [

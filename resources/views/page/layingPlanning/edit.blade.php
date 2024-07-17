@@ -201,14 +201,9 @@
                             </div>
                             <div class="col-sm-8 laying-planning-select-option" style="{{ $layingPlanning->laying_planning_type_id == 1 || $layingPlanning->laying_planning_type_id == null ? 'display: none;' : '' }}">
                                 <div class="form-group">
-                                    <label for="parent_laying_planning" class="form-label">Planning Parrent</label>
-                                    <select class="form-control select2" id="parent_laying_planning" name="parent_laying_planning" data-placeholder="Select Planning Parrent">
-                                        <option value="">Select Planning Parrent</option>
-                                        @foreach ($laying_planning_list as $laying_planning)
-                                            <option value="{{ $laying_planning->id }}" {{ $laying_planning->id == $layingPlanning->parent_laying_planning_id ? 'selected' : '' }}>
-                                                {{ $laying_planning->serial_number }} | COLOR : {{ $laying_planning->color->color }}
-                                            </option>
-                                        @endforeach
+                                    <label for="parent_laying_planning" class="form-label">Planning Parent</label>
+                                    <select class="form-control select2" id="parent_laying_planning" name="parent_laying_planning" data-placeholder="Select Planning Parent">
+                                        <option value="">Select Planning Parent</option>
                                     </select>
                                 </div>
                                 <small class="text-muted"><i>*Pastikan untuk mereferensi ke laying planning utama (body) yang benar</i></small>
@@ -299,9 +294,12 @@
 @endsection
 @push('js')
 <script type="text/javascript">
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
     const url_buyer = `{{ route('fetch.buyer') }}`;
     const url_style = `{{ route('fetch.style') }}`;
     const url_fabric_type = `{{ route('fetch.fabric-type') }}`;
+    const url_get_planning_by_gl = `{{ route('laying-planning.get-planning-by-gl') }}`;
 
 
     $(document).ready(function() {
@@ -363,6 +361,8 @@
             }).catch((err) => {
                 console.log(err);
             });
+
+            update_parent_laying_planning_option($(this).val());
         })
 
         // ## Fill Style Description Box depend on Selected Style
@@ -397,7 +397,7 @@
         });
         listen_laying_planning_type();
 
-        
+        update_parent_laying_planning_option($('#gl').val());
     });
 </script>
 <script type="text/javascript">
@@ -531,6 +531,38 @@
             $('.laying-planning-select-option').show();
             $('#parent_laying_planning').attr('required', 'required');
         }
+    }
+
+    async function update_parent_laying_planning_option(gl_id) {
+        fetch_data = {
+            url: url_get_planning_by_gl,
+            method: "GET",
+            token: token,
+            data: {
+                gl_id: gl_id
+            }
+        }
+        result = await using_fetch_v2(fetch_data);
+        
+        if(result.status != 'success'){
+            swal_warning({
+                title: result.message,
+                text: " "
+            });
+            return false;
+        }
+        let formattedData = [];
+        result.data.laying_planning_list.forEach(function(item) {
+            formattedData.push({
+                id: item.id,
+                text: item.serial_number + " | " + item.color.color
+            });
+        });
+        
+        $('#parent_laying_planning').select2('destroy').empty()
+        $('#parent_laying_planning').select2({
+            data: formattedData
+        });
     }
 </script>
 
