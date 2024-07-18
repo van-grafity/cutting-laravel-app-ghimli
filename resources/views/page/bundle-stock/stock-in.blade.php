@@ -99,7 +99,8 @@
         })
 
         const is_already_inputed = (serialNumber) => {
-            if ($(`#stock-in-table tbody tr td.serial_number:contains(${serialNumber})`).length > 0) {
+            let value = serialNumber.trim()
+            if ($(`#stock-in-table tbody tr td.serial_number:contains(${value})`).length > 0) {
                 $('#serial_number').val("");
                 $('#serial_number').focus();
                 return true
