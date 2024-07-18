@@ -979,4 +979,40 @@ class LayingPlanningsController extends Controller
         return $serial_number;
     }
 
+
+    public function create_planing_support($laying_planning_id) {
+        $layingPlanning = LayingPlanning::find($laying_planning_id);
+        
+        // ## Retrieve laying plannings with the same main GL number prefix
+        // ## This reduces the list to only show related laying plannings
+        $gl_number_prefix = Str::substr($layingPlanning->gl->gl_number, 0, 5);
+        $laying_planning_list = LayingPlanning::join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
+            ->where('gls.gl_number', 'like', $gl_number_prefix . '%')
+            ->select('laying_plannings.id', 'laying_plannings.serial_number','color_id')
+            ->get();
+        
+        $gls = DB::table('gls')->get();
+        $styles = DB::table('styles')->where('gl_id',$layingPlanning->gl_id)->get();
+        $colors = DB::table('colors')->get();
+        $fabricTypes = DB::table('fabric_types')->get();
+        $fabricCons = DB::table('fabric_cons')->get();
+        $sizes = DB::table('sizes')->get();
+        $layingPlanning->plan_date = date('m/d/Y', strtotime($layingPlanning->plan_date));
+        $layingPlanningSizes = LayingPlanningSize::where('laying_planning_id', $layingPlanning->id)->get();
+
+        $data = [
+            'gls' => $gls,
+            'styles' => $styles,
+            'colors' => $colors,
+            'fabricTypes' => $fabricTypes,
+            'fabricCons' => $fabricCons,
+            'sizes' => $sizes,
+            'layingPlanning' => $layingPlanning,
+            'layingPlanningSizes' => $layingPlanningSizes,
+            'laying_planning_list' => $laying_planning_list,
+        ];
+
+        return view('page.layingPlanning.create-planning-support', $data);
+    }
+
 }

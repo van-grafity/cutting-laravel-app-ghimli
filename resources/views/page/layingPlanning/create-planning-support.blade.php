@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Edit Laying Planning')
+@section('title', 'Create Planning Support')
 
 @section('content')
 
@@ -19,10 +19,9 @@
                     </div>
                     @endif
                     <!-- START FORM -->
-                    <form action="{{ route('laying-planning.update', $layingPlanning->id) }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="form_laying_planning">
+                    <form action="{{ url('laying-planning') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="form_laying_planning">
                         @csrf
-                        @method('PUT')
-                        <input type="hidden" name="laying_planning_id" value="{{ $layingPlanning->id }}">
+                        @method('POST')
                         <div class="row">
                             <div class="col-md-6 col-sm-12">
                                 <div class="form-group">
@@ -186,10 +185,6 @@
                             <div class="col-sm-12 col-lg-4">
                                 <div class="form-group">
                                     <div class="custom-control custom-radio">
-                                        <input class="custom-control-input" type="radio" id="laying_planning_type_body" name="laying_planning_type" value="1" {{ $layingPlanning->laying_planning_type_id == 1 || $layingPlanning->laying_planning_type_id == null ? 'checked' : '' }}>
-                                        <label for="laying_planning_type_body" class="custom-control-label">BODY</label>
-                                    </div>
-                                    <div class="custom-control custom-radio">
                                         <input class="custom-control-input" type="radio" id="laying_planning_type_combinasi" name="laying_planning_type" value="2" {{ $layingPlanning->laying_planning_type_id == 2 ? 'checked' : '' }}>
                                         <label for="laying_planning_type_combinasi" class="custom-control-label">COMBINASI</label>
                                     </div>
@@ -203,7 +198,7 @@
                                 <div class="form-group">
                                     <label for="parent_laying_planning" class="form-label">Planning Parent</label>
                                     <select class="form-control select2" id="parent_laying_planning" name="parent_laying_planning" data-placeholder="Select Planning Parent">
-                                        <option value="">Select Planning Parent</option>
+                                        <option value="{{ $layingPlanning->id }}">{{ $layingPlanning->serial_number }}</option>
                                     </select>
                                 </div>
                                 <small class="text-muted"><i>*Pastikan untuk mereferensi ke laying planning utama (body) yang benar</i></small>
@@ -299,8 +294,6 @@
     const url_buyer = `{{ route('fetch.buyer') }}`;
     const url_style = `{{ route('fetch.style') }}`;
     const url_fabric_type = `{{ route('fetch.fabric-type') }}`;
-    const url_get_planning_by_gl = `{{ route('laying-planning.get-planning-by-gl') }}`;
-    let parent_laying_planning_id = `{{ $layingPlanning->parent_laying_planning_id }}`;
 
 
     $(document).ready(function() {
@@ -363,7 +356,6 @@
                 console.log(err);
             });
 
-            update_parent_laying_planning_option($(this).val());
         })
 
         // ## Fill Style Description Box depend on Selected Style
@@ -391,14 +383,6 @@
                 console.log(err);
             });
         });
-
-
-        $('input[name="laying_planning_type"]').change(function() {
-            listen_laying_planning_type();
-        });
-        listen_laying_planning_type();
-
-        update_parent_laying_planning_option($('#gl').val());
     });
 </script>
 <script type="text/javascript">
@@ -522,50 +506,6 @@
 
         $('#total_size_qty').html(': ' + sum_size_qty());
     });
-
-    function listen_laying_planning_type() {
-        if ($('input[name="laying_planning_type"]:checked').val() === '1') {
-            $('.laying-planning-select-option').hide();
-            $('#parent_laying_planning').removeAttr('required');
-            $('#parent_laying_planning').val(null).trigger('change');
-        } else {
-            $('.laying-planning-select-option').show();
-            $('#parent_laying_planning').attr('required', 'required');
-        }
-    }
-
-    async function update_parent_laying_planning_option(gl_id) {
-        fetch_data = {
-            url: url_get_planning_by_gl,
-            method: "GET",
-            token: token,
-            data: {
-                gl_id: gl_id
-            }
-        }
-        result = await using_fetch_v2(fetch_data);
-        
-        if(result.status != 'success'){
-            swal_warning({
-                title: result.message,
-                text: " "
-            });
-            return false;
-        }
-        let formattedData = [];
-        result.data.laying_planning_list.forEach(function(item) {
-            formattedData.push({
-                id: item.id,
-                text: item.serial_number + " | " + item.color.color
-            });
-        });
-        
-        $('#parent_laying_planning').select2('destroy').empty()
-        $('#parent_laying_planning').select2({
-            data: formattedData
-        });
-        $('#parent_laying_planning').val(parent_laying_planning_id).trigger('change');
-    }
 </script>
 
 <script type="text/javascript">
