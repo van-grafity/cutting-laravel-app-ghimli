@@ -131,6 +131,7 @@ class BundleStocksController extends Controller
             'message' => 'Go Ahead!'
         ];
 
+        // ## Kondisi ketika ticket belum distock in tapi sudah stock out
         if (!$bundle_stock_transaction) {
             return ($transaction_type == 'OUT') ?
                 [
@@ -140,11 +141,12 @@ class BundleStocksController extends Controller
                 $success_condition;
         }
 
-
+        // ## Kondisi ketika ticket sudah stock in tidak bisa stock in lagi dan sebaliknya
         return ($bundle_stock_transaction->transaction_type == $transaction_type) ?
-        [
-            'status'=> 'error',
-            'serial_number' => $cutting_ticket->serial_number
+            [
+                'status'=> 'error',
+                'data' => 'exist',
+                'serial_number' => $bundle_stock_transaction->cuttingTicket->serial_number,
             ] :
             $success_condition;
     }
@@ -171,18 +173,30 @@ class BundleStocksController extends Controller
         // ## Check bundle is inside rack or not.
         $bundle_checking_responses = $this->checkMultipleBundleOnRack($ticket_list, $data_input['transaction_type']);
         $error_serial_numbers = [];
+        $bundle_stock_serial_numbers = [];
+        $bundle_stock_exist = null;
         $transaction_type_message = ($data_input['transaction_type'] == 'IN') ? ' Sudah ada di dalam rack' : ' Sudah keluar dari rack';
         foreach($bundle_checking_responses as $response){
-            if($response['status'] === 'error'){
+            if(isset($response['data']) && $response['data'] === 'exist'){
+                $bundle_stock_serial_numbers[] = $response['serial_number'];
+                $bundle_stock_exist = $response['data'];
+            }else if($response['status'] === 'error'){
                 $error_serial_numbers[] = $response['serial_number'];
             }
         }
 
-        if(!empty($error_serial_numbers)){
+        if(!empty($error_serial_numbers || $bundle_stock_serial_numbers)){
+            if($bundle_stock_exist){
                 return response()->json([
                     'status'=> 'error',
-                    'message' => 'Bundle dengan nomor ticket ' . implode(', ', $error_serial_numbers) . $transaction_type_message,
+                    'message' => 'Bundle dengan nomor ticket ' . implode(', ', $bundle_stock_serial_numbers) . $transaction_type_message,
                 ]);
+            }else{
+                return response()->json([
+                    'status'=> 'error',
+                    'message' => 'Bundle dengan nomor ticket ' . implode(', ', $error_serial_numbers) . "  tidak ada di dalam rack",
+                ]);
+            }
         }
 
         try {
