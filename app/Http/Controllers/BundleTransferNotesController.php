@@ -212,6 +212,7 @@ class BundleTransferNotesController extends Controller
             ->join('sizes','sizes.id','=','cutting_tickets.size_id')
             ->groupBy('sizes.id')
             ->select('sizes.id','sizes.size')
+            ->orderBy('sizes.id', 'ASC')
             ->get();
     }
 }
