@@ -40,19 +40,19 @@ class BundleTransferNotesController extends Controller
             ->addColumn('action', function($data){
                 $action = '<a href="'.route('bundle-transfer-note.detail',$data->transfer_note_id).'" class="btn btn-info btn-sm mb-1" data-toggle="tooltip" data-placement="top" title="Detail" target="_blank">Detail</a>';
                 return $action;
-            
+
             })->addColumn('date', function($data){
                 return Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('d-m-Y');
-            
+
             })->addColumn('gl_number', function($data){
                 return $this->getGlFromTransferNoteID($data->transfer_note_id);
-                
+
             })->addColumn('color', function($data){
                 return $this->getColorFromTrasnferNoteID($data->transfer_note_id);
-                
+
             })->addColumn('total_pcs', function($data){
                 return $this->getTotalPcsFromTrasnferNoteID($data->transfer_note_id);
-                
+
             })
             ->addIndexColumn()
             ->make(true);
@@ -82,7 +82,7 @@ class BundleTransferNotesController extends Controller
             ->join('cutting_order_records','cutting_order_records.id','=','cutting_tickets.cutting_order_record_id')
             ->join('laying_planning_details','laying_planning_details.id','=','cutting_order_records.laying_planning_detail_id')
             ->join('laying_plannings','laying_plannings.id','=','laying_planning_details.laying_planning_id')
-            ->join('colors','colors.id','=','laying_plannings.gl_id')
+            ->join('colors','colors.id','=','laying_plannings.color_id')
             ->where('bundle_transfer_note_id',$transfer_note_id)
             ->groupBy('colors.id')
             ->select('colors.color')->get()->toArray();
@@ -126,14 +126,14 @@ class BundleTransferNotesController extends Controller
         $data = $this->getTransferNoteData($transfer_note_id);
         return view('page.bundle-transfer-note.detail', $data);
     }
-    
+
     public function print(Request $request, $transfer_note_id)
     {
         $data = $this->getTransferNoteData($transfer_note_id);
         $filename = 'Cut Piece Transfer Note No. '.$data['transfer_note_header']->serial_number.'.pdf';
         $data['filename'] = $filename;
         // return view('page.bundle-transfer-note.print', $data);
-        
+
         $pdf = PDF::loadView('page.bundle-transfer-note.print', $data)->setPaper('a5', 'landscape');
         return $pdf->stream($filename);
     }
@@ -142,7 +142,7 @@ class BundleTransferNotesController extends Controller
     {
         $transfer_note = BundleTransferNote::with('bundleLocationTo')->find($transfer_note_id);
         $size_list = $this->getSizeList($transfer_note->id);
-        
+
         $transfer_note_header = (object)[
             'transfer_note_id' => $transfer_note->id,
             'serial_number' => $transfer_note->serial_number,
@@ -180,16 +180,16 @@ class BundleTransferNotesController extends Controller
                 $filtered_result = $summary_per_size->filter(function ($summary, $key) use ($size_id) {
                     return $summary->size_id === $size_id;
                 });
-                
+
                 if($filtered_result->isNotEmpty()){
-                    $qty_per_size[$key_size]->qty = $filtered_result->first()->qty; 
+                    $qty_per_size[$key_size]->qty = $filtered_result->first()->qty;
                 } else {
-                    $qty_per_size[$key_size]->qty = 0; 
+                    $qty_per_size[$key_size]->qty = 0;
                 }
             }
-            
+
             $transfer_note_detail[$key]->qty_per_size = $qty_per_size;
-            
+
             $total_qty_all_size = $summary_per_size->reduce(function ($carry, $item) {
                 return $carry + $item->qty;
             }, 0);
