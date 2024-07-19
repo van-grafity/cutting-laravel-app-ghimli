@@ -49,8 +49,8 @@
                         </tbody>
                     </table>
                     <div class="row m-1">
-                       <h5 class="mr-2">Total </h5>
-                       <h5 id="total-stock-in">: 0</h5>
+                       <h5 class="mr-2">Total :</h5>
+                       <h5 id="total-stock-in">0</h5>
                     </div>
 
                     <div class="col text-right">
@@ -99,7 +99,8 @@
         })
 
         const is_already_inputed = (serialNumber) => {
-            if ($(`#stock-in-table tbody tr td.serial_number:contains(${serialNumber})`).length > 0) {
+            let value = serialNumber.trim()
+            if ($(`#stock-in-table tbody tr td.serial_number:contains(${value})`).length > 0) {
                 $('#serial_number').val("");
                 $('#serial_number').focus();
                 return true
