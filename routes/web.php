@@ -299,6 +299,7 @@ Route::group([
     'as' => 'fabric-consumption.',
 ],function() {
     Route::get('', 'index')->name('index');
+    Route::get('print', 'print')->name('print');
     Route::get('print-preview', 'print_preview')->name('print-preview');
 });
 
