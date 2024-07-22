@@ -92,14 +92,18 @@
                                         <td class="pl-3">:</td>
                                         <td>{{ $laying_planning->LayingPlanningType ? $laying_planning->LayingPlanningType->type : '-' }} </td>
                                     </tr>
-                                    @if( $laying_planning->LayingPlanningType)
+                                    @if($laying_planning->LayingPlanningType)
                                     <tr>
                                         <td>Planning Parent</td>
                                         <td class="pl-3">:</td>
-                                        <td> 
+                                        <td>
+                                            @if($laying_planning->parent_laying_planning_id)
                                             <a href="{{ route('laying-planning.show',$laying_planning->parent_laying_planning_id) }}" target="_blank">
                                                 {{ $laying_planning->parentLayingPlanning->serial_number }}
                                             </a>
+                                            @else
+                                            -
+                                            @endif
                                         </td>
                                     </tr>
                                     @endif
