@@ -287,21 +287,6 @@ Route::group([
 });
 
 
-// !! ini hapus punya ridwan, awalnya mau buat controller baru tapi belum selesai. udah di lanjutkan sama josh
-// ## Cutting Completion Report
-Route::group([
-    'middleware' => [
-        'auth',
-        'hasAnyPermission:cutting-record,cutting-completion-report.access',
-    ],
-    'controller' => App\Http\Controllers\CuttingOrdersController::class,
-    // 'prefix' => 'cutting-order',
-    'as' => 'cutting-order.',
-],function() {
-    Route::get('cutting-order-completion', 'cuttingCompletion')->name('cutting-completion');
-    Route::get('cutting-order-completion-report', 'cuttingCompletionReport')->name('cutting-completion-report');
-});
-
 // ## Fabric Consumption
 Route::group([
     'middleware' => [
@@ -313,6 +298,7 @@ Route::group([
     'as' => 'fabric-consumption.',
 ],function() {
     Route::get('', 'index')->name('index');
+    Route::get('print', 'print')->name('print');
     Route::get('print-preview', 'print_preview')->name('print-preview');
 });
 
@@ -360,9 +346,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/fabric-requisition-data', [FabricRequisitionsController::class, 'dataFabricRequisition']);
     Route::get('/fabric-requisition-serial-number', [FabricRequisitionsController::class, 'get_serial_number'])->name('fabric-requisition-serial-number');
     Route::get('/fabric-issue-data', [FabricIssuesController::class, 'dataFabricIssue']);
-
-    // !! delete this unused route
-    // Route::get('/daily-cutting-data', [DailyCuttingReportsController::class, 'dataDailyCutting']);
 
 });
 
@@ -442,9 +425,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/print/{id}', [CuttingTicketsController::class, 'print_ticket'])->name('print');
         Route::get('/print-multiple/{id}', [CuttingTicketsController::class, 'print_multiple'])->name('print-multiple');
         Route::get('/detail/{id}', [CuttingTicketsController::class, 'ticketListByCOR'])->name('detail');
-
         Route::get('/report/{id}', [CuttingTicketsController::class, 'print_report_pdf'])->name('report');
-
         Route::delete('/delete/{id}', [CuttingTicketsController::class, 'delete_ticket'])->name('delete-ticket');
         Route::get('/refresh-ticket/{id}', [CuttingTicketsController::class, 'refresh_ticket'])->name('refresh-ticket');
     });
@@ -457,10 +438,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::controller(BundleStocksController::class)->prefix('bundle-stock')->name('bundle-stock.')->group(function(){
         route::get('/', 'index')->name('index');
         route::get('/dtable', 'dataBundleStock')->name('dtable');
-
         route::get('/detail', 'detail')->name('detail');
+        route::get('/create-stock-in','stockIn')->name('stock-in');
+        route::get('/create-stock-out','stockOut')->name('stock-out');
+        route::post('/search-ticket', 'searchTicket')->name('search-ticket');
+        Route::get('/search-serial-number/{id}','search_serial_number')->name('search_serial_number');
+        route::post('/store-multiple', "storeMultiple")->name('store-multiple');
         route::get('/report', 'report')->name('report');
-
     });
 
     Route::controller(BundleTransferNotesController::class)->prefix('bundle-transfer-note')->name('bundle-transfer-note.')->group(function(){
@@ -483,16 +467,13 @@ Route::group(['middleware' => ['auth','can:form']], function () {
 
 
 // !! next delete cutting order completion ini kodingan lama
-//## ganti permission cutting-order-completion
-Route::group(['middleware' => ['auth', 'hasAnyPermission:cutting-record,cutting-completion-report.access']], function(){
-    Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
-    Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
-});
+// //## ganti permission cutting-order-completion
+// Route::group(['middleware' => ['auth', 'hasAnyPermission:cutting-record,cutting-completion-report.access']], function(){
+//     Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
+//     Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
+// });
 
 Route::group(['middleware' => ['auth']], function () {
-
-    // !! delete this unsed route
-    // Route::get('daily-cutting-detail', [DailyCuttingReportsController::class,'dailyCuttingDetail'])->name('daily-cutting.detail');
 
     Route::group(['middleware' => ['hasAnyPermission:cutting-record,status-cutting-order-record.access']], function() {
         Route::get('status-cutting-order-record', [CuttingOrdersController::class,'statusCuttingOrderRecord'])->name('cutting-order.status-cutting-order-record');
@@ -504,9 +485,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('cutting-group-report/print', [CuttingGroupReportController::class,'print'])->name('cutting-group-report.print');
     });
 
-    // Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
-
-    // Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
     Route::group(['middleware' => ['hasAnyPermission:cutting-record,tracking-fabric-usage.access']], function() {
         Route::get('tracking-fabric-usage', [FabricIssuesController::class,'trackingFabricUsage'])->name('fabric-issue.tracking-fabric-usage');
         Route::get('tracking-fabric-usage-report', [FabricIssuesController::class,'trackingFabricUsageReport'])->name('fabric-issue.tracking-fabric-usage-report');

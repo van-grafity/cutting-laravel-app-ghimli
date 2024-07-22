@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Gl;
 use App\Models\Buyer;
 use App\Models\LayingPlanning;
-
+use PDF;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
 
@@ -25,6 +25,51 @@ class FabricConsumptionsController extends Controller
         return view('page.fabric-consumption.index', $data);
     }
 
+    public function print(Request $request)
+    {
+        $gl_ids = null;
+        if($request->gl_number && !is_array($request->gl_number)){
+            $gl_ids = explode(',', $request->gl_number);
+        } else{
+            $gl_ids = $request->gl_number;
+        }
+
+        $laying_planning =  LayingPlanning::with(['gl']);
+
+        if($request->buyer){
+            $laying_planning->where('buyer_id', $request->buyer);
+        }
+        if($gl_ids){
+            $laying_planning->whereIn('gl_id', $gl_ids);
+        }
+
+        $laying_planning = $laying_planning->get();
+
+        $data = [];
+        foreach ($laying_planning as $lp){
+            $planning_consumption = $lp->layingPlanningDetail->sum('total_length');
+            $actual_consumption = $this->getActualConsumption($lp);
+            $balance = number_format(($actual_consumption - $planning_consumption),2);
+            $sign = ($balance > 0) ? '+' : '';
+
+            $completion_planning_consumption = $lp->layingPlanningDetail->sum('total_length');
+            $completion_balance = $completion_planning_consumption == 0 ? 0 : round(($actual_consumption / $completion_planning_consumption) * 100, 2);
+
+            $data[] = [
+                'gl_number'=> $lp->gl->gl_number,
+                'color'=> $lp->color->color,
+                'planning_consumption' => number_format($lp->layingPlanningDetail->sum('total_length'),2) . ' Yds',
+                'balance' => $sign . $balance . ' Yds',
+                'actual_consumption' => number_format($this->getActualConsumption($lp),2) . ' Yds',
+                'completion' => $completion_balance . ' %',
+                'replacement' => 0,
+            ];
+        }
+        $filename = 'Fabric Consumption Report.pdf';
+        $pdf = PDF::loadview('page.fabric-consumption.fabric-consumption-report', compact('data'));
+        return $pdf->stream($filename);
+    }
+
     public function print_preview()
     {
         $gl_ids = null;
@@ -33,7 +78,7 @@ class FabricConsumptionsController extends Controller
         } else {
             $gl_ids = request()->gl_number;
         }
-        
+
         $query = LayingPlanning::with(['gl']);
         if (request()->buyer) {
             $query->where('buyer_id', request()->buyer);
@@ -69,7 +114,7 @@ class FabricConsumptionsController extends Controller
             ->addColumn('completion', function($row) {
                 $planning_consumption = $row->layingPlanningDetail->sum('total_length');
                 if($planning_consumption == 0) { return 0; }
-                
+
                 $actual_consumption = $this->getActualConsumption($row);
                 $balance = round(($actual_consumption / $planning_consumption) * 100,2);
                 return $balance . ' %';
@@ -87,7 +132,7 @@ class FabricConsumptionsController extends Controller
         foreach ($laying_planning_detail as $key => $lp_detail) {
             if(Str::contains(Str::lower($lp_detail->marker_code), 'repl')) { continue; } // ## replacement not count
             if(!$lp_detail->CuttingOrderRecord) { continue ;} // ## skip when have no cutting order record
-            
+
             $total_actual_layer = $lp_detail->CuttingOrderRecord->CuttingOrderRecordDetail->sum('layer');
             $total_actual_consumption += $total_actual_layer * $lp_detail->marker_length;
         }
