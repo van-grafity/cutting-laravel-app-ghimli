@@ -158,42 +158,34 @@ class BundleTransferNotesController extends Controller
             ->join('laying_planning_details','laying_planning_details.id','=','cutting_order_records.laying_planning_detail_id')
             ->join('laying_plannings','laying_plannings.id','=','laying_planning_details.laying_planning_id')
             ->join('colors','colors.id','=','laying_plannings.color_id')
+            ->join('sizes','sizes.id','=','cutting_tickets.size_id')
             ->where('bundle_transfer_note_id', $transfer_note->id)
             ->groupBy('cutting_order_records.id')
-            ->select('bundle_transfer_note_id','laying_planning_details.id as laying_planning_detail_id','laying_planning_details.table_number','cutting_order_records.id as cor_id','cutting_order_records.serial_number as cor_number', 'colors.color')->get();
+            ->select(DB::raw('SUM(cutting_tickets.layer) as qty'),'sizes.id as size_id','sizes.size','bundle_transfer_note_id','laying_planning_details.id as laying_planning_detail_id','laying_planning_details.table_number','cutting_order_records.id as cor_id','cutting_order_records.serial_number as cor_number', 'colors.color')->get();
 
-        foreach ($transfer_note_detail as $key => $cor) {
+        foreach ($transfer_note_detail as $key => $transfer_note_details) {
 
-            $summary_per_size = BundleTransferNoteDetail::join('bundle_stock_transactions','bundle_stock_transactions.id','=','bundle_transfer_note_details.bundle_transaction_id')
-                ->join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
-                ->join('sizes','sizes.id','=','cutting_tickets.size_id')
-                ->where('cutting_tickets.cutting_order_record_id', $cor->cor_id)
-                ->groupBy('sizes.id')
-                ->select('sizes.id as size_id','sizes.size', DB::raw('SUM(cutting_tickets.layer) as qty'))->get();
-
-            foreach ($size_list as $key_size => $size) {
-                $qty_per_size[$key_size] = (object)[
-                    'id' => $size->id,
-                    'size' => $size->size
-                ];
-                $size_id = $size->id;
-                $filtered_result = $summary_per_size->filter(function ($summary, $key) use ($size_id) {
-                    return $summary->size_id === $size_id;
-                });
-
-                if($filtered_result->isNotEmpty()){
-                    $qty_per_size[$key_size]->qty = $filtered_result->first()->qty;
-                } else {
-                    $qty_per_size[$key_size]->qty = 0;
+                foreach ($size_list as $key_size => $size) {
+                    $qty_per_size[$key_size] = (object)[
+                        'id' => $size->id,
+                        'size' => $size->size
+                    ];
+                    $size_id = $size->id;
+                    if($transfer_note_details->size_id === $size_id){
+                        $qty_per_size[$key_size]->qty = $transfer_note_details->qty;
+                    }else{
+                        $qty_per_size[$key_size]->qty = 0;
+                    }
                 }
-            }
 
-            $transfer_note_detail[$key]->qty_per_size = $qty_per_size;
+                $transfer_note_detail[$key]->qty_per_size = $qty_per_size;
 
-            $total_qty_all_size = $summary_per_size->reduce(function ($carry, $item) {
-                return $carry + $item->qty;
-            }, 0);
-            $transfer_note_detail[$key]->total_qty = $total_qty_all_size;
+                $total_qty_all_size = 0;
+                foreach ($transfer_note_details->qty_per_size as $qty) {
+                        $total_qty_all_size += $qty->qty;
+                    }
+
+                $transfer_note_detail[$key]->total_qty = $total_qty_all_size;
         }
 
         $data = [
@@ -210,6 +202,7 @@ class BundleTransferNotesController extends Controller
         return BundleTransferNoteDetail::join('bundle_stock_transactions','bundle_stock_transactions.id','=','bundle_transfer_note_details.bundle_transaction_id')
             ->join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
             ->join('sizes','sizes.id','=','cutting_tickets.size_id')
+            ->where('bundle_transfer_note_details.bundle_transfer_note_id', $transfer_note_id)
             ->groupBy('sizes.id')
             ->select('sizes.id','sizes.size')
             ->orderBy('sizes.id', 'ASC')
