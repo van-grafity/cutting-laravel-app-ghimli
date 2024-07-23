@@ -464,7 +464,7 @@ return [
         [
             'text' => 'Cut Piece Stock',
             'icon' => 'fas fa-tshirt',
-            'can'  => 'clerk',
+            'can'  => 'clerk | bundle-cut-piece-stock-list.access',
             'submenu' => [
                 [
                     'classes'=> 'ml-3',
