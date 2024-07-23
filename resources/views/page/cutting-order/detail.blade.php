@@ -161,12 +161,6 @@
                                             Action
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                             <!-- <a class="dropdown-item" href="{{ route('cutting-order.print', $cutting_order->id) }}" target="_blank">Print Report</a>
-                                             <a class="dropdown-item" href="{{ route('cutting-order.report', $cutting_order->id) }}" target="_blank">Print Nota</a>
-                                            <a class="dropdown-item" href="{{ route('cutting-order.report', $cutting_order->id) }}" target="_blank">Print Report</a>
-                                            @can('clerk')
-                                                <a class="dropdown-item" href="javascript:void(0);" onclick="delete_cuttingOrder({{ $cutting_order->id }})" data-id="{{ $cutting_order->id }}">Delete</a>
-                                            @endcan -->
                                             @if(Auth::user()->hasRole('super_admin'))
                                                 <a class="dropdown-item" href="{{ route('cutting-order.print', $cutting_order->id) }}" target="_blank">Print</a>
                                             @endif
@@ -230,13 +224,6 @@
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
-                        <!-- const set_marker_length = () => {
-                            let marker_yard = $('#marker_yard').val() ? parseFloat($('#marker_yard').val()) : 0;
-                            let marker_inch = $('#marker_inch').val() ? parseFloat($('#marker_inch').val()) : 0;
-                            let marker_length = (marker_yard + ((marker_inch + parseFloat($('#marker_allowence').val())) / 36)).toFixed(2);
-                            $('#marker_length').val(marker_length);
-                            set_marker_total_length();
-                        }; -->
 
                         <tbody>
                             @foreach( $cutting_order_detail as $key => $detail )
