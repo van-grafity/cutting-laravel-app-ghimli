@@ -470,21 +470,25 @@ return [
                     'classes'=> 'ml-3',
                     'text' => 'Create Stock In',
                     'url' => '/bundle-stock/create-stock-in',
+                    'can'  => 'bundle-stock-in.manage',
                 ],
                 [
                     'classes'=> 'ml-3',
                     'text' => 'Create Stock out',
                     'url' => '/bundle-stock/create-stock-out',
+                    'can'  => 'bundle-stock-out.manage',
                 ],
                 [
                     'classes'=> 'ml-3',
                     'text' => 'Cut Piece Stock List',
                     'url' => '/bundle-stock',
+                    'can' => 'bundle-cut-piece-stock-list.access',
                 ],
                 [
                     'classes'=> 'ml-3',
                     'text' => 'Cut Piece Transfer Notes',
                     'url' => '/bundle-transfer-note',
+                    'can' => 'bundle-cut-piece-transfer-notes.access'
                 ],
             ],
         ],
