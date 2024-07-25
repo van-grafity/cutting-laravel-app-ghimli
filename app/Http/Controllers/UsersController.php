@@ -82,7 +82,7 @@ class UsersController extends Controller
     public function show($id){
         try {
             $user = User::find($id);
-            $user->role = $user->roles[0]->name;
+            $user->role = !$user->roles->isEmpty() ? $user->roles[0]->name : [];
 
             $data_return = [
                 'status' => 'success',
