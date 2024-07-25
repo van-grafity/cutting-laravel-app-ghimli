@@ -79,4 +79,9 @@ class LayingPlanning extends Model
         return $this->belongsTo(LayingPlanning::class, 'parent_laying_planning_id', 'id');
     }
 
+    public function childLayingPlannings()
+    {
+        return $this->hasMany(LayingPlanning::class, 'parent_laying_planning_id', 'id');
+    }
+
 }
