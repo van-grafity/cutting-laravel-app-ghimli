@@ -68,7 +68,7 @@
                         <div class="row mt-5">
                             <div class="col-md-12 text-right">
                                 <a href="{{ url('/bundle-transfer-note') }}" class="btn btn-secondary shadow-sm">cancel</a>
-                                <button type="submit" class="btn btn-primary shadow-sm" id="submit_form">Generate Ticket</button>
+                                <button type="submit" class="btn btn-primary shadow-sm" id="submit_form">Save</button>
                             </div>
                         </div>
                     </form>
