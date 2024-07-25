@@ -460,6 +460,8 @@ Route::group(['middleware' => ['auth']], function () {
         route::get('/dtable', 'dataTransferNote')->name('dtable');
         route::get('/detail/{id}', 'detail')->name('detail');
         route::get('/print/{id}', 'print')->name('print');
+        route::get('/edit/{id}', 'edit')->name('edit');
+        route::put('/update/{id}', 'updateTransferNote')->name('update');
     });
 });
 
