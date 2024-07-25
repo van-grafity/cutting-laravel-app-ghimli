@@ -11,6 +11,35 @@
                     <div class="card-header">
                         <div class="card-title">Add Stock In</div>
                     </div>
+                    <!-- Table -->
+                    <div class="col-12" style="padding:1.25rem">
+                        <h4>List Scanned Ticket :</h4>
+                        <table class="table table-sm table-bordered text-center" id="stock-in-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No Ticket Number</th>
+                                    <th scope="col">No Serial Number</th>
+                                    <th scope="col">Buyer</th>
+                                    <th scope="col">Size</th>
+                                    <th scope="col">Color</th>
+                                    <th scope="col">Layer</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <div class="row m-1">
+                            <h5 class="mr-2">Total :</h5>
+                            <h5 id="total-stock-in">0</h5>
+                        </div>
+
+                        <div class="col text-right">
+                            <a href="{{ url('/bundle-stock') }}" class="btn btn-secondary shadow-sm">cancel</a>
+                            <button class="btn btn-primary btn-md" id="save_stock"
+                                onclick="save_stock_in({{ $location->id }})">Save</button>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <!-- START FORM -->
                         <form action="" method="POST" onsubmit="stopFormSubmission(event)" nethod="POST"
@@ -30,34 +59,6 @@
                     </div>
                 </div>
 
-                <!-- Table -->
-                <div class="card p-3">
-                    <h4>List Scanned Ticket :</h4>
-                    <table class="table table-sm table-bordered text-center" id="stock-in-table">
-                        <thead>
-                            <tr>
-                                <th scope="col">No Ticket Number</th>
-                                <th scope="col">No Serial Number</th>
-                                <th scope="col">Buyer</th>
-                                <th scope="col">Size</th>
-                                <th scope="col">Color</th>
-                                <th scope="col">Layer</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <div class="row m-1">
-                       <h5 class="mr-2">Total :</h5>
-                       <h5 id="total-stock-in">0</h5>
-                    </div>
-
-                    <div class="col text-right">
-                        <a href="{{ url('/bundle-stock') }}" class="btn btn-secondary shadow-sm">cancel</a>
-                        <button class="btn btn-primary btn-md" id="save_stock" onclick="save_stock_in({{$location->id}})">Save</button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -65,6 +66,10 @@
 @endsection
 @push('js')
     <script type="text/javascript">
+        $(document).ready(function() {
+            $('input[name="serial_number"]').focus();
+        });
+
         const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         $('#submit_form').on('click', async function(e) {
@@ -187,7 +192,7 @@
                 data: {
                     serial_number: ids,
                     transaction_type: "IN",
-                    location : location
+                    location: location
                 },
                 token: token
             };

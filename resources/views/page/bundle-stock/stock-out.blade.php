@@ -7,31 +7,15 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
+
+
                 <div class="card card-primary mt-2">
                     <div class="card-header">
                         <div class="card-title">Add Stock Out</div>
                     </div>
-                    <div class="card-body">
-                        <!-- START FORM -->
-                        <form action="" method="POST" onsubmit="stopFormSubmission(event)" nethod="POST"
-                            class="custom-validation" enctype="multipart/form-data" id="form_create_bundle_stock">
-                            @csrf
-                            @method('POST')
-                            <div class="form-group">
-                                <label for="serial_number" class="form-label">No. Cutting Ticket Serial Number</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control mr-2" id="serial_number" name="serial_number">
-                                    <button class="btn btn-primary shadow-sm" id="submit_form">Search Serial Number</button>
-                                </div>
-                            </div>
-                        </form>
-                        <!-- END FORM -->
-                    </div>
-                </div>
-
-                <!-- Table -->
-                <div class="card p-3">
-                    <h4>List Scanner Serial Number :</h4>
+                        <!-- Table -->
+                <div class="col-12" style="padding:1.25rem">
+                    <h4>List Scanned Ticket :</h4>
                         <table class="table table-sm table-bordered text-center" id="stock-out-table">
                             <thead>
                             <tr>
@@ -67,6 +51,23 @@
                         <button class="btn btn-primary btn-md" id="save_stock" onclick="save_stock_out()">Save</button>
                     </div>
                 </div>
+                    <div class="card-body">
+                        <!-- START FORM -->
+                        <form action="" method="POST" onsubmit="stopFormSubmission(event)" nethod="POST"
+                            class="custom-validation" enctype="multipart/form-data" id="form_create_bundle_stock">
+                            @csrf
+                            @method('POST')
+                            <div class="form-group">
+                                <label for="serial_number" class="form-label">No. Cutting Ticket Serial Number</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control mr-2" id="serial_number" name="serial_number">
+                                    <button class="btn btn-primary shadow-sm" id="submit_form">Search Serial Number</button>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- END FORM -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -74,6 +75,10 @@
 @endsection
 @push('js')
     <script type="text/javascript">
+        $(document).ready(function() {
+            $('input[name="serial_number"]').focus();
+        });
+
         const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         $('#submit_form').on('click', async function(e) {
