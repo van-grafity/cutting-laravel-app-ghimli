@@ -438,29 +438,33 @@ Route::group(['middleware' => ['auth']], function () {
         route::get('/print', 'print')->name('print');
     });
 
-    Route::controller(BundleStocksController::class)->prefix('bundle-stock')->name('bundle-stock.')->group(function(){
-        Route::group(['middleware'=> "can:bundle-cut-piece-stock-list.access"], function() {
+    Route::controller(BundleStocksController::class)->prefix('bundle-stock')->name('bundle-stock.')
+    ->middleware('can:cut-piece-stock.access')->group(function(){
+        Route::group(['middleware'=> "can:cut-piece-stock.status"], function() {
             route::get('/', 'index')->name('index');
             route::get('/dtable', 'dataBundleStock')->name('dtable');
             route::get('/detail', 'detail')->name('detail');
         });
-        route::get('/create-stock-in','stockIn')->middleware('can:bundle-stock-in.manage')->name('stock-in');
-        route::get('/create-stock-out','stockOut')->middleware('can:bundle-stock-out.manage')->name('stock-out');
-        Route::group(['middleware'=> "hasAnyPermission:bundle-stock-in.manage,bundle-stock-out.manage"], function() {
+
+        route::get('/stock-in','stockIn')->middleware('can:cut-piece-stock.stock-in')->name('stock-in');
+        route::get('/stock-out','stockOut')->middleware('can:cut-piece-stock.stock-out')->name('stock-out');
+        Route::group(['middleware'=> "hasAnyPermission:cut-piece-stock.stock-in,cut-piece-stock.stock-out"], function() {
             route::post('/store-multiple', "storeMultiple")->name('store-multiple');
             route::post('/search-ticket', 'searchTicket')->name('search-ticket');
         });
-        route::get('/report', 'report')->middleware('can:bundle-cut-piece-transfer-notes.access')->name('report');
+
+        route::get('/report', 'report')->name('report');
         Route::get('/search-serial-number/{id}','search_serial_number')->name('search_serial_number');
+
     });
 
     Route::controller(BundleTransferNotesController::class)->prefix('bundle-transfer-note')
-    ->name('bundle-transfer-note.')->middleware('can:bundle-cut-piece-transfer-notes.access')->group(function(){
+    ->name('bundle-transfer-note.')->middleware(['can:cut-piece-stock.transfer-note', 'can:cut-piece-stock.access'])->group(function(){
         route::get('/', 'index')->name('index');
         route::get('/dtable', 'dataTransferNote')->name('dtable');
         route::get('/detail/{id}', 'detail')->name('detail');
         route::get('/print/{id}', 'print')->name('print');
-        route::get('/edit/{id}', 'edit')->name('edit');
+        route::get('/edit/{id}', 'edit')->middleware("can:super-admin")->name('edit');
         route::put('/update/{id}', 'updateTransferNote')->name('update');
     });
 });

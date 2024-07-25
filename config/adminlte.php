@@ -464,31 +464,31 @@ return [
         [
             'text' => 'Cut Piece Stock',
             'icon' => 'fas fa-tshirt',
-            'can'  => 'clerk | bundle-cut-piece-stock-list.access',
+            'can'  => 'clerk | cut-piece-stock.access',
             'submenu' => [
                 [
                     'classes'=> 'ml-3',
-                    'text' => 'Create Stock In',
-                    'url' => '/bundle-stock/create-stock-in',
-                    'can'  => 'bundle-stock-in.manage',
+                    'text' => 'Stock In',
+                    'url' => '/bundle-stock/stock-in',
+                    'can'  => 'cut-piece-stock.stock-in',
                 ],
                 [
                     'classes'=> 'ml-3',
-                    'text' => 'Create Stock out',
-                    'url' => '/bundle-stock/create-stock-out',
-                    'can'  => 'bundle-stock-out.manage',
+                    'text' => 'Stock out',
+                    'url' => '/bundle-stock/stock-out',
+                    'can'  => 'cut-piece-stock.stock-out',
                 ],
                 [
                     'classes'=> 'ml-3',
-                    'text' => 'Cut Piece Stock List',
+                    'text' => 'Cut Piece Status',
                     'url' => '/bundle-stock',
-                    'can' => 'bundle-cut-piece-stock-list.access',
+                    'can' => 'cut-piece-stock.status',
                 ],
                 [
                     'classes'=> 'ml-3',
-                    'text' => 'Cut Piece Transfer Notes',
+                    'text' => 'Transfer Notes',
                     'url' => '/bundle-transfer-note',
-                    'can' => 'bundle-cut-piece-transfer-notes.access'
+                    'can' => 'cut-piece-stock.transfer-note'
                 ],
             ],
         ],
