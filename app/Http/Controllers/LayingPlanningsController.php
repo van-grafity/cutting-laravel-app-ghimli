@@ -146,6 +146,7 @@ class LayingPlanningsController extends Controller
             ];
             return response()->json($date_return, 200);
         }
+        $laying_planning_id = $request->laying_planning_id ? $request->laying_planning_id : null;
         
         // ## Retrieve laying plannings with the same GL number prefix
         // ## This reduces the list to only show related laying plannings
@@ -153,13 +154,17 @@ class LayingPlanningsController extends Controller
         $gl_number_prefix = Str::substr($gl_number->gl_number, 0, 5);
         $laying_planning_list = LayingPlanning::with('color')->join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
             ->where('gls.gl_number', 'like', $gl_number_prefix . '%')
+            ->when($laying_planning_id, function ($query) use ($laying_planning_id) {
+                return $query->whereNot('laying_plannings.id', $laying_planning_id);
+            })
             ->select('laying_plannings.id', 'laying_plannings.serial_number','color_id')
             ->get();
 
         $date_return = [
             'status' => 'success',
             'data' => [
-                'laying_planning_list' => $laying_planning_list
+                'laying_planning_list' => $laying_planning_list,
+                'laying_planning_id' => $request->laying_planning_id
             ],
             'message'=> 'Successfully retrieved Laying Planning',
         ];
@@ -251,11 +256,38 @@ class LayingPlanningsController extends Controller
         $details = LayingPlanningDetail::with(['fabricRequisition'])
             ->where('laying_planning_id', $id)
             ->get();
-        $fabric_requisition = FabricRequisition::with(['layingPlanningDetail'])
-            ->whereHas('layingPlanningDetail', fn($query) => $query->where('laying_planning_id', $id))
+        
+        $cutting_order_records = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])
+            ->whereHas('layingPlanningDetail.layingPlanning', fn($query) => $query->where('laying_plannings.id', $id))
             ->get();
         
-        $laying_planning->total_order_qty = LayingPlanning::where('gl_id', $laying_planning->gl_id)->sum('order_qty');
+        $total_cut_qty = 0;
+        $cor_map = [];
+
+        // ## Hitung jumlah actual layer untuk setiap cutting order record
+        foreach ($cutting_order_records as $cor) {
+            $lp_detail_id = $cor->laying_planning_detail_id;
+            if (!isset($cor_map[$lp_detail_id])) {
+                $cor_map[$lp_detail_id] = 0;
+            }
+            foreach ($cor->cuttingOrderRecordDetail as $cor_detail) {
+                $cor_map[$lp_detail_id] += $cor_detail->layer;
+            }
+        }
+
+
+        // ## Menjumlahkan semua cut qty dari setiap laying planning detail
+        foreach ($laying_planning->layingPlanningDetail as $lp_detail) {
+            $total_cutting_order_record = $cor_map[$lp_detail->id] ?? 0;
+            $total_size_ratio = array_sum(array_column($lp_detail->layingPlanningDetailSize->toArray(), 'ratio_per_size'));
+
+            // ## Hitung total cut quantity
+            $hasil_cut_qty = $total_cutting_order_record * $total_size_ratio;
+            $total_cut_qty += $hasil_cut_qty;
+        }
+        
+        
+        $laying_planning->total_cut_qty = $total_cut_qty;
         $laying_planning->delivery_date = Carbon::createFromFormat('Y-m-d', $laying_planning->delivery_date)->format('d-m-Y');
         $laying_planning->plan_date = Carbon::createFromFormat('Y-m-d', $laying_planning->plan_date)->format('d-m-Y');
 
@@ -501,14 +533,6 @@ class LayingPlanningsController extends Controller
     {
         $layingPlanning = LayingPlanning::find($id);
         
-        // ## Retrieve laying plannings with the same main GL number prefix
-        // ## This reduces the list to only show related laying plannings
-        $gl_number_prefix = Str::substr($layingPlanning->gl->gl_number, 0, 5);
-        $laying_planning_list = LayingPlanning::join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
-            ->where('gls.gl_number', 'like', $gl_number_prefix . '%')
-            ->select('laying_plannings.id', 'laying_plannings.serial_number','color_id')
-            ->get();
-        
         $gls = DB::table('gls')->get();
         $styles = DB::table('styles')->where('gl_id',$layingPlanning->gl_id)->get();
         $colors = DB::table('colors')->get();
@@ -527,7 +551,6 @@ class LayingPlanningsController extends Controller
             'sizes' => $sizes,
             'layingPlanning' => $layingPlanning,
             'layingPlanningSizes' => $layingPlanningSizes,
-            'laying_planning_list' => $laying_planning_list,
         ];
 
         return view('page.layingPlanning.edit', $data);
@@ -632,7 +655,7 @@ class LayingPlanningsController extends Controller
             $insertLayingSize = LayingPlanningSize::create($laying_planning_size);
         }
         
-        return redirect('laying-planning')->with('success', 'Laying Planning '. $layingPlanning->serial_number . " successfully Updated!");
+        return redirect()->route('laying-planning.show',$layingPlanning->id)->with('success', 'Laying Planning '. $layingPlanning->serial_number . " successfully Updated!");
     }
 
     /**
@@ -983,14 +1006,6 @@ class LayingPlanningsController extends Controller
     public function create_planing_support($laying_planning_id) {
         $layingPlanning = LayingPlanning::find($laying_planning_id);
         
-        // ## Retrieve laying plannings with the same main GL number prefix
-        // ## This reduces the list to only show related laying plannings
-        $gl_number_prefix = Str::substr($layingPlanning->gl->gl_number, 0, 5);
-        $laying_planning_list = LayingPlanning::join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
-            ->where('gls.gl_number', 'like', $gl_number_prefix . '%')
-            ->select('laying_plannings.id', 'laying_plannings.serial_number','color_id')
-            ->get();
-        
         $gls = DB::table('gls')->get();
         $styles = DB::table('styles')->where('gl_id',$layingPlanning->gl_id)->get();
         $colors = DB::table('colors')->get();
@@ -1009,7 +1024,6 @@ class LayingPlanningsController extends Controller
             'sizes' => $sizes,
             'layingPlanning' => $layingPlanning,
             'layingPlanningSizes' => $layingPlanningSizes,
-            'laying_planning_list' => $laying_planning_list,
         ];
 
         return view('page.layingPlanning.create-planning-support', $data);

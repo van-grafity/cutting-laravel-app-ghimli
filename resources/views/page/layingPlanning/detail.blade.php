@@ -41,6 +41,7 @@
                                         @if($is_can_edit)
                                         <a class="dropdown-item" href="{{ route('laying-planning.edit', $laying_planning->id) }}">Edit</a>
                                         @endif
+                                        <a class="dropdown-item" href="{{ route('laying-planning.report', $laying_planning->id) }}" target="_blank">Print Report</a>
                                     </div>
                                 </div>
                             </div>
@@ -83,9 +84,9 @@
                                         <td>{{ $laying_planning->order_qty }} Pcs</td>
                                     </tr>
                                     <tr>
-                                        <td>Total Qty</td>
+                                        <td>Total Cut Qty</td>
                                         <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->total_order_qty }} Pcs</td>
+                                        <td>{{ $laying_planning->total_cut_qty }} Pcs</td>
                                     </tr>
                                     <tr>
                                         <td>Planning Type</td>

@@ -185,23 +185,23 @@
                             <div class="col-sm-12 col-lg-4">
                                 <div class="form-group">
                                     <div class="custom-control custom-radio">
-                                        <input class="custom-control-input" type="radio" id="laying_planning_type_combinasi" name="laying_planning_type" value="2" {{ $layingPlanning->laying_planning_type_id == 2 ? 'checked' : '' }}>
+                                        <input class="custom-control-input" type="radio" id="laying_planning_type_combinasi" name="laying_planning_type" value="2" checked>
                                         <label for="laying_planning_type_combinasi" class="custom-control-label">COMBINASI</label>
                                     </div>
                                     <div class="custom-control custom-radio">
-                                        <input class="custom-control-input" type="radio" id="laying_planning_type_interlining" name="laying_planning_type" value="3" {{ $layingPlanning->laying_planning_type_id == 3 ? 'checked' : '' }}>
+                                        <input class="custom-control-input" type="radio" id="laying_planning_type_interlining" name="laying_planning_type" value="3">
                                         <label for="laying_planning_type_interlining" class="custom-control-label">INTERLINING</label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-8 laying-planning-select-option" style="{{ $layingPlanning->laying_planning_type_id == 1 || $layingPlanning->laying_planning_type_id == null ? 'display: none;' : '' }}">
+                            <div class="col-sm-8 laying-planning-select-option" style="">
                                 <div class="form-group">
-                                    <label for="parent_laying_planning" class="form-label">Planning Parent</label>
-                                    <select class="form-control select2" id="parent_laying_planning" name="parent_laying_planning" data-placeholder="Select Planning Parent">
-                                        <option value="{{ $layingPlanning->id }}">{{ $layingPlanning->serial_number }}</option>
-                                    </select>
+                                    <label for="parent_laying_planning" class="form-label">Planning Parent : </label>
+                                    <a href="{{ route('laying-planning.show',$layingPlanning->id) }}" target="_blank">
+                                        {{ $layingPlanning->serial_number }}
+                                    </a>
+                                    <input type="hidden" id="parent_laying_planning" name="parent_laying_planning" value="{{ $layingPlanning->id }}">
                                 </div>
-                                <small class="text-muted"><i>*Pastikan untuk mereferensi ke laying planning utama (body) yang benar</i></small>
                             </div>
                         </div>
                         <div class="col-sm-12">

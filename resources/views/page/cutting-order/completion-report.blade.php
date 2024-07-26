@@ -169,7 +169,7 @@
 
         <table width="100%" style="margin-top:20px;">
             <tbody>
-                @foreach ($laying_planning_new as $laying_planning_row)
+                @foreach ($laying_plannings as $laying_planning_row)
                 <tr>
                     @foreach ($laying_planning_row as $laying_planning)
                     <td>
@@ -222,114 +222,6 @@
                     </td>
                     @endforeach
                 </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-
-        <table width="100%" style="margin-top:20px;" class="d-none">
-            <tbody>
-                @foreach ($laying_planning_parents as $laying_planning)
-                <tr>
-                    <td>
-                        <table class="table table-laying-planning" style="margin-bottom: 5px;">
-                            <thead>
-                                <tr>
-                                    <th class="text-left"> COLOR </th>
-                                    <th colspan="{{ $laying_planning->color_colspan }}">{{ $laying_planning->color->color }}</th>
-                                    <th style="color:{{ $laying_planning->diff_percentage_color }};" >{{ $laying_planning->diff_percentage }} %</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td style="width:80px;">SIZE</td>
-                                    @foreach($laying_planning->layingPlanningSize as $size)
-                                    <td>{{ $size->size->size }}</td>
-                                    @endforeach
-                                    <td style="width:60px;">TOTAL</td>
-                                </tr>
-                                <tr>
-                                    <td>MI QTY</td>
-                                    @foreach($laying_planning->layingPlanningSize as $size)
-                                    <td>{{ $size->quantity }}</td>
-                                    @endforeach
-                                    <td>{{ $laying_planning->order_qty}}</td>
-                                </tr>
-                                <tr>
-                                    <td>OUTPUT QTY</td>
-                                    @foreach($laying_planning->cut_qty_per_size as $qty_each_size)
-                                    <td>{{ $qty_each_size }}</td>
-                                    @endforeach
-                                    <td>{{ $laying_planning->cut_qty_all_size}}</td>
-                                </tr>
-                                <tr>
-                                    <td>DIFF</td>
-                                    @foreach($laying_planning->diff_qty_per_size as $diff_each_size)
-                                    <td style="{{ ($diff_each_size < 0) ? 'color:red;' : '' }}" >{{ $diff_each_size }}</td>
-                                    @endforeach
-                                    <td style="text-align: center; {{ ($laying_planning->diff_qty_all_size < 0) ? 'color:red;' : '' }}">{{ $laying_planning->diff_qty_all_size}}</td>
-                                </tr>
-                                <tr>
-                                    <td>REPLACEMENT</td>
-                                    @foreach($laying_planning->replacement_qty_per_size as $replacement_each_size)
-                                    <td>{{ $replacement_each_size }}</td>
-                                    @endforeach
-                                    <td>{{ $laying_planning->replacement_qty_all_size}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                    @foreach ($laying_planning->lp_childs as $lp_child)
-                    <td>
-                        <table class="table table-laying-planning" style="margin-bottom: 5px;">
-                            <thead>
-                                <tr>
-                                    <th class="text-left"> COLOR </th>
-                                    <th colspan="{{ $lp_child->color_colspan }}">{{ $lp_child->color->color }}</th>
-                                    <th style="color:{{ $lp_child->diff_percentage_color }};" >{{ $lp_child->diff_percentage }} %</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td style="width:80px;">SIZE</td>
-                                    @foreach($lp_child->layingPlanningSize as $size)
-                                    <td>{{ $size->size->size }}</td>
-                                    @endforeach
-                                    <td style="width:60px;">TOTAL</td>
-                                </tr>
-                                <tr>
-                                    <td>MI QTY</td>
-                                    @foreach($lp_child->layingPlanningSize as $size)
-                                    <td>{{ $size->quantity }}</td>
-                                    @endforeach
-                                    <td>{{ $lp_child->order_qty}}</td>
-                                </tr>
-                                <tr>
-                                    <td>OUTPUT QTY</td>
-                                    @foreach($lp_child->cut_qty_per_size as $qty_each_size)
-                                    <td>{{ $qty_each_size }}</td>
-                                    @endforeach
-                                    <td>{{ $lp_child->cut_qty_all_size}}</td>
-                                </tr>
-                                <tr>
-                                    <td>DIFF</td>
-                                    @foreach($lp_child->diff_qty_per_size as $diff_each_size)
-                                    <td style="{{ ($diff_each_size < 0) ? 'color:red;' : '' }}" >{{ $diff_each_size }}</td>
-                                    @endforeach
-                                    <td style="text-align: center; {{ ($lp_child->diff_qty_all_size < 0) ? 'color:red;' : '' }}">{{ $lp_child->diff_qty_all_size}}</td>
-                                </tr>
-                                <tr>
-                                    <td>REPLACEMENT</td>
-                                    @foreach($lp_child->replacement_qty_per_size as $replacement_each_size)
-                                    <td>{{ $replacement_each_size }}</td>
-                                    @endforeach
-                                    <td>{{ $lp_child->replacement_qty_all_size}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                    @endforeach
                 @endforeach
             </tbody>
         </table>

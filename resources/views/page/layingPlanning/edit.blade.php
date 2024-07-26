@@ -300,6 +300,8 @@
     const url_style = `{{ route('fetch.style') }}`;
     const url_fabric_type = `{{ route('fetch.fabric-type') }}`;
     const url_get_planning_by_gl = `{{ route('laying-planning.get-planning-by-gl') }}`;
+    
+    let laying_planning_id = `{{ $layingPlanning->id }}`;
     let parent_laying_planning_id = `{{ $layingPlanning->parent_laying_planning_id }}`;
 
 
@@ -540,7 +542,8 @@
             method: "GET",
             token: token,
             data: {
-                gl_id: gl_id
+                gl_id: gl_id,
+                laying_planning_id: laying_planning_id
             }
         }
         result = await using_fetch_v2(fetch_data);
