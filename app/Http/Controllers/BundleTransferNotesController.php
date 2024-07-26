@@ -97,7 +97,7 @@ class BundleTransferNotesController extends Controller
             ->addColumn('action', function($data){
                 $action ='<a href="'.route('bundle-transfer-note.detail',$data->transfer_note_id).'" class="btn btn-info btn-sm mb-1" data-toggle="tooltip" data-placement="top" title="Detail" target="_blank">Detail</a>';
                 if (Auth::user()->hasRole('super_admin')) {
-                    $action.= '<a href="'.route('bundle-transfer-note.edit',$data->transfer_note_id).'" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="Detail" target="_blank">Edit</a>';
+                    $action.= '<a href="'.route('bundle-transfer-note.edit',$data->transfer_note_id).'" class="btn btn-primary btn-sm mb-1 ml-1" data-toggle="tooltip" data-placement="top" title="Detail" target="_blank">Edit</a>';
                 }
                 return $action;
             })->addColumn('date', function($data){
