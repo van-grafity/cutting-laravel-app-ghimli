@@ -488,4 +488,40 @@ class BundleStocksController extends Controller
         }
         return $size_list;
     }
+
+    public function transactionHistory()
+    {
+        return view('page.bundle-stock.transaction-history');
+    }
+
+    public function syncBundleTransaction()
+    {
+        $transfer_note_details = BundleTransferNoteDetail::join('bundle_stock_transactions', 'bundle_stock_transactions.id', '=', 'bundle_transfer_note_details.bundle_transaction_id')
+                    ->select([
+                        'bundle_transfer_note_details.*',
+                        'bundle_stock_transactions.transaction_type as transaction_type'
+                    ])
+                    ->get();
+
+        foreach($transfer_note_details as $transfer_note_detail){
+            BundleTransferNote::where('id',$transfer_note_detail->bundle_transfer_note_id)
+                             ->update(['transaction_type' => $transfer_note_detail->transaction_type]);
+        }
+
+        return redirect()->back()->with('success','Sync Succesfully');
+    }
+
+    // public function dataTableTransaction()
+    // {
+    //     $query = BundleTransferNoteDetail::with(['bundleTransferNote', 'bundleTransaction',
+    //     'bundleTransaction.ticket_id',]);
+    //     // dd($query);
+    //     return Datatables::of($query)
+    //         ->escapeColumns([])
+    //         ->addIndexColumn()
+    //         ->addColumn('date', function ($row){
+    //             return Carbon::parse($row->created_at)->format('d F Y H:i:s');
+    //         })
+    //         ->make(true);
+    // }
 }
