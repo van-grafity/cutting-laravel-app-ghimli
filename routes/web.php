@@ -445,8 +445,10 @@ Route::group(['middleware' => ['auth']], function () {
             route::get('/dtable', 'dataBundleStock')->name('dtable');
             route::get('/detail', 'detail')->name('detail');
             // Sementara permisison disini
-            route::get('/transaction-history', 'transactionHistory');
-            route::get('/dtable-bundle-transaction', 'dataTableTransaction')->name('dtable-transaction');
+            route::get('/transaction-history', 'transactionHistory')->name('transaction-history');
+            route::get('/dtable-transaction', 'dtableTransaction')->name('dtable-transaction');
+            route::get('/transaction-history/detail/{id}', 'detailTransactionHistory')->name('detail-transaction-history');
+            route::get('/dtable-bundle-transaction', 'dtableTransaction')->name('dtable-transaction');
             route::put('/sync-bundle-transaction', 'syncBundleTransaction')->name('sync-transaction');
         });
 

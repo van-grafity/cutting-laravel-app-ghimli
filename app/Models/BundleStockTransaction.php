@@ -20,8 +20,8 @@ class BundleStockTransaction extends Model
         return $this->belongsTo(CuttingTicket::class, 'ticket_id', 'id');
     }
 
-    public function bundleLocation()
+    public function bundleStockTransactionDetail()
     {
-        return $this->belongsTo(BundleLocation::class, 'location_id', 'id');
+        return $this->belongsTo(BundleStockTransactionDetail::class, 'bundle_transaction_detail_id', 'id');
     }
 }

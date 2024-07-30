@@ -31,6 +31,7 @@
                                 <th wihth="10%;">GL Number</th>
                                 <th wihth="10%;">Color</th>
                                 <th wihth="10%;">Location</th>
+                                <th wihth="5%;">Transaction Type</th>
                                 <th wihth="10%;">Date</th>
                                 <th wihth="5%;">Total Pcs</th>
                             </tr>
@@ -50,13 +51,14 @@
         $('#transaction_history_table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ url('bundle-transfer-note/dtable') }}",
+            ajax: "{{ url('bundle-stock/dtable-bundle-transaction') }}",
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'serial_number', name: 'serial_number'},
                 {data: 'gl_number', name: 'gl_number'},
                 {data: 'color', name: 'color'},
                 {data: 'location', name: 'location'},
+                {data: 'transaction_type', name: 'transaction_type'},
                 {data: 'date', name: 'date'},
                 {data: 'total_pcs', name: 'total_pcs'},
             ],
