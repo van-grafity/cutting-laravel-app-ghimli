@@ -548,13 +548,6 @@ return [
             'icon' => 'fas fa-fw fa fa-file-alt',
             'can'  => 'cutting-record | cutting-output-report.access',
         ],
-        // !! next hapus kodingan ini. dan sekalian cek kodingan lain yang berkaitan dengan cutting order completion
-        // [
-        //     'text' => 'Cutting Order Completion',
-        //     'url'  => '/cutting-order-completion',
-        //     'icon' => 'fas fa-fw fa fa-file-alt',
-        //     'can'  => 'cutting-record | cutting-completion-report.access',
-        // ],
         [
             'text' => 'Cutting Completion Report',
             'url'  => '/cutting-completion-report',

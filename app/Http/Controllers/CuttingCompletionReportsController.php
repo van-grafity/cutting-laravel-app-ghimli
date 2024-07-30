@@ -9,12 +9,13 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\LayingPlanning;
 use Illuminate\Support\Str;
 use PDF;
+
 class CuttingCompletionReportsController extends Controller
 {
     public function index()
     {
         $gls = Gl::with('GLCombine')->get();
-        return view('page.cutting-order.cutting-completion-report', compact('gls'));
+        return view('page.cutting-completion-report.index', compact('gls'));
     }
 
     public function print(Request $request)
@@ -209,8 +210,8 @@ class CuttingCompletionReportsController extends Controller
             'fabric_consumption' => $fabric_consumption,
         ];
 
-        // return view('page.cutting-order.completion-report', $data);
-        $pdf = PDF::loadview('page.cutting-order.completion-report', $data)->setPaper('a4', 'landscape');
+        // return view('page.cutting-completion-report.print_pdf', $data);
+        $pdf = PDF::loadview('page.cutting-completion-report.print_pdf', $data)->setPaper('a4', 'landscape');
         return $pdf->stream($filename);
     }
 

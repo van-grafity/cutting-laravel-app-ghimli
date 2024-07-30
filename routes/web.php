@@ -477,13 +477,6 @@ Route::group(['middleware' => ['auth','can:form']], function () {
 });
 
 
-// !! next delete cutting order completion ini kodingan lama
-// //## ganti permission cutting-order-completion
-// Route::group(['middleware' => ['auth', 'hasAnyPermission:cutting-record,cutting-completion-report.access']], function(){
-//     Route::get('cutting-order-completion', [CuttingOrdersController::class,'cuttingCompletion'])->name('cutting-order.cutting-completion');
-//     Route::get('cutting-order-completion-report', [CuttingOrdersController::class,'cuttingCompletionReport'])->name('cutting-order.cutting-completion-report');
-// });
-
 Route::group(['middleware' => ['auth']], function () {
 
     Route::group(['middleware' => ['hasAnyPermission:cutting-record,status-cutting-order-record.access']], function() {
