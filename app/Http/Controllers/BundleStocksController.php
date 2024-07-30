@@ -51,13 +51,17 @@ class BundleStocksController extends Controller
             ->get();
 
             return Datatables::of($query)
-            ->escapeColumns([])
-            ->addColumn('action', function($data){
-                $action = '<a href="javascript:void(0)" class="btn btn-info btn-sm mb-1" onclick="detail_stock('. $data->laying_planning_id .')" data-toggle="tooltip" data-placement="top" title="Detail" >Detail</a>';
-                return $action;
-            })
-            ->addIndexColumn()
-            ->make(true);
+                ->escapeColumns([])
+                ->addColumn('action', function($data){
+                    $action = '';
+                    $action .= '<a href="javascript:void(0)" class="btn btn-info btn-sm mb-1" onclick="detail_stock('. $data->laying_planning_id .')" data-toggle="tooltip" data-placement="top" title="Detail" >Detail</a>';
+                    if(auth()->user()->can('admin-only')){
+                        $action .= ' <a href="'. route('bundle-stock.refresh-stock', $data->laying_planning_id) .'" class="btn btn-secondary btn-sm mb-1" data-toggle="tooltip" data-placement="top" title="Refresh Stock" >Refresh Stock</a>';
+                    }
+                    return $action;
+                })
+                ->addIndexColumn()
+                ->make(true);
     }
 
     public function detail(Request $request)
@@ -487,5 +491,54 @@ class BundleStocksController extends Controller
             }
         }
         return $size_list;
+    }
+
+    public function refreshStock(Request $request, $laying_planning_id)
+    {
+        // ## Get all tickets that have stocked in
+        $stocked_in_tickets = BundleStockTransaction::join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
+            ->join('cutting_order_records','cutting_order_records.id','=','cutting_tickets.cutting_order_record_id')
+            ->join('laying_planning_details','laying_planning_details.id','=','cutting_order_records.laying_planning_detail_id')
+            ->where('laying_planning_details.laying_planning_id', $laying_planning_id)
+            ->where('bundle_stock_transactions.transaction_type','IN')
+            ->select('cutting_tickets.*')
+            ->get();
+        
+        $stocked_in_tickets_grouped = $stocked_in_tickets->groupBy('size_id')->map(function ($item) {
+            return $item->sum('layer');
+        });
+
+
+        // ## Get all tickets that have stocked out
+        $stocked_out_tickets = BundleStockTransaction::join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
+            ->join('cutting_order_records','cutting_order_records.id','=','cutting_tickets.cutting_order_record_id')
+            ->join('laying_planning_details','laying_planning_details.id','=','cutting_order_records.laying_planning_detail_id')
+            ->where('laying_planning_details.laying_planning_id', $laying_planning_id)
+            ->where('bundle_stock_transactions.transaction_type','OUT')
+            ->select('cutting_tickets.*')
+            ->get();
+        
+        $stocked_out_tickets_grouped = $stocked_out_tickets->groupBy('size_id')->map(function ($item) {
+            return $item->sum('layer');
+        });
+
+        $current_qty_each_size = [];
+        foreach ($stocked_in_tickets_grouped as $size => $accumulate_stock_in) {
+            $current_qty_each_size[$size] = $accumulate_stock_in - ($stocked_out_tickets_grouped[$size] ?? 0);
+        }
+
+        
+        // ## Get Bundle Stock base on Laying Planning. this will result stock per size of planning
+        $bundle_stock_each_size = BundleStock::where('laying_planning_id', $laying_planning_id)->get();
+        foreach ($bundle_stock_each_size as $size_stock) {
+            $size_stock->current_qty = $current_qty_each_size[$size_stock->size_id] ?? 0;
+            $size_stock->save();
+        }
+        
+        $bundle_stock_list = BundleStock::get();
+        $data = [
+            'bundle_stock_list' => $bundle_stock_list,
+        ];
+        return view('page.bundle-stock.index', $data);
     }
 }

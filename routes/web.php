@@ -302,7 +302,6 @@ Route::group([
     Route::get('print-preview', 'print_preview')->name('print-preview');
 });
 
-// ## Create new Controller and Route from cutting-order-completion to cutting-completion-report
 // ## Cutting Completion Report
 Route::group([
     'middleware'=> [
@@ -316,6 +315,22 @@ Route::group([
     Route::get('', 'index')->name('index');
     Route::get('print', 'print')->name('print');
 });
+
+
+// ## Bundle Stock / Cut Piece Stock
+Route::group([
+    'middleware'=> [
+        'auth',
+        'hasAnyPermission:cut-piece-stock.access',
+    ],
+    'controller' =>App\Http\Controllers\BundleStocksController::class,
+    'prefix' => 'bundle-stock',
+    'as'=> 'bundle-stock.',
+], function() {
+    Route::get('refresh-stock/{laying_planning_id}', 'refreshStock')->name('refresh-stock');
+});
+
+
 // ## end
 // ## ---------------------------------------------------------------------------------
 
