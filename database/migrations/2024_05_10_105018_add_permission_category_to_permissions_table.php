@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('permissions', function (Blueprint $table) {
-            $table->string('description');
+            $table->string('description')->after('name');
             $table->foreignId('permission_category_id')->after('name')->nullable()->constrained('permissions_categories');
         });
     }

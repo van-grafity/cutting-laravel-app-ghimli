@@ -4,18 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Models\Department;
+use App\Models\CuttingTable;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Datatables;
 
-class DepartmentsController extends Controller
+class CuttingTablesController extends Controller
 {
     public function __construct()
     {
         Gate::define('manage', function ($user) {
-            return $user->hasPermissionTo('department.manage');
+            return $user->hasPermissionTo('cutting-table.manage');
         });
     }
 
@@ -25,11 +25,11 @@ class DepartmentsController extends Controller
     public function index()
     {
         $data = [
-            'title' => 'Department',
-            'page_title' => 'Department List',
+            'title' => 'Cutting Table',
+            'page_title' => 'Cutting Table List',
             'can_manage' => auth()->user()->can('manage'),
         ];
-        return view('page.department.index', $data);
+        return view('page.cutting-table.index', $data);
     }
 
     /**
@@ -37,14 +37,14 @@ class DepartmentsController extends Controller
      */
     public function dtable()
     {
-        $query = Department::query();
+        $query = CuttingTable::query();
 
         return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
             ->addColumn('action', function($row){
                 $action_button = '
-                    <a href="javascript:void(0);" class="btn btn-primary btn-sm mt-1" onclick="show_modal_edit(\'modal_department\', '.$row->id.')">Edit</a>
+                    <a href="javascript:void(0);" class="btn btn-primary btn-sm mt-1" onclick="show_modal_edit(\'modal_cutting_table\', '.$row->id.')">Edit</a>
                     <a href="javascript:void(0);" class="btn btn-danger btn-sm mt-1" onclick="show_modal_delete('.$row->id.')">Delete</a>
                 ';
 
@@ -59,16 +59,16 @@ class DepartmentsController extends Controller
     public function store(Request $request)
     {
         try {
-            $department = Department::firstOrCreate([
-                'department' => $request->department,
+            $cutting_table = CuttingTable::firstOrCreate([
+                'number' => $request->number,
                 'description' => $request->description,
             ]);
 
             $data_return = [
                 'status' => 'success',
-                'message' => 'Successfully added new department (' . $department->department . ')',
+                'message' => 'Successfully added new Cutting Table number ' . $cutting_table->number,
                 'data' => [
-                    'department' => $department,
+                    'cutting_table' => $cutting_table,
                 ]
             ];
             return response()->json($data_return, 200);
@@ -87,13 +87,13 @@ class DepartmentsController extends Controller
     public function show(string $id)
     {
         try {
-            $department = Department::find($id);
+            $cutting_table = CuttingTable::find($id);
 
             $data_return = [
                 'status' => 'success',
-                'message' => 'Successfully get department (' . $department->department . ')',
+                'message' => 'Successfully get Cutting Table number' . $cutting_table->number,
                 'data' => [
-                    'department' => $department,
+                    'cutting_table' => $cutting_table,
                 ]
             ];
             return response()->json($data_return, 200);
@@ -112,16 +112,16 @@ class DepartmentsController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-            $department = Department::find($id);
-            $department->department = $request->department;
-            $department->description = $request->description;
-            $department->save();
+            $cutting_table = CuttingTable::find($id);
+            $cutting_table->number = $request->number;
+            $cutting_table->description = $request->description;
+            $cutting_table->save();
             
             $data_return = [
                 'status' => 'success',
-                'message' => 'Successfully updated department ('. $department->department .')',
+                'message' => 'Successfully updated Cutting Table number '. $cutting_table->number,
                 'data' => [
-                    'department' => $department,
+                    'cutting_table' => $cutting_table
                 ]
             ];
             return response()->json($data_return, 200);
@@ -140,12 +140,12 @@ class DepartmentsController extends Controller
     public function destroy(string $id)
     {
         try {
-            $department = Department::find($id);
-            $department->delete();
+            $cutting_table = CuttingTable::find($id);
+            $cutting_table->delete();
             $data_return = [
                 'status' => 'success',
-                'data'=> $department,
-                'message'=> 'Department '.$department->department.' successfully Deleted!',
+                'data'=> $cutting_table,
+                'message'=> 'Cutting Table Number '.$cutting_table->number.' successfully Deleted!',
             ];
             return response()->json($data_return, 200);
         } catch (\Throwable $th) {
