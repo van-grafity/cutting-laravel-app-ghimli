@@ -24,6 +24,8 @@ class LayingPlanning extends Model
         'fabric_cons_qty',
         'fabric_cons_desc',
         'remark',
+        'laying_planning_type_id',
+        'parent_laying_planning_id',
         'created_by',
         'status_print',
     ];
@@ -65,6 +67,21 @@ class LayingPlanning extends Model
 
     public function layingPlanningDetail(){
         return $this->hasMany(LayingPlanningDetail::class, 'laying_planning_id', 'id');
+    }
+
+    public function layingPlanningType()
+    {
+        return $this->belongsTo(LayingPlanningType::class, 'laying_planning_type_id', 'id');
+    }
+
+    public function parentLayingPlanning()
+    {
+        return $this->belongsTo(LayingPlanning::class, 'parent_laying_planning_id', 'id');
+    }
+
+    public function childLayingPlannings()
+    {
+        return $this->hasMany(LayingPlanning::class, 'parent_laying_planning_id', 'id');
     }
 
 }

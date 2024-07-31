@@ -34,10 +34,14 @@
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $laying_planning->id) }}">Duplicate</a>
+                                        @if($laying_planning->laying_planning_type_id && $laying_planning->laying_planning_type_id == 1)
+                                            <a class="dropdown-item" href="{{ route('laying-planning.create-planning-support', $laying_planning->id) }}" target="_blank">Create Planning Support</a>
+                                        @endif
                                         
                                         @if($is_can_edit)
                                         <a class="dropdown-item" href="{{ route('laying-planning.edit', $laying_planning->id) }}">Edit</a>
                                         @endif
+                                        <a class="dropdown-item" href="{{ route('laying-planning.report', $laying_planning->id) }}" target="_blank">Print Report</a>
                                     </div>
                                 </div>
                             </div>
@@ -80,10 +84,30 @@
                                         <td>{{ $laying_planning->order_qty }} Pcs</td>
                                     </tr>
                                     <tr>
-                                        <td>Total Qty</td>
+                                        <td>Total Cut Qty</td>
                                         <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->total_order_qty }} Pcs</td>
+                                        <td>{{ $laying_planning->total_cut_qty }} Pcs</td>
                                     </tr>
+                                    <tr>
+                                        <td>Planning Type</td>
+                                        <td class="pl-3">:</td>
+                                        <td>{{ $laying_planning->LayingPlanningType ? $laying_planning->LayingPlanningType->type : '-' }} </td>
+                                    </tr>
+                                    @if($laying_planning->LayingPlanningType)
+                                    <tr>
+                                        <td>Planning Parent</td>
+                                        <td class="pl-3">:</td>
+                                        <td>
+                                            @if($laying_planning->parent_laying_planning_id)
+                                            <a href="{{ route('laying-planning.show',$laying_planning->parent_laying_planning_id) }}" target="_blank">
+                                                {{ $laying_planning->parentLayingPlanning->serial_number }}
+                                            </a>
+                                            @else
+                                            -
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -263,16 +287,6 @@
                                         @endif
                                     @else
                                         @if($detail->cuttingOrderRecord->status_print == 1)
-                                            <!-- // !! nanti hapus -->
-                                            <!-- <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
-                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
-                                            <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}">Create COR</a>
-                                            <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
-                                            @if($detail->fr_status == 'disabled')
-                                                <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail Fab</a>
-                                            @else
-                                                <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}">Create Fab</a>
-                                            @endif -->
                                             @can('super_admin')
                                                 <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
                                                 <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>

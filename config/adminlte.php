@@ -301,7 +301,7 @@ return [
         ],
         [
             'text' => 'Settings',
-            'icon' => 'fas fa-cog nav-icon',
+            'icon' => 'fas fa-cog',
             'can' => 'developer-menu',
             'submenu' => [
                 [
@@ -333,20 +333,26 @@ return [
         [
             'text' => 'Department',
             'url'  => '/department',
-            'icon' => 'fas fa-user-friends nav-icon',
+            'icon' => 'fas fa-user-friends',
             'can'  => 'department-menu',
         ],
         [
             'text' => 'User Management',
             'url'  => '/user-management',
-            'icon' => 'fas fa-users nav-icon',
+            'icon' => 'fas fa-users',
             'can'  => 'developer-menu',
         ],
         [
             'text' => 'Cutting Group',
             'url'  => 'cutting-group',
-            'icon' => 'fas fa-object-group nav-icon',
+            'icon' => 'fas fa-object-group',
             'can'  => 'cutting-group-menu',
+        ],
+        [
+            'text' => 'Cutting Table',
+            'url'  => 'cutting-table',
+            'icon' => 'fas fa-microchip',
+            'can'  => 'cutting-table.access',
         ],
         [
             'header' => 'General',
@@ -548,13 +554,6 @@ return [
             'icon' => 'fas fa-fw fa fa-file-alt',
             'can'  => 'cutting-record | cutting-output-report.access',
         ],
-        // !! next hapus kodingan ini. dan sekalian cek kodingan lain yang berkaitan dengan cutting order completion
-        // [
-        //     'text' => 'Cutting Order Completion',
-        //     'url'  => '/cutting-order-completion',
-        //     'icon' => 'fas fa-fw fa fa-file-alt',
-        //     'can'  => 'cutting-record | cutting-completion-report.access',
-        // ],
         [
             'text' => 'Cutting Completion Report',
             'url'  => '/cutting-completion-report',

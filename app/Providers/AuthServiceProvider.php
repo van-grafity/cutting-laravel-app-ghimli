@@ -136,9 +136,5 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('group-cutting-record', function ($user) {
             return $user->hasRole(['super_admin','cutter','layer', 'warehouse']);
         });
-
-        Gate::define('completion-cutting-record', function ($user) {
-            return $user->hasRole(['super_admin','cutter','layer', 'warehouse']);
-        });
     }
 }

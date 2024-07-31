@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\LayingPlanning;
 use Illuminate\Support\Str;
 use PDF;
+
 class CuttingCompletionReportsController extends Controller
 {
-    //
     public function index()
     {
         $gls = Gl::with('GLCombine')->get();
-        return view('page.cutting-order.cutting-completion-report', compact('gls'));
+        return view('page.cutting-completion-report.index', compact('gls'));
     }
 
     public function print(Request $request)
@@ -37,20 +37,35 @@ class CuttingCompletionReportsController extends Controller
             return redirect()->route('cutting-completion-report.index')->with('error', 'Planning from GL '. $gl->gl_number .' was not found');
         }
 
-        $buyer_list = [];
-        $style_list = [];
-        $fabric_type_list = [];
-        $fabric_cons_list = [];
-        foreach ($layingPlanning as $key => $lp) {
-            $buyer_list[] = $lp->gl->buyer->name;
-            $style_list[] = $lp->style->style;
-            $fabric_type_list[] = $lp->fabricType->name;
-            $fabric_cons_list[] = $lp->fabricCons->name;
+
+        // ## Mengurutkan laying planning agar berdekatan antara body dan kombinasinya
+        $laying_planning_new_order = [];
+        $laying_planning_parents = $layingPlanning->filter(function ($lp) {
+            return $lp->laying_planning_type_id === null || $lp->laying_planning_type_id === 1;
+        });
+
+        foreach ($laying_planning_parents as $key => $lp_parent) {
+            $laying_planning_new_order[] = $lp_parent;
+            $lp_child_ids = $lp_parent->childLayingPlannings->pluck('id')->toArray();
+            
+            $lp_childs = $layingPlanning->filter(function ($lp) use ($lp_child_ids) {
+                return in_array($lp->id, $lp_child_ids);
+            })->values();
+            $lp_parent->lp_childs = $lp_childs;
+
+            foreach ($lp_childs as $key => $lp) {
+                $laying_planning_new_order[] = $lp;
+            }
         }
+
+        $layingPlanning = collect($laying_planning_new_order);
+        // ## =========================================================
+
+        
 
         // ## Data for Completion Header
         $completion_data = [];
-        $total_mi_qty = array_sum(array_column($layingPlanning->toArray(), 'order_qty'));
+        $total_mi_qty = array_sum(array_column($laying_planning_parents->toArray(), 'order_qty'));
         $completion_data['total_mi_qty'] = $total_mi_qty;
         $completion_data['gl_number'] = $gl->gl_number;
 
@@ -148,7 +163,7 @@ class CuttingCompletionReportsController extends Controller
             $layingPlanning[$key_lp]->color_colspan = count($cut_qty_per_size);
 
 
-            // ## calculate fabric consuption
+            // ## Calculate Fabric Consumption
 
             $fabric_request = 0; // ## total length by laying planning detail
             $fabric_received = 0; // ## total length by roll sticker in COR Detail
@@ -177,13 +192,16 @@ class CuttingCompletionReportsController extends Controller
                 'actual_used' => $actual_used,
                 'diff_received_and_used' => $diff_received_and_used,
             ];
+
+            // ## End Calculate Fabric Consumption
         }
 
-        $completion_data['total_output_qty'] = $layingPlanning->sum('cut_qty_all_size');
+        $completion_data['total_output_qty'] = $laying_planning_parents->sum('cut_qty_all_size');
         $completion_data['total_replacement'] = $layingPlanning->sum('replacement_qty_all_size');
         $diff_output_mi_qty = $completion_data['total_output_qty'] - $total_mi_qty;
         $completion_data['diff_output_mi_qty'] = ($diff_output_mi_qty > 0) ? '+' . $diff_output_mi_qty : $diff_output_mi_qty;
 
+        // ## bagi per dua laying planning
         $laying_plannings = $layingPlanning->chunk(2);
 
         $data = [
@@ -192,8 +210,8 @@ class CuttingCompletionReportsController extends Controller
             'fabric_consumption' => $fabric_consumption,
         ];
 
-        // return view('page.cutting-order.completion-report', $data);
-        $pdf = PDF::loadview('page.cutting-order.completion-report', $data)->setPaper('a4', 'landscape');
+        // return view('page.cutting-completion-report.print_pdf', $data);
+        $pdf = PDF::loadview('page.cutting-completion-report.print_pdf', $data)->setPaper('a4', 'landscape');
         return $pdf->stream($filename);
     }
 

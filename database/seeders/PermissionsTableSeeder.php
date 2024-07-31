@@ -59,6 +59,16 @@ class PermissionsTableSeeder extends Seeder
                 'description' => 'Can manage cutting group features.',
                 'permission_category_id' => '3',
             ],
+            [
+                'name' => 'cutting-table.access',
+                'description' => 'Can access cutting group features.',
+                'permission_category_id' => '2',
+            ],
+            [
+                'name' => 'cutting-table.manage',
+                'description' => 'Can manage cutting group features.',
+                'permission_category_id' => '3',
+            ],
         ];
         foreach ($permission_list as $key => $permission) {
             Permission::create($permission);
