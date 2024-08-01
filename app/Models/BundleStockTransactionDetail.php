@@ -15,9 +15,9 @@ class BundleStockTransactionDetail extends Model
         "location_id",
     ];
 
-    public function bundleLocationTo()
+    public function bundleLocation()
     {
-        return $this->belongsTo(BundleLocation::class, 'location_to_id', 'id');
+        return $this->belongsTo(BundleLocation::class, 'location_id', 'id');
     }
 
     public function bundleStockTransaction()

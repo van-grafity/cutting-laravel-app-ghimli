@@ -17,6 +17,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
 use PDF;
@@ -562,8 +563,57 @@ class BundleStocksController extends Controller
                 return Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('d-m-Y');
             })->addColumn('total_pcs', function($data){
                 return $this->getTotalPcsFromBundleTransaction($data->id);
+            })->addColumn('action', function($data){
+                $action = "";
+                $action .= '<a href="'.route('bundle-stock.detail-transaction-history', $data->id).'" class="btn btn-info btn-sm mb-1 mr-1" data-toggle="tooltip" data-placement="top" title="Detail" target="_blank">Detail</a>';
+                if (Auth::user()->hasRole('super_admin')) {
+                    $action .="<button onclick='delete_bundle_stock_transaction($data->id)' class='btn btn-danger btn-sm mb-1 mr-1' data-toggle='tooltip' data-placement='top' title='Detail' target='_blank'>Delete</button>";
+                }
+                return $action;
             })->addIndexColumn()
             ->make(true);
+   }
+
+   public function deleteBundleTransaction($id)
+   {
+        $bundle_stock_transaction_detail = BundleStockTransactionDetail::find($id);
+        if(!$bundle_stock_transaction_detail){
+            return response()->json([
+                'status'=> 'error',
+                'message' => "Bundle Stock Transaction History Tidak Ditemukan"
+            ]);
+        }
+        $bundle_stock_transaction_detail_serial_number = $bundle_stock_transaction_detail->serial_number;
+        $bundle_stock_transaction = BundleStockTransaction::where('bundle_transaction_detail_id', $bundle_stock_transaction_detail->id)
+            ->get();
+
+        if($bundle_stock_transaction->isEmpty()){
+            return response()->json([
+                'status'=> 'error',
+                'message' => "Bundle Stock Tidak Ditemukan"
+            ]);
+        }
+
+        try{
+            DB::beginTransaction();
+            foreach ($bundle_stock_transaction as $transaction) {
+                if ($transaction->transaction_type == "OUT") {
+                    $bundle_transfer_note_details = BundleTransferNoteDetail::where('bundle_transaction_id', $transaction->id)->first();
+                    $bundle_transfer_note = BundleTransferNote::where('id', $bundle_transfer_note_details->bundle_transfer_note_id);
+                    $bundle_transfer_note->delete();
+                    $transaction->delete();
+                }
+            }
+            $bundle_stock_transaction_detail->delete();
+            DB::commit();
+        }catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json($th->getMessage());
+        }
+        return response()->json([
+            'status'=> 'success',
+            'message'=> 'Bundle Stock Transaction Dengan Serial Number '. $bundle_stock_transaction_detail_serial_number .' Sudah Berhasil Dihapus'
+        ]);
    }
 
    private function getColorFromBundleTransaction($bundle_transaction_detail_id)
@@ -597,6 +647,23 @@ class BundleStocksController extends Controller
         $gl_number_list = implode(', ',$gl_number_list);
         return $gl_number_list;
    }
+
+   private function getStyleFromBundleTransaction($bundle_transaction_detail_id)
+   {
+        $bundle_stock_transaction = BundleStockTransaction::join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
+            ->join('cutting_order_records','cutting_order_records.id','=','cutting_tickets.cutting_order_record_id')
+            ->join('laying_planning_details','laying_planning_details.id','=','cutting_order_records.laying_planning_detail_id')
+            ->join('laying_plannings','laying_plannings.id','=','laying_planning_details.laying_planning_id')
+            ->join('styles','styles.id','=','laying_plannings.style_id')
+            ->where('bundle_transaction_detail_id',$bundle_transaction_detail_id)
+            ->groupBy('styles.id')
+            ->select('styles.style as style')->get()->toArray();
+
+        $style_list = array_column($bundle_stock_transaction,'style');
+        $style = implode(', ',$style_list);
+        return $style;
+   }
+
    private function getTotalPcsFromBundleTransaction($bundle_transaction_detail_id)
    {
        $bundle_stock_transaction = BundleStockTransaction::join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
@@ -626,23 +693,81 @@ class BundleStocksController extends Controller
         return redirect()->back()->with('success','Sync Succesfully');
     }
 
-    public function detailTransactionHistory($id)
+    public function detailTransactionHistory($bundle_transaction_detail_id)
     {
-        $data = $this->getTransactionHistory($id);
+        $data = $this->getTransactionHistory($bundle_transaction_detail_id);
+
         return view('page.bundle-stock.detail', $data);
     }
 
-    // public function dataTableTransaction()
-    // {
-    //     $query = BundleTransferNoteDetail::with(['bundleTransferNote', 'bundleTransaction',
-    //     'bundleTransaction.ticket_id',]);
-    //     // dd($query);
-    //     return Datatables::of($query)
-    //         ->escapeColumns([])
-    //         ->addIndexColumn()
-    //         ->addColumn('date', function ($row){
-    //             return Carbon::parse($row->created_at)->format('d F Y H:i:s');
-    //         })
-    //         ->make(true);
-    // }
+    private function getBundleStockSize($bundle_transaction_detail_id)
+    {
+        return BundleStockTransaction::join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
+            ->join('sizes', 'sizes.id', '=', 'cutting_tickets.size_id')
+            ->groupBy('sizes.id')
+            ->select('sizes.id','sizes.size')
+            ->where('bundle_transaction_detail_id', $bundle_transaction_detail_id)
+            ->orderBy('sizes.id', 'ASC')
+            ->get();
+    }
+
+    private function getTransactionHistory($bundle_transaction_detail_id)
+    {
+        $bundle_stock_detail = BundleStockTransactionDetail::with('bundleLocation', 'bundleStockTransaction')
+            ->find($bundle_transaction_detail_id);
+
+        $size_list = $this->getBundleStockSize($bundle_stock_detail->id);
+
+        $bundle_stock_header = (object)[
+            'bundle_stock_transaction_id' => $bundle_stock_detail->id,
+            'serial_number' => $bundle_stock_detail->serial_number,
+            'transaction_type' => $bundle_stock_detail->transaction_type,
+            'location' => $bundle_stock_detail->bundleLocation->location,
+            'total_stock' => count($bundle_stock_detail->bundleStockTransaction),
+            'style_no' => $this->getStyleFromBundleTransaction($bundle_stock_detail->id),
+            'gl_number' =>$this->getGlFromBundleTransaction($bundle_stock_detail->id),
+            'date' => $bundle_stock_detail->created_at->format('d-m-Y'),
+        ];
+
+        $bundle_stock_transaction = BundleStockTransaction::join('cutting_tickets', 'cutting_tickets.id', '=', 'bundle_stock_transactions.ticket_id')
+            ->join('sizes','sizes.id','=', 'cutting_tickets.size_id')
+            ->join('cutting_order_records','cutting_order_records.id','=', 'cutting_tickets.cutting_order_record_id')
+            ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
+            ->join('laying_plannings', 'laying_plannings.id', '=', 'laying_planning_details.laying_planning_id')
+            ->join('colors', 'colors.id', '=', 'laying_plannings.color_id')
+            ->where('bundle_transaction_detail_id', $bundle_stock_detail->id)
+            ->groupBy('sizes.id', 'sizes.size', 'bundle_transaction_detail_id', 'laying_planning_details.id', 'laying_planning_details.table_number', 'cutting_order_records.id', 'cutting_order_records.serial_number', 'colors.color')
+            ->select(DB::raw('SUM(cutting_tickets.layer) as qty'),'sizes.id as size_id', 'sizes.size as size', 'colors.color as color', 'cutting_tickets.table_number as table_number', 'cutting_tickets.layer as layer')
+            ->orderBy('sizes.id', 'ASC')
+            ->get();
+
+        foreach($bundle_stock_transaction as $key => $bundle_stock_transaction_detail) {
+            $qty_per_size = [];
+            foreach($size_list as $key_size => $size){
+                $qty_per_size[$key_size] = (object)[
+                    'id' => $size->id,
+                    'size' => $size->size,
+                    'qty' => 0
+                ];
+                if($bundle_stock_transaction_detail->size_id === $size->id){
+                    $qty_per_size[$key_size]->qty = $bundle_stock_transaction_detail->qty;
+                }
+            }
+            $bundle_stock_transaction[$key]->qty_per_size = $qty_per_size;
+
+            $total_all_qty_size = 0;
+            foreach($bundle_stock_transaction_detail->qty_per_size as $qty){
+                $total_all_qty_size += $qty->qty;
+            }
+            $bundle_stock_transaction[$key]->total_qty = $total_all_qty_size;
+        }
+
+        $data = [
+            'bundle_stock_transaction_header' => $bundle_stock_header,
+            'bundle_stock_transaction_detail' => $bundle_stock_transaction,
+            'size_list' => $size_list
+        ];
+
+        return $data;
+    }
 }

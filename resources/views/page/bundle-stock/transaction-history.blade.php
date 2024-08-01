@@ -34,6 +34,7 @@
                                 <th wihth="5%;">Transaction Type</th>
                                 <th wihth="10%;">Date</th>
                                 <th wihth="5%;">Total Pcs</th>
+                                <th wihth="5%;">Action</th>
                             </tr>
                         </thead>
                     </table>
@@ -61,8 +62,63 @@
                 {data: 'transaction_type', name: 'transaction_type'},
                 {data: 'date', name: 'date'},
                 {data: 'total_pcs', name: 'total_pcs'},
+                {data: 'action', name: 'action'},
             ],
+            lengthChange: true,
+            searching: true,
+            autoWidth: false,
+            responsive: true,
+            drawCallback: function( settings ) {
+                Swal.close();
+            }
         });
     });
+
+    function delete_bundle_stock_transaction(id){
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this ticket!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ url('/bundle-stock/transaction-history/delete') }}"+'/'+id,
+                    type: 'DELETE',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: id
+                    },
+                    success: function(data) {
+                        if (data.status == 'success') {
+                            Swal.fire(
+                                'Deleted!',
+                                data.message,
+                                'success'
+                        ).then(() => {
+                            $('#transaction_history_table').DataTable().ajax.reload();
+                        });
+                        } else {
+                            Swal.fire(
+                                'Failed!',
+                                data.message,
+                                'error'
+                            )
+                        }
+                    },
+                    error: function(data) {
+                        Swal.fire(
+                            'Failed!',
+                            'Something wrong',
+                            'error'
+                        )
+                    }
+                });
+            }
+        })
+    }
 </script>
 @endpush

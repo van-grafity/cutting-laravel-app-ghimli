@@ -19,7 +19,7 @@
                                         <tr style="font-weight:700; font-size:20px;">
                                             <td>NO</td>
                                             <td>:</td>
-                                            <td>{{ $transfer_note_header->serial_number }}</td>
+                                            <td>{{ $bundle_stock_transaction_header->serial_number }}</td>
                                         </tr>
                                     </thead>
                                 </table>
@@ -31,7 +31,7 @@
                                             Action
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
-                                            <a class="dropdown-item" href="{{ route('bundle-transfer-note.print', $transfer_note_header->transfer_note_id) }}" target="_blank">Print Transfer Note</a>
+                                            <a class="dropdown-item" href="{{ route('bundle-transfer-note.print', $bundle_stock_transaction_header->transfer_note_id) }}" target="_blank">Print Transfer Note</a>
                                         </div>
                                     </div>
                                 </div>
@@ -44,17 +44,17 @@
                                         <tr>
                                             <td>GL No.</td>
                                             <td class="pl-3">:</td>
-                                            <td>{{ $transfer_note_header->gl_number }}</td>
+                                            <td>{{ $bundle_stock_transaction_header->gl_number }}</td>
                                         </tr>
                                         <tr>
                                             <td>Location Destination</td>
                                             <td class="pl-3">:</td>
-                                            <td>{{ $transfer_note_header->location }}</td>
+                                            <td>{{ $bundle_stock_transaction_header->location }}</td>
                                         </tr>
                                         <tr>
                                             <td>Transaction Type</td>
                                             <td class="pl-3">:</td>
-                                            <td>{{ $transfer_note_header->transaction_type }}</td>
+                                            <td>{{ $bundle_stock_transaction_header->transaction_type }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -65,12 +65,17 @@
                                         <tr>
                                             <td>Style</td>
                                             <td class="pl-3">:</td>
-                                            <td>{{ $transfer_note_header->style_no }}</td>
+                                            <td>{{ $bundle_stock_transaction_header->style_no }}</td>
                                         </tr>
-                                    <tr>
+                                        <tr>
                                             <td>Created Date</td>
                                             <td class="pl-3">:</td>
-                                            <td>{{ $transfer_note_header->date }}</td>
+                                            <td>{{ $bundle_stock_transaction_header->date }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Stock</td>
+                                            <td class="pl-3">:</td>
+                                            <td>{{ $bundle_stock_transaction_header->total_stock }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -99,7 +104,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($transfer_note_detail as $key => $detail)
+                            @foreach($bundle_stock_transaction_detail as $key => $detail)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $detail->color }}</td>
@@ -125,16 +130,3 @@
 </div>
 
 @endsection
-@push('js')
-<script type="text/javascript">
-
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-</script>
-
-<script type="text/javascript">
-</script>
-
-<script type="text/javascript">
-</script>
-@endpush
