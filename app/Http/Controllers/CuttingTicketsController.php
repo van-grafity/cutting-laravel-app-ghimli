@@ -285,7 +285,7 @@ class CuttingTicketsController extends Controller
             'laying_planning_detail_size' => $layingPlanningDetailSize,
             'color' => $color,
         ];
-        $customPaper = array(0, 0, 288, 180);
+        $customPaper = array(0, 0, 794.00, 612.00);
         $pdf = PDF::loadview('page.cutting-ticket.report', compact('data'))->setPaper($customPaper, 'portrait');
         return $pdf->stream('PackingList' . '.pdf');
     }
