@@ -335,6 +335,8 @@ return [
             'url'  => '/department',
             'icon' => 'fas fa-user-friends',
             'can'  => 'department-menu',
+            'label'  => 'New',
+            'label_color'  => 'danger',
         ],
         [
             'text' => 'User Management',
@@ -347,12 +349,16 @@ return [
             'url'  => 'cutting-group',
             'icon' => 'fas fa-object-group',
             'can'  => 'cutting-group-menu',
+            'label'  => 'New',
+            'label_color'  => 'danger',
         ],
         [
             'text' => 'Cutting Table',
             'url'  => 'cutting-table',
             'icon' => 'fas fa-microchip',
             'can'  => 'cutting-table.access',
+            'label'  => 'New',
+            'label_color'  => 'danger',
         ],
         [
             'header' => 'General',
@@ -429,6 +435,8 @@ return [
             'text' => 'Laying Planning',
             'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
             'can'  => 'clerk | laying-planning.access',
+            'label'  => 'New',
+            'label_color'  => 'danger',
             'submenu' => [
                 [
                     'classes'   => 'ml-3',
@@ -470,7 +478,9 @@ return [
         [
             'text' => 'Cut Piece Stock',
             'icon' => 'fas fa-tshirt',
-            'can'  => 'clerk | cut-piece-stock.access',
+            'can'  => 'cut-piece-stock.access',
+            'label'  => 'New',
+            'label_color'  => 'danger',
             'submenu' => [
                 [
                     'classes'=> 'ml-3',
@@ -535,6 +545,8 @@ return [
             'url'  => '/daily-cutting-report',
             'icon' => 'fas fa-fw fa fa-file-alt',
             'can'  => 'cutting-record | daily-cutting-report.access',
+            'label'  => 'New',
+            'label_color'  => 'danger',
         ],
         [
             'text' => 'Cutting Status',
@@ -571,6 +583,8 @@ return [
             'url'  => 'fabric-consumption',
             'icon' => 'fas fa-fw fa fa-file-alt',
             'can'  => 'fabric-consumption.access',
+            'label'  => 'New',
+            'label_color'  => 'danger',
         ],
         [
             'header'=> 'Lain-lain',
