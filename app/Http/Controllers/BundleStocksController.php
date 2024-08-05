@@ -539,7 +539,7 @@ class BundleStocksController extends Controller
     }
 
     public function dtableTransaction()
-    {
+    {   
         $datas = BundleStockTransaction::join('bundle_stock_transaction_groups', 'bundle_stock_transactions.transaction_group_id', '=', 'bundle_stock_transaction_groups.id')
                     ->join('bundle_locations', 'bundle_locations.id', '=', 'bundle_stock_transaction_groups.location_id')
                     ->join('cutting_tickets', 'cutting_tickets.id', '=', 'bundle_stock_transactions.ticket_id')
@@ -552,7 +552,7 @@ class BundleStocksController extends Controller
                     ->groupBy('bundle_stock_transaction_groups.id')
                     ->select('bundle_locations.location as location','bundle_stock_transaction_groups.*')
                     ->withTrashed();
-
+                    
         if(request()->has('filter_type') && request()->input('filter_type') !== 0){
             $filterType = request()->input('filter_type');
             if(!Auth::user()->hasRole('super_admin') || $filterType === 'non_deleted'){
@@ -578,10 +578,18 @@ class BundleStocksController extends Controller
             })->addColumn('action', function($data){
                 $action = "";
                 $filterType = request()->input('filter_type');
+                $createdAt = Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at);
+
+                $differenceInMinutes = Carbon::now()->diffInMinutes($createdAt);
+
                 $action .= '<a href="'.route('bundle-stock.detail-transaction-history', $data->id).'" class="btn btn-info btn-sm mb-1 mr-1" data-toggle="tooltip" data-placement="top" title="Detail" target="_blank">Detail</a>';
                 if (Auth::user()->hasRole('super_admin')) {
                     if($filterType === 'soft_deleted' || $filterType === 'non_deleted'){
-                        $action .="<button onclick='delete_bundle_stock_transaction($data->id, `$filterType`)' class='btn btn-danger btn-sm mb-1 mr-1' data-toggle='tooltip' data-placement='top' title='Detail' target='_blank'>Delete</button>";
+                        if ($differenceInMinutes <= 30) {
+                            $action .= "<button onclick='delete_bundle_stock_transaction($data->id, `$filterType`)' class='btn btn-danger btn-sm mb-1 mr-1' data-toggle='tooltip' data-placement='top' title='Delete'>Delete</button>";
+                        } else {
+                            $action .= "<button class='btn btn-danger btn-sm mb-1 mr-1' data-toggle='tooltip' data-placement='top' title='Data tidak dapat di delete karena sudah disimpan selama 30 menit' disabled>Delete</button>";
+                        }
                     }
                 }
                 return $action;
