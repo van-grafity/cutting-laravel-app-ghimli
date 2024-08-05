@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Cut Piece Transfer Note Detail')
+@section('title', 'Transaction History Detail')
 
 @section('content')
 <style>
@@ -120,7 +120,7 @@
 
                     <div class="row mt-10rem">
                         <div class="col-md-12 text-right">
-                            <a href="{{ url('bundle-transfer-note') }}" class="btn btn-secondary shadow-sm">back</a>
+                            <a href="{{ url('bundle-stock/transaction-history') }}" class="btn btn-secondary shadow-sm">back</a>
                         </div>
                     </div>
                 </div>

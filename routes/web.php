@@ -448,6 +448,7 @@ Route::group(['middleware' => ['auth']], function () {
             route::get('/transaction-history', 'transactionHistory')->name('transaction-history');
             route::get('/dtable-transaction', 'dtableTransaction')->name('dtable-transaction');
             route::delete('/transaction-history/delete/{id}', 'deleteBundleTransaction')->name('delete-transaction-history');
+            route::delete('/transaction-history/soft-delete/{id}', 'softDeleteBundleTransaction')->name('soft-delete-transaction-history');
             route::get('/transaction-history/detail/{id}', 'detailTransactionHistory')->name('detail-transaction-history');
             route::get('/dtable-bundle-transaction', 'dtableTransaction')->name('dtable-transaction');
             route::put('/sync-bundle-transaction', 'syncBundleTransaction')->name('sync-transaction');

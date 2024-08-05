@@ -13,11 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('bundle_stock_transaction_details', function (Blueprint $table) {
+        Schema::create('bundle_stock_transaction_groups', function (Blueprint $table) {
             $table->id();
             $table->string('serial_number')->unique();
             $table->enum('transaction_type', ['IN', 'OUT']);
             $table->foreignId('location_id')->constrained('bundle_locations');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bundle_stock_transaction_details');
+        Schema::dropIfExists('bundle_stock_transaction_groups');
     }
 };

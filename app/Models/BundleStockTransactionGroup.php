@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
-class BundleStockTransactionDetail extends Model
+class BundleStockTransactionGroup extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         "serial_number",
@@ -22,7 +24,6 @@ class BundleStockTransactionDetail extends Model
 
     public function bundleStockTransaction()
     {
-        return $this->hasMany(BundleStockTransaction::class, 'bundle_transaction_detail_id', 'id');
+        return $this->hasMany(BundleStockTransaction::class, 'transaction_group_id', 'id');
     }
-
 }

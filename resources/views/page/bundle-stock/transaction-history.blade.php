@@ -16,13 +16,22 @@
                     <div class="content-title text-center">
                         <h3>Transaction History</h3>
                     </div>
-                    <form action="{{ route("bundle-stock.sync-transaction") }}" class="d-flex" method="POST">
-                        @csrf
-                        @method("PUT")
-                        <button type="submit" class="btn btn-light border btn-md ml-auto my-2">
-                            Sync Data
-                        </button>
-                    </form>
+                    <div class="d-flex my-3">
+                        {{-- <form class="my-auto ml-auto mr-2" action="{{ route("bundle-stock.sync-transaction") }}"  method="POST">
+                            @csrf
+                            @method("PUT")
+                            <button type="submit" class="btn btn-light border btn-md">
+                                Sync Data
+                            </button>
+                        </form> --}}
+                        <div class="ml-auto" style="width:200px;">
+                            <select name="filter_type" id="filter_type" class="form-control no-search-box">
+                                <option value="non_deleted" selected>Non-Deleted</option>
+                                <option value="soft_deleted">Deleted</option>
+                                <option value=0>All Data</option>
+                            </select>
+                        </div>
+                    </div>
                     <table class="table table-bordered table-hover text-center" id="transaction_history_table">
                         <thead class="">
                             <tr>
@@ -52,7 +61,12 @@
         $('#transaction_history_table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ url('bundle-stock/dtable-bundle-transaction') }}",
+            ajax:{
+                    url: "{{ url('bundle-stock/dtable-bundle-transaction') }}",
+                    data: function(d) {
+                        d.filter_type = $('#filter_type').val();
+                    },
+                },
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'serial_number', name: 'serial_number'},
@@ -72,12 +86,17 @@
                 Swal.close();
             }
         });
+        $('#filter_type').change(function(event) {
+            $('#transaction_history_table').DataTable().ajax.reload(null, false);
+        });
     });
 
-    function delete_bundle_stock_transaction(id){
+    function delete_bundle_stock_transaction(id, filterType){
+        console.log(filterType !== "soft_deleted" ? "{{ url('/bundle-stock/transaction-history/soft-delete') }}"+'/'+id : "{{ url('/bundle-stock/transaction-history/delete') }}"+'/'+id)
+
         Swal.fire({
             title: 'Are you sure?',
-            text: "You won't be able to revert this ticket!",
+            text: filterType !== "soft_deleted" ? "You only have 30 minutes to retrieve the ticket back after delete it!" : "Bundle stock transaction will be deleted permanently!" ,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -86,7 +105,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ url('/bundle-stock/transaction-history/delete') }}"+'/'+id,
+                    url: filterType !== "soft_deleted" ? "{{ url('/bundle-stock/transaction-history/soft-delete') }}"+'/'+id : "{{ url('/bundle-stock/transaction-history/delete') }}"+'/'+id ,
                     type: 'DELETE',
                     data: {
                         _token: "{{ csrf_token() }}",

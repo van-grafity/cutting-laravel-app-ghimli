@@ -8,7 +8,7 @@ use App\Models\Gl;
 use App\Models\LayingPlanning;
 use App\Models\BundleStock;
 use App\Models\BundleStockTransaction;
-use App\Models\BundleStockTransactionDetail;
+use App\Models\BundleStockTransactionGroup;
 use App\Models\BundleTransferNote;
 use App\Models\BundleTransferNoteDetail;
 use App\Models\CuttingOrderRecord;
@@ -207,7 +207,7 @@ class BundleStocksController extends Controller
 
             DB::beginTransaction();
             if($ticket_list){
-                $bundle_transaction_detail = new BundleStockTransactionDetail();
+                $bundle_transaction_detail = new BundleStockTransactionGroup();
                 $bundle_transaction_detail->serial_number = $this->generate_bundle_transaction_detail_serial_number();
                 $bundle_transaction_detail->transaction_type = $data_input['transaction_type'];
                 $bundle_transaction_detail->location_id = $data_input['location'];;
@@ -217,7 +217,7 @@ class BundleStocksController extends Controller
             foreach ($ticket_list as $key => $ticket) {
                 // ## Create New Bundle Transaction Detail
                 $bundle_stock_transaction = new BundleStockTransaction;
-                $bundle_stock_transaction->bundle_transaction_detail_id = $bundle_transaction_detail->id;
+                $bundle_stock_transaction->transaction_group_id = $bundle_transaction_detail->id;
                 $bundle_stock_transaction->ticket_id = $ticket->id;
                 $bundle_stock_transaction->transaction_type = $data_input['transaction_type'];
                 $bundle_stock_transaction->location_id = $data_input['location'];;
@@ -506,7 +506,7 @@ class BundleStocksController extends Controller
     private function createBundleTransactionDetail($new_bundle_list, $bundle_location, $bundle_transaction_type)
     {
         foreach( $new_bundle_list as $key => $bundle) {
-            $bundle_transaction_detail = new BundleStockTransactionDetail();
+            $bundle_transaction_detail = new BundleStockTransactionGroup();
             $bundle_transaction_detail->bundle_transaction_id = $bundle->id;
             $bundle_transaction_detail->serial_number = $this->generate_bundle_transaction_detail_serial_number($bundle->id);
             $bundle_transaction_detail->transaction_type = $bundle_transaction_type;
@@ -521,7 +521,7 @@ class BundleStocksController extends Controller
         $this_month = date('m');
         $time_code = date('ym');
 
-        $count_bundle_stock_this_month = BundleStockTransactionDetail::whereYear('created_at',$this_year)->whereMonth('created_at',$this_month)->get()->count();
+        $count_bundle_stock_this_month = BundleStockTransactionGroup::whereYear('created_at',$this_year)->whereMonth('created_at',$this_month)->withTrashed()->get()->count();
 
         if($count_bundle_stock_this_month) {
             $next_number = $count_bundle_stock_this_month + 1;
@@ -540,18 +540,30 @@ class BundleStocksController extends Controller
 
     public function dtableTransaction()
     {
-        $query = BundleStockTransaction::join('bundle_stock_transaction_details', 'bundle_stock_transactions.bundle_transaction_detail_id', '=', 'bundle_stock_transaction_details.id')
-                    ->join('bundle_locations', 'bundle_locations.id', '=', 'bundle_stock_transaction_details.location_id')
+        $datas = BundleStockTransaction::join('bundle_stock_transaction_groups', 'bundle_stock_transactions.transaction_group_id', '=', 'bundle_stock_transaction_groups.id')
+                    ->join('bundle_locations', 'bundle_locations.id', '=', 'bundle_stock_transaction_groups.location_id')
                     ->join('cutting_tickets', 'cutting_tickets.id', '=', 'bundle_stock_transactions.ticket_id')
                     ->join('cutting_order_records','cutting_order_records.id','=','cutting_tickets.cutting_order_record_id')
                     ->join('laying_planning_details','laying_planning_details.id','=','cutting_order_records.laying_planning_detail_id')
                     ->join('laying_plannings','laying_plannings.id','=','laying_planning_details.laying_planning_id')
                     ->join('colors','colors.id','=','laying_plannings.color_id')
                     ->join('gls','gls.id','=','laying_plannings.gl_id')
-                    ->whereNotNull('bundle_transaction_detail_id')
-                    ->groupBy('bundle_stock_transaction_details.id')
-                    ->select('bundle_locations.location as location','bundle_stock_transaction_details.*')
-                    ->get();
+                    ->whereNotNull('transaction_group_id')
+                    ->groupBy('bundle_stock_transaction_groups.id')
+                    ->select('bundle_locations.location as location','bundle_stock_transaction_groups.*')
+                    ->withTrashed();
+
+        if(request()->has('filter_type') && request()->input('filter_type') !== 0){
+            $filterType = request()->input('filter_type');
+            if(!Auth::user()->hasRole('super_admin') || $filterType === 'non_deleted'){
+                $datas->where('bundle_stock_transaction_groups.deleted_at', null);
+            }
+            if($filterType === 'soft_deleted'){
+                $datas->whereNotNull('bundle_stock_transaction_groups.deleted_at');
+            }
+        }
+
+        $query = $datas->get();
 
         return Datatables::of($query)
             ->escapeColumns([])
@@ -565,9 +577,12 @@ class BundleStocksController extends Controller
                 return $this->getTotalPcsFromBundleTransaction($data->id);
             })->addColumn('action', function($data){
                 $action = "";
+                $filterType = request()->input('filter_type');
                 $action .= '<a href="'.route('bundle-stock.detail-transaction-history', $data->id).'" class="btn btn-info btn-sm mb-1 mr-1" data-toggle="tooltip" data-placement="top" title="Detail" target="_blank">Detail</a>';
                 if (Auth::user()->hasRole('super_admin')) {
-                    $action .="<button onclick='delete_bundle_stock_transaction($data->id)' class='btn btn-danger btn-sm mb-1 mr-1' data-toggle='tooltip' data-placement='top' title='Detail' target='_blank'>Delete</button>";
+                    if($filterType === 'soft_deleted' || $filterType === 'non_deleted'){
+                        $action .="<button onclick='delete_bundle_stock_transaction($data->id, `$filterType`)' class='btn btn-danger btn-sm mb-1 mr-1' data-toggle='tooltip' data-placement='top' title='Detail' target='_blank'>Delete</button>";
+                    }
                 }
                 return $action;
             })->addIndexColumn()
@@ -576,7 +591,8 @@ class BundleStocksController extends Controller
 
    public function deleteBundleTransaction($id)
    {
-        $bundle_stock_transaction_detail = BundleStockTransactionDetail::find($id);
+        $bundle_stock_transaction_detail = BundleStockTransactionGroup::onlyTrashed()->find($id);
+
         if(!$bundle_stock_transaction_detail){
             return response()->json([
                 'status'=> 'error',
@@ -584,7 +600,50 @@ class BundleStocksController extends Controller
             ]);
         }
         $bundle_stock_transaction_detail_serial_number = $bundle_stock_transaction_detail->serial_number;
-        $bundle_stock_transaction = BundleStockTransaction::where('bundle_transaction_detail_id', $bundle_stock_transaction_detail->id)
+        $bundle_stock_transaction = BundleStockTransaction::where('transaction_group_id', $bundle_stock_transaction_detail->id)
+            ->onlyTrashed()
+            ->get();
+        if($bundle_stock_transaction->isEmpty()){
+            return response()->json([
+                'status'=> 'error',
+                'message' => "Bundle Stock Tidak Ditemukan"
+            ]);
+        }
+
+        try{
+            DB::beginTransaction();
+            foreach ($bundle_stock_transaction as $transaction) {
+                $bundle_transfer_note_details = BundleTransferNoteDetail::where('bundle_transaction_id', $transaction->id)->first();
+                if ($bundle_transfer_note_details) {
+                    BundleTransferNoteDetail::where('bundle_transfer_note_id', $bundle_transfer_note_details->bundle_transfer_note_id)->delete();
+                    BundleTransferNote::where('id', $bundle_transfer_note_details->bundle_transfer_note_id)->onlyTrashed()->forceDelete();
+                    $bundle_transfer_note_details->forceDelete();
+                }
+                $transaction->forceDelete();
+            }
+            $bundle_stock_transaction_detail->forceDelete();
+            DB::commit();
+        }catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json($th->getMessage());
+        }
+        return response()->json([
+            'status'=> 'success',
+            'message'=> 'Bundle Stock Transaction Dengan Serial Number '. $bundle_stock_transaction_detail_serial_number .' Sudah Berhasil Dihapus'
+        ]);
+   }
+
+   public function softDeleteBundleTransaction($id)
+   {
+        $bundle_stock_transaction_detail = BundleStockTransactionGroup::find($id);
+        if(!$bundle_stock_transaction_detail){
+            return response()->json([
+                'status'=> 'error',
+                'message' => "Bundle Stock Transaction History Tidak Ditemukan"
+            ]);
+        }
+        $bundle_stock_transaction_detail_serial_number = $bundle_stock_transaction_detail->serial_number;
+        $bundle_stock_transaction = BundleStockTransaction::where('transaction_group_id', $bundle_stock_transaction_detail->id)
             ->get();
 
         if($bundle_stock_transaction->isEmpty()){
@@ -597,12 +656,14 @@ class BundleStocksController extends Controller
         try{
             DB::beginTransaction();
             foreach ($bundle_stock_transaction as $transaction) {
-                if ($transaction->transaction_type == "OUT") {
-                    $bundle_transfer_note_details = BundleTransferNoteDetail::where('bundle_transaction_id', $transaction->id)->first();
-                    $bundle_transfer_note = BundleTransferNote::where('id', $bundle_transfer_note_details->bundle_transfer_note_id);
-                    $bundle_transfer_note->delete();
-                    $transaction->delete();
+                $this->updateStockFromTransactionHistory($transaction, $bundle_stock_transaction_detail->transaction_type);
+
+                $bundle_transfer_note_details = BundleTransferNoteDetail::where('bundle_transaction_id', $transaction->id)->first();
+                if ($bundle_transfer_note_details) {
+                    BundleTransferNoteDetail::where('bundle_transfer_note_id', $bundle_transfer_note_details->bundle_transfer_note_id);
+                    BundleTransferNote::where('id', $bundle_transfer_note_details->bundle_transfer_note_id)->delete();
                 }
+                $transaction->delete();
             }
             $bundle_stock_transaction_detail->delete();
             DB::commit();
@@ -616,15 +677,45 @@ class BundleStocksController extends Controller
         ]);
    }
 
-   private function getColorFromBundleTransaction($bundle_transaction_detail_id)
+   private function updateStockFromTransactionHistory($bundle_stock_transaction, $transaction_type)
+    {
+        // ## Update Bundle Stock in Rack
+        $laying_planning_id = $bundle_stock_transaction->cuttingTicket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->id;
+        $size_id = $bundle_stock_transaction->cuttingTicket->size_id;
+        $cut_piece_qty = $bundle_stock_transaction->cuttingTicket->layer;
+
+        $bundle_stock = BundleStock::where('laying_planning_id', $laying_planning_id)
+            ->where('size_id', $size_id)
+            ->first();
+
+        if($bundle_stock_transaction->transaction_type == 'OUT') {
+            $bundle_stock->current_qty = $bundle_stock->current_qty + $cut_piece_qty;
+        } else if ($bundle_stock_transaction->transaction_type == 'IN'){
+            $bundle_stock->current_qty = $bundle_stock->current_qty - $cut_piece_qty;
+        }
+
+        $bundle_stock->save();
+
+        $bundle_stock_information = [
+            'gl_number' => $bundle_stock->layingPlanning->gl->gl_number,
+            'color' => $bundle_stock->layingPlanning->color->color,
+            'size' => $bundle_stock->size->size,
+            'current_qty' => $bundle_stock->current_qty,
+        ];
+
+        return $bundle_stock_information;
+    }
+
+   private function getColorFromBundleTransaction($transaction_group_id)
    {
         $bundle_stock_transaction = BundleStockTransaction::join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
             ->join('cutting_order_records','cutting_order_records.id','=','cutting_tickets.cutting_order_record_id')
             ->join('laying_planning_details','laying_planning_details.id','=','cutting_order_records.laying_planning_detail_id')
             ->join('laying_plannings','laying_plannings.id','=','laying_planning_details.laying_planning_id')
             ->join('colors','colors.id','=','laying_plannings.color_id')
-            ->where('bundle_transaction_detail_id',$bundle_transaction_detail_id)
+            ->where('transaction_group_id',$transaction_group_id)
             ->groupBy('colors.id')
+            ->withTrashed()
             ->select('colors.color')->get()->toArray();
 
         $color_list = array_column($bundle_stock_transaction,'color');
@@ -632,15 +723,16 @@ class BundleStocksController extends Controller
         return $color_list;
    }
 
-   private function getGlFromBundleTransaction($bundle_transaction_detail_id)
+   private function getGlFromBundleTransaction($transaction_group_id)
    {
         $bundle_stock_transaction = BundleStockTransaction::join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
             ->join('cutting_order_records','cutting_order_records.id','=','cutting_tickets.cutting_order_record_id')
             ->join('laying_planning_details','laying_planning_details.id','=','cutting_order_records.laying_planning_detail_id')
             ->join('laying_plannings','laying_plannings.id','=','laying_planning_details.laying_planning_id')
             ->join('gls','gls.id','=','laying_plannings.gl_id')
-            ->where('bundle_transaction_detail_id',$bundle_transaction_detail_id)
+            ->where('transaction_group_id',$transaction_group_id)
             ->groupBy('gls.id')
+            ->withTrashed()
             ->select('gls.gl_number')->get()->toArray();
 
         $gl_number_list = array_column($bundle_stock_transaction,'gl_number');
@@ -648,15 +740,16 @@ class BundleStocksController extends Controller
         return $gl_number_list;
    }
 
-   private function getStyleFromBundleTransaction($bundle_transaction_detail_id)
+   private function getStyleFromBundleTransaction($transaction_group_id)
    {
         $bundle_stock_transaction = BundleStockTransaction::join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
             ->join('cutting_order_records','cutting_order_records.id','=','cutting_tickets.cutting_order_record_id')
             ->join('laying_planning_details','laying_planning_details.id','=','cutting_order_records.laying_planning_detail_id')
             ->join('laying_plannings','laying_plannings.id','=','laying_planning_details.laying_planning_id')
             ->join('styles','styles.id','=','laying_plannings.style_id')
-            ->where('bundle_transaction_detail_id',$bundle_transaction_detail_id)
+            ->where('transaction_group_id',$transaction_group_id)
             ->groupBy('styles.id')
+            ->withTrashed()
             ->select('styles.style as style')->get()->toArray();
 
         $style_list = array_column($bundle_stock_transaction,'style');
@@ -664,10 +757,11 @@ class BundleStocksController extends Controller
         return $style;
    }
 
-   private function getTotalPcsFromBundleTransaction($bundle_transaction_detail_id)
+   private function getTotalPcsFromBundleTransaction($transaction_group_id)
    {
        $bundle_stock_transaction = BundleStockTransaction::join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
-           ->where('bundle_transaction_detail_id',$bundle_transaction_detail_id)
+           ->where('transaction_group_id',$transaction_group_id)
+           ->withTrashed()
            ->select('cutting_tickets.layer')->get()->toArray();
 
        $layer_list = array_column($bundle_stock_transaction,'layer');
@@ -693,28 +787,30 @@ class BundleStocksController extends Controller
         return redirect()->back()->with('success','Sync Succesfully');
     }
 
-    public function detailTransactionHistory($bundle_transaction_detail_id)
+    public function detailTransactionHistory($transaction_group_id)
     {
-        $data = $this->getTransactionHistory($bundle_transaction_detail_id);
+        $data = $this->getTransactionHistory($transaction_group_id);
 
         return view('page.bundle-stock.detail', $data);
     }
 
-    private function getBundleStockSize($bundle_transaction_detail_id)
+    private function getBundleStockSize($transaction_group_id)
     {
         return BundleStockTransaction::join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
             ->join('sizes', 'sizes.id', '=', 'cutting_tickets.size_id')
             ->groupBy('sizes.id')
             ->select('sizes.id','sizes.size')
-            ->where('bundle_transaction_detail_id', $bundle_transaction_detail_id)
+            ->where('transaction_group_id', $transaction_group_id)
             ->orderBy('sizes.id', 'ASC')
+            ->withTrashed()
             ->get();
     }
 
-    private function getTransactionHistory($bundle_transaction_detail_id)
+    private function getTransactionHistory($transaction_group_id)
     {
-        $bundle_stock_detail = BundleStockTransactionDetail::with('bundleLocation', 'bundleStockTransaction')
-            ->find($bundle_transaction_detail_id);
+        $bundle_stock_detail = BundleStockTransactionGroup::with('bundleLocation', 'bundleStockTransaction')
+            ->withTrashed()
+            ->find($transaction_group_id);
 
         $size_list = $this->getBundleStockSize($bundle_stock_detail->id);
 
@@ -723,7 +819,7 @@ class BundleStocksController extends Controller
             'serial_number' => $bundle_stock_detail->serial_number,
             'transaction_type' => $bundle_stock_detail->transaction_type,
             'location' => $bundle_stock_detail->bundleLocation->location,
-            'total_stock' => count($bundle_stock_detail->bundleStockTransaction),
+            'total_stock' => $bundle_stock_detail->bundleStockTransaction()->withTrashed()->count(),
             'style_no' => $this->getStyleFromBundleTransaction($bundle_stock_detail->id),
             'gl_number' =>$this->getGlFromBundleTransaction($bundle_stock_detail->id),
             'date' => $bundle_stock_detail->created_at->format('d-m-Y'),
@@ -735,10 +831,11 @@ class BundleStocksController extends Controller
             ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
             ->join('laying_plannings', 'laying_plannings.id', '=', 'laying_planning_details.laying_planning_id')
             ->join('colors', 'colors.id', '=', 'laying_plannings.color_id')
-            ->where('bundle_transaction_detail_id', $bundle_stock_detail->id)
-            ->groupBy('sizes.id', 'sizes.size', 'bundle_transaction_detail_id', 'laying_planning_details.id', 'laying_planning_details.table_number', 'cutting_order_records.id', 'cutting_order_records.serial_number', 'colors.color')
+            ->where('transaction_group_id', $bundle_stock_detail->id)
+            ->groupBy('sizes.id', 'sizes.size', 'transaction_group_id', 'laying_planning_details.id', 'laying_planning_details.table_number', 'cutting_order_records.id', 'cutting_order_records.serial_number', 'colors.color')
             ->select(DB::raw('SUM(cutting_tickets.layer) as qty'),'sizes.id as size_id', 'sizes.size as size', 'colors.color as color', 'cutting_tickets.table_number as table_number', 'cutting_tickets.layer as layer')
             ->orderBy('sizes.id', 'ASC')
+            ->withTrashed()
             ->get();
 
         foreach($bundle_stock_transaction as $key => $bundle_stock_transaction_detail) {
