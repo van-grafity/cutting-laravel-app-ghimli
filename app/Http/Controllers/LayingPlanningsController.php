@@ -782,6 +782,8 @@ class LayingPlanningsController extends Controller
             $layingPlanningDetail->marker_length = $request->marker_length;
             $layingPlanningDetail->total_length = $request->marker_total_length;
             $layingPlanningDetail->total_all_size = $request->qty_size_all;
+            dd($request->laying_planning_detail_type);
+            
             $layingPlanningDetail->save();
 
             $deletePlanningDetailSize = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->delete();

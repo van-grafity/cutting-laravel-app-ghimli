@@ -425,39 +425,67 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <h5>Ratio</h5>
-                        </div>
-                        <div class="row">
-                            @foreach($size_list as $key => $size)
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="ratio_size_{{ $size->id }}">{{ $size->size }}</label>
-                                    <input type="number" class="form-control ratio-size" id="ratio_size_{{ $size->id }}" name="ratio_size[{{ $size->id }}]" min="0">
+                        <div class="row my-2">
+                            <div class="col-sm-12">
+                                <h5 style="font-weight:500">Table Type</h5>
+                            </div>
+                            <div class="col-sm-12 col-lg-4">
+                                <div class="form-group d-flex">
+                                    <div class="custom-control custom-radio mr-4">
+                                        <input class="custom-control-input" type="radio" id="laying_planning_detail_type_normal" name="laying_planning_detail_type" value="1">
+                                        <label for="laying_planning_detail_type_normal" class="custom-control-label">NORMAL</label>
+                                    </div>
+                                    <div class="custom-control custom-radio mr-4">
+                                        <input class="custom-control-input" type="radio" id="laying_planning_detail_type_binding" name="laying_planning_detail_type" value="2" >
+                                        <label for="laying_planning_detail_type_binding" class="custom-control-label">BINDING</label>
+                                    </div>
+                                    <div class="custom-control custom-radio mr-4">
+                                        <input class="custom-control-input" type="radio" id="laying_planning_detail_type_piping" name="laying_planning_detail_type" value="3">
+                                        <label for="laying_planning_detail_type_piping" class="custom-control-label">PIPING</label>
+                                    </div>
+                                    <div class="custom-control custom-radio mr-4">
+                                        <input class="custom-control-input" type="radio" id="laying_planning_detail_type_balance" name="laying_planning_detail_type" value="4">
+                                        <label for="laying_planning_detail_type_balance" class="custom-control-label">BALANCE</label>
+                                    </div>
                                 </div>
                             </div>
-                            @endforeach
                         </div>
-                        <div>
-                            <h5>Qty Each Size</h5>
-                        </div>
-                        <div class="row">
-                            @foreach($size_list as $key => $size)
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="qty_size_{{ $size->id }}">{{ $size->size }}</label>
-                                    <input type="number" class="form-control" id="qty_size_{{ $size->id }}" name="qty_size[{{ $size->id }}]" readonly>
+                        <div class="ratio-wrapper">
+                            <div>
+                                <h5>Ratio</h5>
+                            </div>
+                            <div class="row">
+                                @foreach($size_list as $key => $size)
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="ratio_size_{{ $size->id }}">{{ $size->size }}</label>
+                                        <input type="number" class="form-control ratio-size" id="ratio_size_{{ $size->id }}" name="ratio_size[{{ $size->id }}]" min="0">
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                            <div>
+                                <h5>Qty Each Size</h5>
+                            </div>
+                            <div class="row">
+                                @foreach($size_list as $key => $size)
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="qty_size_{{ $size->id }}">{{ $size->size }}</label>
+                                        <input type="number" class="form-control" id="qty_size_{{ $size->id }}" name="qty_size[{{ $size->id }}]" readonly>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label for="qty_size_all"><h5>Total Qty All Size</h5></label>
+                                        <input type="number" class="form-control" id="qty_size_all" name="qty_size_all" value="0" readonly>
+                                    </div>
                                 </div>
                             </div>
-                            @endforeach
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="qty_size_all"><h5>Total Qty All Size</h5></label>
-                                    <input type="number" class="form-control" id="qty_size_all" name="qty_size_all" value="0" readonly>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                     <!-- END .card-body -->
@@ -566,9 +594,6 @@
 @push('js')
 
 <script type="text/javascript">
-    //!!  next remove document ready kalau tidak ada masalah
-// $(document).ready(function(){
-
     // ## Show Flash Message
     let session = {!! json_encode(session()->all()) !!};
     show_flash_message(session);
@@ -580,137 +605,146 @@
     const unprint_cor_url = '{{ route("laying-planning-detail.unprint-cor") }}';
     const unprint_fbr_url = '{{ route("laying-planning-detail.unprint-fbr") }}';
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+    $(document).ready(function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
-    $('#duplicate_qty').tooltip({
-        title: "Duplikat data maximal 15",
-        placement: "top",
-        trigger: "focus"
-    });
+        $('#duplicate_qty').tooltip({
+            title: "Duplikat data maximal 15",
+            placement: "top",
+            trigger: "focus"
+        });
 
-    $('#btn_modal_create').click((e) => {
-        $('#modal_formLabel').text("Add Cutting Table")
-        $('#btn_submit').text("Add Cutting Table")
-        $('#planning_detail_form').find("input[type=text], input[type=number], textarea").val("");
-        $('#planning_detail_form').find('input[name="_method"]').remove();
-        $('#planning_detail_form').attr('action', create_url);
-        $('#modal_form').modal('show')
+        $('#btn_modal_create').click((e) => {
+            $('#modal_formLabel').text("Add Cutting Table")
+            $('#btn_submit').text("Add Cutting Table")
+            $('#planning_detail_form').find("input[type=text], input[type=number], textarea").val("");
+            
+            $('#laying_planning_detail_type_normal').prop('checked', true);
+            listen_laying_planning_detail_type();
 
-        set_qty_size(size_list);
-        set_marker_length();
-        set_marker_total_length();
-    });
+            $('#planning_detail_form').find('input[name="_method"]').remove();
+            $('#planning_detail_form').attr('action', create_url);
+            $('#modal_form').modal('show')
 
-    $('#layer_qty, #marker_yard, #marker_inch, .ratio-size').on('keyup', function(e) {
-        set_marker_length();
-        set_marker_total_length();
-        set_qty_size(size_list);
-    });
+            set_qty_size(size_list);
+            set_marker_length();
+            set_marker_total_length();
+        });
 
-    
-    $(".btn-detail-edit").on('click', async function(e) {
-        let get_data_url = $(this).attr('data-url');
-        let planning_detail_id = $(this).attr('data-id');
-        let result = await get_using_fetch(get_data_url);
+        $('#layer_qty, #marker_yard, #marker_inch, .ratio-size').on('keyup', function(e) {
+            set_marker_length();
+            set_marker_total_length();
+            set_qty_size(size_list);
+        });
+
         
-        if(result.status == "success"){
-            let update_url = '{{ route("laying-planning.detail-update",":id") }}';
-            update_url = update_url.replace(':id', planning_detail_id);
+        $(".btn-detail-edit").on('click', async function(e) {
+            let get_data_url = $(this).attr('data-url');
+            let planning_detail_id = $(this).attr('data-id');
+            let result = await get_using_fetch(get_data_url);
+            
+            if(result.status == "success"){
+                let update_url = '{{ route("laying-planning.detail-update",":id") }}';
+                update_url = update_url.replace(':id', planning_detail_id);
+
+                laying_planning_detail_id = $(this).attr('data-id');
+                modal_show_edit(update_url, result.data)
+                
+            } else {
+                swal_failed({ title: result.message });
+
+            }
+        });
+
+        $('.btn-detail-delete').on('click', async function(e){
+
+            data = { title: "Are you sure?" };
+            let confirm_delete = await swal_delete_confirm(data);
+            if(!confirm_delete) { return false; };
+
+            let url_delete = $(this).attr('data-url');
+            const data_params = {
+                token: token
+            };
+
+            result = await delete_using_fetch(url_delete, data_params);
+            if(result.status == "success"){
+                swal_info({
+                    title : result.message,
+                    reload_option: true, 
+                });
+            } else {
+                swal_failed({ title: result.message });
+            }
+
+        });
+
+        $('#print_multi_fabric').on('click', function(e){
+            let fbr_ids = [];
+            $('input[name="fbr_ids[]"]:checked').each(function() {
+                fbr_ids.push($(this).val());
+            });
+            if(fbr_ids.length == 0){
+                swal_failed({ title: "Please select cutting table" });
+                return false;
+            }
+            if(fbr_ids.length > 25){
+                swal_failed({ title: "Maximal 25 request form fabric" });
+                return false;
+            }
+            let url = $(this).attr('href');
+            url = url + '?fbr_ids=' + fbr_ids;
+            $(this).attr('href', url);
+        });
+
+        $('#print_multi_nota').on('click', function(e){
+            let laying_planning_laying_planning_detail_ids = [];
+            $('input[name="laying_planning_laying_planning_detail_ids[]"]:checked').each(function() {
+                laying_planning_laying_planning_detail_ids.push($(this).val());
+            });
+            if(laying_planning_laying_planning_detail_ids.length == 0){
+                swal_failed({ title: "Please select cutting table" });
+                return false;
+            }
+            if(laying_planning_laying_planning_detail_ids.length > 25){
+                swal_failed({ title: "Maximal 25 cutting table" });
+                return false;
+            }
+            let url = $(this).attr('href');
+            url = url + '?laying_planning_laying_planning_detail_ids=' + laying_planning_laying_planning_detail_ids;
+            $(this).attr('href', url);
+        });
+
+        $('.btn-detail-duplicate').on('click', async function(e){
+            
+            $('#duplicate_form').find("input[type=text], input[type=number], textarea").val("");
 
             laying_planning_detail_id = $(this).attr('data-id');
-            modal_show_edit(update_url, result.data)
+            let data_params = { laying_planning_detail_id: laying_planning_detail_id };
+            cutting_table_result = await using_fetch(fetch_cutting_table_url, data_params, "GET");
             
-        } else {
-            swal_failed({ title: result.message });
+            data = cutting_table_result.data;
+            $('#duplicate_table_no').text(data.table_number);
+            $('#duplicate_marker_code').text(data.marker_code);
+            $('#duplicate_marker_yard').text(data.marker_yard);
+            $('#duplicate_marker_inch').text(data.marker_inch);
+            $('#duplicate_layer_qty').text(data.layer_qty);
+            $('#duplicate_size_ratio').text(data.size_ratio);
+            $('#duplicate_each_size').text(data.each_size);
+            $('#duplicate_total_all_size').text(data.total_all_size);
+            $('#laying_planning_detail_id').val(data.id);
 
-        }
-    });
-
-    $('.btn-detail-delete').on('click', async function(e){
-
-        data = { title: "Are you sure?" };
-        let confirm_delete = await swal_delete_confirm(data);
-        if(!confirm_delete) { return false; };
-
-        let url_delete = $(this).attr('data-url');
-        const data_params = {
-            token: token
-        };
-
-        result = await delete_using_fetch(url_delete, data_params);
-        if(result.status == "success"){
-            swal_info({
-                title : result.message,
-                reload_option: true, 
-            });
-        } else {
-            swal_failed({ title: result.message });
-        }
-
-    });
-
-    $('#print_multi_fabric').on('click', function(e){
-        let fbr_ids = [];
-        $('input[name="fbr_ids[]"]:checked').each(function() {
-            fbr_ids.push($(this).val());
+            $('#modal_duplicate').modal('show');
         });
-        if(fbr_ids.length == 0){
-            swal_failed({ title: "Please select cutting table" });
-            return false;
-        }
-        if(fbr_ids.length > 25){
-            swal_failed({ title: "Maximal 25 request form fabric" });
-            return false;
-        }
-        let url = $(this).attr('href');
-        url = url + '?fbr_ids=' + fbr_ids;
-        $(this).attr('href', url);
-    });
 
-    $('#print_multi_nota').on('click', function(e){
-        let laying_planning_laying_planning_detail_ids = [];
-        $('input[name="laying_planning_laying_planning_detail_ids[]"]:checked').each(function() {
-            laying_planning_laying_planning_detail_ids.push($(this).val());
+        $('input[name="laying_planning_detail_type"]').change(function() {
+            listen_laying_planning_detail_type();
         });
-        if(laying_planning_laying_planning_detail_ids.length == 0){
-            swal_failed({ title: "Please select cutting table" });
-            return false;
-        }
-        if(laying_planning_laying_planning_detail_ids.length > 25){
-            swal_failed({ title: "Maximal 25 cutting table" });
-            return false;
-        }
-        let url = $(this).attr('href');
-        url = url + '?laying_planning_laying_planning_detail_ids=' + laying_planning_laying_planning_detail_ids;
-        $(this).attr('href', url);
     });
-
-    $('.btn-detail-duplicate').on('click', async function(e){
-        
-        $('#duplicate_form').find("input[type=text], input[type=number], textarea").val("");
-
-        laying_planning_detail_id = $(this).attr('data-id');
-        let data_params = { laying_planning_detail_id: laying_planning_detail_id };
-        cutting_table_result = await using_fetch(fetch_cutting_table_url, data_params, "GET");
-        
-        data = cutting_table_result.data;
-        $('#duplicate_table_no').text(data.table_number);
-        $('#duplicate_marker_code').text(data.marker_code);
-        $('#duplicate_marker_yard').text(data.marker_yard);
-        $('#duplicate_marker_inch').text(data.marker_inch);
-        $('#duplicate_layer_qty').text(data.layer_qty);
-        $('#duplicate_size_ratio').text(data.size_ratio);
-        $('#duplicate_each_size').text(data.each_size);
-        $('#duplicate_total_all_size').text(data.total_all_size);
-        $('#laying_planning_detail_id').val(data.id);
-
-        $('#modal_duplicate').modal('show');
-    });
-// })
 </script>
 
 <script type="text/javascript">
@@ -756,6 +790,15 @@
             total_all_size += qty_size;
         });
         $(`#qty_size_all`).val(total_all_size);
+    }
+
+
+    const listen_laying_planning_detail_type = () => {
+        if ($('input[name="laying_planning_detail_type"]:checked').val() != '1') {
+            $('.ratio-wrapper').hide();
+        } else {
+            $('.ratio-wrapper').show();
+        }
     }
 </script>
 
@@ -810,6 +853,8 @@
         form.find('input[name="marker_length"]').val(parseFloat(data.marker_length).toFixed(2));
         form.find('input[name="marker_total_length"]').val(data.total_length);
         form.find('input[name="qty_size_all"]').val(data.total_all_size);
+        console.log(data.laying_planning_detail_type_id);
+        form.find(`input[name="laying_planning_detail_type"][value="${data.laying_planning_detail_type_id}"]`).prop('checked', true);
 
         $('#modal_form').modal('show')
     }
