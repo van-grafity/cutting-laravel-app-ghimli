@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class LayingPlanning extends Model
 {
@@ -82,6 +83,13 @@ class LayingPlanning extends Model
     public function childLayingPlannings()
     {
         return $this->hasMany(LayingPlanning::class, 'parent_laying_planning_id', 'id');
+    }
+
+    public function getBindingLength()
+    {
+        return $this->layingPlanningDetail()
+            ->where('laying_planning_detail_type_id','!=',1)
+            ->sum(DB::raw('layer_qty * marker_length'));
     }
 
 }

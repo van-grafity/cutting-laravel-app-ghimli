@@ -20,6 +20,7 @@ class LayingPlanningDetail extends Model
         'marker_length',
         'total_length',
         'total_all_size',
+        'laying_planning_detail_type_id',
     ];
 
     public function layingPlanningDetailSize()

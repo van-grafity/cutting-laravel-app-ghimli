@@ -290,6 +290,7 @@ class LayingPlanningsController extends Controller
         $laying_planning->total_cut_qty = $total_cut_qty;
         $laying_planning->delivery_date = Carbon::createFromFormat('Y-m-d', $laying_planning->delivery_date)->format('d-m-Y');
         $laying_planning->plan_date = Carbon::createFromFormat('Y-m-d', $laying_planning->plan_date)->format('d-m-Y');
+        $laying_planning->binding_length = $laying_planning->getBindingLength();
 
         $total_pcs_all_table = 0;
         $total_length_all_table = 0;
@@ -702,6 +703,7 @@ class LayingPlanningsController extends Controller
             'marker_length' => $request->marker_length,
             'total_length' => $request->marker_total_length,
             'total_all_size' => $request->qty_size_all,
+            'laying_planning_detail_type_id' => $request->laying_planning_detail_type,
         ];
 
         $insertLayingDetail = LayingPlanningDetail::create($layingDetailData);
@@ -782,6 +784,8 @@ class LayingPlanningsController extends Controller
             $layingPlanningDetail->marker_length = $request->marker_length;
             $layingPlanningDetail->total_length = $request->marker_total_length;
             $layingPlanningDetail->total_all_size = $request->qty_size_all;
+            $layingPlanningDetail->laying_planning_detail_type_id = $request->laying_planning_detail_type;
+            
             $layingPlanningDetail->save();
 
             $deletePlanningDetailSize = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->delete();
@@ -850,6 +854,7 @@ class LayingPlanningsController extends Controller
                 'marker_length' => $layingPlanningDetail->marker_length,
                 'total_length' => $layingPlanningDetail->total_length,
                 'total_all_size' => $layingPlanningDetail->total_all_size,
+                'laying_planning_detail_type_id' => $layingPlanningDetail->laying_planning_detail_type_id,
             ];
 
             $insertLayingDetail = LayingPlanningDetail::create($layingDetailData);
