@@ -539,7 +539,7 @@ class BundleStocksController extends Controller
     }
 
     public function dtableTransaction()
-    {   
+    {
         $datas = BundleStockTransaction::join('bundle_stock_transaction_groups', 'bundle_stock_transactions.transaction_group_id', '=', 'bundle_stock_transaction_groups.id')
                     ->join('bundle_locations', 'bundle_locations.id', '=', 'bundle_stock_transaction_groups.location_id')
                     ->join('cutting_tickets', 'cutting_tickets.id', '=', 'bundle_stock_transactions.ticket_id')
@@ -552,7 +552,7 @@ class BundleStocksController extends Controller
                     ->groupBy('bundle_stock_transaction_groups.id')
                     ->select('bundle_locations.location as location','bundle_stock_transaction_groups.*')
                     ->withTrashed();
-                    
+
         if(request()->has('filter_type') && request()->input('filter_type') !== 0){
             $filterType = request()->input('filter_type');
             if(!Auth::user()->hasRole('super_admin') || $filterType === 'non_deleted'){
@@ -572,7 +572,7 @@ class BundleStocksController extends Controller
             })->addColumn('color', function($data){
                 return $this->getColorFromBundleTransaction($data->id);
             })->addColumn('date', function($data){
-                return Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('d-m-Y');
+                return Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('d-m-Y H:i');
             })->addColumn('total_pcs', function($data){
                 return $this->getTotalPcsFromBundleTransaction($data->id);
             })->addColumn('action', function($data){
@@ -795,11 +795,23 @@ class BundleStocksController extends Controller
         return redirect()->back()->with('success','Sync Succesfully');
     }
 
-    public function detailTransactionHistory($transaction_group_id)
+    public function detailTransactionHistory($id)
     {
-        $data = $this->getTransactionHistory($transaction_group_id);
+        $bundle_stock_detail = BundleStockTransactionGroup::with('bundleLocation', 'bundleStockTransaction')
+        ->withTrashed()
+        ->find($id);
 
-        return view('page.bundle-stock.detail', $data);
+        $bundle_stock_header =[
+            'bundle_stock_transaction_id' => $bundle_stock_detail->id,
+            'serial_number' => $bundle_stock_detail->serial_number,
+            'transaction_type' => $bundle_stock_detail->transaction_type,
+            'location' => $bundle_stock_detail->bundleLocation->location,
+            'total_stock' => $bundle_stock_detail->bundleStockTransaction()->withTrashed()->count(),
+            'style_no' => $this->getStyleFromBundleTransaction($bundle_stock_detail->id),
+            'gl_number' =>$this->getGlFromBundleTransaction($bundle_stock_detail->id),
+            'date' => $bundle_stock_detail->created_at->format('d-m-Y'),
+        ];
+        return view('page.bundle-stock.detail')->with('bundle_stock_header', $bundle_stock_header);;
     }
 
     private function getBundleStockSize($transaction_group_id)
@@ -814,24 +826,11 @@ class BundleStocksController extends Controller
             ->get();
     }
 
-    private function getTransactionHistory($transaction_group_id)
+    public function dtableTicketList($transaction_group_id)
     {
         $bundle_stock_detail = BundleStockTransactionGroup::with('bundleLocation', 'bundleStockTransaction')
             ->withTrashed()
             ->find($transaction_group_id);
-
-        $size_list = $this->getBundleStockSize($bundle_stock_detail->id);
-
-        $bundle_stock_header = (object)[
-            'bundle_stock_transaction_id' => $bundle_stock_detail->id,
-            'serial_number' => $bundle_stock_detail->serial_number,
-            'transaction_type' => $bundle_stock_detail->transaction_type,
-            'location' => $bundle_stock_detail->bundleLocation->location,
-            'total_stock' => $bundle_stock_detail->bundleStockTransaction()->withTrashed()->count(),
-            'style_no' => $this->getStyleFromBundleTransaction($bundle_stock_detail->id),
-            'gl_number' =>$this->getGlFromBundleTransaction($bundle_stock_detail->id),
-            'date' => $bundle_stock_detail->created_at->format('d-m-Y'),
-        ];
 
         $bundle_stock_transaction = BundleStockTransaction::join('cutting_tickets', 'cutting_tickets.id', '=', 'bundle_stock_transactions.ticket_id')
             ->join('sizes','sizes.id','=', 'cutting_tickets.size_id')
@@ -839,40 +838,18 @@ class BundleStocksController extends Controller
             ->join('laying_planning_details', 'laying_planning_details.id', '=', 'cutting_order_records.laying_planning_detail_id')
             ->join('laying_plannings', 'laying_plannings.id', '=', 'laying_planning_details.laying_planning_id')
             ->join('colors', 'colors.id', '=', 'laying_plannings.color_id')
+            ->join('gls', 'gls.id', "=", 'laying_plannings.gl_id')
+            ->join('buyers', 'buyers.id', '=', 'gls.buyer_id')
             ->where('transaction_group_id', $bundle_stock_detail->id)
-            ->groupBy('sizes.id', 'sizes.size', 'transaction_group_id', 'laying_planning_details.id', 'laying_planning_details.table_number', 'cutting_order_records.id', 'cutting_order_records.serial_number', 'colors.color')
-            ->select(DB::raw('SUM(cutting_tickets.layer) as qty'),'sizes.id as size_id', 'sizes.size as size', 'colors.color as color', 'cutting_tickets.table_number as table_number', 'cutting_tickets.layer as layer')
+            ->select('gls.gl_number as gl_number','buyers.name as buyer_name','cutting_tickets.ticket_number','cutting_tickets.serial_number','cutting_tickets.layer','sizes.id as size_id', 'sizes.size as size', 'colors.color as color', 'cutting_tickets.table_number as table_number', 'cutting_tickets.layer as layer')
             ->orderBy('sizes.id', 'ASC')
             ->withTrashed()
             ->get();
 
-        foreach($bundle_stock_transaction as $key => $bundle_stock_transaction_detail) {
-            $qty_per_size = [];
-            foreach($size_list as $key_size => $size){
-                $qty_per_size[$key_size] = (object)[
-                    'id' => $size->id,
-                    'size' => $size->size,
-                    'qty' => 0
-                ];
-                if($bundle_stock_transaction_detail->size_id === $size->id){
-                    $qty_per_size[$key_size]->qty = $bundle_stock_transaction_detail->qty;
-                }
-            }
-            $bundle_stock_transaction[$key]->qty_per_size = $qty_per_size;
 
-            $total_all_qty_size = 0;
-            foreach($bundle_stock_transaction_detail->qty_per_size as $qty){
-                $total_all_qty_size += $qty->qty;
-            }
-            $bundle_stock_transaction[$key]->total_qty = $total_all_qty_size;
-        }
-
-        $data = [
-            'bundle_stock_transaction_header' => $bundle_stock_header,
-            'bundle_stock_transaction_detail' => $bundle_stock_transaction,
-            'size_list' => $size_list
-        ];
-
-        return $data;
+        return Datatables::of($bundle_stock_transaction)
+            ->escapeColumns([])
+            ->addIndexColumn()
+            ->make(true);
     }
 }

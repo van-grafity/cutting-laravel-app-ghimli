@@ -24,6 +24,7 @@
                                 Sync Data
                             </button>
                         </form> --}}
+                        @can('admin-only')
                         <div class="ml-auto" style="width:200px;">
                             <select name="filter_type" id="filter_type" class="form-control no-search-box">
                                 <option value="non_deleted" selected>Non-Deleted</option>
@@ -31,6 +32,7 @@
                                 <option value=0>All Data</option>
                             </select>
                         </div>
+                        @endcan
                     </div>
                     <table class="table table-bordered table-hover text-center" id="transaction_history_table">
                         <thead class="">
@@ -64,7 +66,7 @@
             ajax:{
                     url: "{{ url('bundle-stock/dtable-bundle-transaction') }}",
                     data: function(d) {
-                        d.filter_type = $('#filter_type').val();
+                        d.filter_type = $('#filter_type').val() || 'non_deleted';
                     },
                 },
             columns: [
@@ -92,7 +94,6 @@
     });
 
     function delete_bundle_stock_transaction(id, filterType){
-        console.log(filterType !== "soft_deleted" ? "{{ url('/bundle-stock/transaction-history/soft-delete') }}"+'/'+id : "{{ url('/bundle-stock/transaction-history/delete') }}"+'/'+id)
 
         Swal.fire({
             title: 'Are you sure?',

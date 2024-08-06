@@ -450,6 +450,7 @@ Route::group(['middleware' => ['auth']], function () {
             route::delete('/transaction-history/delete/{id}', 'deleteBundleTransaction')->name('delete-transaction-history');
             route::delete('/transaction-history/soft-delete/{id}', 'softDeleteBundleTransaction')->name('soft-delete-transaction-history');
             route::get('/transaction-history/detail/{id}', 'detailTransactionHistory')->name('detail-transaction-history');
+            route::get('/transaction-history/detail/dtable-ticket-list/{id}', 'dtableTicketList')->name('dtable-ticket-list');
             route::get('/dtable-bundle-transaction', 'dtableTransaction')->name('dtable-transaction');
             route::put('/sync-bundle-transaction', 'syncBundleTransaction')->name('sync-transaction');
         });
