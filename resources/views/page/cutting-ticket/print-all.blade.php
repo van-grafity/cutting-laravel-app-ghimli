@@ -51,27 +51,27 @@
                         <img src="data:image/png;base64, {!! base64_encode(QrCode::size(120)->generate($cutting_ticket->serial_number)) !!} ">
                     </td>
                     <td width="14px"></td>
-                    <td width="14%" style="text-align: left; font-size: 14px;">Ticket No. </td>
-                    <td style="padding-left: 8px; padding-right: 8px; font-size: 14px;">: </td>
-                    <td style="text-align: left; font-size: 14px;">{{ $cutting_ticket->ticket_number }} </td>
+                    <td width="14%" style="text-align: left; font-size: 12px;">Ticket No. </td>
+                    <td style="padding-left: 8px; padding-right: 8px; font-size: 12px;">: </td>
+                    <td style="text-align: left; font-size: 12px;">{{ $cutting_ticket->ticket_number }} </td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td width="14%" style="text-align: left; font-size: 14px;">Buyer </td>
-                    <td style="padding-left: 8px; padding-right: 8px; font-size: 14px;">: </td>
-                    <td style="text-align: left; font-size: 14px;">{{ Str::limit($cutting_ticket->buyer, 15) }} </td>
+                    <td width="14%" style="text-align: left; font-size: 12px;">Buyer </td>
+                    <td style="padding-left: 8px; padding-right: 8px; font-size: 12px;">: </td>
+                    <td style="text-align: left; font-size: 12px;">{{ Str::limit($cutting_ticket->buyer, 15) }} </td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td width="14%" style="text-align: left; font-size: 14px;">Size </td>
-                    <td style="padding-left: 8px; padding-right: 8px; font-size: 14px;">: </td>
-                    <td style="text-align: left; font-size: 14px;">{{ $cutting_ticket->size }} </td>
+                    <td width="14%" style="text-align: left; font-size: 12px;">Size </td>
+                    <td style="padding-left: 8px; padding-right: 8px; font-size: 12px;">: </td>
+                    <td style="text-align: left; font-size: 12px;">{{ $cutting_ticket->size }} </td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td width="14%" style="text-align: left; font-size: 14px;">Layer </td>
-                    <td style="padding-left: 8px; padding-right: 8px; font-size: 14px;">: </td>
-                    <td style="text-align: left; font-size: 14px;">{{ $cutting_ticket->layer }} </td>
+                    <td width="14%" style="text-align: left; font-size: 12px;">Layer </td>
+                    <td style="padding-left: 8px; padding-right: 8px; font-size: 12px;">: </td>
+                    <td style="text-align: left; font-size: 12px;">{{ $cutting_ticket->layer }} </td>
                 </tr>
             </tbody>
         </table>
