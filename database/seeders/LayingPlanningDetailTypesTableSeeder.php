@@ -31,8 +31,8 @@ class LayingPlanningDetailTypesTableSeeder extends Seeder
                 'description' => 'Table / Lot for Balance',
             ],
             [
-                'type' => 'SHORT YARD',
-                'description' => 'Table / Lot for Short Yard',
+                'type' => 'SHORT YDS',
+                'description' => 'Table / Lot for Short YDS',
             ],
             [
                 'type' => 'SHORT WIDTH',
