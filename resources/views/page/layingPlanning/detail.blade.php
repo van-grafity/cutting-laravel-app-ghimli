@@ -434,24 +434,14 @@
                             <div class="col-sm-12">
                                 <h5 style="font-weight:500">Table Type</h5>
                             </div>
-                            <div class="col-sm-12 col-lg-4">
+                            <div class="col-sm-12">
                                 <div class="form-group d-flex">
-                                    <div class="custom-control custom-radio mr-4">
-                                        <input class="custom-control-input" type="radio" id="laying_planning_detail_type_normal" name="laying_planning_detail_type" value="1">
-                                        <label for="laying_planning_detail_type_normal" class="custom-control-label">NORMAL</label>
-                                    </div>
-                                    <div class="custom-control custom-radio mr-4">
-                                        <input class="custom-control-input" type="radio" id="laying_planning_detail_type_binding" name="laying_planning_detail_type" value="2" >
-                                        <label for="laying_planning_detail_type_binding" class="custom-control-label">BINDING</label>
-                                    </div>
-                                    <div class="custom-control custom-radio mr-4">
-                                        <input class="custom-control-input" type="radio" id="laying_planning_detail_type_piping" name="laying_planning_detail_type" value="3">
-                                        <label for="laying_planning_detail_type_piping" class="custom-control-label">PIPING</label>
-                                    </div>
-                                    <div class="custom-control custom-radio mr-4">
-                                        <input class="custom-control-input" type="radio" id="laying_planning_detail_type_balance" name="laying_planning_detail_type" value="4">
-                                        <label for="laying_planning_detail_type_balance" class="custom-control-label">BALANCE</label>
-                                    </div>
+                                    @foreach( $laying_planning_detail_types as $table_type)
+                                        <div class="custom-control custom-radio mr-4">
+                                            <input class="custom-control-input" type="radio" id="laying_planning_detail_type_{{ $table_type->id }}" name="laying_planning_detail_type" value="{{ $table_type->id }}">
+                                            <label for="laying_planning_detail_type_{{ $table_type->id }}" class="custom-control-label">{{ $table_type->type }}</label>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -628,9 +618,10 @@
             $('#btn_submit').text("Add Cutting Table")
             $('#planning_detail_form').find("input[type=text], input[type=number], textarea").val("");
             
-            $('#laying_planning_detail_type_normal').prop('checked', true);
+            // ## set default value is 1. lot / table type normal
+            $('#planning_detail_form').find(`input[name="laying_planning_detail_type"][value="1"]`).prop('checked', true);
             listen_laying_planning_detail_type();
-
+            
             $('#planning_detail_form').find('input[name="_method"]').remove();
             $('#planning_detail_form').attr('action', create_url);
             $('#modal_form').modal('show')

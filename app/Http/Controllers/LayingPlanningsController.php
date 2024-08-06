@@ -16,6 +16,8 @@ use App\Models\FabricCons;
 use App\Models\FabricRequisition;
 use App\Models\GlCombine;
 use App\Models\LayingPlanningSizeGlCombine;
+use App\Models\LayingPlanningDetailType;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -260,6 +262,8 @@ class LayingPlanningsController extends Controller
         $cutting_order_records = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])
             ->whereHas('layingPlanningDetail.layingPlanning', fn($query) => $query->where('laying_plannings.id', $id))
             ->get();
+
+        $laying_planning_detail_types = LayingPlanningDetailType::all();
         
         $total_cut_qty = 0;
         $cor_map = [];
@@ -339,6 +343,7 @@ class LayingPlanningsController extends Controller
             'size_list' => $size_list,
             'styles' => $styles,
             'is_can_edit' => $is_can_edit,
+            'laying_planning_detail_types' => $laying_planning_detail_types,
         ];
 
         return view('page.layingPlanning.detail', $viewData);
