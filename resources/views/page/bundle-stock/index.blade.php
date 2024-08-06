@@ -72,6 +72,10 @@
 
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const detail_url ='{{ route("bundle-stock.detail") }}';
+
+    // ## Show Flash Message
+    let session = {!! json_encode(session()->all()) !!};
+    show_flash_message(session);
     
     async function detail_stock(laying_planning_id) {
 

@@ -90,6 +90,7 @@ class BundleTransferNotesController extends Controller
         $query = DB::table('bundle_transfer_notes')
             ->join('bundle_locations','bundle_locations.id','=','bundle_transfer_notes.location_to_id')
             ->select('bundle_transfer_notes.id as transfer_note_id','bundle_transfer_notes.serial_number','bundle_locations.location as location','bundle_transfer_notes.created_at')
+            ->whereNull('deleted_at')
             ->get();
 
             return Datatables::of($query)

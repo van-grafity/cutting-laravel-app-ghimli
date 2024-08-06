@@ -502,6 +502,12 @@ return [
                 ],
                 [
                     'classes'=> 'ml-3',
+                    'text' => 'Transaction History',
+                    'url' => '/bundle-stock/transaction-history',
+                    'can' => 'cut-piece-stock.status',
+                ],
+                [
+                    'classes'=> 'ml-3',
                     'text' => 'Transfer Notes',
                     'url' => '/bundle-transfer-note',
                     'can' => 'cut-piece-stock.transfer-note'
