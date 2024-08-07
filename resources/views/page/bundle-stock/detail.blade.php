@@ -44,6 +44,11 @@
                                             <td class="pl-3">:</td>
                                             <td>{{ $bundle_stock_header['transaction_type'] }}</td>
                                         </tr>
+                                        <tr>
+                                            <td>Created By</td>
+                                            <td class="pl-3">:</td>
+                                            <td>{{ $bundle_stock_header['created_by'] }}</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -81,7 +86,8 @@
                             <tr>
                                 <th width="5%;">No.</th>
                                 <th width="5%;">No Ticket</th>
-                                <th width="30%;">Serial Number</th>
+                                <th width="35%;">Serial Number</th>
+                                <th width="5%;">No Table</th>
                                 <th width="15%;">Buyer</th>
                                 <th width="5%;">GL Number</th>
                                 <th width="20%;">Color</th>
@@ -115,6 +121,7 @@
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'ticket_number', name: 'ticket_number'},
                 {data: 'serial_number', name: 'serial_number'},
+                {data: 'table_number', name: 'table_number'},
                 {data: 'buyer_name', name: 'buyer_name'},
                 {data: 'gl_number', name: 'gl_number'},
                 {data: 'color', name: 'color'},

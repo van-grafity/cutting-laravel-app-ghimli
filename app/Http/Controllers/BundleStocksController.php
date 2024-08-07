@@ -13,6 +13,7 @@ use App\Models\BundleTransferNote;
 use App\Models\BundleTransferNoteDetail;
 use App\Models\CuttingOrderRecord;
 use App\Models\CuttingTicket;
+use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Yajra\Datatables\Datatables;
@@ -591,10 +592,10 @@ class BundleStocksController extends Controller
                     ->join('gls','gls.id','=','laying_plannings.gl_id')
                     ->whereNotNull('transaction_group_id')
                     ->groupBy('bundle_stock_transaction_groups.id')
-                    ->select('bundle_locations.location as location','bundle_stock_transaction_groups.*')
+                    ->select('bundle_locations.location as location','bundle_stock_transaction_groups.*', 'laying_planning_details.table_number as table_number')
                     ->withTrashed();
 
-        if(request()->has('filter_type') && request()->input('filter_type') !== 0){
+        if(request()->has('filter_type') && request()->input('filter_type') != 0){
             $filterType = request()->input('filter_type');
             if(!Auth::user()->hasRole('super_admin') || $filterType === 'non_deleted'){
                 $datas->where('bundle_stock_transaction_groups.deleted_at', null);
@@ -602,6 +603,10 @@ class BundleStocksController extends Controller
             if($filterType === 'soft_deleted'){
                 $datas->whereNotNull('bundle_stock_transaction_groups.deleted_at');
             }
+        }
+
+        if(request()->has('transaction_type') && request()->input('transaction_type') != 0){
+            $datas->where('bundle_stock_transaction_groups.transaction_type', request()->input('transaction_type'));
         }
 
         $query = $datas->get();
@@ -616,6 +621,8 @@ class BundleStocksController extends Controller
                 return Carbon::createFromFormat('Y-m-d H:i:s', $data->created_at)->format('d-m-Y H:i');
             })->addColumn('total_pcs', function($data){
                 return $this->getTotalPcsFromBundleTransaction($data->id);
+            })->addColumn('table_number', function($data){
+                return $this->getTableNumberFromBunldeTransaction($data->id);
             })->addColumn('action', function($data){
                 $action = "";
                 $filterType = request()->input('filter_type');
@@ -634,7 +641,8 @@ class BundleStocksController extends Controller
                     }
                 }
                 return $action;
-            })->addIndexColumn()
+            })
+            ->addIndexColumn()
             ->make(true);
    }
 
@@ -679,7 +687,7 @@ class BundleStocksController extends Controller
         return response()->json([
             'status'=> 'success',
             'message'=> 'Bundle Stock Transaction Dengan Serial Number '. $bundle_stock_transaction_group_serial_number .' Sudah Berhasil Dihapus'
-        ]);
+        ], 200);
    }
 
    public function softDeleteBundleTransaction($id)
@@ -818,6 +826,19 @@ class BundleStocksController extends Controller
        return $total_pcs;
    }
 
+   private function getTableNumberFromBunldeTransaction($transaction_group_id)
+   {
+       $bundle_stock_transaction = BundleStockTransaction::join('cutting_tickets','cutting_tickets.id','=','bundle_stock_transactions.ticket_id')
+           ->where('transaction_group_id',$transaction_group_id)
+           ->groupBy('table_number')
+           ->withTrashed()
+           ->select('cutting_tickets.table_number')->get()->toArray();
+
+       $table_number_list = array_column($bundle_stock_transaction,'table_number');
+       $table_number = implode(" | " ,$table_number_list);
+       return $table_number;
+   }
+
 
     public function syncBundleTransaction()
     {
@@ -848,11 +869,19 @@ class BundleStocksController extends Controller
             'transaction_type' => $bundle_stock_transaction_group->transaction_type,
             'location' => $bundle_stock_transaction_group->bundleLocation->location,
             'total_stock' => $bundle_stock_transaction_group->bundleStockTransaction()->withTrashed()->count(),
+            'created_by' => $this->getUserCreatedBy($bundle_stock_transaction_group->created_by),
             'style_no' => $this->getStyleFromBundleTransaction($bundle_stock_transaction_group->id),
             'gl_number' =>$this->getGlFromBundleTransaction($bundle_stock_transaction_group->id),
             'date' => $bundle_stock_transaction_group->created_at->format('d-m-Y'),
         ];
         return view('page.bundle-stock.detail')->with('bundle_stock_header', $bundle_stock_header);;
+    }
+
+    private function getUserCreatedBy($user_id)
+    {
+        $user = User::find($user_id);
+
+        return $user ? $user->name : "User tidak ditemukan";
     }
 
     public function dtableTicketList($transaction_group_id)
@@ -870,7 +899,7 @@ class BundleStocksController extends Controller
             ->join('gls', 'gls.id', "=", 'laying_plannings.gl_id')
             ->join('buyers', 'buyers.id', '=', 'gls.buyer_id')
             ->where('transaction_group_id', $bundle_stock_transaction_group->id)
-            ->select('gls.gl_number as gl_number','buyers.name as buyer_name','cutting_tickets.ticket_number','cutting_tickets.serial_number','cutting_tickets.layer','sizes.id as size_id', 'sizes.size as size', 'colors.color as color', 'cutting_tickets.table_number as table_number', 'cutting_tickets.layer as layer')
+            ->select('gls.gl_number as gl_number','buyers.name as buyer_name','cutting_tickets.ticket_number','cutting_tickets.serial_number','cutting_tickets.layer','sizes.id as size_id', 'sizes.size as size', 'colors.color as color', 'cutting_tickets.table_number as table_number', 'cutting_tickets.layer as layer', 'cutting_tickets.table_number as table_number')
             ->orderBy('sizes.id', 'ASC')
             ->withTrashed()
             ->get();
