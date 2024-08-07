@@ -136,7 +136,11 @@
             swal_info({
                 title : result.message,
             });
-            $('#transaction_history_table').DataTable().ajax.reload();
+
+            setTimeout(function() {
+                $('#transaction_history_table').DataTable().ajax.reload();
+            }, 2000); // Delay 2 detik
+            
         } else {
             swal_failed({ title: result.message });
         }
