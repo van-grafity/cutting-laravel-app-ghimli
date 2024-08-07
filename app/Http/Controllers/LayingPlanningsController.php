@@ -674,6 +674,17 @@ class LayingPlanningsController extends Controller
     {
         try {
             $layingPlanning = LayingPlanning::find($id);
+            
+            if($layingPlanning->childLayingPlannings && count($layingPlanning->childLayingPlannings) > 0){
+                $date_return = [
+                    'status' => 'error',
+                    'data'=> $layingPlanning,
+                    'message'=> 'Planning ini merupakan referensi dari planning <br> <a href="'.route('laying-planning.show',$layingPlanning->childLayingPlannings[0]->id).'" style="font-size:24px;" target="_blank">'. $layingPlanning->childLayingPlannings[0]->serial_number.'</a>',
+                    'submessage'=> 'Silahkan hapus planning di atas atau hapus referensinya agar tidak terhubung ke planning yang ingin dihapus',
+                ];
+                return response()->json($date_return, 200);
+            }
+            
             $layingPlanning->delete();
             $date_return = [
                 'status' => 'success',
