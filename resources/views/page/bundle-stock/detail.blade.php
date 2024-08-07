@@ -106,7 +106,7 @@
 @push('js')
 <script type="text/javascript">
      $(function (e) {
-         var id = @json($bundle_stock_header['bundle_stock_transaction_id']);
+        var id = @json($bundle_stock_header['bundle_stock_transaction_id']);
         $('#cutting_ticket_list_table').DataTable({
             processing: true,
             serverSide: true,
@@ -126,6 +126,7 @@
             autoWidth: false,
             responsive: true,
             drawCallback: function( settings ) {
+                $('[data-toggle="tooltip"]').tooltip();
                 Swal.close();
             }
         });

@@ -78,13 +78,14 @@
                 {data: 'transaction_type', name: 'transaction_type'},
                 {data: 'date', name: 'date'},
                 {data: 'total_pcs', name: 'total_pcs'},
-                {data: 'action', name: 'action'},
+                {data: 'action', name: 'action', orderable: false, searchable: false}
             ],
             lengthChange: true,
             searching: true,
             autoWidth: false,
             responsive: true,
             drawCallback: function( settings ) {
+                $('[data-toggle="tooltip"]').tooltip();
                 Swal.close();
             }
         });
