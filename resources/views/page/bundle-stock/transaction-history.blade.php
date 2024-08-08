@@ -25,7 +25,12 @@
                             </button>
                         </form> --}}
                         @can('admin-only')
-                        <div class="ml-auto" style="width:200px;">
+                        <div class="ml-auto d-flex flex-row" style="gap: 0.5rem">
+                            <select name="transaction_type" id="transaction_type" class="form-control" style="min-width: 150px;">
+                                <option value=0 selected>All Transaction</option>
+                                <option value="IN">IN</option>
+                                <option value="OUT">OUT</option>
+                            </select>
                             <select name="filter_type" id="filter_type" class="form-control no-search-box">
                                 <option value="non_deleted" selected>Non-Deleted</option>
                                 <option value="soft_deleted">Deleted</option>
@@ -37,15 +42,16 @@
                     <table class="table table-bordered table-hover text-center" id="transaction_history_table">
                         <thead class="">
                             <tr>
-                                <th wihth="5%;">No.</th>
-                                <th wihth="20%;">Serial Number</th>
-                                <th wihth="10%;">GL Number</th>
-                                <th wihth="10%;">Color</th>
-                                <th wihth="10%;">Location</th>
-                                <th wihth="5%;">Transaction Type</th>
-                                <th wihth="10%;">Date</th>
-                                <th wihth="5%;">Total Pcs</th>
-                                <th wihth="5%;">Action</th>
+                                <th width="5%;">No.</th>
+                                <th width="15%;">Serial Number</th>
+                                <th width="10%;">GL Number</th>
+                                <th width="10%;">No. Table</th>
+                                <th width="10%;">Color</th>
+                                <th width="10%;">Location</th>
+                                <th width="1%;">Transaction Type</th>
+                                <th width="10%;">Date</th>
+                                <th width="5%;">Total Pcs</th>
+                                <th width="5%;">Action</th>
                             </tr>
                         </thead>
                     </table>
@@ -59,86 +65,85 @@
 @endsection
 @push('js')
 <script type="text/javascript">
+
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    // ## Show Flash Message
+    let session = {!! json_encode(session()->all()) !!};
+    show_flash_message(session);
+
     $(function (e) {
         $('#transaction_history_table').DataTable({
             processing: true,
             serverSide: true,
             ajax:{
-                    url: "{{ url('bundle-stock/dtable-bundle-transaction') }}",
-                    data: function(d) {
-                        d.filter_type = $('#filter_type').val() || 'non_deleted';
-                    },
+                url: "{{ url('bundle-stock/dtable-bundle-transaction') }}",
+                data: function(d) {
+                    d.filter_type = $('#filter_type').val() || 'non_deleted';
+                    d.transaction_type = $('#transaction_type').val();
+                    }
                 },
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'serial_number', name: 'serial_number'},
                 {data: 'gl_number', name: 'gl_number'},
+                {data: 'table_number', name: 'table_number'},
                 {data: 'color', name: 'color'},
                 {data: 'location', name: 'location'},
                 {data: 'transaction_type', name: 'transaction_type'},
                 {data: 'date', name: 'date'},
                 {data: 'total_pcs', name: 'total_pcs'},
-                {data: 'action', name: 'action'},
+                {data: 'action', name: 'action', orderable: false, searchable: false}
             ],
             lengthChange: true,
             searching: true,
             autoWidth: false,
             responsive: true,
             drawCallback: function( settings ) {
+                $('[data-toggle="tooltip"]').tooltip();
                 Swal.close();
             }
         });
         $('#filter_type').change(function(event) {
             $('#transaction_history_table').DataTable().ajax.reload(null, false);
         });
+        $('#transaction_type').change(function(event) {
+            $('#transaction_history_table').DataTable().ajax.reload(null, false);
+        });
     });
 
-    function delete_bundle_stock_transaction(id, filterType){
+    async function delete_bundle_stock_transaction(id, filterType){
+        swal_data = {
+            title: filterType !== "soft_deleted" ? "You only have 30 minutes to retrieve the ticket back after delete it!" : "Bundle stock transaction will be deleted permanently!",
+            icon: "warning",
+            confirmButton: "Delete",
+            confirmButtonClass: "btn-danger",
+            cancelButtonClass: "btn-secondary"
+        };
+        let confirm_delete = await swal_confirm(swal_data);
+        if(!confirm_delete) { return false; }
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: filterType !== "soft_deleted" ? "You only have 30 minutes to retrieve the ticket back after delete it!" : "Bundle stock transaction will be deleted permanently!" ,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: filterType !== "soft_deleted" ? "{{ url('/bundle-stock/transaction-history/soft-delete') }}"+'/'+id : "{{ url('/bundle-stock/transaction-history/delete') }}"+'/'+id ,
-                    type: 'DELETE',
-                    data: {
-                        _token: "{{ csrf_token() }}",
-                        id: id
-                    },
-                    success: function(data) {
-                        if (data.status == 'success') {
-                            Swal.fire(
-                                'Deleted!',
-                                data.message,
-                                'success'
-                        ).then(() => {
-                            $('#transaction_history_table').DataTable().ajax.reload();
-                        });
-                        } else {
-                            Swal.fire(
-                                'Failed!',
-                                data.message,
-                                'error'
-                            )
-                        }
-                    },
-                    error: function(data) {
-                        Swal.fire(
-                            'Failed!',
-                            'Something wrong',
-                            'error'
-                        )
-                    }
-                });
-            }
-        })
+        let url_delete = filterType !== "soft_deleted" ? "{{ url('/bundle-stock/transaction-history/soft-delete') }}"+'/'+id : "{{ url('/bundle-stock/transaction-history/delete') }}"+'/'+id;
+
+        fetch_data = {
+            url : url_delete,
+            method: "DELETE",
+            token: token
+         };
+
+        result = await using_fetch_v2(fetch_data);
+
+        if(result.status == "success"){
+            swal_info({
+                title : result.message,
+            });
+
+            setTimeout(function() {
+                $('#transaction_history_table').DataTable().ajax.reload();
+            }, 2000); // Delay 2 detik
+            
+        } else {
+            swal_failed({ title: result.message });
+        }
     }
 </script>
 @endpush

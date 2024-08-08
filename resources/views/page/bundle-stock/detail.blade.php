@@ -44,6 +44,11 @@
                                             <td class="pl-3">:</td>
                                             <td>{{ $bundle_stock_header['transaction_type'] }}</td>
                                         </tr>
+                                        <tr>
+                                            <td>Created By</td>
+                                            <td class="pl-3">:</td>
+                                            <td>{{ $bundle_stock_header['created_by'] }}</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -81,7 +86,8 @@
                             <tr>
                                 <th width="5%;">No.</th>
                                 <th width="5%;">No Ticket</th>
-                                <th width="30%;">Serial Number</th>
+                                <th width="35%;">Serial Number</th>
+                                <th width="5%;">No Table</th>
                                 <th width="15%;">Buyer</th>
                                 <th width="5%;">GL Number</th>
                                 <th width="20%;">Color</th>
@@ -106,7 +112,7 @@
 @push('js')
 <script type="text/javascript">
      $(function (e) {
-         var id = @json($bundle_stock_header['bundle_stock_transaction_id']);
+        var id = @json($bundle_stock_header['bundle_stock_transaction_id']);
         $('#cutting_ticket_list_table').DataTable({
             processing: true,
             serverSide: true,
@@ -115,6 +121,7 @@
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'ticket_number', name: 'ticket_number'},
                 {data: 'serial_number', name: 'serial_number'},
+                {data: 'table_number', name: 'table_number'},
                 {data: 'buyer_name', name: 'buyer_name'},
                 {data: 'gl_number', name: 'gl_number'},
                 {data: 'color', name: 'color'},
@@ -126,6 +133,7 @@
             autoWidth: false,
             responsive: true,
             drawCallback: function( settings ) {
+                $('[data-toggle="tooltip"]').tooltip();
                 Swal.close();
             }
         });
