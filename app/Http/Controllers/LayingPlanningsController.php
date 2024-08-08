@@ -16,6 +16,8 @@ use App\Models\FabricCons;
 use App\Models\FabricRequisition;
 use App\Models\GlCombine;
 use App\Models\LayingPlanningSizeGlCombine;
+use App\Models\LayingPlanningDetailType;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -260,6 +262,8 @@ class LayingPlanningsController extends Controller
         $cutting_order_records = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])
             ->whereHas('layingPlanningDetail.layingPlanning', fn($query) => $query->where('laying_plannings.id', $id))
             ->get();
+
+        $laying_planning_detail_types = LayingPlanningDetailType::all();
         
         $total_cut_qty = 0;
         $cor_map = [];
@@ -339,6 +343,7 @@ class LayingPlanningsController extends Controller
             'size_list' => $size_list,
             'styles' => $styles,
             'is_can_edit' => $is_can_edit,
+            'laying_planning_detail_types' => $laying_planning_detail_types,
         ];
 
         return view('page.layingPlanning.detail', $viewData);
@@ -669,6 +674,17 @@ class LayingPlanningsController extends Controller
     {
         try {
             $layingPlanning = LayingPlanning::find($id);
+            
+            if($layingPlanning->childLayingPlannings && count($layingPlanning->childLayingPlannings) > 0){
+                $date_return = [
+                    'status' => 'error',
+                    'data'=> $layingPlanning,
+                    'message'=> 'Planning ini merupakan referensi dari planning <br> <a href="'.route('laying-planning.show',$layingPlanning->childLayingPlannings[0]->id).'" style="font-size:24px;" target="_blank">'. $layingPlanning->childLayingPlannings[0]->serial_number.'</a>',
+                    'submessage'=> 'Silahkan hapus planning di atas atau hapus referensinya agar tidak terhubung ke planning yang ingin dihapus',
+                ];
+                return response()->json($date_return, 200);
+            }
+            
             $layingPlanning->delete();
             $date_return = [
                 'status' => 'success',

@@ -64,7 +64,7 @@
                 reload_option: true, 
             });
         } else {
-            swal_failed({ title: result.message });
+            swal_failed({ title: result.message, subtitle: result.submessage });
         }
     };
 </script>

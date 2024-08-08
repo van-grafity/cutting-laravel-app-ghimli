@@ -643,6 +643,8 @@
         $('#parent_laying_planning').select2({
             data: formattedData
         });
+
+        $('#parent_laying_planning').val(null).trigger('change');
     }
 
 </script>

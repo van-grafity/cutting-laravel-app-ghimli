@@ -30,10 +30,18 @@ class LayingPlanningDetailTypesTableSeeder extends Seeder
                 'type' => 'BALANCE',
                 'description' => 'Table / Lot for Balance',
             ],
+            [
+                'type' => 'SHORT YDS',
+                'description' => 'Table / Lot for Short YDS',
+            ],
+            [
+                'type' => 'SHORT WIDTH',
+                'description' => 'Table / Lot for Short Width',
+            ],
         ];
 
         foreach ($data as $key => $type) {
-            LayingPlanningDetailType::create($type);
+            LayingPlanningDetailType::updateOrCreate(['type' => $type['type']], $type);
         }
     }
 }
