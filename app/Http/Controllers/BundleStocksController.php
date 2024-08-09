@@ -633,7 +633,7 @@ class BundleStocksController extends Controller
                 $action .= '<a href="'.route('bundle-stock.detail-transaction-history', $data->id).'" class="btn btn-info btn-sm mb-1 mr-1" target="_blank">Detail</a>';
                 if (Auth::user()->hasRole('super_admin')) {
                     if($filterType === 'soft_deleted' || $filterType === 'non_deleted'){
-                        if ($differenceInMinutes <= 30) {
+                        if ($differenceInMinutes < 30) {
                             $action .= "<button onclick='delete_bundle_stock_transaction($data->id, `$filterType`)' class='btn btn-danger btn-sm mb-1 mr-1' data-toggle='tooltip' data-placement='top' title='Delete'>Delete</button>";
                         } else {
                             $action .= "<button class='btn btn-danger btn-sm mb-1 mr-1' data-toggle='tooltip' data-placement='top' title='Data tidak dapat di delete karena sudah disimpan lebih dari 30 menit' disabled>Delete</button>";
@@ -656,6 +656,16 @@ class BundleStocksController extends Controller
                 'message' => "Bundle Stock Transaction History Tidak Ditemukan"
             ]);
         }
+        $transaction_group_createdAt = Carbon::createFromFormat('Y-m-d H:i:s', $bundle_stock_transaction_group->created_at);
+        $differenceInMinutes = Carbon::now()->diffInMinutes($transaction_group_createdAt);
+
+        if($differenceInMinutes >= 30){
+            return response()->json([
+                'status'=> 'error',
+                'message' => "Data tidak dapat di delete karena sudah disimpan lebih dari 30 menit"
+            ]);
+        }
+
         $bundle_stock_transaction_group_serial_number = $bundle_stock_transaction_group->serial_number;
         $bundle_stock_transaction = BundleStockTransaction::where('transaction_group_id', $bundle_stock_transaction_group->id)
             ->onlyTrashed()
@@ -670,6 +680,16 @@ class BundleStocksController extends Controller
         try{
             DB::beginTransaction();
             foreach ($bundle_stock_transaction as $transaction) {
+                $transaction_createdAt = Carbon::createFromFormat('Y-m-d H:i:s', $transaction->created_at);
+                $differenceMinuteInTransaction = Carbon::now()->diffInMinutes($transaction_createdAt);
+
+                if($differenceMinuteInTransaction >= 30){
+                    return response()->json([
+                        'status'=> 'error',
+                        'message' => "Data tidak dapat di delete karena sudah disimpan lebih dari 30 menit"
+                    ]);
+                }
+
                 $bundle_transfer_note_details = BundleTransferNoteDetail::where('bundle_transaction_id', $transaction->id)->first();
                 if ($bundle_transfer_note_details) {
                     BundleTransferNoteDetail::where('bundle_transfer_note_id', $bundle_transfer_note_details->bundle_transfer_note_id)->delete();
