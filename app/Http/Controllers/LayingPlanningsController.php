@@ -42,6 +42,20 @@ class LayingPlanningsController extends Controller
         Gate::define('unprint-fbr', function ($user) {
             return $user->hasPermissionTo('laying-planning-detail.unprint-fbr');
         });
+
+        //## Laying Planning Permission
+        // $this->middleware('can:laying-planning-list.access')->only(['dataLayingPlanning', 'index']);        $this->middleware('can:laying-planning-list.access')->only(['index', 'dataLayingPlanning']);
+        // $this->middleware('can:laying-planning.manage')->only(['layingCreate','store', 'update', 'destroy', 'edit']);
+        // $this->middleware('can:laying-planning-report.access')->only('layingPlanningReport');
+
+        // //## Laying Planning Detail Permission
+        // $this->middleware(function ($request, $next) {
+        //     if ($request->user()->can('laying-planning-detail.access') || $request->user()->hasRole('cutter')) {
+        //         return $next($request);
+        //     }
+        //     abort(403);
+        // })->only('show');
+        // $this->middleware('can:laying-planning-detail.manage')->only(['detail_create', 'detail_duplicate', 'detail_edit', 'detail_delete']);
     }
 
     /**
@@ -55,7 +69,7 @@ class LayingPlanningsController extends Controller
     }
 
     public function dataLayingPlanning (){
-        
+
         $query = DB::table('laying_plannings')
             ->join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
             ->join('styles', 'laying_plannings.style_id', '=', 'styles.id')
@@ -68,45 +82,59 @@ class LayingPlanningsController extends Controller
         if(!request()->input('order')) {
             $query->orderBy('laying_plannings.created_at','DESC');
         }
-        
+
         $query = $query->select(
-            'laying_plannings.*', 
-            'gls.gl_number', 
-            'styles.style', 
-            'colors.color', 
-            'fabric_types.description as fabric_type', 
-            'buyers.name as buyer', 
+            'laying_plannings.*',
+            'gls.gl_number',
+            'styles.style',
+            'colors.color',
+            'fabric_types.description as fabric_type',
+            'buyers.name as buyer',
             'fabric_cons.description as fabric_cons'
         );
-            
+
         return Datatables::of($query)
             ->addIndexColumn()
             ->escapeColumns([])
             ->addColumn('action', function($data){
                 $action = '';
-                if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter')){
+
+                if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter') || Auth::user()->can('laying-planning-detail.access')){
                     $action .= '<a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1 mr-1">Detail</a>';
-                    $action .= '<a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1 mr-1">Report</a>';
-                } else {
-                    $action .= '<a href="'.route('laying-planning.show',$data->id).'" class="btn btn-info btn-sm mt-1 mr-1">Detail</a>';
+                }else{
+                    $action .= '<a href="#" class="btn btn-info btn-sm mt-1 mr-1 disabled" style="pointer-events: none;">Detail</a>';
+                }
+
+                if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter') || Auth::user()->can('laying-planning-report.access')){
                     $action .= '<a href="'.route('laying-planning.report',$data->id).'" target="_blank" class="btn btn-info btn-sm mt-1 mr-1">Report</a>';
                 }
-                
-                $action .= '<a type="button" class="btn btn-default mt-1" data-toggle="dropdown" aria-expanded="false" style="height:2rem">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </a>';
 
-                $action .= '<div class="dropdown-menu dropdown-menu-right">';
-                $action .= '<a class="dropdown-item" href="' . route('laying-planning.report', $data->id) . '" target="_blank">Print Report</a>';
+                if(auth()->user()->canAny(['clerk-cutting','laying-planning-report.access','laying-planning.manage', 'laying-planning-report.marker-requirement'])){
+                    $action .= '<a type="button" class="btn btn-default mt-1" data-toggle="dropdown" aria-expanded="false" style="height:2rem">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </a>';
+                    $action .= '<div class="dropdown-menu dropdown-menu-right">';
+                }
 
-                if (auth()->user()->can('laying-planning.manage')) {
+                if(auth()->user()->canAny(['clerk-cutting','laying-planning-report.access'])) {
+                    $action .= '<a class="dropdown-item" href="' . route('laying-planning.report', $data->id) . '" target="_blank">Print Report</a>';
+                }
+
+                if(auth()->user()->can(['clerk-cutting']) ||auth()->user()->can(['laying-planning-report.access','laying-planning.manage'])) {
                     $action .= '<div class="dropdown-divider"></div>';
+                }
+
+                if (auth()->user()->can('clerk-cutting') || auth()->user()->can(['laying-planning.manage'])) {
                     $action .= '<a class="dropdown-item" href="'.route('laying-planning.edit',$data->id).'" >Edit</a>';
                     $action .= '<div class="dropdown-divider"></div>';
                     $action .= '<a class="dropdown-item" href="javascript:void(0);" onclick="delete_layingPlanning('.$data->id.')">Delete</a>';
                 }
-                if (auth()->user()->can('laying-planning-report.marker-requirement')) {
+
+                if(auth()->user()->can('clerk-cutting') || auth()->user()->can(['laying-planning.manage','laying-planning-report.marker-requirement']) || auth()->user()->can(['laying-planning-report.access','laying-planning-report.marker-requirement'])) {
                     $action .= '<div class="dropdown-divider"></div>';
+                }
+
+                if (auth()->user()->can('clerk-cutting') || auth()->user()->can(['laying-planning-report.marker-requirement'])) {
                     $action .= '<a class="dropdown-item" href="' . route('laying-planning-report.marker-requirement', $data->id) . '" target="_blank">Marker Requirement</a>';
                 }
 
@@ -149,7 +177,7 @@ class LayingPlanningsController extends Controller
             return response()->json($date_return, 200);
         }
         $laying_planning_id = $request->laying_planning_id ? $request->laying_planning_id : null;
-        
+
         // ## Retrieve laying plannings with the same GL number prefix
         // ## This reduces the list to only show related laying plannings
         $gl_number = GL::find($request->gl_id);
@@ -243,8 +271,14 @@ class LayingPlanningsController extends Controller
                     $insertLayingSizeGlCombine = LayingPlanningSizeGlCombine::create($laying_planning_size_gl_combine);
                 }
             }
-            return redirect()->route('laying-planning.show',$insertLayingData->id)
+
+            if(!auth()->user()->can('laying-planning.manage') || !auth()->user()->can('clerk-cutting')){
+                return  redirect()->route('laying-planning.index',$insertLayingData->id)
                 ->with('success', 'Data Laying Planning berhasil dibuat.');
+            }else{
+                return redirect()->route('laying-planning.show',$insertLayingData->id)
+                ->with('success', 'Data Laying Planning berhasil dibuat.');
+            };
         } catch (\Throwable $th) {
             return redirect('laying-planning-create')
                 ->withErrors($th->getMessage())
@@ -258,13 +292,13 @@ class LayingPlanningsController extends Controller
         $details = LayingPlanningDetail::with(['fabricRequisition'])
             ->where('laying_planning_id', $id)
             ->get();
-        
+
         $cutting_order_records = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])
             ->whereHas('layingPlanningDetail.layingPlanning', fn($query) => $query->where('laying_plannings.id', $id))
             ->get();
 
         $laying_planning_detail_types = LayingPlanningDetailType::all();
-        
+
         $total_cut_qty = 0;
         $cor_map = [];
 
@@ -289,8 +323,6 @@ class LayingPlanningsController extends Controller
             $hasil_cut_qty = $total_cutting_order_record * $total_size_ratio;
             $total_cut_qty += $hasil_cut_qty;
         }
-        
-        
         $laying_planning->total_cut_qty = $total_cut_qty;
         $laying_planning->delivery_date = Carbon::createFromFormat('Y-m-d', $laying_planning->delivery_date)->format('d-m-Y');
         $laying_planning->plan_date = Carbon::createFromFormat('Y-m-d', $laying_planning->plan_date)->format('d-m-Y');
@@ -336,7 +368,7 @@ class LayingPlanningsController extends Controller
         if(auth()->user()->can('admin-only')){
             $is_can_edit = true;
         }
-        
+
         $viewData = [
             'laying_planning' => $laying_planning,
             'details' => $details,
@@ -379,7 +411,7 @@ class LayingPlanningsController extends Controller
             })
             ->make(true);
     }
-        
+
     public function layingPlanningReport($id)
     {
         $lp_details = null;
@@ -392,11 +424,11 @@ class LayingPlanningsController extends Controller
 
             $lp_details = LayingPlanningDetail::with([
                     'layingPlanningDetailSize',
-                    'layingPlanning.gl', 
-                    'layingPlanning.style', 
-                    'layingPlanning.buyer', 
-                    'layingPlanning.color', 
-                    'layingPlanning.fabricType', 
+                    'layingPlanning.gl',
+                    'layingPlanning.style',
+                    'layingPlanning.buyer',
+                    'layingPlanning.color',
+                    'layingPlanning.fabricType',
                     'layingPlanning.layingPlanningSize.size',
                     'cuttingOrderRecord.cuttingOrderRecordDetail.color'
                 ])
@@ -419,8 +451,8 @@ class LayingPlanningsController extends Controller
                     $real_cut_date_only = $carbon_real_cut_datetime->format('Y-m-d');
                     $start_shift_datetime = Carbon::parse($real_cut_date_only . ' 07:00:00');
 
-                    $shift_date = $carbon_real_cut_datetime->lt($start_shift_datetime) 
-                        ? $carbon_real_cut_datetime->subDay() 
+                    $shift_date = $carbon_real_cut_datetime->lt($start_shift_datetime)
+                        ? $carbon_real_cut_datetime->subDay()
                         : $carbon_real_cut_datetime;
 
                     $lp_detail->cut_date = $shift_date->format('d-M');
@@ -434,7 +466,7 @@ class LayingPlanningsController extends Controller
                 $lp_detail->actual_cut_qty = ($total_layer_in_cor * $total_size_ratio_in_cor) > 0 ? ($total_layer_in_cor * $total_size_ratio_in_cor) : '-';
             }
 
-            
+
             $cutting_order_records = CuttingOrderRecord::with(['cuttingOrderRecordDetail'])
                 ->whereHas('layingPlanningDetail.layingPlanning', fn($query) => $query->where('id', $id))
                 ->get();
@@ -463,7 +495,7 @@ class LayingPlanningsController extends Controller
                 $hasil_cut_qty = $total_cutting_order_record * $total_size_ratio;
                 $total_cut_qty += $hasil_cut_qty;
             }
-            
+
             $laying_planning->total_cut_qty = $total_cut_qty;
             $laying_planning->lp_size_count = $laying_planning->layingPlanningSize->count();
             $laying_planning->lp_size_sum_quantity = $laying_planning->layingPlanningSize->sum('quantity');
@@ -483,7 +515,7 @@ class LayingPlanningsController extends Controller
                 $sum_this_size = isset($sum_per_size[$lp_size->size_id]) ? $sum_per_size[$lp_size->size_id] : 0;
                 $balance_per_size[] = $sum_this_size - $lp_size->quantity;
             }
-            
+
             $laying_planning->total_per_size = $total_per_size;
             $laying_planning->total_all_size = array_sum($total_per_size);
             $laying_planning->balance_per_size = $balance_per_size;
@@ -538,7 +570,7 @@ class LayingPlanningsController extends Controller
     public function edit(LayingPlanning $layingPlannings, $id)
     {
         $layingPlanning = LayingPlanning::find($id);
-        
+
         $gls = DB::table('gls')->get();
         $styles = DB::table('styles')->where('gl_id',$layingPlanning->gl_id)->get();
         $colors = DB::table('colors')->get();
@@ -589,7 +621,7 @@ class LayingPlanningsController extends Controller
 
         return redirect()->route('laying-planning.show',$insertLayingData->id)->with('success', 'Planning Successfully Duplicated.');
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -637,7 +669,7 @@ class LayingPlanningsController extends Controller
         $layingPlanning->remark = $request->remark;
 
         $layingPlanningDetail = LayingPlanningDetail::where('laying_planning_id', $layingPlanning->id)->get();
-        
+
         foreach ($layingPlanningDetail as $key => $value) {
             $table_number = $value->table_number;
             $gl = $layingPlanning->gl->gl_number;
@@ -660,7 +692,7 @@ class LayingPlanningsController extends Controller
             ];
             $insertLayingSize = LayingPlanningSize::create($laying_planning_size);
         }
-        
+
         return redirect()->route('laying-planning.show',$layingPlanning->id)->with('success', 'Laying Planning '. $layingPlanning->serial_number . " successfully Updated!");
     }
 
@@ -674,7 +706,7 @@ class LayingPlanningsController extends Controller
     {
         try {
             $layingPlanning = LayingPlanning::find($id);
-            
+
             if($layingPlanning->childLayingPlannings && count($layingPlanning->childLayingPlannings) > 0){
                 $date_return = [
                     'status' => 'error',
@@ -684,7 +716,7 @@ class LayingPlanningsController extends Controller
                 ];
                 return response()->json($date_return, 200);
             }
-            
+
             $layingPlanning->delete();
             $date_return = [
                 'status' => 'success',
@@ -700,7 +732,7 @@ class LayingPlanningsController extends Controller
         }
     }
 
-    public function detail_create(Request $request) 
+    public function detail_create(Request $request)
     {
         $layingPlanning = LayingPlanning::find($request->laying_planning_id);
         if(!$layingPlanning) {
@@ -723,7 +755,7 @@ class LayingPlanningsController extends Controller
         ];
 
         $insertLayingDetail = LayingPlanningDetail::create($layingDetailData);
-        
+
         $ratio_size = $request->ratio_size;
         $qty_size = $request->qty_size;
         foreach ($ratio_size as $key => $size_value) {
@@ -759,13 +791,13 @@ class LayingPlanningsController extends Controller
                 'laying_planning_detail_id' => $insertLayingDetail->id
             ];
             $insertFabricRequisition = FabricRequisition::create($dataFabricRequisition);
-            
+
             return redirect()->route('laying-planning.show',$layingPlanning->id)
                 ->with('success', 'Data Detail Laying Planning berhasil dibuat.');
         } catch (\Throwable $th) {
             return redirect()->route('cutting-order.index')->with('error', $th->getMessage());
         }
-        
+
         return redirect()->route('laying-planning.show',$layingPlanning->id)
             ->with('success', 'Data Detail Laying Planning berhasil dibuat.');
     }
@@ -787,12 +819,12 @@ class LayingPlanningsController extends Controller
             ]);
         }
     }
-    
+
     public function detail_update(Request $request, $id)
     {
         try {
             $layingPlanningDetail = LayingPlanningDetail::with('layingPlanningDetailSize')->find($id);
-            
+
             $layingPlanningDetail->layer_qty = $request->layer_qty;
             $layingPlanningDetail->marker_code = $request->marker_code;
             $layingPlanningDetail->marker_yard = $request->marker_yard;
@@ -801,7 +833,7 @@ class LayingPlanningsController extends Controller
             $layingPlanningDetail->total_length = $request->marker_total_length;
             $layingPlanningDetail->total_all_size = $request->qty_size_all;
             $layingPlanningDetail->laying_planning_detail_type_id = $request->laying_planning_detail_type;
-            
+
             $layingPlanningDetail->save();
 
             $deletePlanningDetailSize = LayingPlanningDetailSize::where('laying_planning_detail_id', $layingPlanningDetail->id)->delete();
@@ -827,7 +859,7 @@ class LayingPlanningsController extends Controller
         }
     }
 
-    public function detail_delete($id) 
+    public function detail_delete($id)
     {
         try {
             $layingPlanningDetail = LayingPlanningDetail::find($id);
@@ -853,11 +885,11 @@ class LayingPlanningsController extends Controller
 
         $layingPlanningDetailSize = $layingPlanningDetail->layingPlanningDetailSize;
 
-        for ($i=0; $i < $duplicate_qty; $i++) { 
-            
+        for ($i=0; $i < $duplicate_qty; $i++) {
+
             $layingPlanning = $layingPlanningDetail->layingPlanning;
             $getLastDetail = LayingPlanningDetail::where('laying_planning_id', $layingPlanning->id)->orderBy('table_number','desc')->first();
-            
+
 
             $layingDetailData = [
                 'no_laying_sheet' => $this->generate_no_laying_sheet($layingPlanning),
@@ -874,7 +906,7 @@ class LayingPlanningsController extends Controller
             ];
 
             $insertLayingDetail = LayingPlanningDetail::create($layingDetailData);
-            
+
             $ratio_size = $request->ratio_size;
             $qty_size = $request->qty_size;
             foreach ($layingPlanningDetailSize as $key => $detailSize) {
@@ -910,7 +942,7 @@ class LayingPlanningsController extends Controller
                     'laying_planning_detail_id' => $insertLayingDetail->id
                 ];
                 $insertFabricRequisition = FabricRequisition::create($dataFabricRequisition);
-            
+
             } catch (\Throwable $th) {
                 return redirect()->route('cutting-order.index')->with('error', $th->getMessage());
             }
@@ -924,7 +956,7 @@ class LayingPlanningsController extends Controller
     function generate_no_laying_sheet($layingPlanning) {
         $getLastDetail = LayingPlanningDetail::where('laying_planning_id', $layingPlanning->id)->orderBy('table_number','desc')->first();
         $gl_number = $layingPlanning->gl->gl_number;
-        
+
         if(!$getLastDetail){
             $no_laying_sheet = $gl_number. "-" . Str::padLeft('1', 3, '0');
         } else {
@@ -987,7 +1019,7 @@ class LayingPlanningsController extends Controller
         $fabric_cons = preg_replace('/[^A-Za-z0-9\-]/', '', $fabric_cons);
         $table_number = Str::padLeft($layingPlanningDetail->table_number, 3, '0');
         $getDuplicateSN = CuttingOrderRecord::where('laying_planning_detail_id', $layingPlanningDetail->id)->get();
-        
+
         if ($getDuplicateSN->count() > 0) {
             $duplicate = $getDuplicateSN->count() + 1;
             $duplicate = Str::padLeft($duplicate, 2, '0');
@@ -1026,7 +1058,7 @@ class LayingPlanningsController extends Controller
 
     public function create_planing_support($laying_planning_id) {
         $layingPlanning = LayingPlanning::find($laying_planning_id);
-        
+
         $gls = DB::table('gls')->get();
         $styles = DB::table('styles')->where('gl_id',$layingPlanning->gl_id)->get();
         $colors = DB::table('colors')->get();

@@ -6,7 +6,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                
+
                 <div class="detail-section my-5 px-5">
                     <div class="row mb-3">
                         <div class="col-sm-8">
@@ -37,7 +37,7 @@
                                         @if($laying_planning->laying_planning_type_id && $laying_planning->laying_planning_type_id == 1)
                                             <a class="dropdown-item" href="{{ route('laying-planning.create-planning-support', $laying_planning->id) }}" target="_blank">Create Planning Support</a>
                                         @endif
-                                        
+
                                         @if($is_can_edit)
                                         <a class="dropdown-item" href="{{ route('laying-planning.edit', $laying_planning->id) }}">Edit</a>
                                         @endif
@@ -166,7 +166,7 @@
                 <div class="content-title text-center">
                     <h3>Cutting Table List</h3>
                 </div>
-                @canany(['clerk','cutter'])
+                @canany(['clerk','cutter', 'laying-planning-detail.access'])
                 <div class="d-flex justify-content-end mb-1">
                     <div class="action-wrapper mr-auto">
                         @can('unprint-cor')
@@ -180,21 +180,28 @@
                             </button>
                         @endcan
                     </div>
+                    @can('laying-planning-detail.manage')
                     <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
+                    @endcan
+
+                    @can('laying-planning-detail.print-cor')
                     <a href="{{ route('cutting-order.print-multiple', $laying_planning->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_nota">Print Nota</a>
+                    @endcan
+                    @can('laying-planning-detail.print-fbr')
                     <a href="{{ route('fabric-requisition.print-multiple', $laying_planning->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_fabric">Print Fabric Req</a>
+                    @endcan
                 </div>
                 @endcan
-                <table class="table align-middle table-nowrap table-hover">
+                <table class="table align-middle table-nowrap table-hove">
                     <thead class="table-light">
                         <tr class="text-center">
                             @canany(['unprint-cor','unprint-fbr'])
                                 <th scope="col">
                                     <div class="form-group mb-0">
                                         <div class="custom-control custom-checkbox">
-                                            <input 
-                                                id="print_checkbox_all" 
-                                                class="custom-control-input checkbox-all-control" 
+                                            <input
+                                                id="print_checkbox_all"
+                                                class="custom-control-input checkbox-all-control"
                                                 type="checkbox"
                                             >
                                             <label for="print_checkbox_all" class="custom-control-label"></label>
@@ -202,8 +209,10 @@
                                     </div>
                                 </th>
                             @endcan
-                            @canany(['laying-planning.manage','clerk'])
+                            @canany(['laying-planning-detail.print-cor','clerk'])
                                 <th scope="col">COR</th>
+                                @endcan
+                            @canany(['laying-planning-detail.print-fbr','clerk'])
                                 <th scope="col">FBR</th>
                             @endcan
                             <th scope="col">Table No</th>
@@ -222,20 +231,20 @@
                                 <td>
                                     <div class="form-group mb-0">
                                         <div class="custom-control custom-checkbox">
-                                            <input 
-                                                id="print_checkbox_{{ $detail->id }}" 
-                                                name="selected_item[]" 
-                                                class="custom-control-input checkbox-print-control" 
-                                                type="checkbox" 
+                                            <input
+                                                id="print_checkbox_{{ $detail->id }}"
+                                                name="selected_item[]"
+                                                class="custom-control-input checkbox-print-control"
+                                                type="checkbox"
                                                 value="{{ $detail->id }}"
-                                                onchange="checkbox_clicked()" 
+                                                onchange="checkbox_clicked()"
                                             >
                                             <label for="print_checkbox_{{ $detail->id }}" class="custom-control-label"></label>
                                         </div>
                                     </div>
                                 </td>
                                 @endcan
-                                @canany(['laying-planning.manage','clerk'])
+                                @canany(['laying-planning-detail.print-cor','clerk'])
                                 <td>
                                     @if($detail->cor_status_print == 0 || Auth::user()->can('super_admin'))
                                         <div class="form-group mb-4">
@@ -246,7 +255,7 @@
                                     @endif
                                 </td>
                                 @endcan
-                                @canany(['laying-planning.manage','clerk'])
+                                @canany(['laying-planning-detail.print-fbr','clerk'])
                                 <td>
                                     @if($detail->fr_status_print == 0 || Auth::user()->can('super_admin'))
                                         <div class="form-group mb-4">
@@ -265,7 +274,7 @@
                                         @endif
                                         <a class="text-decoration-none dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{ $detail->table_number }}</a>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            @if($detail->fr_id != null) 
+                                            @if($detail->fr_id != null)
                                                 @if(!Auth::user()->hasRole('pmr'))
                                                 <li><a class="dropdown-item" href="{{ route('fabric-requisition.show', $detail->fr_id) }}">Detail Fabric</a></li>
                                                 @endif
@@ -286,7 +295,7 @@
                                 <td>{{ $detail->layer_qty }}</td>
                                 <td>
                                     @if($detail->cuttingOrderRecord == null)
-                                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
+                                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter') || Auth::user()->can('laying-planning-detail.manage'))
                                         <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
                                         <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
                                         @endif
@@ -297,40 +306,63 @@
                                                 <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
                                             @endcan
                                         @else
-                                            @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
+                                            @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter') || Auth::user()->can('laying-planning-detail.manage'))
                                                 <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
                                                 <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
                                             @endif
                                         @endif
                                     @endif
-                                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
                                     @if($detail->fr_status == 'disabled')
+                                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter') || Auth::user()->can('laying-planning-detail.access'))
                                         <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail FBR</a>
+                                    @endif
                                     @else
+                                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter') || Auth::user()->can('laying-planning-detail.manage'))
                                         <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}">Create Fab</a>
                                     @endif
                                     @endif
                                     @if($detail->cor_status == 'disabled')
+                                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter') || Auth::user()->can('laying-planning-detail.access'))
                                         <a href="{{ route('cutting-order.show', $detail->cor_id) }}" class="btn btn-sm btn-outline-info">Detail COR</a>
+                                    @endif
                                     @else
+                                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter') || Auth::user()->can('laying-planning-detail.manage'))
                                         <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->cor_status }}">Create COR</a>
                                     @endif
-                                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
+                                    @endif
+                                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter') || Auth::user()->can('laying-planning-detail.manage'))
                                     <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
                                     @endif
-                                    
+
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr class="text-center">
-                            <th class="text-left" colspan="3">Total :</th>
-                            @canany(['unprint-cor','unprint-fbr'])
+                            @php
+                            $colspan = 0;
+                            if(Auth::user()->can('laying-planning-detail.print-cor') && Auth::user()->can('laying-planning-detail.print-fbr')){
+                                $colspan = 5;
+                            }
+                            else if(Auth::user()->can('laying-planning-detail.print-cor') || Auth::user()->can('laying-planning-detail.print-fbr')){
+                                $colspan = 4;
+                            }
+                            else {
+                                $colspan = 3;
+                            }
+                            @endphp
+                            <th class="text-left" colspan={{ $colspan }}>Total:</th>
+                            @if(Auth::user()->can('laying-planning-detail.unprint-cor') ||  Auth::user()->can('laying-planning-detail.unprint-fbr'))
+                                @php
+                                $colspan++;
+                                @endphp
+                            @endif
+                            @canany(['laying-planning-detail.unprint-cor', 'laying-planning-detail.unprint-fbr'])
                              <th colspan="1"></th>
                             @endcan
                             @canany(['laying-planning.manage','clerk'])
-                             <th colspan="2"></th>
+                             <th colspan="1"></th>
                             @endcan
                             <th class="" colspan="1">{{ $laying_planning->total_pcs_all_table }} Pcs </th>
                             <th class="" colspan="1">{{ $laying_planning->total_length_all_table }} Yd </th>
@@ -339,7 +371,6 @@
                         </tr>
                     </tfoot>
                 </table>
-                
                 <div class="row mt-10rem">
                     <div class="col-md-12 text-right">
                         <a href="{{ url('/laying-planning') }}" class="btn btn-secondary shadow-sm">back</a>
@@ -617,11 +648,11 @@
             $('#modal_formLabel').text("Add Cutting Table")
             $('#btn_submit').text("Add Cutting Table")
             $('#planning_detail_form').find("input[type=text], input[type=number], textarea").val("");
-            
+
             // ## set default value is 1. lot / table type normal
             $('#planning_detail_form').find(`input[name="laying_planning_detail_type"][value="1"]`).prop('checked', true);
             listen_laying_planning_detail_type();
-            
+
             $('#planning_detail_form').find('input[name="_method"]').remove();
             $('#planning_detail_form').attr('action', create_url);
             $('#modal_form').modal('show')
@@ -637,19 +668,19 @@
             set_qty_size(size_list);
         });
 
-        
+
         $(".btn-detail-edit").on('click', async function(e) {
             let get_data_url = $(this).attr('data-url');
             let planning_detail_id = $(this).attr('data-id');
             let result = await get_using_fetch(get_data_url);
-            
+
             if(result.status == "success"){
                 let update_url = '{{ route("laying-planning.detail-update",":id") }}';
                 update_url = update_url.replace(':id', planning_detail_id);
 
                 laying_planning_detail_id = $(this).attr('data-id');
                 modal_show_edit(update_url, result.data)
-                
+
             } else {
                 swal_failed({ title: result.message });
 
@@ -671,7 +702,7 @@
             if(result.status == "success"){
                 swal_info({
                     title : result.message,
-                    reload_option: true, 
+                    reload_option: true,
                 });
             } else {
                 swal_failed({ title: result.message });
@@ -716,13 +747,13 @@
         });
 
         $('.btn-detail-duplicate').on('click', async function(e){
-            
+
             $('#duplicate_form').find("input[type=text], input[type=number], textarea").val("");
 
             laying_planning_detail_id = $(this).attr('data-id');
             let data_params = { laying_planning_detail_id: laying_planning_detail_id };
             cutting_table_result = await using_fetch(fetch_cutting_table_url, data_params, "GET");
-            
+
             data = cutting_table_result.data;
             $('#duplicate_table_no').text(data.table_number);
             $('#duplicate_marker_code').text(data.marker_code);
@@ -841,7 +872,7 @@
         form.find('input[name="marker_code"]').val(data.marker_code);
         form.find('input[name="marker_yard"]').val(data.marker_yard);
         form.find('input[name="marker_inch"]').val(data.marker_inch);
-        
+
         data.laying_planning_detail_size.forEach(function(detail_size) {
             form.find(`input[name="ratio_size[${detail_size.size_id}]"]`).val(detail_size.ratio_per_size);
             form.find(`input[name="qty_size[${detail_size.size_id}]"]`).val(detail_size.qty_per_size);
@@ -948,7 +979,7 @@
             } else {
                 swal_failed({ title: result.message });
             }
-            
+
         } else {
             swal_failed({ title: 'Please select at least one item' });
         }
@@ -981,7 +1012,7 @@
             } else {
                 swal_failed({ title: result.message });
             }
-            
+
         } else {
             swal_failed({ title: 'Please select at least one item' });
         }

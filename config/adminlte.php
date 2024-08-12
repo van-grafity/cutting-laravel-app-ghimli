@@ -448,7 +448,7 @@ return [
                     'classes'   => 'ml-3',
                     'text' => 'Laying Planning List',
                     'url' => '/laying-planning',
-                    'can' => 'viewer | laying-planning.access',
+                    'can' => 'viewer | laying-planning-list.access',
                 ],
             ],
         ],

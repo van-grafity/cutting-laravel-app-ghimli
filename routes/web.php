@@ -231,6 +231,46 @@ Route::group([
 });
 
 
+Route::group([
+    'middleware'=> [
+        'auth',
+        'hasAnyPermission:clerk-cutting,laying-planning.access'
+    ],
+    'controller' => App\Http\Controllers\LayingPlanningsController::class,
+], function(){
+
+    Route::resource('laying-planning',LayingPlanningsController::class)->except(['index','show'])->middleware('hasAnyPermission:clerk-cutting,laying-planning.manage');
+    Route::get('/laying-planning-create', 'layingCreate')->middleware('hasAnyPermission:clerk-cutting,laying-planning.manage');
+
+    Route::get('/laying-planning', [LayingPlanningsController::class, 'index'])->middleware('hasAnyPermission:clerk-cutting,laying-planning-list.access')->name('laying-planning.index');
+    Route::get('/laying-planning-data', [LayingPlanningsController::class, 'dataLayingPlanning'])->middleware('hasAnyPermission:clerk-cutting,laying-planning-list.access');
+
+
+    Route::get('/laying-planning-qrcode/{id}', [LayingPlanningsController::class, 'layingQrcode']);
+    Route::get('/laying-planning-report/{id}', [LayingPlanningsController::class, 'layingPlanningReport'])->name('laying-planning.report')->middleware('hasAnyPermission:clerk-cutting,laying-planning-report.access');
+
+    Route::get('/laying-planning/{id}', [LayingPlanningsController::class, 'show'])->middleware('hasAnyPermission:clerk-cutting,laying-planning-detail.access')->name('laying-planning.show');
+
+    Route::group([
+       'middleware'=> [
+        'auth',
+        'hasAnyPermission:clerk-cutting,laying-planning-detail.manage'
+    ],
+    'controller' => App\Http\Controllers\LayingPlanningsController::class,
+    'prefix' => 'laying-planning-detail',
+    'as' => 'laying-planning.'
+    ], function(){
+        route::post('/create', 'detail_create')->name('detail-create');
+        route::put('/{id}', 'detail_update')->name('detail-update');
+        route::delete('/{id}', 'detail_delete')->name('detail-delete');
+        route::get('/{id}/edit', 'detail_edit')->name('detail-edit');
+        route::post('/detail-duplicate','detail_duplicate')->name('detail-duplicate');
+        route::get('/{id}/duplication', 'duplicate')->name('duplicate');
+    });
+
+});
+
+
 // ## Laying Planning (New Routing)
 Route::group([
     'middleware' => [
@@ -243,7 +283,6 @@ Route::group([
     Route::get('get-planning-by-gl', 'get_planning_by_gl')->name('get-planning-by-gl');
     Route::get('{laying_planning_id}/create-planning-support', 'create_planing_support')->name('create-planning-support');
 });
-
 
 // ## Laying Planning Detail and Cutting Order Record
 Route::group([
@@ -267,7 +306,7 @@ Route::group([
     'prefix' => 'laying-planning-report',
     'as' => 'laying-planning-report.',
 ],function() {
-    Route::get('{laying_planning_id}/marker-requirement', 'markerRequirement')->name('marker-requirement')->middleware('can:laying-planning-report.marker-requirement');
+    Route::get('{laying_planning_id}/marker-requirement', 'markerRequirement')->name('marker-requirement')->middleware('hasAnyPermission:clerk-cutting,laying-planning-report.marker-requirement');
 });
 
 
@@ -342,7 +381,7 @@ Route::group([
     'as' => 'cutting-table.',
 ],function() {
     Route::get('dtable', 'dtable')->name('dtable');
-    
+
     Route::get('', 'index')->name('index');
     Route::get('{cutting_table}', 'show')->name('show');
     Route::post('', 'store')->name('store')->middleware('can:cutting-table.manage');
@@ -370,7 +409,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/remark-data', [RemarksController::class, 'dataRemark']);
     Route::get('/gl-data', [GlsController::class, 'dataGl']);
     Route::get('/style-data', [StylesController::class, 'dataStyle']);
-    Route::get('/laying-planning-data', [LayingPlanningsController::class, 'dataLayingPlanning']);
     Route::get('/laying-planning-detail-data/{id}', [LayingPlanningsController::class, 'dataLayingPlanningDetail'])->name('laying-planning-detail-data');
     Route::get('/cutting-order-data', [CuttingOrdersController::class, 'dataCuttingOrder']);
 
@@ -425,20 +463,6 @@ Route::group(['middleware' => ['auth','can:clerk-cutting']], function () {
 });
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::resource('laying-planning',LayingPlanningsController::class);
-    Route::get('/laying-planning-create', [LayingPlanningsController::class, 'layingCreate']);
-    Route::get('/laying-planning-qrcode/{id}', [LayingPlanningsController::class, 'layingQrcode']);
-    Route::get('/laying-planning-report/{id}', [LayingPlanningsController::class, 'layingPlanningReport'])->name('laying-planning.report');
-
-    Route::controller(LayingPlanningsController::class)
-    ->prefix('laying-planning-detail')->name('laying-planning.')->group(function(){
-        route::post('/create', 'detail_create')->name('detail-create');
-        route::put('/{id}', 'detail_update')->name('detail-update');
-        route::delete('/{id}', 'detail_delete')->name('detail-delete');
-        route::get('/{id}/edit', 'detail_edit')->name('detail-edit');
-        route::post('/detail-duplicate','detail_duplicate')->name('detail-duplicate');
-        route::get('/{id}/duplication', 'duplicate')->name('duplicate');
-    });
 
     Route::resource('cutting-order', CuttingOrdersController::class);
     Route::get('cutting-order-create/{id}', [CuttingOrdersController::class,'createNota'])->name('cutting-order.createNota');
@@ -513,7 +537,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 
-Route::group(['middleware' => ['auth','can:form']], function () {
+Route::group(['middleware' => ['auth','hasAnyPermission:form,laying-planning-detail.print-fbr']], function () {
     Route::resource('fabric-requisition', FabricRequisitionsController::class);
     Route::get('fabric-requisition-create/{id}', [FabricRequisitionsController::class,'createNota'])->name('fabric-requisition.createNota');
     Route::get('fabric-requisition-print/{id}', [FabricRequisitionsController::class,'print_pdf'])->name('fabric-requisition.print');
@@ -545,7 +569,7 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 // ## Route for Fetch Select2 Form
-Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(function(){
+Route::middleware(['auth','hasAnyPermission:clerk,laying-planning.manage'])->prefix('fetch')->name('fetch.')->group(function(){
     Route::get('/',[FetchController::class, 'index'])->name('index');
     Route::get('buyer', [FetchController::class, 'buyer'])->name('buyer');
     Route::get('style', [FetchController::class, 'style'])->name('style');
@@ -557,7 +581,7 @@ Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(
 });
 
 // ## Route for Fetch
-Route::middleware(['auth','can:clerk'])->prefix('fetch')->name('fetch.')->group(function(){
+Route::middleware(['auth','hasAnyPermission:clerk,laying-planning-detail.manage'])->prefix('fetch')->name('fetch.')->group(function(){
     Route::get('cutting-table', [FetchController::class, 'cutting_table'])->name('cutting-table');
 });
 
