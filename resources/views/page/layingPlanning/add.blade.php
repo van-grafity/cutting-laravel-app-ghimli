@@ -174,37 +174,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-12 my-3 row">
-                            <div class="col-sm-12">
-                                <h5 style="font-weight:700">Laying Planning Type</h5>
-                            </div>
-                            <div class="col-sm-12 col-lg-4">
-                                <div class="form-group">
-                                    <div class="custom-control custom-radio">
-                                        <input class="custom-control-input" type="radio" id="laying_planning_type_body" name="laying_planning_type" value="1" checked>
-                                        <label for="laying_planning_type_body" class="custom-control-label">BODY</label>
-                                    </div>
-                                    <div class="custom-control custom-radio">
-                                        <input class="custom-control-input" type="radio" id="laying_planning_type_combinasi" name="laying_planning_type" value="2">
-                                        <label for="laying_planning_type_combinasi" class="custom-control-label">COMBINASI</label>
-                                    </div>
-                                    <div class="custom-control custom-radio">
-                                        <input class="custom-control-input" type="radio" id="laying_planning_type_interlining" name="laying_planning_type" value="3">
-                                        <label for="laying_planning_type_interlining" class="custom-control-label">INTERLINING</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-8 laying-planning-select-option" style="display: none;">
-                                <div class="form-group">
-                                    <label for="parent_laying_planning" class="form-label">Planning Parent</label>
-                                    <select class="form-control select2" id="parent_laying_planning" name="parent_laying_planning" data-placeholder="Select Planning Parent">
-                                        <option value="">Select Planning Parent</option>
-                                    </select>
-                                </div>
-                                <small class="text-muted"><i>*Pastikan untuk mereferensi ke laying planning utama (body) yang benar</i></small>
-                            </div>
-                        </div>
-                        <div class="col-sm-12">
+                        <div col-sm-12>
                             <div class="form-group">
                                 <label for="remark" class="form-label">Remark (Optional)</label>
                                 <textarea class="form-control" name="remark" id="remark" cols="30" rows="2"></textarea>
@@ -288,13 +258,10 @@
 @endsection
 @push('js')
 <script type="text/javascript">
-    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
     const url_buyer = `{{ route('fetch.buyer') }}`;
     const url_style = `{{ route('fetch.style') }}`;
     const url_fabric_type = `{{ route('fetch.fabric-type') }}`;
     const url_gl_combine = `{{ route('fetch.gl-combine') }}`;
-    const url_get_planning_by_gl = `{{ route('laying-planning.get-planning-by-gl') }}`;
 
     let isCombines = false;
     
@@ -362,6 +329,20 @@
                 }
                 let select_combine = $('#select_combine').select2({ data })
                 select_combine.trigger('change');
+
+                
+                    // if(result.data[i].id_gl == gl_id){
+                    //     $('#select_combine').append(`<option value="${result.data[i].id}">${result.data[i].name}</option>`);
+                    //     $('#select_combine').trigger('change');
+                    //     $('#combine_wrapper').show();
+                    //     $('#is_combine_wrapper').show();
+                    //     isCombines = true;
+                    //     break;
+                    // }else{
+                    //     $('#combine_wrapper').hide();
+                    //     $('#is_combine_wrapper').show();
+                    //     isCombines = false;
+                    // }
                 
                 if(isCombines){
                     tableHtml = `
@@ -435,8 +416,6 @@
             }).catch((err) => {
                 console.log(err);
             });
-
-            update_parent_laying_planning_option($(this).val())
         })
 
         // ## Fill Style Description Box depend on Selected Style
@@ -460,15 +439,7 @@
                 console.log(err);
             });
         })
-
-        $('input[name="laying_planning_type"]').change(function() {
-            listen_laying_planning_type();
-        });
-
-        listen_laying_planning_type();
     });
-
-
 </script>
 
 <script type="text/javascript">
@@ -509,6 +480,7 @@
     }
 
     // ## membuat baris baru untuk setiap size yang telah di pilih
+    // result.data[i].id_gl == gl_id)
     function create_tr_element() {
         let select_size_value = $('#select_size').val();
         let select_size_text = $('#select_size option:selected').text();
@@ -576,6 +548,16 @@
             }
         }
 
+        // let select_size_value = $('#select_size').val();
+        // detach_element = $(`#select_size option[value='${select_size_value}'`).detach();
+        // let detach_option = {
+        //     'value': detach_element[0].value,
+        //     'text': detach_element[0].text,
+        // };
+        // detached_options.push(detach_option);
+        // console.log(detached_options);
+
+
         $('#select_size').val('');
         $('#select_size').trigger('change')
         $('#size_qty').val('');
@@ -602,50 +584,16 @@
         $('#total_size_qty').html(': '+sum_size_qty());
     });
 
-    function listen_laying_planning_type() {
-        if ($('input[name="laying_planning_type"]:checked').val() === '1') {
-            $('.laying-planning-select-option').hide();
-            $('#parent_laying_planning').removeAttr('required');
-            $('#parent_laying_planning').val(null).trigger('change');
-        } else {
-            $('.laying-planning-select-option').show();
-            $('#parent_laying_planning').attr('required', 'required');
-        }
-    }
-
-    async function update_parent_laying_planning_option(gl_id) {
-        fetch_data = {
-            url: url_get_planning_by_gl,
-            method: "GET",
-            token: token,
-            data: {
-                gl_id: gl_id
-            }
-        }
-        result = await using_fetch_v2(fetch_data);
-        
-        if(result.status != 'success'){
-            swal_warning({
-                title: result.message,
-                text: " "
-            });
-            return false;
-        }
-        let formattedData = [];
-        result.data.laying_planning_list.forEach(function(item) {
-            formattedData.push({
-                id: item.id,
-                text: item.serial_number + " | " + item.color.color
-            });
-        });
-        
-        $('#parent_laying_planning').select2('destroy').empty()
-        $('#parent_laying_planning').select2({
-            data: formattedData
-        });
-
-        $('#parent_laying_planning').val(null).trigger('change');
-    }
+    // function insert_option_after_delete(option_value){
+    //     var result = detached_options.filter(obj => {
+    //         return obj.value === `${option_value}`
+    //     })
+    //     result.forEach( data => {
+    //         let new_option = new Option(data.text, data.value, false, false);
+    //         console.log(new_option);
+    //         $('#select_size').append(new_option).trigger('change');
+    //     })
+    // }
 
 </script>
 

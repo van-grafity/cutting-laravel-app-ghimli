@@ -193,7 +193,7 @@ return [
     'classes_content_header' => '',
     'classes_content' => '',
     'classes_sidebar' => 'sidebar-dark-primary elevation-4',
-    'classes_sidebar_nav' => 'nav-flat',
+    'classes_sidebar_nav' => '',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand',
     'classes_topnav_container' => 'container',
@@ -290,83 +290,27 @@ return [
     */
 
     'menu' => [
+        // Navbar items:
+        // [
+        //     'type'         => 'navbar-search',
+        //     'text'         => 'search',
+        //     'topnav_right' => true,
+        // ],
         [
             'type'         => 'fullscreen-widget',
             'topnav_right' => true,
         ],
 
-        [
-            'header' => 'Developer',
-            'can'   => 'developer-menu',
-        ],
-        [
-            'text' => 'Settings',
-            'icon' => 'fas fa-cog',
-            'can' => 'developer-menu',
-            'submenu' => [
-                [
-                    'text' => 'Permission Category',
-                    'url' => 'permission-category',
-                ],
-                [
-                    'text' => 'Permission',
-                    'url' => 'permission',
-                ],
-                [
-                    'text' => 'Role',
-                    'url' => 'role',
-                ],
-                [
-                    'text' => 'Logs',
-                    'url' => 'log-viewers',
-                ],
-                [
-                    'text' => 'Authentication Logs',
-                    'url' => 'authentication-log',
-                ],
-                [
-                    'text' => 'Personal Access Token',
-                    'url' => 'personal-access-token',
-                ],
-            ],
-        ],
-        [
-            'text' => 'Department',
-            'url'  => '/department',
-            'icon' => 'fas fa-user-friends',
-            'can'  => 'department-menu',
-            'label'  => 'New',
-            'label_color'  => 'danger',
-        ],
-        [
-            'text' => 'User Management',
-            'url'  => '/user-management',
-            'icon' => 'fas fa-users',
-            'can'  => 'developer-menu',
-        ],
-        [
-            'text' => 'Cutting Group',
-            'url'  => 'cutting-group',
-            'icon' => 'fas fa-object-group',
-            'can'  => 'cutting-group-menu',
-            'label'  => 'New',
-            'label_color'  => 'danger',
-        ],
-        [
-            'text' => 'Cutting Table',
-            'url'  => 'cutting-table',
-            'icon' => 'fas fa-microchip',
-            'can'  => 'cutting-table.access',
-            'label'  => 'New',
-            'label_color'  => 'danger',
-        ],
-        [
-            'header' => 'General',
-        ],
+        // Sidebar items:
+        // [
+        //     'type' => 'sidebar-menu-search',
+        //     'text' => 'search',
+        // ],
         [
             'text' => 'Dashboard',
             'url'  => '/home',
             'icon' => 'fas fa-fw fa-home',
+            'can'  => 'clerk',
         ],
         [
             'text' => 'Master Data',
@@ -374,34 +318,48 @@ return [
             'can'  => 'clerk-cutting',
             'submenu' => [
                 [
+                    'text' => 'User Management',
+                    'url'  => '/user-management',
+                    'classes'=> 'ml-3',
+                    'icon' => 'fas fa-fw fa-users',
+                    'can'  => 'admin-only',
+                ],
+                [
+                    'text' => 'Cutting Group',
+                    'url'  => '/user-cutting-group',
+                    'classes'=> 'ml-3',
+                    'icon'  => 'fas fa-fw fa fa-solid fa-object-group',
+                    'can'  => 'admin-only',
+                ],
+                [
                     'text' => 'Buyer',
                     'url'  => '/buyer',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-user',
-                    'can'  => 'clerk-cutting',
+                    'can'  => 'clerk-cutting', 
                 ],
                 [
                     'text' => 'Size',
                     'url'  => '/size',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-solid fa-ruler',
-                    'can'  => 'clerk-cutting',
+                    'can'  => 'clerk-cutting', 
                 ],
                 [
                     'text' => 'Color',
                     'url'  => '/color',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-solid fa-fill-drip',
-                    'can'  => 'clerk-cutting',
+                    'can'  => 'clerk-cutting', 
                 ],
                 [
                     'text' => 'Remarks',
                     'url'  => '/remark',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-solid fa-sticky-note',
-                    'can'  => 'clerk-cutting',
+                    'can'  => 'clerk-cutting', 
                 ],
-
+                
             ],
         ],
         [
@@ -409,19 +367,26 @@ return [
             'icon' => 'fas fa-fw fa-industry',
             'can'  => 'clerk-cutting',
             'submenu' => [
+                // [
+                //     'text' => 'Fabric Usage',
+                //     'url'  => '/fabric-usage',
+                //     'classes'=> 'ml-3',
+                //     'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
+                //     'can'  => 'clerk-cutting', 
+                // ],
                 [
                     'text' => 'Fabric Consumption',
                     'url'  => '/fabric-cons',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-solid fa-drafting-compass',
-                    'can'  => 'clerk-cutting',
+                    'can'  => 'clerk-cutting', 
                 ],
                 [
                     'text' => 'Fabric Type',
                     'url'  => '/fabric-type',
                     'classes'=> 'ml-3',
                     'icon' => 'fas fa-fw fa fa-solid fa-swatchbook',
-                    'can'  => 'clerk-cutting',
+                    'can'  => 'clerk-cutting', 
                 ],
             ],
         ],
@@ -429,26 +394,30 @@ return [
             'text' => 'GL',
             'url'  => '/gl',
             'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'clerk-cutting',
+            'can'  => 'clerk-cutting', 
         ],
+        // [
+        //     'text' => 'Style',
+        //     'url'  => '/style',
+        //     'icon' => 'fas fa-fw fa fa-solid fa-palette',
+        //     'can'  => 'admin-only', 
+        // ],
         [
             'text' => 'Laying Planning',
             'icon' => 'fas fa-fw fa fa-solid fa-calendar-alt',
-            'can'  => 'clerk | laying-planning.access',
-            'label'  => 'New',
-            'label_color'  => 'danger',
+            'can'  => 'clerk',
             'submenu' => [
                 [
                     'classes'   => 'ml-3',
                     'text' => 'Create Laying Planning',
                     'url' => '/laying-planning-create',
-                    'can' => 'editor | laying-planning.manage'
+                    'can' => 'editor'
                 ],
                 [
                     'classes'   => 'ml-3',
                     'text' => 'Laying Planning List',
                     'url' => '/laying-planning',
-                    'can' => 'viewer | laying-planning.access',
+                    'can' => 'viewer'
                 ],
             ],
         ],
@@ -458,6 +427,12 @@ return [
             'icon' => 'fas fa-fw fa fa-solid fa-cut',
             'can'  => 'clerk',
         ],
+        // [
+        //     'text' => 'Summary by Group',
+        //     'url'  => '/subcon-cutting',
+        //     'icon' => 'fas fa-fw fa fa-database',
+        //     'can'  => 'clerk',
+        // ],
         [
             'text' => 'Cutting Ticket',
             'icon' => 'fas fa-fw fa fa-object-ungroup',
@@ -478,44 +453,22 @@ return [
         [
             'text' => 'Cut Piece Stock',
             'icon' => 'fas fa-tshirt',
-            'can'  => 'cut-piece-stock.access',
-            'label'  => 'New',
-            'label_color'  => 'danger',
+            'can'  => 'clerk',
             'submenu' => [
                 [
                     'classes'=> 'ml-3',
-                    'text' => 'Stock In',
-                    'url' => '/bundle-stock/stock-in',
-                    'can'  => 'cut-piece-stock.stock-in',
-                ],
-                [
-                    'classes'=> 'ml-3',
-                    'text' => 'Stock out',
-                    'url' => '/bundle-stock/stock-out',
-                    'can'  => 'cut-piece-stock.stock-out',
-                ],
-                [
-                    'classes'=> 'ml-3',
-                    'text' => 'Cut Piece Status',
+                    'text' => 'Cut Piece Stock List',
                     'url' => '/bundle-stock',
-                    'can' => 'cut-piece-stock.status',
                 ],
                 [
                     'classes'=> 'ml-3',
-                    'text' => 'Transaction History',
-                    'url' => '/bundle-stock/transaction-history',
-                    'can' => 'cut-piece-stock.status',
-                ],
-                [
-                    'classes'=> 'ml-3',
-                    'text' => 'Transfer Notes',
+                    'text' => 'Cut Piece Transfer Notes',
                     'url' => '/bundle-transfer-note',
-                    'can' => 'cut-piece-stock.transfer-note'
                 ],
             ],
         ],
         [   'header'=> 'Forms',
-            'can'   => 'form',
+            'can'   => 'form', 
         ],
         [
             'text' => 'Fabric Requisition',
@@ -523,6 +476,12 @@ return [
             'icon' => 'fas fa-fw fa fa-tasks',
             'can'  => 'form',
         ],
+        // [
+        //     'text' => 'Fabric Request Piping',
+        //     'url'  => '/fabric-request-piping',
+        //     'icon' => 'fas fa-fw fa fa-tasks',
+        //     'can'  => 'form',
+        // ],
         [
             'header'=> 'Warehouse',
             'can'   => 'warehouse',
@@ -533,68 +492,75 @@ return [
             'icon' => 'fas fa-fw fa fa-tasks',
             'can'  => 'warehouse',
         ],
-        [
-            'header'=> 'Reports',
-            'can'  => [
-                'report-menu-section',
-                'cutting-record',
-            ]
-        ],
+        [   'header'=> 'Reports'],
         [
             'text' => 'Cut Piece Stock Report',
             'url'  => '/bundle-stock-report',
-            'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'cutting-record | cut-piece-stock-report.access',
+            'icon' => 'fas fa-fw fa fa-journal-whills',
+            'can'  => 'cutting-record',
         ],
         [
             'text' => 'Daily Cutting Report',
             'url'  => '/daily-cutting-report',
-            'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'cutting-record | daily-cutting-report.access',
-            'label'  => 'New',
-            'label_color'  => 'danger',
+            'icon' => 'fas fa-fw fa fa-journal-whills',
+            'can'  => 'cutting-record',
         ],
         [
             'text' => 'Cutting Status',
             'url'  => '/status-cutting-order-record',
-            'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'cutting-record | status-cutting-order-record.access',
+            'icon' => 'fas fa-fw fa fa-chart-bar',
+            'can'  => 'cutting-record',
         ],
         [
             'text' => 'Cutting Group Report',
-            'url'  => '/cutting-group-report',
-            'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'cutting-record | cutting-group-report.access',
+            'url'  => '/cutting-print-subcon',
+            'icon' => 'fas fa-fw fa fa-database',
+            'can'  => 'cutting-record',
         ],
         [
             'text' => 'Output Report per GL',
             'url'  => '/cutting-output-report',
             'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'cutting-record | cutting-output-report.access',
+            'can'  => 'cutting-record',
         ],
         [
-            'text' => 'Cutting Completion Report',
-            'url'  => '/cutting-completion-report',
-            'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'cutting-record | cutting-completion-report.access',
+            'text' => 'Cutting Order Completion',
+            'url'  => '/cutting-order-completion',
+            'icon' => 'fas fa-fw fa fa-database',
+            'can'  => 'cutting-record',
         ],
         [
             'text' => 'Tracking Fabric Usage',
             'url'  => '/tracking-fabric-usage',
-            'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'cutting-record | tracking-fabric-usage.access',
-        ],
-        [
-            'text' => 'Fabric Consumption',
-            'url'  => 'fabric-consumption',
-            'icon' => 'fas fa-fw fa fa-file-alt',
-            'can'  => 'fabric-consumption.access',
-            'label'  => 'New',
-            'label_color'  => 'danger',
+            'icon' => 'fas fa-fw fa fa-database',
+            'can'  => 'cutting-record',
         ],
         [
             'header'=> 'Lain-lain',
             'can'   => 'admin-only',
+        ],
+        [
+            'text' => 'Pallet',
+            'url'  => '/pallets',
+            'icon' => 'fas fa-fw fa fa-solid fa-pallet',
+            'can'  => 'admin-only',
+        ],
+        [
+            'text' => 'Machine',
+            'icon' => 'fas fa-fw fa fa-object-ungroup',
+            'can'  => 'admin-only',
+            'submenu' => [
+                [
+                    'classes'=> 'ml-3',
+                    'text' => 'Machine List',
+                    'url' => '/machine',
+                ],
+                [
+                    'classes'=> 'ml-3',
+                    'text' => 'Machine Qr Code',
+                    'url' => '/machine-qr-code',
+                ],
+            ],
         ],
     ],
 
@@ -611,14 +577,13 @@ return [
     */
 
     'filters' => [
-        // JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,
+        JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\HrefFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\SearchFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\ActiveFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\ClassesFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\LangFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\DataFilter::class,
-        App\Filters\AnyPermissionFilter::class,
     ],
 
     /*
@@ -714,18 +679,13 @@ return [
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => true,
-                    'location' => 'vendor/select2/js/select2.js',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
                 ],
                 [
                     'type' => 'css',
-                    'asset' => true,
-                    'location' => 'vendor/select2/css/select2.css',
-                ],
-                [
-                    'type' => 'css',
-                    'asset' => true,
-                    'location' => 'vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css',
                 ],
             ],
         ],
@@ -745,8 +705,7 @@ return [
                 [
                     'type' => 'js',
                     'asset' => true,
-                    // 'location' => '//cdn.jsdelivr.net/npm/sweetalert2@11',
-                    'location' => 'vendor\sweetalert2\sweetalert2.all.min.js',
+                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@11',
                 ],
             ],
         ],

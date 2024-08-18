@@ -1,351 +1,298 @@
 @extends('layouts.master')
-@section('title', 'Laying Planning Detail')
-@section('content')
 
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                
-                <div class="detail-section my-5 px-5">
-                    <div class="row mb-3">
-                        <div class="col-sm-8">
-                            <table>
-                                <thead>
-                                    <tr style="font-weight:700; font-size:20px;">
-                                        <td>
-                                            @if($laying_planning->status_print == 1)
-                                                <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Nota Planning Sudah di Print"></span>
-                                            @endif
-                                            NO
-                                        </td>
-                                        <td>:</td>
-                                        <td>{{ $laying_planning->serial_number }}</td>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
-                        <div class="col-md-4 text-right">
-                            <div class="btn-group">
-                                <div class="dropdown">
-                                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Action
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $laying_planning->id) }}">Duplicate</a>
-                                        @if($laying_planning->laying_planning_type_id && $laying_planning->laying_planning_type_id == 1)
-                                            <a class="dropdown-item" href="{{ route('laying-planning.create-planning-support', $laying_planning->id) }}" target="_blank">Create Planning Support</a>
-                                        @endif
-                                        
-                                        @if($is_can_edit)
-                                        <a class="dropdown-item" href="{{ route('laying-planning.edit', $laying_planning->id) }}">Edit</a>
-                                        @endif
-                                        <a class="dropdown-item" href="{{ route('laying-planning.report', $laying_planning->id) }}" target="_blank">Print Report</a>
+@section('title', 'Laying Planning Detail')
+
+@section('content')
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    
+                    <div class="detail-section my-5 px-5">
+                        <div class="row mb-3">
+                            <div class="col-sm-8">
+                                <table>
+                                    <thead>
+                                        <tr style="font-weight:700; font-size:20px;">
+                                            <td>
+                                                @if($data->status_print == 1)
+                                                    <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Nota Planning Sudah di Print"></span>
+                                                @endif
+                                                NO
+                                            </td>
+                                            <td>:</td>
+                                            <td>{{ $data->serial_number }}</td>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
+                            <div class="col-md-4 text-right">
+                                <div class="btn-group">
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" href="{{ route('laying-planning.duplicate', $data->id) }}">Duplicate</a>
+                                            @php
+                                                $cor_status = '';
+                                                foreach($details as $detail)
+                                                {
+                                                    if($detail->cuttingOrderRecord != null){
+                                                        if($detail->cuttingOrderRecord->status_print == 1){
+                                                            if(Auth::user()->can('admin-only')){
+                                                                $cor_status = '';
+                                                            } else {
+                                                                $cor_status = 'hidden';
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            @endphp
+                                            <a class="dropdown-item" href="{{ route('laying-planning.edit', $data->id) }}" {{ $cor_status }}>Edit</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            @endif
                         </div>
-                        @endif
-                    </div>
-                    <div class="row">
-                        <div class="col-md-5">
-                            <table class="text-left">
-                                <tbody>
-                                    <tr>
-                                        <td>GL No.</td>
-                                        <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->gl->gl_number }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Buyer</td>
-                                        <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->gl->buyer->name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Style</td>
-                                        <td class="pl-3">:</td>
-                                        <td>
-                                            @foreach ($styles as $style)
-                                                @if($style->id == $laying_planning->style_id)
-                                                    {{ $style->style }}
-                                                @endif
-                                            @endforeach
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Color</td>
-                                        <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->color->color }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Order Qty</td>
-                                        <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->order_qty }} Pcs</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Total Cut Qty</td>
-                                        <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->total_cut_qty }} Pcs</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Planning Type</td>
-                                        <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->LayingPlanningType ? $laying_planning->LayingPlanningType->type : '-' }} </td>
-                                    </tr>
-                                    @if($laying_planning->LayingPlanningType)
-                                    <tr>
-                                        <td>Planning Parent</td>
-                                        <td class="pl-3">:</td>
-                                        <td>
-                                            @if($laying_planning->parent_laying_planning_id)
-                                            <a href="{{ route('laying-planning.show',$laying_planning->parent_laying_planning_id) }}" target="_blank">
-                                                {{ $laying_planning->parentLayingPlanning->serial_number }}
-                                            </a>
-                                            @else
-                                            -
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-md-7">
-                            <table>
-                                <tbody class="align-top">
-                                    <tr>
-                                        <td>Fabric P/O</td>
-                                        <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->fabric_po }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Fabric Type</td>
-                                        <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->fabricType->name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Fabric Consumpition</td>
-                                        <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->fabricCons->name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Description</td>
-                                        <td class="pl-3">:</td>
-                                        <td>
-                                            @foreach ($styles as $style)
-                                                @if($style->id == $laying_planning->style_id)
-                                                    {{ $style->description }}
-                                                @endif
-                                            @endforeach
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Delivery Date</td>
-                                        <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->delivery_date }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Plan Date</td>
-                                        <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->plan_date }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Binding Consumption</td>
-                                        <td class="pl-3">:</td>
-                                        <td>{{ $laying_planning->binding_length }} Yds</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <table class="text-left">
+                                    <tbody>
+                                        <tr>
+                                            <td>GL No.</td>
+                                            <td class="pl-3">:</td>
+                                            <td>{{ $data->gl->gl_number }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Buyer</td>
+                                            <td class="pl-3">:</td>
+                                            <td>{{ $data->gl->buyer->name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Style</td>
+                                            <td class="pl-3">:</td>
+                                            <td>
+                                                @foreach ($styles as $style)
+                                                    @if($style->id == $data->style_id)
+                                                        {{ $style->style }}
+                                                    @endif
+                                                @endforeach
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Color</td>
+                                            <td class="pl-3">:</td>
+                                            <td>{{ $data->color->color }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Order Qty</td>
+                                            <td class="pl-3">:</td>
+                                            <td>{{ $data->order_qty }} Pcs</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Qty</td>
+                                            <td class="pl-3">:</td>
+                                            <td>{{ $data->total_order_qty }} Pcs</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-7">
+                                <table>
+                                    <tbody class="align-top">
+                                        <tr>
+                                            <td>Fabric P/O</td>
+                                            <td class="pl-3">:</td>
+                                            <td>{{ $data->fabric_po }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fabric Type</td>
+                                            <td class="pl-3">:</td>
+                                            <td>{{ $data->fabricType->name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fabric Consumpition</td>
+                                            <td class="pl-3">:</td>
+                                            <td>{{ $data->fabricCons->name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Description</td>
+                                            <td class="pl-3">:</td>
+                                            <td>
+                                                @foreach ($styles as $style)
+                                                    @if($style->id == $data->style_id)
+                                                        {{ $style->description }}
+                                                    @endif
+                                                @endforeach
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Delivery Date</td>
+                                            <td class="pl-3">:</td>
+                                            <td>{{ $data->delivery_date }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Plan Date</td>
+                                            <td class="pl-3">:</td>
+                                            <td>{{ $data->plan_date }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <hr style="border-top:2px solid #bbb" class="py-3">
+                    <hr style="border-top:2px solid #bbb" class="py-3">
 
-                <div class="content-title text-center">
-                    <h3>Cutting Table List</h3>
-                </div>
-                @canany(['clerk','cutter'])
-                <div class="d-flex justify-content-end mb-1">
-                    <div class="action-wrapper mr-auto">
-                        @can('unprint-cor')
-                            <button class="btn btn-primary btn-sm" disabled="disabled" onclick="unprint_cor()">
-                                <i class="fas fa-print"></i> Undo Print COR
-                            </button>
-                        @endcan
-                        @can('unprint-fbr')
-                            <button class="btn bg-navy btn-sm" disabled="disabled" onclick="unprint_fbr()">
-                                <i class="fas fa-print"></i> Undo Print FBR
-                            </button>
-                        @endcan
+                    <div class="content-title text-center">
+                        <h3>Cutting Table List</h3>
                     </div>
-                    <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
-                    <a href="{{ route('cutting-order.print-multiple', $laying_planning->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_nota">Print Nota</a>
-                    <a href="{{ route('fabric-requisition.print-multiple', $laying_planning->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_fabric">Print Fabric Req</a>
-                </div>
-                @endcan
-                <table class="table align-middle table-nowrap table-hover">
-                    <thead class="table-light">
-                        <tr class="text-center">
-                            @canany(['unprint-cor','unprint-fbr'])
-                                <th scope="col">
-                                    <div class="form-group mb-0">
-                                        <div class="custom-control custom-checkbox">
-                                            <input 
-                                                id="print_checkbox_all" 
-                                                class="custom-control-input checkbox-all-control" 
-                                                type="checkbox"
-                                            >
-                                            <label for="print_checkbox_all" class="custom-control-label"></label>
-                                        </div>
-                                    </div>
-                                </th>
-                            @endcan
-                            @canany(['laying-planning.manage','clerk'])
+                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
+                    <div class="d-flex justify-content-end mb-1">
+                        <a href="javascript:void(0);" class="btn btn-success mb-2" id="btn_modal_create">Create</a>
+                        <a href="{{ route('cutting-order.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_nota">Print Nota</a>
+                        <a href="{{ route('fabric-requisition.print-multiple', $data->id) }}" class="btn btn-info mb-2 ml-2" id="print_multi_fabric">Print Fabric Req</a>
+                    </div>
+                    @endif
+                    <table class="table align-middle table-nowrap table-hover">
+                        <thead class="table-light">
+                            <tr>
                                 <th scope="col">COR</th>
                                 <th scope="col">FBR</th>
-                            @endcan
-                            <th scope="col">Table No</th>
-                            <th scope="col">Marker Code</th>
-                            <th scope="col">Marker Length</th>
-                            <th scope="col">Total Pcs</th>
-                            <th scope="col">Total Yds Qty</th>
-                            <th scope="col">Layer Qty</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($details as $detail)
-                            <tr class="text-center">
-                                @canany(['unprint-cor','unprint-fbr'])
-                                <td>
-                                    <div class="form-group mb-0">
-                                        <div class="custom-control custom-checkbox">
-                                            <input 
-                                                id="print_checkbox_{{ $detail->id }}" 
-                                                name="selected_item[]" 
-                                                class="custom-control-input checkbox-print-control" 
-                                                type="checkbox" 
-                                                value="{{ $detail->id }}"
-                                                onchange="checkbox_clicked()" 
-                                            >
-                                            <label for="print_checkbox_{{ $detail->id }}" class="custom-control-label"></label>
-                                        </div>
-                                    </div>
-                                </td>
-                                @endcan
-                                @canany(['laying-planning.manage','clerk'])
-                                <td>
-                                    @if($detail->cor_status_print == 0 || Auth::user()->can('super_admin'))
-                                        <div class="form-group mb-4">
+                                <th scope="col">Table No</th>
+                                <th scope="col">Marker Code</th>
+                                <th scope="col">Marker Length</th>
+                                <th scope="col">Total Pcs</th>
+                                <th scope="col">Total Yds Qty</th>
+                                <th scope="col">Layer Qty</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($details as $detail)
+                                <tr>
+                                    <td>
+                                        @can('super_admin')
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
                                             </div>
-                                        </div>
-                                    @endif
-                                </td>
-                                @endcan
-                                @canany(['laying-planning.manage','clerk'])
-                                <td>
-                                    @if($detail->fr_status_print == 0 || Auth::user()->can('super_admin'))
-                                        <div class="form-group mb-4">
+                                        @endcan
+                                         @if($detail->cor_status_print == 0)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="laying_planning_laying_planning_detail_ids[]" value="{{ $detail->id }}">
+                                            </div>
+                                        @endif
+                                    </td>
+                                    
+                                    <td>
+                                        @can('super_admin')
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="fbr_ids[]" value="{{ $detail->id }}">
                                             </div>
-                                        </div>
-                                    @endif
-                                </td>
-                                @endcan
-                                <td>
-                                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter') || Auth::user()->hasRole('pmr'))
-                                    <div class="dropdown">
-                                        @if($detail->cor_status_print == 1 || $detail->fr_status_print == 1)
-                                            <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Salah satu nota Layer atau Fabric Req sudah di print"></span>
+                                        @endcan
+                                        @if($detail->fr_status_print == 0)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="fbr_ids[]" value="{{ $detail->id }}">
+                                            </div>
                                         @endif
-                                        <a class="text-decoration-none dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{ $detail->table_number }}</a>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            @if($detail->fr_id != null) 
-                                                @if(!Auth::user()->hasRole('pmr'))
-                                                <li><a class="dropdown-item" href="{{ route('fabric-requisition.show', $detail->fr_id) }}">Detail Fabric</a></li>
+                                    <td>
+                                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter') || Auth::user()->hasRole('pmr'))
+                                        <div class="dropdown">
+                                            @if($detail->cor_status_print == 1 || $detail->fr_status_print == 1)
+                                                <span class="dot dot-sm dot-success" data-toggle="tooltip" data-placement="top" title="Salah satu nota Layer atau Fabric Req sudah di print"></span>
+                                            @endif
+                                            <a class="text-decoration-none dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">{{ $detail->table_number }}</a>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                @if($detail->fr_id != null) 
+                                                    @if(!Auth::user()->hasRole('pmr'))
+                                                    <li><a class="dropdown-item" href="{{ route('fabric-requisition.show', $detail->fr_id) }}">Detail Fabric</a></li>
+                                                    @endif
+                                                @endif
+                                                @if($detail->cor_id != null)
+                                                    <li><a class="dropdown-item" href="{{ route('cutting-order.show', $detail->cor_id) }}">Detail Cutting</a></li>
+                                                @endif
+                                            </ul>
+                                        </div>
+                                        @else
+                                            {{ $detail->table_number }}
+                                        @endif
+                                    </td>
+                                    <td>{{ $detail->marker_code }}</td>
+                                    <td>{{ $detail->marker_length }}</td>
+                                    <td>{{ $detail->total_all_size }}</td>
+                                    <td>{{ $detail->total_length }}</td>
+                                    <td>{{ $detail->layer_qty }}</td>
+                                    <td>
+                                        @if($detail->cuttingOrderRecord == null)
+                                            @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
+                                            <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
+                                            <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
+                                            @endif
+                                        @else
+                                            @if($detail->cuttingOrderRecord->status_print == 1)
+                                                <!-- <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
+                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
+                                                <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-info btn-sm {{ $detail->cor_status }}">Create COR</a>
+                                                <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
+                                                @if($detail->fr_status == 'disabled')
+                                                    <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail Fab</a>
+                                                @else
+                                                    <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}">Create Fab</a>
+                                                @endif -->
+                                                @can('super_admin')
+                                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
+                                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
+                                                @endcan
+                                            @else
+                                                @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
+                                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
+                                                    <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
                                                 @endif
                                             @endif
-                                            @if($detail->cor_id != null)
-                                                <li><a class="dropdown-item" href="{{ route('cutting-order.show', $detail->cor_id) }}">Detail Cutting</a></li>
-                                            @endif
-                                        </ul>
-                                    </div>
-                                    @else
-                                        {{ $detail->table_number }}
-                                    @endif
-                                </td>
-                                <td>{{ $detail->marker_code }}</td>
-                                <td>{{ $detail->marker_length }}</td>
-                                <td>{{ $detail->total_all_size }}</td>
-                                <td>{{ $detail->total_length }}</td>
-                                <td>{{ $detail->layer_qty }}</td>
-                                <td>
-                                    @if($detail->cuttingOrderRecord == null)
+                                        @endif
                                         @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
-                                        <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
-                                        <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
-                                        @endif
-                                    @else
-                                        @if($detail->cuttingOrderRecord->status_print == 1)
-                                            @can('super_admin')
-                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
-                                            @endcan
+                                        @if($detail->fr_status == 'disabled')
+                                            <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail FBR</a>
                                         @else
-                                            @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
-                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm btn-detail-edit" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-edit', $detail->id) }}">Edit</a>
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm btn-detail-delete" data-id="{{ $detail->id }}" data-url="{{ route('laying-planning.detail-delete', $detail->id) }}" >Delete</a>
-                                            @endif
+                                            <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}">Create Fab</a>
                                         @endif
-                                    @endif
-                                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
-                                    @if($detail->fr_status == 'disabled')
-                                        <a href="{{ route('fabric-requisition.show', $detail->fr_id) }}" class="btn btn-sm btn-outline-info">Detail FBR</a>
-                                    @else
-                                        <a href="{{ route('fabric-requisition.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->fr_status }}">Create Fab</a>
-                                    @endif
-                                    @endif
-                                    @if($detail->cor_status == 'disabled')
-                                        <a href="{{ route('cutting-order.show', $detail->cor_id) }}" class="btn btn-sm btn-outline-info">Detail COR</a>
-                                    @else
-                                        <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->cor_status }}">Create COR</a>
-                                    @endif
-                                    @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
-                                    <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
-                                    @endif
-                                    
-                                </td>
+                                        @endif
+                                        @if($detail->cor_status == 'disabled')
+                                            <a href="{{ route('cutting-order.show', $detail->cor_id) }}" class="btn btn-sm btn-outline-info">Detail COR</a>
+                                        @else
+                                            <a href="{{ route('cutting-order.createNota', $detail->id) }}" class="btn btn-sm btn-outline-secondary {{ $detail->cor_status }}">Create COR</a>
+                                        @endif
+                                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
+                                        <a href="javascript:void(0)" class="btn btn-sm btn-dark btn-detail-duplicate" data-id="{{ $detail->id }}">Duplicate</a>
+                                        @endif
+                                        
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th class="text-left" colspan="5">Total :</th>
+                                <th class="" colspan="1">{{ $data->total_pcs_all_table }} Pcs </th>
+                                <th class="" colspan="1">{{ $data->total_length_all_table }} Yd </th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr class="text-center">
-                            <th class="text-left" colspan="3">Total :</th>
-                            @canany(['unprint-cor','unprint-fbr'])
-                             <th colspan="1"></th>
-                            @endcan
-                            @canany(['laying-planning.manage','clerk'])
-                             <th colspan="2"></th>
-                            @endcan
-                            <th class="" colspan="1">{{ $laying_planning->total_pcs_all_table }} Pcs </th>
-                            <th class="" colspan="1">{{ $laying_planning->total_length_all_table }} Yd </th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </tfoot>
-                </table>
-                
-                <div class="row mt-10rem">
-                    <div class="col-md-12 text-right">
-                        <a href="{{ url('/laying-planning') }}" class="btn btn-secondary shadow-sm">back</a>
+                        </tfoot>
+                    </table>
+                    
+                    <div class="row mt-10rem">
+                        <div class="col-md-12 text-right">
+                            <a href="{{ url('/laying-planning') }}" class="btn btn-secondary shadow-sm">back</a>
+                        </div>
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
     </div>
@@ -363,7 +310,7 @@
             </div>
             <form action="{{ route('laying-planning.detail-create') }}" method="POST" class="custom-validation" enctype="multipart/form-data" id="planning_detail_form">
                 @csrf
-                <input type="hidden" name="laying_planning_id" value="{{ $laying_planning->id }}">
+                <input type="hidden" name="laying_planning_id" value="{{ $data->id }}">
                 <div class="modal-body">
                     <div class="card-body">
                         <div class="row">
@@ -430,57 +377,39 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row my-2">
-                            <div class="col-sm-12">
-                                <h5 style="font-weight:500">Table Type</h5>
-                            </div>
-                            <div class="col-sm-12">
-                                <div class="form-group d-flex">
-                                    @foreach( $laying_planning_detail_types as $table_type)
-                                        <div class="custom-control custom-radio mr-4">
-                                            <input class="custom-control-input" type="radio" id="laying_planning_detail_type_{{ $table_type->id }}" name="laying_planning_detail_type" value="{{ $table_type->id }}">
-                                            <label for="laying_planning_detail_type_{{ $table_type->id }}" class="custom-control-label">{{ $table_type->type }}</label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
+                        <div>
+                            <h5>Ratio</h5>
                         </div>
-                        <div class="ratio-wrapper">
-                            <div>
-                                <h5>Ratio</h5>
-                            </div>
-                            <div class="row">
-                                @foreach($size_list as $key => $size)
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label for="ratio_size_{{ $size->id }}">{{ $size->size }}</label>
-                                        <input type="number" class="form-control ratio-size" id="ratio_size_{{ $size->id }}" name="ratio_size[{{ $size->id }}]" min="0">
-                                    </div>
-                                </div>
-                                @endforeach
-                            </div>
-                            <div>
-                                <h5>Qty Each Size</h5>
-                            </div>
-                            <div class="row">
-                                @foreach($size_list as $key => $size)
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label for="qty_size_{{ $size->id }}">{{ $size->size }}</label>
-                                        <input type="number" class="form-control" id="qty_size_{{ $size->id }}" name="qty_size[{{ $size->id }}]" readonly>
-                                    </div>
-                                </div>
-                                @endforeach
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label for="qty_size_all"><h5>Total Qty All Size</h5></label>
-                                        <input type="number" class="form-control" id="qty_size_all" name="qty_size_all" value="0" readonly>
-                                    </div>
+                        <div class="row">
+                            @foreach($size_list as $key => $size)
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="ratio_size_{{ $size->id }}">{{ $size->size }}</label>
+                                    <input type="number" class="form-control ratio-size" id="ratio_size_{{ $size->id }}" name="ratio_size[{{ $size->id }}]" min="0">
                                 </div>
                             </div>
-
+                            @endforeach
+                        </div>
+                        <div>
+                            <h5>Qty Each Size</h5>
+                        </div>
+                        <div class="row">
+                            @foreach($size_list as $key => $size)
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="qty_size_{{ $size->id }}">{{ $size->size }}</label>
+                                    <input type="number" class="form-control" id="qty_size_{{ $size->id }}" name="qty_size[{{ $size->id }}]" readonly>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="qty_size_all"><h5>Total Qty All Size</h5></label>
+                                    <input type="number" class="form-control" id="qty_size_all" name="qty_size_all" value="0" readonly>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <!-- END .card-body -->
@@ -589,6 +518,8 @@
 @push('js')
 
 <script type="text/javascript">
+$(document).ready(function(){
+
     // ## Show Flash Message
     let session = {!! json_encode(session()->all()) !!};
     show_flash_message(session);
@@ -597,154 +528,148 @@
     const size_list = {!! json_encode($size_list) !!};
     const create_url = '{{ route("laying-planning.detail-create") }}';
     const fetch_cutting_table_url = '{{ route("fetch.cutting-table") }}';
-    const unprint_cor_url = '{{ route("laying-planning-detail.unprint-cor") }}';
-    const unprint_fbr_url = '{{ route("laying-planning-detail.unprint-fbr") }}';
 
-    $(document).ready(function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
-        $('#duplicate_qty').tooltip({
-            title: "Duplikat data maximal 15",
-            placement: "top",
-            trigger: "focus"
-        });
+    // $('#duplicate_qty').on('keyup', function(e) {
+    //     let duplicate_qty = $(this).val();
+    //     if(duplicate_qty > 8){
+    //         $(this).val(8);
+    //     }
+    // });
 
-        $('#btn_modal_create').click((e) => {
-            $('#modal_formLabel').text("Add Cutting Table")
-            $('#btn_submit').text("Add Cutting Table")
-            $('#planning_detail_form').find("input[type=text], input[type=number], textarea").val("");
-            
-            // ## set default value is 1. lot / table type normal
-            $('#planning_detail_form').find(`input[name="laying_planning_detail_type"][value="1"]`).prop('checked', true);
-            listen_laying_planning_detail_type();
-            
-            $('#planning_detail_form').find('input[name="_method"]').remove();
-            $('#planning_detail_form').attr('action', create_url);
-            $('#modal_form').modal('show')
+    $('#duplicate_qty').tooltip({
+        title: "Duplikat data maximal 15",
+        placement: "top",
+        trigger: "focus"
+    });
 
-            set_qty_size(size_list);
-            set_marker_length();
-            set_marker_total_length();
-        });
+    $('#btn_modal_create').click((e) => {
+        $('#modal_formLabel').text("Add Cutting Table")
+        $('#btn_submit').text("Add Cutting Table")
+        $('#planning_detail_form').find("input[type=text], input[type=number], textarea").val("");
+        $('#planning_detail_form').find('input[name="_method"]').remove();
+        $('#planning_detail_form').attr('action', create_url);
+        $('#modal_form').modal('show')
 
-        $('#layer_qty, #marker_yard, #marker_inch, .ratio-size').on('keyup', function(e) {
-            set_marker_length();
-            set_marker_total_length();
-            set_qty_size(size_list);
-        });
+        set_qty_size(size_list);
+        set_marker_length();
+        set_marker_total_length();
+    });
 
+    $('#layer_qty, #marker_yard, #marker_inch, .ratio-size').on('keyup', function(e) {
+        set_marker_length();
+        set_marker_total_length();
+        set_qty_size(size_list);
+    });
+
+    
+    $(".btn-detail-edit").on('click', async function(e) {
+        let get_data_url = $(this).attr('data-url');
+        let planning_detail_id = $(this).attr('data-id');
+        let result = await get_using_fetch(get_data_url);
         
-        $(".btn-detail-edit").on('click', async function(e) {
-            let get_data_url = $(this).attr('data-url');
-            let planning_detail_id = $(this).attr('data-id');
-            let result = await get_using_fetch(get_data_url);
-            
-            if(result.status == "success"){
-                let update_url = '{{ route("laying-planning.detail-update",":id") }}';
-                update_url = update_url.replace(':id', planning_detail_id);
-
-                laying_planning_detail_id = $(this).attr('data-id');
-                modal_show_edit(update_url, result.data)
-                
-            } else {
-                swal_failed({ title: result.message });
-
-            }
-        });
-
-        $('.btn-detail-delete').on('click', async function(e){
-
-            data = { title: "Are you sure?" };
-            let confirm_delete = await swal_delete_confirm(data);
-            if(!confirm_delete) { return false; };
-
-            let url_delete = $(this).attr('data-url');
-            const data_params = {
-                token: token
-            };
-
-            result = await delete_using_fetch(url_delete, data_params);
-            if(result.status == "success"){
-                swal_info({
-                    title : result.message,
-                    reload_option: true, 
-                });
-            } else {
-                swal_failed({ title: result.message });
-            }
-
-        });
-
-        $('#print_multi_fabric').on('click', function(e){
-            let fbr_ids = [];
-            $('input[name="fbr_ids[]"]:checked').each(function() {
-                fbr_ids.push($(this).val());
-            });
-            if(fbr_ids.length == 0){
-                swal_failed({ title: "Please select cutting table" });
-                return false;
-            }
-            if(fbr_ids.length > 25){
-                swal_failed({ title: "Maximal 25 request form fabric" });
-                return false;
-            }
-            let url = $(this).attr('href');
-            url = url + '?fbr_ids=' + fbr_ids;
-            $(this).attr('href', url);
-        });
-
-        $('#print_multi_nota').on('click', function(e){
-            let laying_planning_laying_planning_detail_ids = [];
-            $('input[name="laying_planning_laying_planning_detail_ids[]"]:checked').each(function() {
-                laying_planning_laying_planning_detail_ids.push($(this).val());
-            });
-            if(laying_planning_laying_planning_detail_ids.length == 0){
-                swal_failed({ title: "Please select cutting table" });
-                return false;
-            }
-            if(laying_planning_laying_planning_detail_ids.length > 25){
-                swal_failed({ title: "Maximal 25 cutting table" });
-                return false;
-            }
-            let url = $(this).attr('href');
-            url = url + '?laying_planning_laying_planning_detail_ids=' + laying_planning_laying_planning_detail_ids;
-            $(this).attr('href', url);
-        });
-
-        $('.btn-detail-duplicate').on('click', async function(e){
-            
-            $('#duplicate_form').find("input[type=text], input[type=number], textarea").val("");
+        if(result.status == "success"){
+            let update_url = '{{ route("laying-planning.detail-update",":id") }}';
+            update_url = update_url.replace(':id', planning_detail_id);
 
             laying_planning_detail_id = $(this).attr('data-id');
-            let data_params = { laying_planning_detail_id: laying_planning_detail_id };
-            cutting_table_result = await using_fetch(fetch_cutting_table_url, data_params, "GET");
+            modal_show_edit(update_url, result.data)
             
-            data = cutting_table_result.data;
-            $('#duplicate_table_no').text(data.table_number);
-            $('#duplicate_marker_code').text(data.marker_code);
-            $('#duplicate_marker_yard').text(data.marker_yard);
-            $('#duplicate_marker_inch').text(data.marker_inch);
-            $('#duplicate_layer_qty').text(data.layer_qty);
-            $('#duplicate_size_ratio').text(data.size_ratio);
-            $('#duplicate_each_size').text(data.each_size);
-            $('#duplicate_total_all_size').text(data.total_all_size);
-            $('#laying_planning_detail_id').val(data.id);
+        } else {
+            swal_failed({ title: result.message });
 
-            $('#modal_duplicate').modal('show');
-        });
-
-        $('input[name="laying_planning_detail_type"]').change(function() {
-            listen_laying_planning_detail_type();
-        });
+        }
     });
+
+    $('.btn-detail-delete').on('click', async function(e){
+
+        data = { title: "Are you sure?" };
+        let confirm_delete = await swal_delete_confirm(data);
+        if(!confirm_delete) { return false; };
+
+        let url_delete = $(this).attr('data-url');
+        const data_params = {
+            token: token
+        };
+
+        result = await delete_using_fetch(url_delete, data_params);
+        if(result.status == "success"){
+            swal_info({
+                title : result.message,
+                reload_option: true, 
+            });
+        } else {
+            swal_failed({ title: result.message });
+        }
+
+    });
+
+    $('#print_multi_fabric').on('click', function(e){
+        let fbr_ids = [];
+        $('input[name="fbr_ids[]"]:checked').each(function() {
+            fbr_ids.push($(this).val());
+        });
+        if(fbr_ids.length == 0){
+            swal_failed({ title: "Please select cutting table" });
+            return false;
+        }
+        if(fbr_ids.length > 25){
+            swal_failed({ title: "Maximal 25 request form fabric" });
+            return false;
+        }
+        let url = $(this).attr('href');
+        url = url + '?fbr_ids=' + fbr_ids;
+        $(this).attr('href', url);
+    });
+
+    $('#print_multi_nota').on('click', function(e){
+        let laying_planning_laying_planning_detail_ids = [];
+        $('input[name="laying_planning_laying_planning_detail_ids[]"]:checked').each(function() {
+            laying_planning_laying_planning_detail_ids.push($(this).val());
+        });
+        if(laying_planning_laying_planning_detail_ids.length == 0){
+            swal_failed({ title: "Please select cutting table" });
+            return false;
+        }
+        if(laying_planning_laying_planning_detail_ids.length > 25){
+            swal_failed({ title: "Maximal 25 cutting table" });
+            return false;
+        }
+        let url = $(this).attr('href');
+        url = url + '?laying_planning_laying_planning_detail_ids=' + laying_planning_laying_planning_detail_ids;
+        $(this).attr('href', url);
+    });
+
+    $('.btn-detail-duplicate').on('click', async function(e){
+        
+        $('#duplicate_form').find("input[type=text], input[type=number], textarea").val("");
+
+        laying_planning_detail_id = $(this).attr('data-id');
+        let data_params = { laying_planning_detail_id: laying_planning_detail_id };
+        cutting_table_result = await using_fetch(fetch_cutting_table_url, data_params, "GET");
+        
+        data = cutting_table_result.data;
+        $('#duplicate_table_no').text(data.table_number);
+        $('#duplicate_marker_code').text(data.marker_code);
+        $('#duplicate_marker_yard').text(data.marker_yard);
+        $('#duplicate_marker_inch').text(data.marker_inch);
+        $('#duplicate_layer_qty').text(data.layer_qty);
+        $('#duplicate_size_ratio').text(data.size_ratio);
+        $('#duplicate_each_size').text(data.each_size);
+        $('#duplicate_total_all_size').text(data.total_all_size);
+        $('#laying_planning_detail_id').val(data.id);
+
+        $('#modal_duplicate').modal('show');
+    });
+})
 </script>
 
 <script type="text/javascript">
-
     function reset_form(data = {}) {
         $('#modal_create_form').text(data.title);
         $('#btn_submit').text(data.btn_text);
@@ -786,15 +711,6 @@
             total_all_size += qty_size;
         });
         $(`#qty_size_all`).val(total_all_size);
-    }
-
-
-    const listen_laying_planning_detail_type = () => {
-        if ($('input[name="laying_planning_detail_type"]:checked').val() == '1' || !$('input[name="laying_planning_detail_type"]:checked').val()) {
-            $('.ratio-wrapper').show();
-        } else {
-            $('.ratio-wrapper').hide();
-        }
     }
 </script>
 
@@ -849,142 +765,8 @@
         form.find('input[name="marker_length"]').val(parseFloat(data.marker_length).toFixed(2));
         form.find('input[name="marker_total_length"]').val(data.total_length);
         form.find('input[name="qty_size_all"]').val(data.total_all_size);
-        if(data.laying_planning_detail_type_id) {
-            form.find(`input[name="laying_planning_detail_type"][value="${data.laying_planning_detail_type_id}"]`).prop('checked', true);
-        } else {
-            form.find(`input[name="laying_planning_detail_type"]`).prop('checked', false);
-        }
-        listen_laying_planning_detail_type();
 
         $('#modal_form').modal('show')
     }
-</script>
-
-<script type="text/javascript">
-
-    // ## Javascript for Checkbox Feature
-
-    const is_all_checked = () => {
-        let all_print_checkbox = document.getElementsByClassName('checkbox-print-control');
-        if(all_print_checkbox.length <= 0) { return false; }
-        for (let item of all_print_checkbox) {
-            if(!item.checked) { return false; }
-        }
-        return true;
-    }
-
-    const is_any_checked = () => {
-        let all_print_checkbox = document.getElementsByClassName('checkbox-print-control');
-        for (let item of all_print_checkbox) {
-            if(item.checked) { return true; }
-        }
-        return false;
-    }
-
-    // ## checkbox listener for always update print_checkbox_all
-    const checkbox_clicked = () => {
-        let checked_status_checkbox_all = is_all_checked() ? true : false;
-        document.getElementById('print_checkbox_all').checked = checked_status_checkbox_all;
-
-        let disabled_status_action_wrapper = is_any_checked() ? false : true;
-        disabled_action_wrapper(disabled_status_action_wrapper);
-    }
-
-    const disabled_action_wrapper = (disabled_status = false) => {
-        let action_wrapper = document.getElementsByClassName('action-wrapper').item(0);
-        let buttons = action_wrapper.querySelectorAll('button');
-        buttons.forEach(function(button) {
-            button.disabled = disabled_status;
-        });
-    }
-
-    const get_selected_item = () => {
-        let selected_element = $('.checkbox-print-control:checked').toArray();
-        let selected_item_value = [];
-
-        selected_element.forEach(element => {
-            selected_item_value.push($(element).val());
-        });
-        return selected_item_value;
-    }
-
-    // ## Checkbox All part
-    $('.checkbox-all-control').on('click', function(e) {
-        let is_checked = $(this).prop('checked');
-        let table = $(this).parents('table');
-        table.find('.checkbox-print-control').prop('checked',is_checked);
-    })
-
-    $('#print_checkbox_all').on('change', function(e) {
-        checkbox_clicked();
-    })
-
-</script>
-
-<script>
-    const unprint_cor = async () => {
-        let selected_item = get_selected_item();
-
-        let params_data = {
-            selected_item: selected_item
-        }
-
-        if(selected_item.length > 0) {
-            let fetch_data = {
-                url: unprint_cor_url,
-                method: "GET",
-                token: token,
-                data: params_data,
-            }
-
-            result = await using_fetch_v2(fetch_data);
-
-            if(result.status == "success"){
-                swal_info({
-                    title : result.message,
-                    reload_option: true,
-                });
-
-            } else {
-                swal_failed({ title: result.message });
-            }
-            
-        } else {
-            swal_failed({ title: 'Please select at least one item' });
-        }
-    };
-
-
-    const unprint_fbr = async () => {
-        let selected_item = get_selected_item();
-
-        let params_data = {
-            selected_item: selected_item
-        }
-
-        if(selected_item.length > 0) {
-            let fetch_data = {
-                url: unprint_fbr_url,
-                method: "GET",
-                token: token,
-                data: params_data,
-            }
-
-            result = await using_fetch_v2(fetch_data);
-
-            if(result.status == "success"){
-                swal_info({
-                    title : result.message,
-                    reload_option: true,
-                });
-
-            } else {
-                swal_failed({ title: result.message });
-            }
-            
-        } else {
-            swal_failed({ title: 'Please select at least one item' });
-        }
-    };
 </script>
 @endpush('js')

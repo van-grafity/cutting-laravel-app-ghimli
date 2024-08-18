@@ -47,19 +47,19 @@ class BundleStocksController extends Controller
 
         $cutting_ticket = CuttingTicket::where('serial_number', $data_input['serial_number'])->first();
         if ($cutting_ticket == null) return $this->onError(404, 'Cutting Ticket not found.');
-
+        
         try {
 
             // ## Check bundle is inside rack or not base on ticket number.
             $checkBundle = $this->checkSingleBundleOnRack($data_input['transaction_type'], $cutting_ticket);
-
+            
             if($checkBundle['status'] == 'error'){
                 return $this->onSuccess($checkBundle, 'Action failed');
             }
 
             DB::beginTransaction();
-
-            // ## Create New Bundle Transaction
+            
+            // ## Create New Bundle Transaction 
             $bundle_stock_transaction = new BundleStockTransaction;
             $bundle_stock_transaction->ticket_id = $cutting_ticket->id;
             $bundle_stock_transaction->transaction_type = $data_input['transaction_type'];
@@ -83,7 +83,7 @@ class BundleStocksController extends Controller
             'bundle_stock' => $bundle_stock,
             'message_data' => $message,
         ];
-
+        
         return $this->onSuccess($data_return, $message);
     }
 
@@ -96,7 +96,7 @@ class BundleStocksController extends Controller
         $laying_planning_id = $bundle_stock_transaction->cuttingTicket->cuttingOrderRecord->layingPlanningDetail->layingPlanning->id;
         $size_id = $bundle_stock_transaction->cuttingTicket->size_id;
         $cut_piece_qty = $bundle_stock_transaction->cuttingTicket->layer;
-
+        
         $bundle_stock = BundleStock::where('laying_planning_id', $laying_planning_id)
             ->where('size_id', $size_id)
             ->first();
@@ -114,7 +114,7 @@ class BundleStocksController extends Controller
             }
         }
         $bundle_stock->save();
-
+        
         $bundle_stock_information = [
             'gl_number' => $bundle_stock->layingPlanning->gl->gl_number,
             'color' => $bundle_stock->layingPlanning->color->color,
@@ -164,16 +164,16 @@ class BundleStocksController extends Controller
         try {
             $new_bundle_list = [];
             $bundle_stock_list = [];
-
+            
             DB::beginTransaction();
             foreach ($ticket_list as $key => $ticket) {
-                // ## Create New Bundle Transaction
+                // ## Create New Bundle Transaction 
                 $bundle_stock_transaction = new BundleStockTransaction;
                 $bundle_stock_transaction->ticket_id = $ticket->id;
                 $bundle_stock_transaction->transaction_type = $data_input['transaction_type'];
                 $bundle_stock_transaction->location_id = $data_input['location'];
                 $bundle_stock_transaction->save();
-
+    
                 $new_bundle_list[] = BundleStockTransaction::where('id',$bundle_stock_transaction->id)->with('cuttingTicket')->first();
                 $bundle_stock_list[] = $this->updateBundleStock($bundle_stock_transaction);
             }
@@ -196,7 +196,7 @@ class BundleStocksController extends Controller
             'bundle_stock' => $bundle_stock_list,
             'message_data' => $message,
         ];
-
+        
         return $this->onSuccess($data_return, $message);
     }
 
@@ -204,13 +204,13 @@ class BundleStocksController extends Controller
      * Check if list of ticket serial number are valid or not.
      *
      * @param  Array ticket serial number list
-     * @return Array with status success if all ticket serial number are found in database. status false otherwise
+     * @return Array with status success if all ticket serial number are found in database. status false otherwise 
      */
     private function checkTicketlist(Array $ticket_serial_number_list)
     {
         foreach ($ticket_serial_number_list as $key => $serial_number) {
             $cutting_ticket = CuttingTicket::where('serial_number', $serial_number)->first();
-            if(!$cutting_ticket) {
+            if(!$cutting_ticket) { 
                 $checking_result = [
                     'status' => 'error',
                     'message_data' => 'Bundle dengan nomor Tiket ' . $serial_number . ' tidak ditemukan'
@@ -230,7 +230,7 @@ class BundleStocksController extends Controller
         $bundle_stock_transaction = BundleStockTransaction::where('ticket_id', $cutting_ticket->id)
             ->orderBy('created_at', 'desc')
             ->first();
-
+        
         $result = $this->generateResponses($bundle_stock_transaction, $transaction_type, $cutting_ticket);
         return $result;
     }
@@ -262,12 +262,12 @@ class BundleStocksController extends Controller
 
     private function generateResponses($bundle_stock_transaction, $transaction_type, $cutting_ticket): array
     {
-        /*
-        * Alias:
+        /* 
+        * Alias: 
         * a. $bundle_stock_transaction = BUNDLE
         * b. $transaction_type = TIPE PARAMS
 
-        * The Rules :
+        * The Rules : 
         * 1. BUNDLE tidak ada di rack dan TIPE nya "IN" => ✔
         * 2. BUNDLE tidak ada di rack dan TIPE nya "OUT" => ✖
         * 3. BUNDLE ada di rack. Ambil data transaksi terakhir BUNDLE. jika BUNDLE->transaction_type nya berbeda dengan TIPE => ✔
@@ -306,14 +306,14 @@ class BundleStocksController extends Controller
 
     private function createTransferNote($bundle_transaction_list, $location_id)
     {
-        // ## Create New Bundle Transfer Note
+        // ## Create New Bundle Transfer Note 
         $transfer_note = new BundleTransferNote;
         $transfer_note->serial_number = $this->generate_transfer_note_serial_number();
         $transfer_note->location_from_id = 1;
         $transfer_note->location_to_id = $location_id;
         $transfer_note->save();
-
-        // ## Create Bundle Transfer Note Details
+        
+        // ## Create Bundle Transfer Note Details 
         $this->createTransferNoteDetail($bundle_transaction_list, $transfer_note->id);
     }
 
@@ -334,7 +334,7 @@ class BundleStocksController extends Controller
         $time_code = date('ym');
 
         $count_transfer_note_this_month = BundleTransferNote::whereYear('created_at',$this_year)->whereMonth('created_at',$this_month)->get()->count();
-
+        
         if($count_transfer_note_this_month) {
             $next_number = $count_transfer_note_this_month + 1;
         } else {
@@ -345,5 +345,5 @@ class BundleStocksController extends Controller
         return $serial_number;
     }
 
-
+    
 }

@@ -35,58 +35,33 @@ class FabricRequestSyncController extends Controller
 
     public function getFabricRequest(Request $request)
     {
+        if ($request->has('start_date') == null) return $this->onError(404, 'Attribute start_date not found!');
+        if ($request->has('end_date') == null) return $this->onError(404, 'Attribute end_date not found!');
+        
+        $start_date =  Carbon::parse($request->start_date)->format('Y-m-d 00:00:00');
+        $end_date =  Carbon::parse($request->end_date)->format('Y-m-d 23:59:59');
+        
         try {
-
-            $gl = null;
-            $fabric_request = null;
-            $start_date = null;
-            $end_date = null;
-
-            if($request->has('fbr_serial_number') == null) {
-    
-                if ($request->has('start_date') == null) return $this->onError(404, 'Attribute start_date not found!');
-                if ($request->has('end_date') == null) return $this->onError(404, 'Attribute end_date not found!');
-                
-                $start_date =  Carbon::parse($request->start_date)->format('Y-m-d 00:00:00');
-                $end_date =  Carbon::parse($request->end_date)->format('Y-m-d 23:59:59');
-                
-                if($request->gl_number) {
-                    $gl = GL::where('gl_number', 'LIKE', "%{$request->gl_number}%")->first();
-                }
-                
+            if($request->gl_number) {
+                $gl = GL::where('gl_number', 'LIKE', "%{$request->gl_number}%")->first();
             } else {
-                
-                $fabric_request = FabricRequisition::where('serial_number',$request->fbr_serial_number)->first();
-                if (!$fabric_request) return $this->onError(404, 'Fabric Request not found!');
-
+                $gl = null;
             }
-
+            
             $fabric_requests = FabricRequisition::
                 join('laying_planning_details', 'laying_planning_details.id','=','fabric_requisitions.laying_planning_detail_id')
                 ->join('laying_plannings','laying_plannings.id','=','laying_planning_details.laying_planning_id')
                 ->join('gls','gls.id','=','laying_plannings.gl_id')
                 ->join('colors','colors.id','=','laying_plannings.color_id')
                 ->join('styles','styles.id','=','laying_plannings.style_id')
-                ->join('users','users.id','=','fabric_requisitions.requested_by')
-                ->whereNotNull('requested_at')
                 ->join('fabric_types','fabric_types.id','=','laying_plannings.fabric_type_id')
-                ->where(function($query) use ($gl, $fabric_request, $start_date, $end_date) {
-                    if($gl){
+                ->where(function($query) use ($gl) {
+                    if($gl) {
                         $query->where('gls.id', $gl->id);
                     }
-                    
-                    if($fabric_request){
-                        $query->where('fabric_requisitions.id', $fabric_request->id);
-                    }
-
-                    if($start_date){
-                        $query->where('fabric_requisitions.requested_at', '>=', $start_date);
-                    }
-
-                    if($end_date){
-                        $query->where('fabric_requisitions.requested_at', '<=', $end_date);
-                    }
                 })
+                ->where('fabric_requisitions.created_at', '>=', $start_date)
+                ->where('fabric_requisitions.created_at', '<=', $end_date)
                 ->select(
                     'fabric_requisitions.id as fbr_id',
                     'fabric_requisitions.serial_number as fbr_serial_number',
@@ -94,8 +69,6 @@ class FabricRequestSyncController extends Controller
                     'fabric_requisitions.remark as fbr_remark',
                     'fabric_requisitions.created_at as fbr_created_at',
                     'fabric_requisitions.updated_at as fbr_updated_at',
-                    'fabric_requisitions.requested_at as fbr_requested_at',
-                    'users.name as fbr_requested_by',
                     'gls.gl_number',
                     'colors.color',
                     'styles.style',

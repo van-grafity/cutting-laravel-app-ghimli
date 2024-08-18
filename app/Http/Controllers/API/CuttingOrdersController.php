@@ -21,6 +21,11 @@ class CuttingOrdersController extends BaseController
 {
     use ApiHelpers;
 
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api');
+    // }
+
     public function index(Request $request)
     {
         $input = $request->all();
@@ -44,6 +49,9 @@ class CuttingOrdersController extends BaseController
                 $query->where('id_status_cut', $status_cut);
             }
         })
+        // ->where(function ($query) {
+        //     $query->where('created_at', '>=', Carbon::create(2023, 9, 1, 0, 0, 0));
+        // })
         ->latest()
         ->paginate($limit, ['*'], 'page', $page);
         
@@ -69,6 +77,13 @@ class CuttingOrdersController extends BaseController
         $getCuttingOrder = CuttingOrderRecord::with('CuttingOrderRecordDetail')->where('serial_number', $serial_number)->latest()->first();
         if ($getCuttingOrder == null) return $this->onError(404, 'Cutting Order Record not found.');
         $layingPlanningDetail = LayingPlanningDetail::where('id', $getCuttingOrder->laying_planning_detail_id)->first();
+        // $layingPlanning = LayingPlanning::with('layingPlanningDetail.cuttingOrderRecord')->where('id', $layingPlanningDetail->laying_planning_id)->first();
+
+        // foreach ($layingPlanning->layingPlanningDetail as $detail) {
+        //     if ($detail->marker_code == 'PILOT RUN' && $detail->cuttingOrderRecord->is_pilot_run == 0) {
+        //         return $this->onError(404, 'Pilot Run must be approved first.');
+        //     }
+        // }
         
         $cuttingRecordDetail = CuttingOrderRecordDetail::with('CuttingOrderRecord')->whereHas('CuttingOrderRecord', function ($query) use ($serial_number) {
             $query->where('serial_number', $serial_number);
@@ -87,6 +102,7 @@ class CuttingOrdersController extends BaseController
         $data = collect(
             [
                 'cutting_order_record_details' => $cuttingRecordDetail,
+                // 'laying_planning' => $layingPlanning
             ]
         );
         return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
@@ -121,6 +137,20 @@ class CuttingOrdersController extends BaseController
         $cuttingOrderRecordDetail->user_id = $input['user_id'];
 
         $sum_layer += $input['layer'];
+        // if ($sum_layer == $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
+        //     $status = StatusLayer::where('name', 'completed')->first();
+        //     if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
+        //     $cuttingOrderRecord->id_status_layer = $status->id;
+        // } else if ($sum_layer > $cuttingOrderRecord->layingPlanningDetail->layer_qty) {
+        //     return $this->onSuccess(null, 'Layer Cut tidak boleh lebih dari Layer Qty.');
+        //     $status = StatusLayer::where('name', 'over layer')->first();
+        //     if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
+        //     $cuttingOrderRecord->id_status_layer = $status->id;
+        // } else {
+        //     $status = StatusLayer::where('name', 'not completed')->first();
+        //     if ($status == null) return $this->onError(404, 'Status Layer Cut not found.');
+        //     $cuttingOrderRecord->id_status_layer = $status->id;
+        // }
 
         $max_min = $cuttingOrderRecord->layingPlanningDetail->layer_qty * 0.03;
         $max_min = round($max_min, 0, PHP_ROUND_HALF_UP);
@@ -222,6 +252,10 @@ class CuttingOrdersController extends BaseController
         return $this->onSuccess($data, 'Color retrieved successfully.');
     }
     
+    public function update(Request $request, $id)
+    {
+        //
+    }
 
     public function updateFabricRollByCorId(Request $request, $id)
     {

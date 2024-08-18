@@ -5,28 +5,22 @@
     @component('components.breadcrumb')@endcomponent
 @stop
 
-@section('css')
+@section('content_header')
     <!-- CSS -->
     <link href="{{ asset('css/main.css') }}" rel="stylesheet" />
     
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">@yield('title')</h1>
+            </div>
+        </div>
+    </div>
 @stop
 
 @section('content')
     @yield('content')
 @stop
-
-@push('js')
-<script>
-    $('.select2.no-search-box').select2({
-        minimumResultsForSearch: Infinity
-    });
-
-    // ## bagian ini bertujuan agar saat select2 di open, langsung mengarah ke search box focusnya. bisa langsung ketik di keyboard searching nya. tidak perlu diklik menggunakan mouse dulu
-    $('.select2').on('select2:open', function (e) {
-        document.querySelector('.select2-search__field').focus();
-    });
-</script>
-@endpush
 
 @yield('last-body')
 @include('layouts.scripts-vendor')

@@ -24,7 +24,7 @@ class FabricIssuesController extends Controller
     public function index()
     {
         $fabric_requisitions = FabricRequisition::all();
-        return view('page.fabric-issue.index', compact('fabric_requisitions'));
+        return view('page.fabric-issue.index2', compact('fabric_requisitions'));
     }
 
     public function dataFabricIssue(){
@@ -50,6 +50,16 @@ class FabricIssuesController extends Controller
 
             })
             ->make(true);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
     }
 
     /**
@@ -92,6 +102,10 @@ class FabricIssuesController extends Controller
             }
             $fabric_issue->save();
         }
+        
+
+        // return $fabric_issues->sum('yard') . " " . $fabric_requisition->layingPlanningDetail->total_length;
+        
         
 
         // 664 dari 3% 664 * 0.03 = 19.92

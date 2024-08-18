@@ -11,16 +11,17 @@
                     <div class="content-title text-center">
                         <h3>Laying Planning List</h3>
                     </div>
+                    <!-- if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter')){ -->
                     <div class="d-flex justify-content-end mb-1">
-                        @can('laying-planning.manage')
-                            <a  href="{{ url('/laying-planning-create') }}" class="btn btn-success mb-2">Create</a>
-                        @endcan
+                        @if(Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('cutter'))
+                        <a  href="{{ url('/laying-planning-create') }}" class="btn btn-success mb-2">Create</a>
+                        @endif
                     </div>
                     <table class="table table-bordered table-hover" id="laying_planning_table">
                         <thead class="">
-                            <tr class="text-center">
-                                <th scope="col" width="10px">No. </th>
-                                <th scope="col" width="20%">Serial Number</th>
+                            <tr>
+                                <th scope="col" width="5%">No. </th>
+                                <th scope="col" width="12%">Serial Number</th>
                                 <th scope="col">Style</th>
                                 <th scope="col">Buyer</th>
                                 <th scope="col">Color</th>
@@ -64,7 +65,7 @@
                 reload_option: true, 
             });
         } else {
-            swal_failed({ title: result.message, subtitle: result.submessage });
+            swal_failed({ title: result.message });
         }
     };
 </script>
@@ -74,28 +75,20 @@
         $('#laying_planning_table').DataTable({
             processing: true,
             serverSide: true,
-            order: [],
             ajax: "{{ url('/laying-planning-data') }}",
             columns: [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false},
-                {data: 'serial_number', name: 'laying_plannings.serial_number'},
-                {data: 'style', name: 'styles.style'},
-                {data: 'buyer', name: 'buyers.name'},
-                {data: 'color', name: 'colors.color'},
-                {data: 'fabric_type', name: 'fabric_types.description'},
-                {data: 'action', name: 'action', className: 'text-center', orderable: false, searchable: false},
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                {data: 'serial_number', name: 'serial_number'},
+                {data: 'style', name: 'style'},
+                {data: 'buyer', name: 'buyer'},
+                {data: 'color', name: 'color'},
+                {data: 'fabric_type', name: 'fabric_type'},
+                {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
             lengthChange: true,
             searching: true,
             autoWidth: false,
             responsive: true,
-            createdRow: function (row, data, dataIndex) {
-                // ## Apply vertical align style to cells
-                $(row).find('td').css('vertical-align', 'middle');
-                $(row).find('td:last').css({
-                    'white-space':'nowrap',
-                });
-            }
         });
     });
 </script>

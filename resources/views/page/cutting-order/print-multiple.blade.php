@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cutting Order Record</title>
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('css/app.css') }}"> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     
     <style type="text/css">
@@ -113,7 +113,7 @@
                 PT. GHIMLI INDONESIA
             </div>
             <div class="serial-number-qr">
-                <div class="qr-wrapper" style="margin-top: -10px; margin-right: 0px;">
+                <div class="qr-wrapper" style="margin-top: -15px; margin-right: -15px;">
                     <img src="data:image/png;base64, {!! base64_encode(QrCode::size(70)->generate($cor['serial_number'])) !!} ">
                 </div>
             </div>
@@ -135,7 +135,7 @@
                     <td colspan="1" class="no-border"> Style No</td>
                     <td colspan="4" class="text-left">: {{ $cor['style'] }} </td>
                     <td colspan="1" class="no-border text-right">Marker Code</td>
-                    <td colspan="1" width="120" class="no-border" style="white-space: nowrap; overflow: hidden;">: {{ $cor['marker_code'] }} </td>
+                    <td colspan="1" width="50" class="no-border">: {{ $cor['marker_code'] }} </td>
                     <td colspan="2" class="no-border text-right"> GL No </td>
                     <td colspan="1" width="70">: {{ $cor['gl_number']}} </td>
                     <td colspan="2" class="no-border"></td>
@@ -164,7 +164,7 @@
                         <th rowspan="2">Width <br> <i style="font-weight: 500;">Lebar</i></th>
                         <th rowspan="2" colspan="2" style="font-size: 9px !important;"> {{ $cor['size_ratio'] }} </th>
                         <th colspan="2">Colour / <i style="font-weight: 500;">Warna</i></th>
-                        <th colspan="3" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; "> {{ $cor['color'] }} </th>
+                        <th colspan="3"> {{ $cor['color'] }} </th>
                         <th rowspan="2">Laid By <br> <i style="font-weight: 500;">Dibentang Oleh</i></th>
                         <th rowspan="2"> - </th>
                     </tr>

@@ -4,11 +4,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\BlogController;
 use App\Http\Controllers\API\CuttingOrdersController;
 use App\Http\Controllers\API\LayingPlanningController;
 use App\Http\Controllers\API\ColorController;
 use App\Http\Controllers\API\RemarksController;
 use App\Http\Controllers\API\CuttingTicketsController;
+use App\Http\Controllers\API\BundleCutsController;
 use App\Http\Controllers\API\BundleStocksController;
 use App\Http\Controllers\API\BundleLocationsController;
 use App\Http\Controllers\API\FabricRequestSyncController;
@@ -58,6 +60,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     
     Route::post('upload-sticker-fabric', [CuttingOrdersController::class, 'uploadStickerFabric']);
 
+    Route::resource('bundle-cuts', BundleCutsController::class);
+    Route::get('bundle-status', [BundleCutsController::class, 'bundleStatusIndex']);
 
     
     Route::controller(BundleStocksController::class)->prefix('bundle-stocks')->name('bundle-stocks.')->group(function(){

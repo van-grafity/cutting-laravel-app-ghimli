@@ -20,6 +20,14 @@ class AuthController extends BaseController
      * @return \Illuminate\Http\Response
      */
 
+    //  $data = CuttingOrderRecord::with(['layingPlanningDetail'])->get();
+    //     $data = collect(
+    //         [
+    //             'cuttingOrderRecord' => $data
+    //         ]
+    //     );
+    //     return $this->onSuccess($data, 'Cutting Order Record retrieved successfully.');
+
     public function signin(Request $request)
     {
         // collect user

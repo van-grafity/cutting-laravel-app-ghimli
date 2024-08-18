@@ -31,7 +31,7 @@ class FabricRequisitionsController extends Controller
     }
 
     public function dataFabricRequisition(){
-        $query = DB::table('fabric_requisitions')
+            $query = DB::table('fabric_requisitions')
             ->join('laying_planning_details', 'fabric_requisitions.laying_planning_detail_id', '=', 'laying_planning_details.id')
             ->join('laying_plannings', 'laying_planning_details.laying_planning_id', '=', 'laying_plannings.id')
             ->join('gls', 'laying_plannings.gl_id', '=', 'gls.id')
@@ -40,9 +40,8 @@ class FabricRequisitionsController extends Controller
             ->join('fabric_types', 'laying_plannings.fabric_type_id', '=', 'fabric_types.id')
             ->join('fabric_cons', 'laying_plannings.fabric_cons_id', '=', 'fabric_cons.id')
             ->select('fabric_requisitions.id', 'fabric_requisitions.serial_number', 'fabric_requisitions.is_issue', 'fabric_requisitions.status_print', 'fabric_requisitions.remark', 'laying_planning_details.table_number', 'styles.style', 'colors.color', 'laying_plannings.fabric_po', 'fabric_types.name as fabric_type', 'fabric_cons.name as fabric_cons', 'laying_planning_details.total_length')
-            ->orderBy('fabric_requisitions.updated_at', 'desc');
-
-        return Datatables::of($query)
+            ->orderBy('fabric_requisitions.updated_at', 'desc')->get();
+            return Datatables::of($query)
             ->escapeColumns([])
             ->addColumn('serial_number', function ($data){
                 return $data->serial_number;
@@ -216,12 +215,8 @@ class FabricRequisitionsController extends Controller
         $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.fabric-requisition.print', compact('data'))->setPaper($customPaper, 'portrait');
 
-        if(!(auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('merchandiser'))){
-            $fabric_requisition->status_print = 1;
-            $fabric_requisition->requested_at = Carbon::now();
-            $fabric_requisition->requested_by = auth()->user()->id;
-            $fabric_requisition->save();
-        }
+        $fabric_requisition->status_print = 1;
+        $fabric_requisition->save();
 
         return $pdf->stream($filename);
     }
@@ -253,14 +248,10 @@ class FabricRequisitionsController extends Controller
         $customPaper = array(0,0,612.00,792.00);
         $pdf = PDF::loadview('page.fabric-requisition.print-multiple', compact('data'))->setPaper($customPaper, 'portrait');
 
-        if(!(auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('merchandiser'))){
-            foreach($laying_planning_laying_planning_detail_ids as $laying_planning_laying_planning_detail_id){
-                $fabric_requisition = FabricRequisition::where('laying_planning_detail_id', $laying_planning_laying_planning_detail_id)->first();
-                $fabric_requisition->status_print = 1;
-                $fabric_requisition->requested_at = Carbon::now();
-                $fabric_requisition->requested_by = auth()->user()->id;
-                $fabric_requisition->save();
-            }
+        foreach($laying_planning_laying_planning_detail_ids as $laying_planning_laying_planning_detail_id){
+            $fabric_requisition = FabricRequisition::where('laying_planning_detail_id', $laying_planning_laying_planning_detail_id)->first();
+            $fabric_requisition->status_print = 1;
+            $fabric_requisition->save();
         }
         
         return $pdf->stream('fabric-requisition.pdf');
@@ -269,6 +260,16 @@ class FabricRequisitionsController extends Controller
     public function format_no_laying_sheet($no_laying_sheet){
         $no_laying_sheet = preg_replace('/[^0-9\-]/', '', $no_laying_sheet);
         return $no_laying_sheet;
+    }
+
+    public function fabric_requisition_detail(Request $request, $id) {
+
+        // $fabric_requisition_record_detail = CuttingOrderRecordDetail::find($id);
+        // $fabric_requisition_record_detail->color = $fabric_requisition_record_detail->color->color;
+        // return response()->json([
+        //     'status' => 'success',
+        //     'data' => $fabric_requisition_record_detail
+        // ], 200);
     }
     
     function generate_serial_number($layingPlanningDetail){

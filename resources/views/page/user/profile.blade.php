@@ -16,14 +16,14 @@
 
                 <h3 class="profile-username text-center">{{ $user->name }}</h3>
 
-                <p class="text-muted text-center">{{ $user->roles[0]->title ? $user->roles[0]->title : $user->roles[0]->name }}</p>
+                <p class="text-muted text-center">{{ $user->roles[0]->name }}</p>
 
                 <ul class="list-group list-group-unbordered mb-3">
                   <li class="list-group-item">
                     <b>Email</b> : {{ $user->email }}
                   </li>
                   <li class="list-group-item">
-                    <b>Department</b> : {{ $user->department ? $user->department->department : '-' }}
+                    <b>Department</b> : Cutting
                   </li>
                 </ul>
 

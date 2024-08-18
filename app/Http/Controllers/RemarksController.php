@@ -15,6 +15,16 @@ class RemarksController extends Controller
     {
         $remarks = Remark::all();
         return view('page.remark.index', compact('remarks'));
+
+        // $ticket = CuttingTicket::take(90)->skip(10)->get();
+        // foreach ($ticket as $key => $value) {
+        //     $value->serial_number = $this->generate_ticket_number($value->id);
+        //     $value->save();
+        // }
+        // return "Test";
+        // return view('page.cutting-ticket.index');
+        // query sql select serial number in table cutting tickets
+        // "SELECT serial_number FROM `cutting_tickets` WHERE serial_number IS NOT NULL"
     }
 
     public function dataRemark()
@@ -33,6 +43,20 @@ class RemarksController extends Controller
 
     public function store(Request $request)
     {
+        // $rules = [
+        //     'name' => 'required',
+        // ];
+
+        // $validator = Validator::make($request->all(), $rules, $messages = [
+        //     'required' => 'The :attribute field is required.',
+        // ]);
+
+        // if ($validator->fails()) {
+        //     return redirect('/remark')
+        //                 ->withErrors($validator)
+        //                 ->withInput();
+        // }
+
         $request->validate([
             'name' => 'required',
         ]);
